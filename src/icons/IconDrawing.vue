@@ -1,0 +1,153 @@
+<script lang="ts" setup>
+const { color = "white" } = defineProps({
+  color: String,
+});
+</script>
+
+<template>
+  <svg
+    version="1.0"
+    id="Layer_1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    x="0px"
+    y="0px"
+    viewBox="0 0 78.2 90"
+    style="enable-background: new 0 0 78.2 90"
+    xml:space="preserve"
+  >
+    <g>
+      <g>
+        <path
+          class="st0"
+          d="M74.5,9.6H63.1V0.9c0-0.5-0.4-0.9-0.9-0.9H17.4c0,0,0,0,0,0c-0.1,0-0.1,0-0.2,0c0,0,0,0,0,0
+			c-0.1,0-0.1,0-0.2,0c0,0,0,0,0,0c0,0-0.1,0-0.1,0.1c0,0,0,0,0,0c0,0-0.1,0.1-0.1,0.1c0,0,0,0,0,0L7.6,9.4L3,14
+			c0,0-0.1,0.1-0.1,0.1c0,0,0,0,0,0c0,0,0,0.1-0.1,0.1c0,0,0,0,0,0c0,0.1-0.1,0.2-0.1,0.3c0,0,0,0,0,0v62c0,0.5,0.4,0.9,0.9,0.9h9.3
+			v11.4c0,0.5,0.4,0.9,0.9,0.9h29h31.7c0.5,0,0.9-0.4,0.9-0.9V57.4V10.5C75.5,10,75.1,9.6,74.5,9.6z M73.6,11.4v45H63.1v-45H73.6z
+			 M16.4,3.2v10.6H5.9l3.2-3.2L16.4,3.2z M4.6,15.6h12.8c0.5,0,0.9-0.4,0.9-0.9V1.9h42.9v54.6H42.8c-0.5,0-0.9,0.4-0.9,0.9v18.4H4.6
+			V15.6z M14.8,77.6h27.1v10.5H14.8V77.6z M73.6,88.1H43.8V58.3h29.8V88.1z"
+          :fill="color"
+        />
+        <path
+          class="st0"
+          d="M55.3,65.4c-0.5,0-0.9,0.4-0.9,0.9v9.3h-3.8c-0.4,0-0.7,0.2-0.9,0.6c-0.1,0.3-0.1,0.7,0.2,1l8.1,8.1
+			c0.2,0.2,0.4,0.3,0.7,0.3s0.5-0.1,0.7-0.3l8.1-8.1c0.3-0.3,0.3-0.7,0.2-1c-0.1-0.3-0.5-0.6-0.9-0.6H63v-9.3c0-0.5-0.4-0.9-0.9-0.9
+			H55.3z M64.5,77.5l-5.8,5.8l-5.8-5.8h2.5c0.5,0,0.9-0.4,0.9-0.9v-9.3h4.8v9.3c0,0.5,0.4,0.9,0.9,0.9H64.5z"
+          :fill="color"
+        />
+        <rect
+          x="37.8"
+          y="48.3"
+          class="st0"
+          width="3.7"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="31.6"
+          y="48.3"
+          class="st0"
+          width="3.7"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="25.3"
+          y="48.3"
+          class="st0"
+          width="3.7"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="19.1"
+          y="48.3"
+          class="st0"
+          width="3.7"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="44"
+          y="48.3"
+          class="st0"
+          width="3.7"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="12.9"
+          y="48.3"
+          class="st0"
+          width="3.7"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="50.2"
+          y="48.3"
+          class="st0"
+          width="3.7"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="12.9"
+          y="39.7"
+          class="st0"
+          width="43.6"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="12.9"
+          y="31.1"
+          class="st0"
+          width="43.6"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="12.9"
+          y="22.6"
+          class="st0"
+          width="43.6"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="31.4"
+          y="56.4"
+          class="st0"
+          width="3.7"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="12.9"
+          y="56.4"
+          class="st0"
+          width="3.6"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="19"
+          y="56.4"
+          class="st0"
+          width="3.7"
+          height="1.9"
+          :fill="color"
+        />
+        <rect
+          x="25.2"
+          y="56.4"
+          class="st0"
+          width="3.7"
+          height="1.9"
+          :fill="color"
+        />
+      </g>
+    </g>
+  </svg>
+</template>
