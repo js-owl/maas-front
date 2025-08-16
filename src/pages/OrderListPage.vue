@@ -4,6 +4,8 @@ import { API_BASE } from "../api";
 import { useAuthStore } from "../stores/auth.store";
 import type { IOrder } from "../interfaces/order.interface";
 import { ElMessage } from "element-plus";
+import { useRouter } from "vue-router";
+import { Edit, Delete } from "@element-plus/icons-vue";
 
 interface ApiResponse {
   success: boolean;
@@ -14,6 +16,7 @@ interface ApiResponse {
 const orders = ref<IOrder[]>();
 
 const authStore = useAuthStore();
+const router = useRouter();
 
 onMounted(() => {
   fetchData();
@@ -90,6 +93,24 @@ const handleDelete = async (row: IOrder): Promise<void> => {
     deleteLoading.value = null;
   }
 };
+
+const handleEdit = (row: IOrder): void => {
+  console.log("Edit order:", { row });
+  
+  // Navigate to appropriate calculation page based on service_id
+  switch (row.service_id) {
+    case 2: // 3D Printing
+      router.push({ path: "/plastic" });
+      break;
+    case 4: // Milling
+      router.push({ name: "machining" });
+      break;
+    default:
+      // Default to plastic page for unknown service_id
+      router.push({ path: "/plastic" });
+      break;
+  }
+};
 </script>
 
 <template>
@@ -113,6 +134,7 @@ const handleDelete = async (row: IOrder): Promise<void> => {
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
       >
         <el-table-column prop="id" label="Номер заказа" width="150" />
+        <el-table-column prop="service_id" label="ID услуги" width="120" />
         <el-table-column
           prop="created_at"
           label="Дата создания"
@@ -128,21 +150,31 @@ const handleDelete = async (row: IOrder): Promise<void> => {
         <el-table-column prop="file_id" label="3D модель" width="100" />
         <el-table-column prop="status" label="Статус" width="150" />
         <el-table-column prop="total_price" label="Цена" width="150" />
-        <el-table-column fixed="right" label="Операции" min-width="120">
-          <template #default="scope">
-            <el-button
-              link
-              type="primary"
-              size="small"
-              @click="handleDelete(scope.row)"
-              :loading="deleteLoading === scope.row.id"
-            >
-              <el-icon color="red" class="no-inherit">
-                <Delete />
-              </el-icon>
-            </el-button>
-          </template>
-        </el-table-column>
+                 <el-table-column fixed="right" label="Операции" min-width="150">
+           <template #default="scope">
+             <el-button
+               link
+               type="primary"
+               size="small"
+               @click="handleEdit(scope.row)"
+             >
+               <el-icon color="blue" class="no-inherit">
+                 <Edit />
+               </el-icon>
+             </el-button>
+             <el-button
+               link
+               type="primary"
+               size="small"
+               @click="handleDelete(scope.row)"
+               :loading="deleteLoading === scope.row.id"
+             >
+               <el-icon color="red" class="no-inherit">
+                 <Delete />
+               </el-icon>
+             </el-button>
+           </template>
+         </el-table-column>
       </el-table>
     </el-col>
   </el-row>
