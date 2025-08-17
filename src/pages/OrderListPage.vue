@@ -97,17 +97,41 @@ const handleDelete = async (row: IOrder): Promise<void> => {
 const handleEdit = (row: IOrder): void => {
   console.log("Edit order:", { row });
   
-  // Navigate to appropriate calculation page based on service_id
+  // Navigate to appropriate calculation page based on service_id with order data
   switch (row.service_id) {
     case 2: // 3D Printing
-      router.push({ path: "/plastic" });
+      router.push({ 
+        path: "/plastic", 
+        query: { 
+          edit: "true", 
+          orderId: row.id.toString(),
+          serviceId: row.service_id.toString()
+        },
+        state: { orderData: row }
+      });
       break;
     case 4: // Milling
-      router.push({ name: "machining" });
+      router.push({ 
+        name: "machining", 
+        query: { 
+          edit: "true", 
+          orderId: row.id.toString(),
+          serviceId: row.service_id.toString()
+        },
+        state: { orderData: row }
+      });
       break;
     default:
       // Default to plastic page for unknown service_id
-      router.push({ path: "/plastic" });
+      router.push({ 
+        path: "/plastic", 
+        query: { 
+          edit: "true", 
+          orderId: row.id.toString(),
+          serviceId: row.service_id.toString()
+        },
+        state: { orderData: row }
+      });
       break;
   }
 };
