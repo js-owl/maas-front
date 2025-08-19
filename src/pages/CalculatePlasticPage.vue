@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref, watch } from "vue";
-import { API_BASE } from "../api";
+import { fetchWithoutAuth, fetchWithAuth } from "../api";
 
 import Length from "../components/coefficients/Length.vue";
 import Width from "../components/coefficients/Width.vue";
@@ -15,11 +15,8 @@ import CoefficientCertificate from "../components/coefficients/CoefficientCertif
 import router from "../router";
 import UploadModel from "../components/UploadModel.vue";
 import UploadDrawings from "../components/UploadDrawings.vue";
-import { useAuthStore } from "../stores/auth.store";
 // @ts-ignore
 import CadShowById from "../components/CadShowById.vue";
-
-const authStore = useAuthStore();
 
 interface FormResponse {
   id: number;
@@ -80,24 +77,8 @@ onMounted(() => {
 type sendType = typeof payload;
 
 async function sendData(payload: sendType) {
-  console.log("token", authStore.getToken);
   try {
-    const headers = new Headers();
-    headers.append("Content-Type", "application/x-www-form-urlencoded");
-
-    const toUrlEncoded = (o: any) => {
-      return Object.keys(o)
-        .map(
-          (key) => `${encodeURIComponent(key)}=${encodeURIComponent(o[key])}`
-        )
-        .join("&");
-    };
-
-    const res = await fetch(`${API_BASE}/anonymous-calc`, {
-      method: "POST",
-      headers: headers,
-      body: toUrlEncoded(payload),
-    });
+    const res = await fetchWithoutAuth("/anonymous-calc", "POST", payload);
     const data = (await res.json()) as FormResponse;
     result.value = data;
     console.log({ res });
@@ -107,27 +88,8 @@ async function sendData(payload: sendType) {
 }
 
 async function submitOrder(payload: sendType) {
-  console.log("token", authStore.getToken);
   try {
-    const headers = new Headers();
-    headers.append("Content-Type", "application/x-www-form-urlencoded");
-    if (authStore.getToken) {
-      headers.append("Authorization", `Bearer ${authStore.getToken}`);
-    }
-
-    const toUrlEncoded = (o: any) => {
-      return Object.keys(o)
-        .map(
-          (key) => `${encodeURIComponent(key)}=${encodeURIComponent(o[key])}`
-        )
-        .join("&");
-    };
-
-    const res = await fetch(`${API_BASE}/orders`, {
-      method: "POST",
-      headers: headers,
-      body: toUrlEncoded(payload),
-    });
+    const res = await fetchWithAuth("/orders", "POST", payload);
     const data = (await res.json()) as FormResponse;
     result.value = data;
     console.log({ res });
