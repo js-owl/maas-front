@@ -5,21 +5,21 @@ const plastic = { density: 1800, k_handle: 0.055 };
 const selectedMaterial = defineModel();
 const materials = [
   {
-    value: "Пластик 1",
+    value: "plastic",
     label: "Полипропилен (PP)",
     price: 110,
     density: plastic.density,
     k_handle: plastic.k_handle,
   },
   {
-    value: "Пластик 2",
+    value: "plastic",
     label: "Поливинилхлорид (ПВХ)",
     price: 110,
     density: plastic.density,
     k_handle: plastic.k_handle,
   },
   {
-    value: "Пластик 3",
+    value: "plastic",
     label: "Полистирол (PS) ",
     price: 70,
     density: plastic.density,

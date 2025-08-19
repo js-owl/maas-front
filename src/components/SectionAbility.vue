@@ -4,7 +4,16 @@
   >
     <el-row :gutter="20">
       <el-col :offset="2" :span="20">
-        <h1 style="font-size: 32px">Наши возможности</h1>
+        <div
+          style="
+            text-align: center;
+            font-size: 60px;
+            color: #283d5b;
+            padding: 40px 0;
+          "
+        >
+          НАШИ ВОЗМОЖНОСТИ
+        </div>
       </el-col>
     </el-row>
     <el-row :gutter="20">

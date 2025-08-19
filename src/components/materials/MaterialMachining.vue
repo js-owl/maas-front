@@ -6,35 +6,35 @@ const steel = { density: 7850, k_handle: 0.045 };
 const selectedMaterial = defineModel();
 const materials = [
   {
-    value: "Алюминий 1",
+    value: "alum",
     label: "пруток Д16/Д16Т/Д95/Д95Т",
     price: 110,
     density: alum.density,
     k_handle: alum.k_handle,
   },
   {
-    value: "Алюминий 2",
+    value: "alum",
     label: "пруток АМ/АМГ/АМЦ",
     price: 110,
     density: alum.density,
     k_handle: alum.k_handle,
   },
   {
-    value: "Алюминий 3",
+    value: "alum",
     label: "шестигранник Д16/Д16Т/Д95/Д95Т",
     price: 110,
     density: alum.density,
     k_handle: alum.k_handle,
   },
   {
-    value: "Алюминий 4",
+    value: "alum",
     label: "шестигранник АМ/АМГ/АМЦ",
     price: 110,
     density: alum.density,
     k_handle: alum.k_handle,
   },
   {
-    value: "Сталь 1",
+    value: "steel",
     label:
       "пруток 15Х, 20Х, 30Х, 35Х, 38ХА, 40Х, 45Х, 50Г, 12ХН, 20ХН, 40ХН, 14ХГН, 19ХГН, 20ХГНМ, 30ХМ ",
     price: 70,
@@ -42,7 +42,7 @@ const materials = [
     k_handle: steel.k_handle,
   },
   {
-    value: "Сталь 2",
+    value: "steel",
     label:
       "шестигранник 15Х, 20Х, 30Х, 35Х, 38ХА, 40Х, 45Х, 50Г, 12ХН, 20ХН, 40ХН, 14ХГН, 19ХГН, 20ХГНМ, 30ХМ ",
     price: 70,
@@ -66,7 +66,7 @@ const materials = [
         v-for="item in materials"
         :key="item.value"
         :label="item.label"
-        :value="item"
+        :value="item.value"
       />
     </el-select>
   </div>

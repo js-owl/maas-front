@@ -96,41 +96,22 @@ const handleDelete = async (row: IOrder): Promise<void> => {
 
 const handleEdit = (row: IOrder): void => {
   console.log("Edit order:", { row });
-  
-  // Navigate to appropriate calculation page based on service_id with order data
+
+  // Navigate to appropriate calculation page based on service_id
   switch (row.service_id) {
-    case 2: // 3D Printing
-      router.push({ 
-        path: "/plastic", 
-        query: { 
-          edit: "true", 
-          orderId: row.id.toString(),
-          serviceId: row.service_id.toString()
-        },
-        state: { orderData: row }
-      });
+    case 2:
+      router.push({ path: "/plastic", query: { orderId: row.id.toString() } });
       break;
-    case 4: // Milling
-      router.push({ 
-        name: "machining", 
-        query: { 
-          edit: "true", 
-          orderId: row.id.toString(),
-          serviceId: row.service_id.toString()
-        },
-        state: { orderData: row }
+    case 4:
+      router.push({
+        path: "/machining",
+        query: { orderId: row.id.toString() },
       });
       break;
     default:
-      // Default to plastic page for unknown service_id
-      router.push({ 
-        path: "/plastic", 
-        query: { 
-          edit: "true", 
-          orderId: row.id.toString(),
-          serviceId: row.service_id.toString()
-        },
-        state: { orderData: row }
+      router.push({
+        path: "/machining",
+        query: { orderId: row.id.toString() },
       });
       break;
   }
@@ -174,31 +155,31 @@ const handleEdit = (row: IOrder): void => {
         <el-table-column prop="file_id" label="3D модель" width="100" />
         <el-table-column prop="status" label="Статус" width="150" />
         <el-table-column prop="total_price" label="Цена" width="150" />
-                 <el-table-column fixed="right" label="Операции" min-width="150">
-           <template #default="scope">
-             <el-button
-               link
-               type="primary"
-               size="small"
-               @click="handleEdit(scope.row)"
-             >
-               <el-icon color="blue" class="no-inherit">
-                 <Edit />
-               </el-icon>
-             </el-button>
-             <el-button
-               link
-               type="primary"
-               size="small"
-               @click="handleDelete(scope.row)"
-               :loading="deleteLoading === scope.row.id"
-             >
-               <el-icon color="red" class="no-inherit">
-                 <Delete />
-               </el-icon>
-             </el-button>
-           </template>
-         </el-table-column>
+        <el-table-column fixed="right" label="Операции" min-width="150">
+          <template #default="scope">
+            <el-button
+              link
+              type="primary"
+              size="small"
+              @click="handleEdit(scope.row)"
+            >
+              <el-icon color="blue" class="no-inherit">
+                <Edit />
+              </el-icon>
+            </el-button>
+            <el-button
+              link
+              type="primary"
+              size="small"
+              @click="handleDelete(scope.row)"
+              :loading="deleteLoading === scope.row.id"
+            >
+              <el-icon color="red" class="no-inherit">
+                <Delete />
+              </el-icon>
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-col>
   </el-row>

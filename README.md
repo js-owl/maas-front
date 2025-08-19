@@ -40,4 +40,3 @@ sequenceDiagram
     deactivate BE
     FE->>User: Отображает: "Статус: В работе"
 ```
-"# maas-front" 
