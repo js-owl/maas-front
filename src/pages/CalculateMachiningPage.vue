@@ -126,8 +126,51 @@ async function getOrder(id: number) {
     const res = await req_json_auth(`/orders/${id}`, "GET");
     const data = (await res.json()) as FormResponse;
     result.value = data;
-    quantity.value = result.value.quantity;
-    console.log("getOrder", quantity.value);
+    
+    // Обновляем все поля из полученного заказа
+    if (data.quantity) quantity.value = data.quantity;
+    if (data.file_id) file_id.value = data.file_id;
+    if (data.material_preference) material.value = data.material_preference;
+    
+    // Обновляем размеры, если они есть в данных
+    if (data.dimensions) {
+      try {
+        const dimensions = JSON.parse(data.dimensions);
+        if (dimensions.length) length.value = dimensions[0];
+        if (dimensions.width) width.value = dimensions.width;
+      } catch (e) {
+        console.warn("Failed to parse dimensions:", e);
+      }
+    }
+    
+    // Принудительно обновляем payload после изменения всех полей
+    Object.assign(payload, {
+      service_id: 4,
+      file_id: file_id.value,
+      quantity: quantity.value,
+      length: length.value,
+      width: width.value,
+      height: width.value,
+      material_preference: material.value,
+      k_complexity: k_complexity.value,
+      k_tolerance: k_tolerance.value,
+      k_finish: k_finish.value,
+      k_cover: k_cover.value,
+      n_dimensions: k_size.value,
+      k_otk: k_otk.value,
+      k_cert: k_cert.value,
+      special_instructions: "aaa",
+    });
+    
+    // Обновляем result.quantity для отображения в шаблоне
+    if (data.quantity) {
+      result.value.quantity = data.quantity;
+    }
+    
+    console.log("getOrder", quantity.value, payload);
+    
+    // Отправляем обновленные данные для пересчета
+    await sendData(payload);
   } catch (error) {
     console.error({ error });
   }
@@ -173,7 +216,7 @@ async function getOrder(id: number) {
         </el-col>
       </el-row>
       <div style="color: white; font-size: 42px">
-        {{ result.detail_time.toFixed(0) }} ч
+        {{ Number(result?.detail_time ?? 0).toFixed(0) }} ч
       </div>
       <div style="color: white; font-size: 20px; padding-bottom: 40px">
         Трудоемкость изготовления 1 ед.
@@ -187,7 +230,7 @@ async function getOrder(id: number) {
       >
         <div>
           <div style="color: white; font-size: 40px">
-            {{ result.detail_price.toFixed(0) }} руб
+            {{ Number(result?.detail_price ?? 0).toFixed(0) }} руб
           </div>
           <div style="color: white; font-size: 20px">
             Стоимость изготовления 1 ед.
@@ -195,10 +238,10 @@ async function getOrder(id: number) {
         </div>
         <div>
           <div style="color: white; font-size: 40px">
-            {{ result.total_price.toFixed(0) }} руб
+            {{ Number(result?.total_price ?? 0).toFixed(0) }} руб
           </div>
           <div style="color: white; font-size: 20px">
-            Стоимость {{ result.quantity }} ед.*
+            Стоимость {{ result?.quantity || 0 }} ед.*
           </div>
         </div>
       </div>
