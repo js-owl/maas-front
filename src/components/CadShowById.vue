@@ -114,7 +114,7 @@ function renderModel() {
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
-  controls.minDistance = 50;
+  controls.minDistance = 100;
   controls.maxDistance = 300;
 
   window.addEventListener("resize", updateRendererSize);

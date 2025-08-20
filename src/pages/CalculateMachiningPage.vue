@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import { fetchWithoutAuth, fetchWithAuth } from "../api";
+import { fetchWithoutAuth, fetchWithAuth, req_json_auth } from "../api";
 
 import Length from "../components/coefficients/Length.vue";
 import Diameter from "../components/coefficients/Diameter.vue";
@@ -32,16 +32,18 @@ interface FormResponse {
   material_preference: string;
   special_instructions: string;
   status: string;
+  detail_price: number;
   total_price: number;
+  detail_time: number;
   total_time: number;
   created_at: string;
   updated_at: string;
 }
 
 const route = useRoute();
-const order_id = computed(() => Number(route.params.id) || 0);
+const order_id = computed(() => Number(route.query.orderId) || 0);
 
-let file_id = ref(1);
+let file_id = ref(3);
 let drawing_id = ref(1);
 
 let length = ref(120);
@@ -54,7 +56,7 @@ const k_complexity = ref(0.75);
 let k_tolerance = ref(1);
 let k_finish = ref(1);
 let k_cover = ref(1);
-let k_size = ref(2);
+let k_size = ref(55);
 
 let k_otk = ref("1.3");
 let k_cert = ref(["a", "f"]);
@@ -71,46 +73,64 @@ const payload = reactive({
   k_tolerance,
   k_finish,
   k_cover,
-  k_size,
+  n_dimensions: k_size,
   k_otk,
   k_cert,
   special_instructions: "aaa",
 });
 
-let result = ref({ total_time: 0, total_price: 0, quantity: 1 });
+let result = ref({
+  detail_time: 0,
+  detail_price: 0,
+  total_price: 0,
+  quantity: 1,
+});
 
 // Отправляем запрос на сервер при любом изменении данных
-watch(payload, sendData, { deep: true });
+// watch(payload, sendData, { deep: true });
 
 onMounted(() => {
-  sendData(payload);
+  console.log("Mach - onMounted", order_id.value);
+  if (order_id.value == 0) {
+    sendData(payload);
+  } else {
+    getOrder(order_id.value);
+  }
 });
 
 type sendType = typeof payload;
 
 async function sendData(payload: sendType) {
-  console.log("id", order_id.value);
   try {
     const res = await fetchWithoutAuth("/anonymous-calc", "POST", payload);
     const data = (await res.json()) as FormResponse;
     result.value = data;
-    console.log({ res });
   } catch (error) {
     console.error({ error });
   }
 }
 
 async function submitOrder(payload: sendType) {
-  console.log("|-submitOrder");
   try {
     const res = await fetchWithAuth("/orders", "POST", payload);
     const data = (await res.json()) as FormResponse;
     result.value = data;
-    console.log({ res });
   } catch (error) {
     console.error({ error });
   }
   router.push({ name: "order-list" });
+}
+
+async function getOrder(id: number) {
+  try {
+    const res = await req_json_auth(`/orders/${id}`, "GET");
+    const data = (await res.json()) as FormResponse;
+    result.value = data;
+    quantity.value = result.value.quantity;
+    console.log("getOrder", quantity.value);
+  } catch (error) {
+    console.error({ error });
+  }
 }
 </script>
 
@@ -153,7 +173,7 @@ async function submitOrder(payload: sendType) {
         </el-col>
       </el-row>
       <div style="color: white; font-size: 42px">
-        {{ result.total_time.toFixed(0) }} ч
+        {{ result.detail_time.toFixed(0) }} ч
       </div>
       <div style="color: white; font-size: 20px; padding-bottom: 40px">
         Трудоемкость изготовления 1 ед.
@@ -166,7 +186,9 @@ async function submitOrder(payload: sendType) {
         "
       >
         <div>
-          <div style="color: white; font-size: 40px">1 000 руб</div>
+          <div style="color: white; font-size: 40px">
+            {{ result.detail_price.toFixed(0) }} руб
+          </div>
           <div style="color: white; font-size: 20px">
             Стоимость изготовления 1 ед.
           </div>
@@ -185,7 +207,12 @@ async function submitOrder(payload: sendType) {
         становится выгоднее.
       </div>
       <div style="display: flex; justify-content: center">
-        <el-button type="primary" plain class="submit" @click="submitOrder">
+        <el-button
+          type="primary"
+          plain
+          class="submit"
+          @click="submitOrder(payload)"
+        >
           Перейти к оформлению >
         </el-button>
       </div>
