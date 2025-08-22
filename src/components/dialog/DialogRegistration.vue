@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useRegStore } from "../../stores/reg.store";
 import type { FormInstance, FormRules } from "element-plus";
+import { ElMessage } from "element-plus";
 
 let dialogFormVisible = defineModel<boolean>();
 
@@ -19,6 +20,7 @@ const form = ref<FormData>({
 });
 
 const regStore = useRegStore();
+const loading = ref(false);
 
 const validateEmail = (
   _rule: any,
@@ -74,10 +76,32 @@ const submitForm = async () => {
 
   try {
     await formRef.value.validate();
+    loading.value = true;
+    
     console.log("Form submitted:", form.value);
     await regStore.register(form);
+    
+    ElMessage({
+      type: "success",
+      message: "Регистрация успешно завершена!",
+    });
+    
+    // Close dialog and reset form
+    dialogFormVisible = false;
+    form.value = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    };
+    
   } catch (error) {
     console.error("Form validation failed:", error);
+    ElMessage({
+      type: "error",
+      message: error instanceof Error ? error.message : "Ошибка при регистрации",
+    });
+  } finally {
+    loading.value = false;
   }
 };
 </script>
@@ -123,8 +147,9 @@ const submitForm = async () => {
           type="primary"
           native-type="submit"
           style="width: 100%"
+          :loading="loading"
         >
-          Регистрация
+          {{ loading ? 'Регистрация...' : 'Регистрация' }}
         </el-button>
       </el-form-item>
     </el-form>

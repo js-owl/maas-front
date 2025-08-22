@@ -14,19 +14,9 @@ export const useRegStore = defineStore("reg", () => {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
 
-    // const payload = {
-    //   firstName: formData.value.firstName,
-    //   lastName: formData.value.lastName,
-    //   email: formData.value.email,
-    //   phone: formData.value.phone,
-    //   service: formData.value.service,
-    //   company: formData.value.company,
-    //   agreement: formData.value.agreement,
-    // };
-
     const payload = {
-      username: formData.value.firstName,
-      password: formData.value.lastName,
+      username: formData.value.email,
+      password: formData.value.password,
     };
 
     console.log("reg.store: register", { payload });
@@ -36,9 +26,16 @@ export const useRegStore = defineStore("reg", () => {
       headers: headers,
       body: JSON.stringify(payload),
     });
+    
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error("Registration failed:", errorData);
+      throw new Error(`Registration failed: ${res.status} ${res.statusText}`);
+    }
+    
     const data = (await res.json()) as RegResponse;
     console.log("reg.store", { data });
-    // token.value = data.access_token;
+    token.value = data.access_token;
   }
 
   return { token, register };
