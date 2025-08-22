@@ -24,6 +24,13 @@ function onLogout() {
 function onCallRequest() {
   isCallVisible.value = true;
 }
+
+function scrollToAbout() {
+  const aboutElement = document.getElementById("about");
+  if (aboutElement) {
+    aboutElement.scrollIntoView({ behavior: "smooth" });
+  }
+}
 </script>
 
 <template>
@@ -93,7 +100,7 @@ function onCallRequest() {
                 <el-menu-item index="1-2-3">Контактная сварка</el-menu-item>
               </el-sub-menu>
             </el-sub-menu>
-            <el-menu-item index="/#about"> О нас </el-menu-item>
+            <el-menu-item index="/#about" @click="scrollToAbout"> О нас </el-menu-item>
 
             <el-sub-menu index="5" v-show="authStore.getToken">
               <template #title>Заказы</template>
