@@ -5,7 +5,6 @@ const otks = [
   { value: "1", label: "Изготовителя" },
   { value: "1.2", label: "Заказчика на площадке изготовителя" },
   { value: "1.15", label: "Независимой приемкой" },
-  { value: "1.3", label: "Сборка и фиксация первой инспекции изделия" },
 ];
 </script>
 
@@ -28,7 +27,7 @@ const otks = [
 
 <style scoped>
 .radio-item {
-  width: 400px;
+  width: 300px;
 }
 
 .el-radio {

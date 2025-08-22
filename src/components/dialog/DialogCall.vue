@@ -100,21 +100,21 @@ const submitForm = async () => {
   try {
     await formRef.value.validate();
     loading.value = true;
-    
+
     console.log("Call request submitted:", form.value);
-    
+
     // Here you would typically send the data to your backend
     // For now, we'll just show a success message
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+
     ElMessage({
       type: "success",
-      message: "Заявка на звонок отправлена! Мы свяжемся с вами в ближайшее время.",
+      message:
+        "Заявка на звонок отправлена! Мы свяжемся с вами в ближайшее время.",
     });
-    
+
     // Close dialog and reset form
     closeDialog();
-    
   } catch (error) {
     console.error("Form validation failed:", error);
     ElMessage({
@@ -128,9 +128,9 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <el-dialog 
-    v-model="dialogFormVisible" 
-    title="Заказать звонок" 
+  <el-dialog
+    v-model="dialogFormVisible"
+    title="Заказать звонок"
     width="500"
     :close-on-click-modal="false"
     :close-on-press-escape="true"
@@ -164,7 +164,10 @@ const submitForm = async () => {
         >
           <el-option label="Токарные работы" value="machining" />
           <el-option label="Фрезерные работы" value="milling" />
-          <el-option label="Производство из композитных материалов" value="plastic" />
+          <el-option
+            label="Производство из композитных материалов"
+            value="plastic"
+          />
           <el-option label="Лакокрасочные покрытия" value="paint" />
           <el-option label="Другое" value="other" />
         </el-select>
@@ -200,7 +203,7 @@ const submitForm = async () => {
           :loading="loading"
           :disabled="!form.agreement"
         >
-          {{ loading ? 'Отправка...' : 'Заказать звонок' }}
+          {{ loading ? "Отправка..." : "Заказать звонок" }}
         </el-button>
       </el-form-item>
     </el-form>

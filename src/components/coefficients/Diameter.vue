@@ -4,7 +4,7 @@ const width = defineModel();
 
 <template>
   <div>
-    <p>Диаметр</p>
+    <p>Диаметр, мм</p>
     <el-input-number
       v-model="width"
       :min="1"

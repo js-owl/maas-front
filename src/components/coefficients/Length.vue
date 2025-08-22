@@ -4,7 +4,7 @@ const length = defineModel();
 
 <template>
   <div>
-    <p>Длина</p>
+    <p>Длина, мм</p>
     <el-input-number
       v-model="length"
       :min="1"

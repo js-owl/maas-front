@@ -22,6 +22,7 @@ const certificates = [
         :key="option.label"
         :value="option.value"
         class="checkbox-item"
+        disabled
       >
         <div style="font-size: 18px">{{ option.label }}</div>
       </el-checkbox>
@@ -31,7 +32,7 @@ const certificates = [
 
 <style scoped>
 .checkbox-item {
-  width: 400px;
+  width: 300px;
 }
 
 .el-checkbox {

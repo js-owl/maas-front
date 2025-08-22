@@ -27,7 +27,7 @@ const loadModel = (response: any) => {
     :style="{ '--border-color': color }"
     drag
     :headers="uploadHeaders"
-    :action="`${API_BASE}/upload`"
+    :action="`${API_BASE}/documents/upload`"
     multiple
     :on-success="loadModel"
   >

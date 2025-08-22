@@ -87,9 +87,9 @@ function onCallRequest() {
               <el-sub-menu index="1-2" disabled>
                 <template #title>Сварочное производство</template>
                 <el-menu-item index="1-2-1">Аргонодуговая сварка</el-menu-item>
-                <el-menu-item index="1-2-2"
-                  >Сварка в углекислом газе</el-menu-item
-                >
+                <el-menu-item index="1-2-2">
+                  Сварка в углекислом газе
+                </el-menu-item>
                 <el-menu-item index="1-2-3">Контактная сварка</el-menu-item>
               </el-sub-menu>
             </el-sub-menu>
@@ -105,12 +105,20 @@ function onCallRequest() {
               </el-menu-item>
             </el-sub-menu>
           </el-menu>
-          
-          <!-- Call button outside of menu -->
+
           <el-button
             type="primary"
             plain
-            style="background-color: transparent; color: white; border: none; margin-left: 20px; font-size: 18px; height: 60px; padding: 0 20px; font-weight: normal;"
+            style="
+              background-color: transparent;
+              color: white;
+              border: none;
+              margin-left: 20px;
+              font-size: 18px;
+              height: 60px;
+              padding: 0 20px;
+              font-weight: normal;
+            "
             @click="onCallRequest"
           >
             Заказать звонок

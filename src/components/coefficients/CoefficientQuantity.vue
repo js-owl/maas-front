@@ -4,7 +4,7 @@ const quantity = defineModel();
 
 <template>
   <div>
-    <p>Количество</p>
+    <p>Количество, шт</p>
     <el-input-number
       v-model="quantity"
       :min="1"

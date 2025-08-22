@@ -20,6 +20,7 @@ const finishes = [
       placeholder="Выбрать"
       size="large"
       style="display: block"
+      disabled
     >
       <el-option
         v-for="item in finishes"
