@@ -1,47 +1,32 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useRegStore } from "../../stores/reg.store";
 import type { FormInstance, FormRules } from "element-plus";
+import { ElMessage } from "element-plus";
 
-let dialogFormVisible = defineModel<boolean>();
+const dialogFormVisible = defineModel<boolean>();
 
 interface FormData {
   firstName: string;
   lastName: string;
-  email: string;
   phone: string;
   service: string;
   company: string;
+  message: string;
   agreement: boolean;
 }
 
 const formRef = ref<FormInstance>();
 const form = ref<FormData>({
-  firstName: "aaa",
-  lastName: "bbb",
-  email: "a@a.ru",
-  phone: "1-111-111-11-11",
+  firstName: "",
+  lastName: "",
+  phone: "",
   service: "",
   company: "",
+  message: "",
   agreement: false,
 });
 
-const regStore = useRegStore();
-
-const validateEmail = (
-  _rule: any,
-  value: string,
-  callback: (error?: Error) => void
-) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!value) {
-    callback(new Error("Пожалуйста, введите email"));
-  } else if (!emailRegex.test(value)) {
-    callback(new Error("Пожалуйста, введите корректный email"));
-  } else {
-    callback();
-  }
-};
+const loading = ref(false);
 
 const validatePhone = (
   _rule: any,
@@ -87,26 +72,70 @@ const rules = ref<FormRules<FormData>>({
       trigger: "blur",
     },
   ],
-  email: [{ validator: validateEmail, trigger: "blur" }],
   phone: [{ validator: validatePhone, trigger: "blur" }],
   agreement: [{ validator: validateAgreement, trigger: "change" }],
 });
+
+const closeDialog = () => {
+  dialogFormVisible.value = false;
+  // Reset form when closing
+  form.value = {
+    firstName: "",
+    lastName: "",
+    phone: "",
+    service: "",
+    company: "",
+    message: "",
+    agreement: false,
+  };
+  // Clear validation errors
+  if (formRef.value) {
+    formRef.value.clearValidate();
+  }
+};
 
 const submitForm = async () => {
   if (!formRef.value) return;
 
   try {
     await formRef.value.validate();
-    console.log("Form submitted:", form.value);
-    await regStore.register(form);
+    loading.value = true;
+    
+    console.log("Call request submitted:", form.value);
+    
+    // Here you would typically send the data to your backend
+    // For now, we'll just show a success message
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+    
+    ElMessage({
+      type: "success",
+      message: "Заявка на звонок отправлена! Мы свяжемся с вами в ближайшее время.",
+    });
+    
+    // Close dialog and reset form
+    closeDialog();
+    
   } catch (error) {
     console.error("Form validation failed:", error);
+    ElMessage({
+      type: "error",
+      message: "Ошибка при отправке заявки. Попробуйте еще раз.",
+    });
+  } finally {
+    loading.value = false;
   }
 };
 </script>
 
 <template>
-  <el-dialog v-model="dialogFormVisible" title="Регистрация" width="500">
+  <el-dialog 
+    v-model="dialogFormVisible" 
+    title="Заказать звонок" 
+    width="500"
+    :close-on-click-modal="false"
+    :close-on-press-escape="true"
+    @close="closeDialog"
+  >
     <el-form
       :model="form"
       :rules="rules"
@@ -123,12 +152,8 @@ const submitForm = async () => {
         <el-input v-model="form.lastName" placeholder="Введите фамилию" />
       </el-form-item>
 
-      <el-form-item label="E-mail*" prop="email">
-        <el-input v-model="form.email" placeholder="Введите почту" />
-      </el-form-item>
-
-      <el-form-item label="Моб. телефон*" prop="phone">
-        <el-input v-model="form.phone" placeholder="Номер телефона" />
+      <el-form-item label="Телефон*" prop="phone">
+        <el-input v-model="form.phone" placeholder="+7 (___) ___-__-__" />
       </el-form-item>
 
       <el-form-item label="Какая услуга вас интересует?" prop="service">
@@ -137,7 +162,11 @@ const submitForm = async () => {
           placeholder="Выберите услугу"
           style="width: 100%"
         >
-          <el-option label="Расчет" value="price" />
+          <el-option label="Токарные работы" value="machining" />
+          <el-option label="Фрезерные работы" value="milling" />
+          <el-option label="Производство из композитных материалов" value="plastic" />
+          <el-option label="Лакокрасочные покрытия" value="paint" />
+          <el-option label="Другое" value="other" />
         </el-select>
       </el-form-item>
 
@@ -145,6 +174,15 @@ const submitForm = async () => {
         <el-input
           v-model="form.company"
           placeholder="Введите название компании"
+        />
+      </el-form-item>
+
+      <el-form-item label="Дополнительная информация" prop="message">
+        <el-input
+          v-model="form.message"
+          type="textarea"
+          :rows="3"
+          placeholder="Опишите ваш запрос или оставьте комментарий"
         />
       </el-form-item>
 
@@ -159,9 +197,10 @@ const submitForm = async () => {
           type="primary"
           native-type="submit"
           style="width: 100%"
+          :loading="loading"
           :disabled="!form.agreement"
         >
-          Регистрация
+          {{ loading ? 'Отправка...' : 'Заказать звонок' }}
         </el-button>
       </el-form-item>
     </el-form>

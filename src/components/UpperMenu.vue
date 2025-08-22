@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import DialogLogin from "./dialog/DialogLogin.vue";
+import DialogCall from "./dialog/DialogCall.vue";
 import { useAuthStore } from "../stores/auth.store";
 import { useRouter } from "vue-router";
 
@@ -10,6 +11,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
 };
 
 const isLoginVisible = ref(false);
+const isCallVisible = ref(false);
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -17,6 +19,10 @@ const router = useRouter();
 function onLogout() {
   authStore.clearToken();
   router.push({ name: "home" });
+}
+
+function onCallRequest() {
+  isCallVisible.value = true;
 }
 </script>
 
@@ -88,7 +94,6 @@ function onLogout() {
               </el-sub-menu>
             </el-sub-menu>
             <el-menu-item index="/#about"> О нас </el-menu-item>
-            <el-menu-item index="4">Заказать звонок</el-menu-item>
 
             <el-sub-menu index="5" v-show="authStore.getToken">
               <template #title>Заказы</template>
@@ -100,6 +105,16 @@ function onLogout() {
               </el-menu-item>
             </el-sub-menu>
           </el-menu>
+          
+          <!-- Call button outside of menu -->
+          <el-button
+            type="primary"
+            plain
+            style="background-color: transparent; color: white; border: none; margin-left: 20px; font-size: 18px; height: 60px; padding: 0 20px; font-weight: normal;"
+            @click="onCallRequest"
+          >
+            Заказать звонок
+          </el-button>
         </div>
         <div
           v-if="!authStore.getToken"
@@ -131,6 +146,7 @@ function onLogout() {
       </el-header>
     </el-col>
     <DialogLogin v-model="isLoginVisible" />
+    <DialogCall v-model="isCallVisible" />
   </el-row>
 </template>
 
