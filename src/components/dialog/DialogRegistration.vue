@@ -6,24 +6,16 @@ import type { FormInstance, FormRules } from "element-plus";
 let dialogFormVisible = defineModel<boolean>();
 
 interface FormData {
-  firstName: string;
-  lastName: string;
   email: string;
-  phone: string;
-  service: string;
-  company: string;
-  agreement: boolean;
+  password: string;
+  confirmPassword: string;
 }
 
 const formRef = ref<FormInstance>();
 const form = ref<FormData>({
-  firstName: "aaa",
-  lastName: "bbb",
-  email: "a@a.ru",
-  phone: "1-111-111-11-11",
-  service: "",
-  company: "",
-  agreement: false,
+  email: "",
+  password: "",
+  confirmPassword: "",
 });
 
 const regStore = useRegStore();
@@ -43,53 +35,38 @@ const validateEmail = (
   }
 };
 
-const validatePhone = (
+const validatePassword = (
   _rule: any,
   value: string,
   callback: (error?: Error) => void
 ) => {
-  const phoneRegex = /^[\d\s()+.-]{10,}$/;
   if (!value) {
-    callback(new Error("Пожалуйста, введите номер телефона"));
-  } else if (!phoneRegex.test(value)) {
-    callback(new Error("Пожалуйста, введите корректный номер телефона"));
+    callback(new Error("Пожалуйста, введите пароль"));
+  } else if (value.length < 6) {
+    callback(new Error("Пароль должен содержать минимум 6 символов"));
   } else {
     callback();
   }
 };
 
-const validateAgreement = (
+const validateConfirmPassword = (
   _rule: any,
-  value: boolean,
+  value: string,
   callback: (error?: Error) => void
 ) => {
   if (!value) {
-    callback(new Error("Необходимо согласиться с условиями"));
+    callback(new Error("Пожалуйста, подтвердите пароль"));
+  } else if (value !== form.value.password) {
+    callback(new Error("Пароли не совпадают"));
   } else {
     callback();
   }
 };
 
 const rules = ref<FormRules<FormData>>({
-  firstName: [
-    { required: true, message: "Пожалуйста, введите имя", trigger: "blur" },
-    {
-      min: 2,
-      message: "Имя должно содержать минимум 2 символа",
-      trigger: "blur",
-    },
-  ],
-  lastName: [
-    { required: true, message: "Пожалуйста, введите фамилию", trigger: "blur" },
-    {
-      min: 2,
-      message: "Фамилия должна содержать минимум 2 символа",
-      trigger: "blur",
-    },
-  ],
   email: [{ validator: validateEmail, trigger: "blur" }],
-  phone: [{ validator: validatePhone, trigger: "blur" }],
-  agreement: [{ validator: validateAgreement, trigger: "change" }],
+  password: [{ validator: validatePassword, trigger: "blur" }],
+  confirmPassword: [{ validator: validateConfirmPassword, trigger: "blur" }],
 });
 
 const submitForm = async () => {
@@ -115,43 +92,30 @@ const submitForm = async () => {
       label-position="top"
       @submit.prevent="submitForm"
     >
-      <el-form-item label="Имя*" prop="firstName">
-        <el-input v-model="form.firstName" placeholder="Введите имя" />
-      </el-form-item>
-
-      <el-form-item label="Фамилия*" prop="lastName">
-        <el-input v-model="form.lastName" placeholder="Введите фамилию" />
-      </el-form-item>
-
       <el-form-item label="E-mail*" prop="email">
-        <el-input v-model="form.email" placeholder="Введите почту" />
-      </el-form-item>
-
-      <el-form-item label="Моб. телефон*" prop="phone">
-        <el-input v-model="form.phone" placeholder="Номер телефона" />
-      </el-form-item>
-
-      <el-form-item label="Какая услуга вас интересует?" prop="service">
-        <el-select
-          v-model="form.service"
-          placeholder="Выберите услугу"
-          style="width: 100%"
-        >
-          <el-option label="Расчет" value="price" />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="Название компании" prop="company">
-        <el-input
-          v-model="form.company"
-          placeholder="Введите название компании"
+        <el-input 
+          v-model="form.email" 
+          placeholder="Введите email" 
+          type="email"
         />
       </el-form-item>
 
-      <el-form-item prop="agreement">
-        <el-checkbox v-model="form.agreement">
-          Я согласен с «Пользовательскими соглашениями ЦКП»
-        </el-checkbox>
+      <el-form-item label="Пароль*" prop="password">
+        <el-input 
+          v-model="form.password" 
+          placeholder="Введите пароль" 
+          type="password"
+          show-password
+        />
+      </el-form-item>
+
+      <el-form-item label="Подтвердите пароль*" prop="confirmPassword">
+        <el-input 
+          v-model="form.confirmPassword" 
+          placeholder="Подтвердите пароль" 
+          type="password"
+          show-password
+        />
       </el-form-item>
 
       <el-form-item>
@@ -159,7 +123,6 @@ const submitForm = async () => {
           type="primary"
           native-type="submit"
           style="width: 100%"
-          :disabled="!form.agreement"
         >
           Регистрация
         </el-button>
