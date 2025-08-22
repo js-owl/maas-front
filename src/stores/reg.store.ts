@@ -15,7 +15,7 @@ export const useRegStore = defineStore("reg", () => {
     headers.append("Content-Type", "application/json");
 
     const payload = {
-      username: formData.value.email,
+      username: formData.value.username,
       password: formData.value.password,
     };
 
@@ -26,13 +26,13 @@ export const useRegStore = defineStore("reg", () => {
       headers: headers,
       body: JSON.stringify(payload),
     });
-    
+
     if (!res.ok) {
       const errorData = await res.json();
       console.error("Registration failed:", errorData);
       throw new Error(`Registration failed: ${res.status} ${res.statusText}`);
     }
-    
+
     const data = (await res.json()) as RegResponse;
     console.log("reg.store", { data });
     token.value = data.access_token;

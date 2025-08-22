@@ -7,14 +7,14 @@ import { ElMessage } from "element-plus";
 const dialogFormVisible = defineModel<boolean>();
 
 interface FormData {
-  email: string;
+  username: string;
   password: string;
   confirmPassword: string;
 }
 
 const formRef = ref<FormInstance>();
 const form = ref<FormData>({
-  email: "",
+  username: "",
   password: "",
   confirmPassword: "",
 });
@@ -66,7 +66,7 @@ const validateConfirmPassword = (
 };
 
 const rules = ref<FormRules<FormData>>({
-  email: [{ validator: validateEmail, trigger: "blur" }],
+  username: [{ validator: validateEmail, trigger: "blur" }],
   password: [{ validator: validatePassword, trigger: "blur" }],
   confirmPassword: [{ validator: validateConfirmPassword, trigger: "blur" }],
 });
@@ -75,7 +75,7 @@ const closeDialog = () => {
   dialogFormVisible.value = false;
   // Reset form when closing
   form.value = {
-    email: "",
+    username: "",
     password: "",
     confirmPassword: "",
   };
@@ -91,23 +91,23 @@ const submitForm = async () => {
   try {
     await formRef.value.validate();
     loading.value = true;
-    
+
     console.log("Form submitted:", form.value);
     await regStore.register(form);
-    
+
     ElMessage({
       type: "success",
       message: "Регистрация успешно завершена!",
     });
-    
+
     // Close dialog and reset form
     closeDialog();
-    
   } catch (error) {
     console.error("Form validation failed:", error);
     ElMessage({
       type: "error",
-      message: error instanceof Error ? error.message : "Ошибка при регистрации",
+      message:
+        error instanceof Error ? error.message : "Ошибка при регистрации",
     });
   } finally {
     loading.value = false;
@@ -116,9 +116,9 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <el-dialog 
-    v-model="dialogFormVisible" 
-    title="Регистрация" 
+  <el-dialog
+    v-model="dialogFormVisible"
+    title="Регистрация"
     width="500"
     :close-on-click-modal="false"
     :close-on-press-escape="true"
@@ -132,27 +132,27 @@ const submitForm = async () => {
       label-position="top"
       @submit.prevent="submitForm"
     >
-      <el-form-item label="E-mail*" prop="email">
-        <el-input 
-          v-model="form.email" 
-          placeholder="Введите email" 
+      <el-form-item label="E-mail*" prop="username">
+        <el-input
+          v-model="form.username"
+          placeholder="Введите email"
           type="email"
         />
       </el-form-item>
 
       <el-form-item label="Пароль*" prop="password">
-        <el-input 
-          v-model="form.password" 
-          placeholder="Введите пароль" 
+        <el-input
+          v-model="form.password"
+          placeholder="Введите пароль"
           type="password"
           show-password
         />
       </el-form-item>
 
       <el-form-item label="Подтвердите пароль*" prop="confirmPassword">
-        <el-input 
-          v-model="form.confirmPassword" 
-          placeholder="Подтвердите пароль" 
+        <el-input
+          v-model="form.confirmPassword"
+          placeholder="Подтвердите пароль"
           type="password"
           show-password
         />
@@ -165,7 +165,7 @@ const submitForm = async () => {
           style="width: 100%"
           :loading="loading"
         >
-          {{ loading ? 'Регистрация...' : 'Регистрация' }}
+          {{ loading ? "Регистрация..." : "Регистрация" }}
         </el-button>
       </el-form-item>
     </el-form>
