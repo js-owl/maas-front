@@ -4,7 +4,7 @@ import { useRegStore } from "../../stores/reg.store";
 import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
 
-let dialogFormVisible = defineModel<boolean>();
+const dialogFormVisible = defineModel<boolean>();
 
 interface FormData {
   email: string;
@@ -71,6 +71,20 @@ const rules = ref<FormRules<FormData>>({
   confirmPassword: [{ validator: validateConfirmPassword, trigger: "blur" }],
 });
 
+const closeDialog = () => {
+  dialogFormVisible.value = false;
+  // Reset form when closing
+  form.value = {
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
+  // Clear validation errors
+  if (formRef.value) {
+    formRef.value.clearValidate();
+  }
+};
+
 const submitForm = async () => {
   if (!formRef.value) return;
 
@@ -87,12 +101,7 @@ const submitForm = async () => {
     });
     
     // Close dialog and reset form
-    dialogFormVisible = false;
-    form.value = {
-      email: "",
-      password: "",
-      confirmPassword: "",
-    };
+    closeDialog();
     
   } catch (error) {
     console.error("Form validation failed:", error);
@@ -107,7 +116,14 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <el-dialog v-model="dialogFormVisible" title="Регистрация" width="500">
+  <el-dialog 
+    v-model="dialogFormVisible" 
+    title="Регистрация" 
+    width="500"
+    :close-on-click-modal="false"
+    :close-on-press-escape="true"
+    @close="closeDialog"
+  >
     <el-form
       :model="form"
       :rules="rules"
