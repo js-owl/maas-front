@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref, watch } from "vue";
-import { fetchWithoutAuth, fetchWithAuth } from "../api";
+import { req_urlencoded, req_urlencoded_auth } from "../api";
 
 import Length from "../components/coefficients/Length.vue";
 import Width from "../components/coefficients/Width.vue";
@@ -78,7 +78,7 @@ type sendType = typeof payload;
 
 async function sendData(payload: sendType) {
   try {
-    const res = await fetchWithoutAuth("/anonymous-calc", "POST", payload);
+    const res = await req_urlencoded("/anonymous-calc", "POST", payload);
     const data = (await res.json()) as FormResponse;
     result.value = data;
     console.log({ res });
@@ -89,7 +89,7 @@ async function sendData(payload: sendType) {
 
 async function submitOrder(payload: sendType) {
   try {
-    const res = await fetchWithAuth("/orders", "POST", payload);
+    const res = await req_urlencoded_auth("/orders", "POST", payload);
     const data = (await res.json()) as FormResponse;
     result.value = data;
     console.log({ res });

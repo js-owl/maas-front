@@ -32,12 +32,6 @@ const routes = [
   // @ts-ignore
   { path: "/cad", component: () => import("./pages/CadPage.vue") },
   {
-    path: "/order-create",
-    // @ts-ignore
-    component: () => import("./pages/OrderCreatePage.vue"),
-    name: "order-create",
-  },
-  {
     path: "/order-list",
     // @ts-ignore
     component: () => import("./pages/OrderListPage.vue"),

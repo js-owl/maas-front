@@ -12,18 +12,11 @@ let drawing_id = ref(1);
 <template>
   <!-- Section Upload-->
   <el-row
-    :gutter="20"
-    style="background-color: #283d5b; padding: 50px 0 20px 0; min-height: 500px"
+    :gutter="0"
+    style="min-height: 500px; background-color: #283d5b; padding: 40px 0 0 20px"
   >
     <el-col :offset="2" :span="7">
-      <div
-        style="
-          text-align: left;
-          font-size: 60px;
-          color: white;
-          padding-bottom: 40px;
-        "
-      >
+      <div style="text-align: left; font-size: 60px; color: white">
         ПРОИЗВОДСТВО ПО ТРЕБОВАНИЮ
       </div>
       <p style="font-size: 30px; color: white">
@@ -31,7 +24,7 @@ let drawing_id = ref(1);
         материалов и отделки.
       </p>
     </el-col>
-    <el-col :offset="4" :span="9" style="text-align: center">
+    <el-col :offset="3" :span="9" style="text-align: center">
       <el-row :gutter="20">
         <el-col :span="12">
           <UploadModel v-model="file_id" color="#283d5b" />
@@ -63,7 +56,7 @@ let drawing_id = ref(1);
 
   <!-- Section Milestones -->
   <el-row
-    :gutter="20"
+    :gutter="0"
     style="background-color: #283d5b; padding-top: 30px; min-height: 300px"
   >
     <el-col :offset="2" :span="20">
@@ -94,6 +87,7 @@ let drawing_id = ref(1);
   >
     <el-col :offset="2" :span="9">
       <div
+        id="about"
         style="
           text-align: left;
           font-size: 60px;

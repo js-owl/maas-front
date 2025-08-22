@@ -21,115 +21,117 @@ function onLogout() {
 </script>
 
 <template>
-  <el-header
-    style="
-      display: flex;
-      justify-content: space-between;
-      background-color: #be2a44;
-      height: 80px;
-    "
-  >
-    <div style="display: flex; align-items: center">
-      <el-menu
-        :default-active="activeIndex"
-        class="el-menu-demo"
-        mode="horizontal"
-        :ellipsis="false"
-        background-color="#be2a44"
-        text-color="#fff"
-        active-text-color="black"
-        :router="true"
-        @select="handleSelect"
+  <el-row :gutter="0" style="background-color: #be2a44">
+    <el-col :offset="2" :span="21">
+      <el-header
+        style="display: flex; justify-content: space-between; height: 80px"
       >
-        <el-menu-item index="/" :route="{ path: '/' }" class="first-element">
-          ЦКП
-        </el-menu-item>
-        <el-sub-menu index="1">
-          <template #title>Решения</template>
-          <el-sub-menu index="1-1">
-            <template #title>Механообрабатывающее производство</template>
-            <el-menu-item index="1-1-1" disabled>
-              Сверлильные работы
-            </el-menu-item>
-            <el-menu-item index="1-1-2" disabled>Шлифовка</el-menu-item>
-            <el-menu-item index="/milling" :route="{ path: '/milling' }">
-              Фрезерные работы
-            </el-menu-item>
-            <el-menu-item index="/machining" :route="{ path: '/machining' }">
-              Токарные работы
-            </el-menu-item>
-            <el-menu-item index="1-1-5" disabled>
-              Раскрой металла / заготовительный участок
-            </el-menu-item>
-          </el-sub-menu>
-          <el-menu-item index="/plastic" :route="{ path: '/plastic' }">
-            Производство из композитных материалов
-          </el-menu-item>
-          <el-menu-item index="/paint" :route="{ path: '/paint' }">
-            Нанесение лакокрасочных покрытий
-          </el-menu-item>
-          <el-sub-menu index="1-2" disabled>
-            <template #title>Сварочное производство</template>
-            <el-menu-item index="1-2-1">Аргонодуговая сварка</el-menu-item>
-            <el-menu-item index="1-2-2">Сварка в углекислом газе</el-menu-item>
-            <el-menu-item index="1-2-3">Контактная сварка</el-menu-item>
-          </el-sub-menu>
-          <el-sub-menu index="1-5" disabled>
-            <template #title>Термическое производство</template>
-            <el-menu-item index="1-5-1">
-              Термическая обработка металлов
-            </el-menu-item>
-            <el-menu-item index="1-5-2" disabled>
-              Сушильные камеры ПКМ
-            </el-menu-item>
-          </el-sub-menu>
-        </el-sub-menu>
-        <el-menu-item index="3">О нас</el-menu-item>
-        <el-menu-item index="4">Заказать звонок</el-menu-item>
-
-        <el-sub-menu index="5" v-show="authStore.getToken">
-          <template #title>Заказы</template>
-          <el-menu-item
-            index="/order-create"
-            :route="{ path: '/order-create' }"
+        <div style="display: flex; align-items: center">
+          <el-menu
+            :default-active="activeIndex"
+            class="el-menu-demo"
+            mode="horizontal"
+            :ellipsis="false"
+            background-color="#be2a44"
+            text-color="#fff"
+            active-text-color="black"
+            :router="true"
+            @select="handleSelect"
           >
-            Создать заказ
-          </el-menu-item>
-          <el-menu-item index="/order-list" :route="{ path: '/order-list' }">
-            Мои заказы
-          </el-menu-item>
-        </el-sub-menu>
-      </el-menu>
-    </div>
-    <div
-      v-if="!authStore.getToken"
-      style="display: flex; align-items: center; margin-right: 100px"
-    >
-      <el-button
-        type="primary"
-        plain
-        style="background-color: #be2a44; color: white"
-        @click="isLoginVisible = true"
-      >
-        Войти/ Регистрация
-      </el-button>
-    </div>
+            <el-menu-item
+              index="/"
+              :route="{ path: '/' }"
+              class="first-element"
+            >
+              ЦКП
+            </el-menu-item>
+            <el-sub-menu index="1">
+              <template #title>Решения</template>
+              <el-sub-menu index="1-1">
+                <template #title>Механообрабатывающее производство</template>
+                <el-menu-item index="1-1-1" disabled>
+                  Сверлильные работы
+                </el-menu-item>
+                <el-menu-item index="1-1-2" disabled>Шлифовка</el-menu-item>
+                <el-menu-item index="/milling" :route="{ path: '/milling' }">
+                  Фрезерные работы
+                </el-menu-item>
+                <el-menu-item
+                  index="/machining"
+                  :route="{ path: '/machining' }"
+                >
+                  Токарные работы
+                </el-menu-item>
+                <el-menu-item index="1-1-5" disabled>
+                  Раскрой металла / заготовительный участок
+                </el-menu-item>
+              </el-sub-menu>
+              <el-menu-item index="/plastic" :route="{ path: '/plastic' }">
+                Производство из композитных материалов
+              </el-menu-item>
+              <el-menu-item index="/paint" :route="{ path: '/paint' }">
+                Нанесение лакокрасочных покрытий
+              </el-menu-item>
+              <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
+                Сборочная линия
+              </el-menu-item>
+              <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
+                Лабораторные исследования
+              </el-menu-item>
+              <el-sub-menu index="1-2" disabled>
+                <template #title>Сварочное производство</template>
+                <el-menu-item index="1-2-1">Аргонодуговая сварка</el-menu-item>
+                <el-menu-item index="1-2-2"
+                  >Сварка в углекислом газе</el-menu-item
+                >
+                <el-menu-item index="1-2-3">Контактная сварка</el-menu-item>
+              </el-sub-menu>
+            </el-sub-menu>
+            <el-menu-item index="/#about"> О нас </el-menu-item>
+            <el-menu-item index="4">Заказать звонок</el-menu-item>
 
-    <div v-else style="display: flex; align-items: center; margin-right: 100px">
-      <el-icon :size="30" style="margin-right: 10px; color: white">
-        <User />
-      </el-icon>
-      <el-button
-        type="primary"
-        plain
-        style="background-color: #be2a44; color: white"
-        @click="onLogout"
-      >
-        Выйти
-      </el-button>
-    </div>
-  </el-header>
-  <DialogLogin v-model="isLoginVisible" />
+            <el-sub-menu index="5" v-show="authStore.getToken">
+              <template #title>Заказы</template>
+              <el-menu-item
+                index="/order-list"
+                :route="{ path: '/order-list' }"
+              >
+                Мои заказы
+              </el-menu-item>
+            </el-sub-menu>
+          </el-menu>
+        </div>
+        <div
+          v-if="!authStore.getToken"
+          style="display: flex; align-items: center"
+        >
+          <el-button
+            type="primary"
+            plain
+            style="background-color: #be2a44; color: white"
+            @click="isLoginVisible = true"
+          >
+            Войти/ Регистрация
+          </el-button>
+        </div>
+
+        <div v-else style="display: flex; align-items: center">
+          <el-icon :size="30" style="margin-right: 10px; color: white">
+            <User />
+          </el-icon>
+          <el-button
+            type="primary"
+            plain
+            style="background-color: #be2a44; color: white"
+            @click="onLogout"
+          >
+            Выйти
+          </el-button>
+        </div>
+      </el-header>
+    </el-col>
+    <DialogLogin v-model="isLoginVisible" />
+  </el-row>
 </template>
 
 <style scoped>
@@ -139,16 +141,19 @@ function onLogout() {
 .el-menu-item {
   font-size: 18px;
 }
+:deep(.el-header) {
+  padding-left: 0px;
+}
 :deep(.el-sub-menu__title) {
   font-size: 18px;
-  padding: 5px;
+  /* padding: 5px; */
 }
 :deep(.el-sub-menu) {
   font-size: 18px;
-  padding: 5px;
+  /* padding: 5px; */
 }
 .first-element {
-  margin: 0 40px 0 60px;
+  margin: 0 40px 0 0px;
   font-size: 30px;
   color: white;
   text-decoration: none;

@@ -3,8 +3,8 @@ import { useAuthStore } from "./stores/auth.store";
 
 // API Base URLs
 export const API_BASE_CAD = "http://mdgkd-vlabal.int.kronshtadt.ru:7000";
-// export const API_BASE = "http://mdgkd-vlabal.int.kronshtadt.ru:8000";
-export const API_BASE = "http://localhost:8000";
+export const API_BASE = "http://mdgkd-vlabal.int.kronshtadt.ru:8000";
+// export const API_BASE = "http://localhost:8000";
 
 // Helper function to convert object to URL-encoded string
 const toUrlEncoded = (o: any): string => {
@@ -13,7 +13,7 @@ const toUrlEncoded = (o: any): string => {
     .join("&");
 };
 
-export async function fetchWithoutAuth(
+export async function req_urlencoded(
   endpoint: string,
   method: string = "POST",
   data?: any
@@ -22,7 +22,7 @@ export async function fetchWithoutAuth(
   headers.append("Content-Type", "application/x-www-form-urlencoded");
 
   const body = data ? toUrlEncoded(data) : undefined;
-  console.log("fetchWithoutAuth", { body });
+  console.log("req_urlencoded", { body });
 
   const res = await fetch(`${API_BASE}${endpoint}`, {
     method,
@@ -30,7 +30,7 @@ export async function fetchWithoutAuth(
     body,
   });
   if (res.status >= 500 && res.status < 600) {
-    console.log("fetchWithoutAuth", res.status);
+    console.log("req_urlencoded", res.status);
     ElMessage.error("Ошибка сервера 500");
     const err: any = Error("server error 500");
     throw err;
@@ -38,7 +38,7 @@ export async function fetchWithoutAuth(
   return res;
 }
 
-export async function fetchWithAuth(
+export async function req_urlencoded_auth(
   endpoint: string,
   method: string = "POST",
   data?: any
@@ -52,7 +52,7 @@ export async function fetchWithAuth(
   }
 
   const body = data ? toUrlEncoded(data) : undefined;
-  console.log("fetchWithAuth", { body });
+  console.log("req_urlencoded_auth", { body });
 
   const res = await fetch(`${API_BASE}${endpoint}`, {
     method,
@@ -60,7 +60,6 @@ export async function fetchWithAuth(
     body,
   });
   if (res.status >= 500 && res.status < 600) {
-    console.log("fetchWithoutAuth", res.status);
     ElMessage.error("Ошибка сервера 500");
     const err: any = Error("server error 500");
     throw err;
@@ -81,7 +80,7 @@ export async function req_json_auth(
     headers.append("Authorization", `Bearer ${authStore.getToken}`);
   }
 
-  const body = data ? toUrlEncoded(data) : undefined;
+  const body = data ? JSON.stringify(data) : undefined;
 
   const res = await fetch(`${API_BASE}${endpoint}`, {
     method,
@@ -90,7 +89,7 @@ export async function req_json_auth(
   });
   console.log("req_json_auth", { res });
   if (res.status >= 500 && res.status < 600) {
-    console.log("fetchWithoutAuth", res.status);
+    console.log("req_urlencoded", res.status);
     ElMessage.error("Ошибка сервера 500");
     const err: any = Error("server error 500");
     throw err;

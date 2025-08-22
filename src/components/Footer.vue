@@ -12,7 +12,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
 
 <template>
   <el-row
-    :gutter="20"
+    :gutter="0"
     style="
       display: flex;
       align-items: center;
@@ -31,16 +31,9 @@ const handleSelect = (key: string, keyPath: string[]) => {
         active-text-color="black"
         :router="true"
       >
-        <el-menu-item index="6" style="font-size: 24px">
-          Связаться с нами
-        </el-menu-item>
-        <el-menu-item index="7" style="font-size: 24px">FAQ</el-menu-item>
-        <el-menu-item
-          index="/cad"
-          :route="{ path: '/cad' }"
-          style="font-size: 24px"
-        >
-          Центр поддержки
+        <el-menu-item index="6" class="first-element"> ЦКП </el-menu-item>
+        <el-menu-item index="7" style="font-size: 24px">
+          Калькулятор стоимости изделия
         </el-menu-item>
       </el-menu>
     </el-col>
@@ -64,5 +57,12 @@ const handleSelect = (key: string, keyPath: string[]) => {
 .el-menu.el-menu--horizontal.is-active {
   color: white !important;
   border-bottom: none !important;
+}
+.first-element {
+  margin: 0 40px 0 0px;
+  font-size: 30px;
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
 }
 </style>

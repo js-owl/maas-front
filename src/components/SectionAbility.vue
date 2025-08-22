@@ -63,7 +63,7 @@
         <div class="item">
           <el-image src="homePage/ability_thermo.webp" fit="cover" />
           <div class="overlay">
-            <p class="item-text">Термическая обработка материалов</p>
+            <p class="item-text">Лабораторные исследования</p>
           </div>
         </div>
       </el-col>
@@ -92,18 +92,17 @@
   bottom: 3px;
   left: 0px;
   right: 0px;
-  background-color: rgba(0, 0, 0, 0.6);
-  height: 85px;
-
+  background-color: rgba(190, 42, 68, 0.8);
+  height: 90px;
   padding: 0 12px 0px 12px;
 }
 .item-text {
   margin-top: 8px;
-  font-size: 24px;
+  font-size: 28px;
   text-decoration: none;
   color: white;
 }
 .item-text:hover {
-  font-size: 25px;
+  color: #aaa;
 }
 </style>

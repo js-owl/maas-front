@@ -58,7 +58,7 @@ const deleteItem = async (id: number): Promise<ApiResponse> => {
     headers.append("Authorization", `Bearer ${authStore.getToken}`);
   }
 
-  const response = await fetch(`${API_BASE}/orders/${id}`, {
+  const response = await fetch(`${API_BASE}/admin/orders/${id}`, {
     method: "DELETE",
     headers,
   });
@@ -121,7 +121,7 @@ const handleEdit = (row: IOrder): void => {
 <template>
   <el-row
     :gutter="20"
-    style="background-color: #fff; padding-top: 30px; min-height: 100px"
+    style="background-color: #fff; padding: 30px 0 0px 20px; min-height: 100px"
   >
     <el-col :offset="2" :span="20">
       <h1>Мои заказы</h1>
@@ -129,12 +129,13 @@ const handleEdit = (row: IOrder): void => {
   </el-row>
   <el-row
     :gutter="20"
-    style="background-color: #fff; padding-top: 30px; min-height: 500px"
+    style="background-color: #fff; padding-top: 0px; min-height: 500px"
   >
     <el-col :offset="2" :span="20">
       <el-table
         stripe
         :data="orders"
+        :default-sort="{ prop: 'id', order: 'descending' }"
         style="width: 100%"
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
       >
