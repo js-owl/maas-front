@@ -57,6 +57,30 @@ const handleApiError = (response: Response, endpoint: string) => {
   console.error(`API Error ${status} for endpoint: ${endpoint}`);
 };
 
+// Network error handling function
+const handleNetworkError = (error: any, endpoint: string) => {
+  console.error("Network error:", error);
+  
+  if (error.name === 'TypeError' && error.message.includes('fetch')) {
+    // Failed to fetch error
+    ElMessage.error("Ошибка подключения к серверу. Проверьте интернет-соединение.");
+  } else if (error.name === 'AbortError') {
+    // Request timeout or aborted
+    ElMessage.error("Запрос был отменен или превышено время ожидания.");
+  } else if (error.message && error.message.includes('NetworkError')) {
+    // Network error
+    ElMessage.error("Сетевая ошибка. Проверьте подключение к интернету.");
+  } else if (error.message && error.message.includes('CORS')) {
+    // CORS error
+    ElMessage.error("Ошибка CORS. Сервер недоступен.");
+  } else {
+    // Generic network error
+    ElMessage.error("Ошибка сети. Попробуйте позже.");
+  }
+  
+  console.error(`Network Error for endpoint: ${endpoint}`, error);
+};
+
 // Retry function for server errors
 const retryRequest = async (
   requestFn: () => Promise<Response>,
@@ -67,7 +91,12 @@ const retryRequest = async (
   
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
+      // Add timeout to the request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
       const response = await requestFn();
+      clearTimeout(timeoutId);
       
       // If it's a server error and we have retries left, wait and retry
       if (response.status >= 500 && response.status < 600 && attempt < maxRetries) {
@@ -80,6 +109,16 @@ const retryRequest = async (
       return response;
     } catch (error) {
       lastError = error as Error;
+      
+      // Handle network errors
+      if (error instanceof Error && error.name === 'TypeError' && error.message.includes('fetch')) {
+        if (attempt < maxRetries) {
+          console.log(`Network error, retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries + 1})`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          delay *= 2; // Exponential backoff
+          continue;
+        }
+      }
       
       if (attempt < maxRetries) {
         console.log(`Request failed, retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries + 1})`);
@@ -120,6 +159,12 @@ export async function req_urlencoded(
     return res;
   } catch (error) {
     console.error("req_urlencoded error:", { error, endpoint });
+    
+    // Handle network errors
+    if (error instanceof Error) {
+      handleNetworkError(error, endpoint);
+    }
+    
     return null;
   }
 }
@@ -164,6 +209,12 @@ export async function req_urlencoded_auth(
     return res;
   } catch (error) {
     console.error("req_urlencoded_auth error:", { error, endpoint });
+    
+    // Handle network errors
+    if (error instanceof Error) {
+      handleNetworkError(error, endpoint);
+    }
+    
     throw error;
   }
 }
@@ -208,6 +259,12 @@ export async function req_json_auth(
     return res;
   } catch (error) {
     console.error("req_json_auth error:", { error, endpoint });
+    
+    // Handle network errors
+    if (error instanceof Error) {
+      handleNetworkError(error, endpoint);
+    }
+    
     return null;
   }
 }
@@ -227,4 +284,24 @@ export async function fetchWithoutAuth(
   data?: any
 ): Promise<Response | null> {
   return req_urlencoded(endpoint, method, data);
+}
+
+// Test function to verify error messages are working
+export function testErrorMessage() {
+  console.log("Testing error message display...");
+  try {
+    ElMessage.error("Тестовое сообщение об ошибке");
+    console.log("ElMessage test successful");
+  } catch (error) {
+    console.error("ElMessage test failed:", error);
+    alert("ElMessage не работает. Проверьте импорт Element Plus.");
+  }
+}
+
+// Test function to simulate network errors
+export function testNetworkError() {
+  console.log("Testing network error handling...");
+  const networkError = new Error("Failed to fetch");
+  networkError.name = 'TypeError';
+  handleNetworkError(networkError, '/test-endpoint');
 }
