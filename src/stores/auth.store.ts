@@ -7,8 +7,6 @@ interface LoginResponse {
   access_token: string;
 }
 
-const profileStore = useProfileStore();
-
 const TOKEN_STORE_KEY = "token-store";
 
 export const useAuthStore = defineStore("auth", () => {
@@ -51,6 +49,8 @@ export const useAuthStore = defineStore("auth", () => {
     });
     const data = (await res.json()) as LoginResponse;
     setToken(data.access_token);
+
+    const profileStore = useProfileStore();
     await profileStore.getProfile();
   }
 
