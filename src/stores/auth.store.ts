@@ -28,6 +28,10 @@ export const useAuthStore = defineStore("auth", () => {
   function clearToken() {
     token.value = undefined;
     localStorage.removeItem(TOKEN_STORE_KEY);
+    
+    // Clear profile when logging out
+    const profileStore = useProfileStore();
+    profileStore.clearProfile();
   }
 
   async function login(formData: any) {
