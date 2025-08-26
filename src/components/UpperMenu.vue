@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import DialogLogin from "./dialog/DialogLogin.vue";
 import DialogCall from "./dialog/DialogCall.vue";
 import { useAuthStore } from "../stores/auth.store";
 import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
 
 const activeIndex = ref("1");
 const handleSelect = (key: string, keyPath: string[]) => {
@@ -15,6 +16,42 @@ const isCallVisible = ref(false);
 
 const authStore = useAuthStore();
 const router = useRouter();
+
+// Function to check if JWT token is expired
+function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp < currentTime;
+  } catch (error) {
+    console.error("Error parsing token:", error);
+    return true; // Consider invalid tokens as expired
+  }
+}
+
+// Function to check token validity and logout if expired
+function checkTokenValidity() {
+  const token = authStore.getToken;
+  if (token && isTokenExpired(token)) {
+    console.log("Token expired, logging out...");
+    ElMessage.warning("Сессия истекла. Войдите в систему снова.");
+    authStore.clearToken();
+    router.push({ name: "home" });
+  }
+}
+
+// Check token on component mount
+onMounted(() => {
+  checkTokenValidity();
+  
+  // Set up periodic token checking (every 5 minutes)
+  const tokenCheckInterval = setInterval(checkTokenValidity, 5 * 60 * 1000);
+  
+  // Clean up interval on component unmount
+  onUnmounted(() => {
+    clearInterval(tokenCheckInterval);
+  });
+});
 
 function onLogout() {
   authStore.clearToken();
