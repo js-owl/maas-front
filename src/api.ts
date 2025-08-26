@@ -14,158 +14,40 @@ const toUrlEncoded = (o: any): string => {
     .join("&");
 };
 
-// Enhanced error handling function
-const handleApiError = (response: Response, endpoint: string) => {
-  const status = response.status;
-  
-  switch (status) {
-    case 400:
-      ElMessage.error("Неверный запрос. Проверьте введенные данные.");
-      break;
-    case 401:
-      ElMessage.error("Необходима авторизация. Войдите в систему.");
-      break;
-    case 403:
-      ElMessage.error("Доступ запрещен. Недостаточно прав.");
-      break;
-    case 404:
-      ElMessage.error("Запрашиваемый ресурс не найден.");
-      break;
-    case 422:
-      ElMessage.error("Ошибка валидации данных. Проверьте введенную информацию.");
-      break;
-    case 500:
-      ElMessage.error("Внутренняя ошибка сервера. Попробуйте позже.");
-      break;
-    case 502:
-      ElMessage.error("Ошибка шлюза. Сервер временно недоступен.");
-      break;
-    case 503:
-      ElMessage.error("Сервис временно недоступен. Попробуйте позже.");
-      break;
-    case 504:
-      ElMessage.error("Превышено время ожидания ответа сервера.");
-      break;
-    default:
-      if (status >= 500) {
-        ElMessage.error(`Ошибка сервера ${status}. Попробуйте позже.`);
-      } else {
-        ElMessage.error(`Ошибка ${status}. Попробуйте еще раз.`);
-      }
-  }
-  
-  console.error(`API Error ${status} for endpoint: ${endpoint}`);
-};
-
-// Network error handling function
-const handleNetworkError = (error: any, endpoint: string) => {
-  console.error("Network error:", error);
-  
-  if (error.name === 'TypeError' && error.message.includes('fetch')) {
-    // Failed to fetch error
-    ElMessage.error("Ошибка подключения к серверу. Проверьте интернет-соединение.");
-  } else if (error.name === 'AbortError') {
-    // Request timeout or aborted
-    ElMessage.error("Запрос был отменен или превышено время ожидания.");
-  } else if (error.message && error.message.includes('NetworkError')) {
-    // Network error
-    ElMessage.error("Сетевая ошибка. Проверьте подключение к интернету.");
-  } else if (error.message && error.message.includes('CORS')) {
-    // CORS error
-    ElMessage.error("Ошибка CORS. Сервер недоступен.");
-  } else {
-    // Generic network error
-    ElMessage.error("Ошибка сети. Попробуйте позже.");
-  }
-  
-  console.error(`Network Error for endpoint: ${endpoint}`, error);
-};
-
-// Retry function for server errors
-const retryRequest = async (
-  requestFn: () => Promise<Response>,
-  maxRetries: number = 2,
-  delay: number = 1000
-): Promise<Response> => {
-  let lastError: Error;
-  
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      // Add timeout to the request
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-      
-      const response = await requestFn();
-      clearTimeout(timeoutId);
-      
-      // If it's a server error and we have retries left, wait and retry
-      if (response.status >= 500 && response.status < 600 && attempt < maxRetries) {
-        console.log(`Server error ${response.status}, retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries + 1})`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        delay *= 2; // Exponential backoff
-        continue;
-      }
-      
-      return response;
-    } catch (error) {
-      lastError = error as Error;
-      
-      // Handle network errors
-      if (error instanceof Error && error.name === 'TypeError' && error.message.includes('fetch')) {
-        if (attempt < maxRetries) {
-          console.log(`Network error, retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries + 1})`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-          delay *= 2; // Exponential backoff
-          continue;
-        }
-      }
-      
-      if (attempt < maxRetries) {
-        console.log(`Request failed, retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries + 1})`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        delay *= 2; // Exponential backoff
-      }
-    }
-  }
-  
-  throw lastError!;
-};
-
 export async function req_urlencoded(
   endpoint: string,
   method: string = "POST",
   data?: any
-): Promise<Response | null> {
+): Promise<Response | undefined> {
   try {
     const headers = new Headers();
     headers.append("Content-Type", "application/x-www-form-urlencoded");
 
     const body = data ? toUrlEncoded(data) : undefined;
 
-    const requestFn = () => fetch(`${API_BASE}${endpoint}`, {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
       method,
       headers,
       body,
     });
-
-    const res = await retryRequest(requestFn);
     console.log("req_urlencoded", res.status);
 
-    if (!res.ok) {
-      handleApiError(res, endpoint);
-      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    if (res.status >= 500 && res.status < 600) {
+      ElMessage.error("Ошибка сервера 500");
+      throw new Error("Server error");
     }
-    
+    if (!res.ok) {
+      throw new Error("http error");
+    }
     return res;
   } catch (error) {
-    console.error("req_urlencoded error:", { error, endpoint });
-    
-    // Handle network errors
-    if (error instanceof Error) {
-      handleNetworkError(error, endpoint);
+    if (
+      error instanceof Error &&
+      error.name === "TypeError" &&
+      error.message.includes("fetch")
+    ) {
+      ElMessage.error(`Ошибка сервера`);
     }
-    
-    return null;
   }
 }
 
@@ -173,7 +55,7 @@ export async function req_urlencoded_auth(
   endpoint: string,
   method: string = "POST",
   data?: any
-): Promise<Response> {
+): Promise<Response | undefined> {
   try {
     const authStore = useAuthStore();
     const headers = new Headers();
@@ -185,37 +67,34 @@ export async function req_urlencoded_auth(
 
     const body = data ? toUrlEncoded(data) : undefined;
 
-    const requestFn = () => fetch(`${API_BASE}${endpoint}`, {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
       method,
       headers,
       body,
     });
-
-    const res = await retryRequest(requestFn);
-    console.log("req_urlencoded_auth", { status: res.status });
-
+    console.log("req_urlencoded_auth", { res });
     if (res.status === 401) {
       authStore.clearToken();
       router.push("/");
-      ElMessage.error("Сессия истекла. Войдите в систему снова.");
-      throw new Error("Authentication failed");
+      throw new Error("Authentification failed");
     }
-
+    if (res.status >= 500 && res.status < 600) {
+      console.log("req_urlencoded", res.status);
+      ElMessage.error("Ошибка сервера 500");
+      throw new Error("Server error");
+    }
     if (!res.ok) {
-      handleApiError(res, endpoint);
-      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      throw new Error("http error");
     }
-
     return res;
   } catch (error) {
-    console.error("req_urlencoded_auth error:", { error, endpoint });
-    
-    // Handle network errors
-    if (error instanceof Error) {
-      handleNetworkError(error, endpoint);
+    if (
+      error instanceof Error &&
+      error.name === "TypeError" &&
+      error.message.includes("fetch")
+    ) {
+      ElMessage.error(`Ошибка сервера`);
     }
-    
-    throw error;
   }
 }
 
@@ -223,7 +102,7 @@ export async function req_json_auth(
   endpoint: string,
   method: string = "POST",
   data?: any
-): Promise<Response | null> {
+): Promise<Response | undefined> {
   try {
     const authStore = useAuthStore();
     const headers = new Headers();
@@ -235,73 +114,33 @@ export async function req_json_auth(
 
     const body = data ? JSON.stringify(data) : undefined;
 
-    const requestFn = () => fetch(`${API_BASE}${endpoint}`, {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
       method,
       headers,
       body,
     });
-
-    const res = await retryRequest(requestFn);
-    console.log("req_json_auth", { status: res.status });
-
+    console.log("req_json_auth", { res });
     if (res.status === 401) {
       authStore.clearToken();
       router.push("/");
-      ElMessage.error("Сессия истекла. Войдите в систему снова.");
-      throw new Error("Authentication failed");
+      throw new Error("Authentification failed");
     }
-
+    if (res.status >= 500 && res.status < 600) {
+      console.log("req_urlencoded", res.status);
+      ElMessage.error("Ошибка сервера 500");
+      throw new Error("Server error");
+    }
     if (!res.ok) {
-      handleApiError(res, endpoint);
-      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      throw new Error("http error");
     }
-
     return res;
   } catch (error) {
-    console.error("req_json_auth error:", { error, endpoint });
-    
-    // Handle network errors
-    if (error instanceof Error) {
-      handleNetworkError(error, endpoint);
+    if (
+      error instanceof Error &&
+      error.name === "TypeError" &&
+      error.message.includes("fetch")
+    ) {
+      ElMessage.error(`Ошибка сервера`);
     }
-    
-    return null;
   }
-}
-
-// Additional helper functions for common API operations
-export async function fetchWithAuth(
-  endpoint: string,
-  method: string = "GET",
-  data?: any
-): Promise<Response> {
-  return req_json_auth(endpoint, method, data) as Promise<Response>;
-}
-
-export async function fetchWithoutAuth(
-  endpoint: string,
-  method: string = "GET",
-  data?: any
-): Promise<Response | null> {
-  return req_urlencoded(endpoint, method, data);
-}
-
-// Test function to verify error messages are working
-export function testErrorMessage() {
-  console.log("Testing error message display...");
-  try {
-    ElMessage.error("Тестовое сообщение об ошибке");
-    console.log("ElMessage test successful");
-  } catch (error) {
-    console.error("ElMessage test failed:", error);
-    alert("ElMessage не работает. Проверьте импорт Element Plus.");
-  }
-}
-
-// Test function to simulate network errors
-export function testNetworkError() {
-  console.log("Testing network error handling...");
-  const networkError = new Error("Failed to fetch");
-  networkError.name = 'TypeError';
-  handleNetworkError(networkError, '/test-endpoint');
 }

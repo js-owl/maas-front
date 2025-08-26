@@ -79,7 +79,7 @@ type sendType = typeof payload;
 async function sendData(payload: sendType) {
   try {
     const res = await req_urlencoded("/anonymous-calc", "POST", payload);
-    const data = (await res.json()) as FormResponse;
+    const data = (await res?.json()) as FormResponse;
     result.value = data;
     console.log({ res });
   } catch (error) {
@@ -90,7 +90,7 @@ async function sendData(payload: sendType) {
 async function submitOrder(payload: sendType) {
   try {
     const res = await req_urlencoded_auth("/orders", "POST", payload);
-    const data = (await res.json()) as FormResponse;
+    const data = (await res?.json()) as FormResponse;
     result.value = data;
     console.log({ res });
     router.push({ name: "order-list" });

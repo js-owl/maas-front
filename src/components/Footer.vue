@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useUserStore } from "../stores/user.store";
 
-const store = useUserStore();
+// const store = useUserStore();
 
 const activeIndex = ref("1");
 const handleSelect = (key: string, keyPath: string[]) => {
@@ -37,16 +36,6 @@ const handleSelect = (key: string, keyPath: string[]) => {
         </el-menu-item>
       </el-menu>
     </el-col>
-    <el-tooltip
-      class="box-item"
-      effect="dark"
-      :content="store.user.name"
-      placement="top-start"
-    >
-      <el-col :offset="1" :span="2">
-        <span style="font-size: 30px; color: white"></span>
-      </el-col>
-    </el-tooltip>
   </el-row>
 </template>
 

@@ -1,10 +1,13 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { API_BASE } from "../api";
+import { useProfileStore } from "../stores/profile.store";
 
 interface LoginResponse {
   access_token: string;
 }
+
+const profileStore = useProfileStore();
 
 const TOKEN_STORE_KEY = "token-store";
 
@@ -48,6 +51,7 @@ export const useAuthStore = defineStore("auth", () => {
     });
     const data = (await res.json()) as LoginResponse;
     setToken(data.access_token);
+    await profileStore.getProfile();
   }
 
   return { getToken, setToken, clearToken, login };

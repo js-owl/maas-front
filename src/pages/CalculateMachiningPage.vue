@@ -110,7 +110,7 @@ type sendType = typeof payload;
 async function sendData(payload: sendType) {
   try {
     const res = await req_urlencoded("/anonymous-calc", "POST", payload);
-    const data = (await res.json()) as FormResponse;
+    const data = (await res?.json()) as FormResponse;
     result.value = data;
   } catch (error) {
     console.error({ error });
@@ -121,7 +121,7 @@ async function submitOrder(payload: sendType) {
   if (order_id.value == 0) {
     try {
       const res = await req_urlencoded_auth("/orders", "POST", payload);
-      const data = (await res.json()) as FormResponse;
+      const data = (await res?.json()) as FormResponse;
       result.value = data;
     } catch (error) {
       console.error({ error });
@@ -196,12 +196,13 @@ async function getOrder(id: number) {
         Токарная обработка <br />
         {{ order_id != 0 ? `(заказ ${order_id})` : "" }}
       </div>
-
-      <div style="color: white; font-size: 42px">
-        {{ Number(result?.detail_time ?? 0).toFixed(0) }} ч
-      </div>
-      <div style="color: white; font-size: 20px; padding-bottom: 40px">
-        Трудоемкость изготовления 1 ед.
+      <div>
+        <div style="color: white; font-size: 42px">
+          {{ Number(result?.detail_time ?? 0).toFixed(0) }} ч
+        </div>
+        <div style="color: white; font-size: 20px; padding-bottom: 40px">
+          Трудоемкость изготовления 1 ед.
+        </div>
       </div>
       <div
         style="
