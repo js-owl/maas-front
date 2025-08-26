@@ -100,10 +100,15 @@ function scrollToAbout() {
                 <el-menu-item index="1-2-3">Контактная сварка</el-menu-item>
               </el-sub-menu>
             </el-sub-menu>
-            <el-menu-item index="/#about" @click="scrollToAbout"> О нас </el-menu-item>
+            <el-menu-item index="/#about" @click="scrollToAbout">
+              О нас
+            </el-menu-item>
 
             <el-sub-menu index="5" v-show="authStore.getToken">
-              <template #title>Заказы</template>
+              <template #title>Кабинет</template>
+              <el-menu-item index="/profile" :route="{ path: '/profile' }">
+                Профиль
+              </el-menu-item>
               <el-menu-item
                 index="/order-list"
                 :route="{ path: '/order-list' }"
@@ -112,7 +117,8 @@ function scrollToAbout() {
               </el-menu-item>
             </el-sub-menu>
           </el-menu>
-
+        </div>
+        <div>
           <el-button
             type="primary"
             plain
@@ -122,8 +128,8 @@ function scrollToAbout() {
               border: none;
               margin-left: 20px;
               font-size: 18px;
-              height: 60px;
-              padding: 0 20px;
+              height: 80px;
+              padding-left: 0px;
               font-weight: normal;
             "
             @click="onCallRequest"

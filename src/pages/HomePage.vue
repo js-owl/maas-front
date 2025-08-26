@@ -13,7 +13,11 @@ let drawing_id = ref(1);
   <!-- Section Upload-->
   <el-row
     :gutter="0"
-    style="min-height: 500px; background-color: #283d5b; padding: 40px 0 0 20px"
+    style="
+      min-height: 600px;
+      background-color: #283d5b;
+      padding: 150px 0 0 20px;
+    "
   >
     <el-col :offset="2" :span="7">
       <div style="text-align: left; font-size: 60px; color: white">
@@ -82,12 +86,12 @@ let drawing_id = ref(1);
 
   <!-- Section About -->
   <el-row
+    id="about"
     :gutter="20"
     style="background-color: #eee; padding-top: 50px; min-height: 500px"
   >
     <el-col :offset="2" :span="9">
       <div
-        id="about"
         style="
           text-align: left;
           font-size: 60px;

@@ -37,6 +37,12 @@ const routes = [
     component: () => import("./pages/OrderListPage.vue"),
     name: "order-list",
   },
+  {
+    path: "/Profile",
+    // @ts-ignore
+    component: () => import("./pages/ProfilePage.vue"),
+    name: "Profile",
+  },
 
   { path: "/:patchMatch(.*)*", component: NotFoundPage },
 ];

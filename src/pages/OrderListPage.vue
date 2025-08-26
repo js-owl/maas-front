@@ -1,103 +1,24 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { API_BASE } from "../api";
-import { useAuthStore } from "../stores/auth.store";
-import type { IOrder } from "../interfaces/order.interface";
-import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
 import { Edit, Delete } from "@element-plus/icons-vue";
+import { req_json_auth } from "../api";
+import type { IOrder } from "../interfaces/order.interface";
 
-interface ApiResponse {
-  success: boolean;
-  message?: string;
-  data?: any;
-}
-
-const orders = ref<IOrder[]>();
-
-const authStore = useAuthStore();
 const router = useRouter();
-
-onMounted(() => {
-  fetchData();
-});
-
-const fetchData = async () => {
-  try {
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    if (authStore.getToken) {
-      headers.append("Authorization", `Bearer ${authStore.getToken}`);
-    }
-
-    const response = await fetch(`${API_BASE}/orders`, {
-      method: "GET",
-      headers: headers,
-    });
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    const data = (await response.json()) as IOrder[];
-    orders.value = data;
-    console.log("orders", { data });
-  } catch (error) {
-    ElMessage({
-      type: "error",
-      message: "Failed to load data",
-    });
-    console.error("fetchData", { error });
-  }
-};
-
+const orders = ref<IOrder[]>();
 const deleteLoading = ref<number | null>(null);
 
-const deleteItem = async (id: number): Promise<ApiResponse> => {
-  const headers = new Headers();
-  headers.append("Content-Type", "application/json");
-  if (authStore.getToken) {
-    headers.append("Authorization", `Bearer ${authStore.getToken}`);
-  }
-
-  const response = await fetch(`${API_BASE}/admin/orders/${id}`, {
-    method: "DELETE",
-    headers,
-  });
-
-  await fetchData();
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  return await response.json();
-};
+onMounted(async () => {
+  const r = await req_json_auth(`/orders/`, "GET");
+  orders.value = (await r?.json()) as IOrder[];
+});
 
 const formatDate = (_row: any, _column: any, cellValue: string) => {
   return cellValue.split("T")[0];
 };
 
-const handleDelete = async (row: IOrder): Promise<void> => {
-  console.log({ row });
-  try {
-    deleteLoading.value = row.id;
-
-    const response = await deleteItem(row.id);
-
-    if (response.success) {
-      if (orders.value) {
-        orders.value = orders.value.filter((item) => item.id !== row.id);
-      }
-    }
-  } catch (error) {
-  } finally {
-    deleteLoading.value = null;
-  }
-};
-
 const handleEdit = (row: IOrder): void => {
-  console.log("Edit order:", { row });
-
-  // Navigate to appropriate calculation page based on service_id
   switch (row.service_id) {
     case 2:
       router.push({ path: "/plastic", query: { orderId: row.id.toString() } });
@@ -115,6 +36,18 @@ const handleEdit = (row: IOrder): void => {
       });
       break;
   }
+};
+
+const handleDelete = async (row: IOrder): Promise<void> => {
+  deleteLoading.value = row.id;
+  const r = await req_json_auth(`/admin/orders/${row.id}`, "DELETE");
+  if (r?.ok) {
+    console.log("deleted successfully");
+    if (orders.value) {
+      orders.value = orders.value.filter((item) => item.id !== row.id);
+    }
+  }
+  deleteLoading.value = null;
 };
 </script>
 

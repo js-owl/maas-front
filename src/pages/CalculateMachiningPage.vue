@@ -130,7 +130,7 @@ async function submitOrder(payload: sendType) {
     const id = order_id.value;
     try {
       const res = await req_json_auth(`/orders/${id}`, "PUT", payload);
-      const data = (await res.json()) as FormResponse;
+      const data = (await res?.json()) as FormResponse;
       result.value = data;
       console.log("PUT", result.value);
     } catch (error) {
@@ -144,7 +144,7 @@ async function submitOrder(payload: sendType) {
 async function getOrder(id: number) {
   try {
     const res = await req_json_auth(`/orders/${id}`, "GET");
-    const data = (await res.json()) as FormResponse;
+    const data = (await res?.json()) as FormResponse;
     result.value = data;
 
     // Обновляем все поля из полученного заказа
