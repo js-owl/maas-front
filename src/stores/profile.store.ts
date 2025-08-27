@@ -47,10 +47,19 @@ export const useProfileStore = defineStore("user", () => {
     }
   }
 
+  async function updateProfile(updated: IProfile) {
+    const r = await req_json_auth(`/profile/`, "PUT", updated);
+    if (r) {
+      const profileData = (await r.json()) as IProfile;
+      profile.value = profileData;
+      saveProfileToStorage(profileData);
+    }
+  }
+
   function clearProfile() {
     profile.value = undefined;
     clearProfileFromStorage();
   }
 
-  return { profile, getProfile, clearProfile };
+  return { profile, getProfile, updateProfile, clearProfile };
 });

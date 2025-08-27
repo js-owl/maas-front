@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import type { FormRules } from "element-plus";
+import type { FormInstance, FormRules } from "element-plus";
 import { onMounted, ref } from "vue";
 import { useProfileStore, type IProfile } from "../stores/profile.store";
 
 const profileStore = useProfileStore();
 const profileForm = ref<IProfile>();
+const formRef = ref<FormInstance>();
 
 onMounted(async () => {
   profileForm.value = profileStore.profile;
@@ -13,6 +14,15 @@ onMounted(async () => {
 const rules = ref<FormRules<IProfile>>({
   username: [{ required: true, message: "Введите имя", trigger: "blur" }],
 });
+
+async function onSubmit() {
+  if (!formRef.value || !profileForm.value) return;
+  await formRef.value.validate(async (valid) => {
+    if (valid) {
+      await profileStore.updateProfile(profileForm.value as IProfile);
+    }
+  });
+}
 </script>
 
 <template>
@@ -41,6 +51,7 @@ const rules = ref<FormRules<IProfile>>({
     <el-col :offset="2" :span="6">
       <div style="font-size: 24px; padding-bottom: 30px">Общая информация</div>
       <el-form
+        ref="formRef"
         :model="profileForm"
         :rules="rules"
         label-width="0"
@@ -53,12 +64,8 @@ const rules = ref<FormRules<IProfile>>({
         >
           <el-input v-model="profileForm.username" placeholder="username" />
         </el-form-item>
-        <el-form-item
-          v-if="profileForm"
-          label="Имя пользователя"
-          prop="username"
-        >
-          <el-input v-model="profileForm.username" placeholder="username" />
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">Сохранить</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -71,13 +78,6 @@ const rules = ref<FormRules<IProfile>>({
         label-width="0"
         label-position="top"
       >
-        <el-form-item
-          v-if="profileForm"
-          label="Имя пользователя"
-          prop="username"
-        >
-          <el-input v-model="profileForm.username" placeholder="username" />
-        </el-form-item>
         <el-form-item
           v-if="profileForm"
           label="Имя пользователя"
@@ -98,13 +98,6 @@ const rules = ref<FormRules<IProfile>>({
         label-width="0"
         label-position="top"
       >
-        <el-form-item
-          v-if="profileForm"
-          label="Имя пользователя"
-          prop="username"
-        >
-          <el-input v-model="profileForm.username" placeholder="username" />
-        </el-form-item>
         <el-form-item
           v-if="profileForm"
           label="Имя пользователя"
