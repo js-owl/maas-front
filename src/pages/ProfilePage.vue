@@ -48,65 +48,54 @@ async function onSubmit() {
       padding-left: 20px;
     "
   >
-    <el-col :offset="2" :span="6">
-      <div style="font-size: 24px; padding-bottom: 30px">Общая информация</div>
-      <el-form
-        ref="formRef"
-        :model="profileForm"
-        :rules="rules"
-        label-width="0"
-        label-position="top"
-      >
-        <el-form-item
-          v-if="profileForm"
-          label="Имя пользователя"
-          prop="username"
-        >
-          <el-input v-model="profileForm.username" placeholder="username" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">Сохранить</el-button>
-        </el-form-item>
-      </el-form>
-    </el-col>
+    <el-form
+      ref="formRef"
+      :model="profileForm"
+      :rules="rules"
+      label-width="0"
+      label-position="top"
+      style="width: 100%"
+    >
+      <el-row :gutter="20">
+        <el-col :offset="2" :span="6">
+          <div style="font-size: 24px; padding-bottom: 30px">Общая информация</div>
+          <el-form-item
+            v-if="profileForm"
+            label="Имя пользователя"
+            prop="username"
+          >
+            <el-input v-model="profileForm.username" placeholder="username" />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit">Сохранить</el-button>
+          </el-form-item>
+        </el-col>
 
-    <el-col :offset="1" :span="6">
-      <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки</div>
-      <el-form
-        :model="profileForm"
-        :rules="rules"
-        label-width="0"
-        label-position="top"
-      >
-        <el-form-item
-          v-if="profileForm"
-          label="Имя пользователя"
-          prop="username"
-        >
-          <el-input v-model="profileForm.username" placeholder="username" />
-        </el-form-item>
-      </el-form>
-    </el-col>
+        <el-col :offset="1" :span="6">
+          <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки</div>
+          <el-form-item
+            v-if="profileForm"
+            label="Имя пользователя"
+            prop="username"
+          >
+            <el-input v-model="profileForm.username" placeholder="username" />
+          </el-form-item>
+        </el-col>
 
-    <el-col :offset="1" :span="6">
-      <div style="font-size: 24px; padding-bottom: 30px">
-        Информация о платеже
-      </div>
-      <el-form
-        :model="profileForm"
-        :rules="rules"
-        label-width="0"
-        label-position="top"
-      >
-        <el-form-item
-          v-if="profileForm"
-          label="Имя пользователя"
-          prop="username"
-        >
-          <el-input v-model="profileForm.username" placeholder="username" />
-        </el-form-item>
-      </el-form>
-    </el-col>
+        <el-col :offset="1" :span="6">
+          <div style="font-size: 24px; padding-bottom: 30px">
+            Информация о платеже
+          </div>
+          <el-form-item
+            v-if="profileForm"
+            label="Имя пользователя"
+            prop="username"
+          >
+            <el-input v-model="profileForm.username" placeholder="username" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
   </el-row>
 </template>
 
