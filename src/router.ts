@@ -2,7 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 
 import HomePage from "./pages/HomePage.vue";
 import NotFoundPage from "./pages/NotFoundPage.vue";
-import { useAuthStore } from "./stores/auth.store";
+// import { useAuthStore } from "./stores/auth.store";
 
 const routes = [
   { path: "/", component: HomePage, name: "home" },
@@ -53,8 +53,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const authStore = useAuthStore();
-  console.log("router", { to }, authStore.getToken);
+  // const authStore = useAuthStore();
+  console.log("router", to.fullPath);
   // if (!authStore.getToken && to.name != "home") {
   //   return { name: "home" };
   // }

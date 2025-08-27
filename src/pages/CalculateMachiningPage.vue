@@ -21,6 +21,9 @@ import UploadModel from "../components/UploadModel.vue";
 import UploadDrawings from "../components/UploadDrawings.vue";
 // @ts-ignore
 import CadShowById from "../components/CadShowById.vue";
+import { useProfileStore } from "../stores/profile.store";
+
+const profileStore = useProfileStore();
 
 interface FormResponse {
   id: number;
@@ -196,7 +199,7 @@ async function getOrder(id: number) {
         Токарная обработка <br />
         {{ order_id != 0 ? `(заказ ${order_id})` : "" }}
       </div>
-      <div>
+      <div v-if="profileStore.profile?.username == 'admin'">
         <div style="color: white; font-size: 42px">
           {{ Number(result?.detail_time ?? 0).toFixed(0) }} ч
         </div>
@@ -267,7 +270,7 @@ async function getOrder(id: number) {
           class="submit"
           @click="submitOrder(payload)"
         >
-          Перейти к оформлению >
+          {{ order_id != 0 ? "Редактировать заказ" : "Перейти к оформлению >" }}
         </el-button>
       </div>
     </el-col>

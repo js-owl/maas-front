@@ -28,8 +28,6 @@ scene.add(directionalLight);
 
 onMounted(async () => {
   geometry = await getModel();
-  console.log("onMounted", { geometry });
-
   renderModel();
 });
 
@@ -67,7 +65,6 @@ function animate() {
 }
 
 async function getModel() {
-  console.log({ file_id });
   try {
     const headers = new Headers();
     headers.append("Content-Type", "application/octet-stream");

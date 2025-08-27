@@ -5,6 +5,7 @@ import DialogCall from "./dialog/DialogCall.vue";
 import { useAuthStore } from "../stores/auth.store";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
+import { useProfileStore } from "../stores/profile.store";
 
 const activeIndex = ref("1");
 const handleSelect = (key: string, keyPath: string[]) => {
@@ -15,13 +16,24 @@ const isLoginVisible = ref(false);
 const isCallVisible = ref(false);
 
 const authStore = useAuthStore();
+const profileStore = useProfileStore();
 const router = useRouter();
+
+// Check token on component mount
+onMounted(() => {
+  checkTokenValidity();
+  const tokenCheckInterval = setInterval(checkTokenValidity, 5 * 60 * 1000);
+  onUnmounted(() => {
+    clearInterval(tokenCheckInterval);
+  });
+});
 
 // Function to check if JWT token is expired
 function isTokenExpired(token: string): boolean {
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    const payload = JSON.parse(atob(token.split(".")[1]));
     const currentTime = Math.floor(Date.now() / 1000);
+    console.log("isTokenExpired", payload.exp - currentTime);
     return payload.exp < currentTime;
   } catch (error) {
     console.error("Error parsing token:", error);
@@ -39,19 +51,6 @@ function checkTokenValidity() {
     router.push({ name: "home" });
   }
 }
-
-// Check token on component mount
-onMounted(() => {
-  checkTokenValidity();
-  
-  // Set up periodic token checking (every 5 minutes)
-  const tokenCheckInterval = setInterval(checkTokenValidity, 5 * 60 * 1000);
-  
-  // Clean up interval on component unmount
-  onUnmounted(() => {
-    clearInterval(tokenCheckInterval);
-  });
-});
 
 function onLogout() {
   authStore.clearToken();
@@ -84,7 +83,7 @@ function scrollToAbout() {
             :ellipsis="false"
             background-color="#be2a44"
             text-color="#fff"
-            active-text-color="black"
+            active-text-color="#fff"
             :router="true"
             @select="handleSelect"
           >
@@ -189,6 +188,9 @@ function scrollToAbout() {
         </div>
 
         <div v-else style="display: flex; align-items: center">
+          <span style="color: white; padding-right: 5px">
+            {{ profileStore.profile?.username }}
+          </span>
           <el-icon :size="30" style="margin-right: 10px; color: white">
             <User />
           </el-icon>
@@ -229,7 +231,7 @@ function scrollToAbout() {
 .first-element {
   margin: 0 40px 0 0px;
   font-size: 30px;
-  color: white;
+  color: white !important;
   text-decoration: none;
   font-weight: 700;
 }
