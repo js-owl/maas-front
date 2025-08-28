@@ -60,7 +60,7 @@ function updateRendererSize() {
 
 function animate() {
   animationId = requestAnimationFrame(animate);
-  // controls.update(); // Убираем, так как не используем OrbitControls
+  controls.update();
   renderer.render(scene, camera);
 }
 
@@ -109,25 +109,24 @@ function renderModel() {
   container.value.appendChild(renderer.domElement);
 
   // Настройка изометрической камеры
-  const distance = 200;
+  const distance = 80;
   const isometricAngle = Math.PI / 4; // 45 градусов
-  
+
   // Позиция камеры для изометрического вида
   camera.position.set(
     distance * Math.cos(isometricAngle),
     distance * Math.sin(isometricAngle),
     distance * Math.sin(isometricAngle)
   );
-  
+
   // Камера смотрит на центр сцены
   camera.lookAt(0, 0, 0);
-  
-  // Отключаем OrbitControls для фиксированного изометрического вида
-  // controls = new OrbitControls(camera, renderer.domElement);
-  // controls.enableDamping = true;
-  // controls.dampingFactor = 0.05;
-  // controls.minDistance = 100;
-  // controls.maxDistance = 300;
+
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.minDistance = 100;
+  controls.maxDistance = 300;
 
   window.addEventListener("resize", updateRendererSize);
 
