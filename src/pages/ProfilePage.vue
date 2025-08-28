@@ -2,10 +2,14 @@
 import type { FormInstance, FormRules } from "element-plus";
 import { onMounted, ref } from "vue";
 import { useProfileStore, type IProfile } from "../stores/profile.store";
+import router from "../router";
+import { useRoute } from "vue-router";
+import { req_json_auth } from "../api";
 
 const profileStore = useProfileStore();
 const profileForm = ref<IProfile>();
 const formRef = ref<FormInstance>();
+const route = useRoute();
 
 onMounted(async () => {
   profileForm.value = profileStore.profile;
@@ -22,6 +26,25 @@ async function onSubmit() {
       await profileStore.updateProfile(profileForm.value as IProfile);
     }
   });
+}
+
+async function goToOrderList() {
+  // Get order ID from route query if available
+  const orderId = route.query.orderId;
+  
+  if (orderId) {
+    try {
+      // Update order status to "paid"
+      await req_json_auth(`/orders/${orderId}`, "PUT", {
+        status: "paid"
+      });
+      console.log("Order status updated to paid");
+    } catch (error) {
+      console.error("Failed to update order status:", error);
+    }
+  }
+  
+  router.push({ name: "order-list" });
 }
 </script>
 
@@ -75,6 +98,9 @@ async function onSubmit() {
           <el-form-item>
             <el-button type="primary" @click="onSubmit">
               Обновить информацию
+            </el-button>
+            <el-button type="primary" @click="goToOrderList">
+              Мои заказы
             </el-button>
           </el-form-item>
         </el-col>
