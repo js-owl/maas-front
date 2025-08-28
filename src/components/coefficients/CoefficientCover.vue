@@ -2,11 +2,11 @@
 const selected = defineModel();
 const finishes = [
   {
-    value: 1,
+    value: "1",
     label: "Покраска",
   },
   {
-    value: 1.1,
+    value: "2",
     label: "Гальваника",
   },
 ];
@@ -20,7 +20,6 @@ const finishes = [
       placeholder="Выбрать"
       size="large"
       style="display: block"
-      disabled
     >
       <el-option
         v-for="item in finishes"

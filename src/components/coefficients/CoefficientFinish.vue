@@ -2,16 +2,24 @@
 const selected = defineModel();
 const finishes = [
   {
-    value: 1,
+    value: "1",
     label: "12.5",
   },
   {
-    value: 1.1,
+    value: "2",
     label: "6.3",
   },
   {
-    value: 1.2,
+    value: "3",
     label: "3.2",
+  },
+  {
+    value: "4",
+    label: "1.6",
+  },
+  {
+    value: "5",
+    label: "0.8",
   },
 ];
 </script>
@@ -24,7 +32,6 @@ const finishes = [
       placeholder="Выбрать"
       size="large"
       style="display: block"
-      disabled
     >
       <el-option
         v-for="item in finishes"

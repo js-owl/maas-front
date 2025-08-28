@@ -58,27 +58,33 @@ async function onSubmit() {
     >
       <el-row :gutter="20">
         <el-col :offset="2" :span="6">
-          <div style="font-size: 24px; padding-bottom: 30px">Общая информация</div>
+          <div style="font-size: 24px; padding-bottom: 30px">
+            Общая информация
+          </div>
           <el-form-item
             v-if="profileForm"
             label="Имя пользователя"
             prop="username"
           >
-            <el-input v-model="profileForm.username" placeholder="username" />
+            <el-input
+              v-model="profileForm.username"
+              placeholder="username"
+              disabled
+            />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">Сохранить</el-button>
+            <el-button type="primary" @click="onSubmit">
+              Обновить информацию
+            </el-button>
           </el-form-item>
         </el-col>
 
         <el-col :offset="1" :span="6">
-          <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки</div>
-          <el-form-item
-            v-if="profileForm"
-            label="Имя пользователя"
-            prop="username"
-          >
-            <el-input v-model="profileForm.username" placeholder="username" />
+          <div style="font-size: 24px; padding-bottom: 30px">
+            Адрес доставки
+          </div>
+          <el-form-item v-if="profileForm" label="Город" prop="city">
+            <el-input v-model="profileForm.city" placeholder="Введите город" />
           </el-form-item>
         </el-col>
 
@@ -88,10 +94,13 @@ async function onSubmit() {
           </div>
           <el-form-item
             v-if="profileForm"
-            label="Имя пользователя"
-            prop="username"
+            label="Банковская карта"
+            prop="payment_card_number"
           >
-            <el-input v-model="profileForm.username" placeholder="username" />
+            <el-input
+              v-model="profileForm.payment_card_number"
+              placeholder="Введите карту"
+            />
           </el-form-item>
         </el-col>
       </el-row>

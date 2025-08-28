@@ -35,9 +35,9 @@ interface FormResponse {
   quantity: number;
   material_preference: string;
   k_complexity: number;
-  k_tolerance: number;
-  k_finish: number;
-  k_cover: number;
+  k_tolerance: string;
+  k_finish: string;
+  k_cover: string;
   n_dimensions: number;
   k_otk: string;
   k_cert: string[];
@@ -54,7 +54,7 @@ interface FormResponse {
 const route = useRoute();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
-let file_id = ref(3);
+let file_id = ref(4);
 let drawing_id = ref(1);
 
 let length = ref(120);
@@ -64,9 +64,9 @@ let quantity = ref(1);
 let material_preference = ref("alum 1");
 
 const k_complexity = ref(0.75);
-let k_tolerance = ref(1);
-let k_finish = ref(1);
-let k_cover = ref(1);
+let k_tolerance = ref("4");
+let k_finish = ref("3");
+let k_cover = ref("1");
 let n_dimensions = ref(55);
 
 let k_otk = ref("1");
@@ -236,6 +236,14 @@ async function getOrder(id: number) {
         становится выгоднее.
       </div>
       <el-row
+        :gutter="20"
+        style="background-color: #283d5b; padding-bottom: 30px"
+      >
+        <el-col :offset="0" :span="24" style="color: #577aad">
+          <CadShowById v-model="file_id" />
+        </el-col>
+      </el-row>
+      <el-row
         :gutter="5"
         style="background-color: #283d5b; padding-bottom: 30px"
       >
@@ -255,14 +263,7 @@ async function getOrder(id: number) {
           Максимальный размер 100Мб
         </el-col>
       </el-row>
-      <el-row
-        :gutter="20"
-        style="background-color: #283d5b; padding-bottom: 30px"
-      >
-        <el-col :offset="0" :span="24" style="color: #577aad">
-          <CadShowById v-model="file_id" />
-        </el-col>
-      </el-row>
+
       <div style="display: flex; justify-content: center">
         <el-button
           type="primary"
