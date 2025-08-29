@@ -144,3 +144,40 @@ export async function req_json_auth(
     }
   }
 }
+
+export async function req_json(
+  endpoint: string,
+  method: string = "POST",
+  data?: any
+): Promise<Response | undefined> {
+  try {
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+
+    const body = data ? JSON.stringify(data) : undefined;
+
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      method,
+      headers,
+      body,
+    });
+    console.log("req_json", { res });
+    if (res.status >= 500 && res.status < 600) {
+      console.log("req_urlencoded", res.status);
+      ElMessage.error("Ошибка сервера 500");
+      throw new Error("Server error");
+    }
+    if (!res.ok) {
+      throw new Error("http error");
+    }
+    return res;
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.name === "TypeError" &&
+      error.message.includes("fetch")
+    ) {
+      ElMessage.error(`Ошибка сервера`);
+    }
+  }
+}

@@ -1,27 +1,18 @@
 <script lang="ts" setup>
+import { onMounted, ref } from "vue";
+import { req_json } from "../../api";
+
 const selected = defineModel();
-const finishes = [
-  {
-    value: "1",
-    label: "12.5",
-  },
-  {
-    value: "2",
-    label: "6.3",
-  },
-  {
-    value: "3",
-    label: "3.2",
-  },
-  {
-    value: "4",
-    label: "1.6",
-  },
-  {
-    value: "5",
-    label: "0.8",
-  },
-];
+const finishes = ref();
+
+onMounted(async () => {
+  const r = await req_json(`/calculator/coefficients/`, "GET");
+  const data = await r?.json();
+  finishes.value = data.finish.map((item: any) => ({
+    value: item.id,
+    label: item.value,
+  }));
+});
 </script>
 
 <template>

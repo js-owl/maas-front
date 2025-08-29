@@ -38,10 +38,10 @@ const routes = [
     name: "order-list",
   },
   {
-    path: "/Profile",
+    path: "/profile",
     // @ts-ignore
     component: () => import("./pages/ProfilePage.vue"),
-    name: "Profile",
+    name: "profile",
   },
 
   { path: "/:patchMatch(.*)*", component: NotFoundPage },

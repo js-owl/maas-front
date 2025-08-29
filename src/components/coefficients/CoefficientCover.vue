@@ -1,15 +1,18 @@
 <script lang="ts" setup>
+import { onMounted, ref } from "vue";
+import { req_json } from "../../api";
+
 const selected = defineModel();
-const finishes = [
-  {
-    value: "1",
-    label: "Покраска",
-  },
-  {
-    value: "2",
-    label: "Гальваника",
-  },
-];
+const coveres = ref();
+
+onMounted(async () => {
+  const r = await req_json(`/calculator/coefficients/`, "GET");
+  const data = await r?.json();
+  coveres.value = data.cover.map((item: any) => ({
+    value: item.id,
+    label: item.value,
+  }));
+});
 </script>
 
 <template>
@@ -22,7 +25,7 @@ const finishes = [
       style="display: block"
     >
       <el-option
-        v-for="item in finishes"
+        v-for="item in coveres"
         :key="item.value"
         :label="item.label"
         :value="item.value"

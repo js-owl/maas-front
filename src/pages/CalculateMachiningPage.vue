@@ -28,16 +28,15 @@ const profileStore = useProfileStore();
 interface FormResponse {
   id: number;
   user_id: number;
-  service_id: number;
+  service_id: string;
   file_id: number;
   length: number;
   width: number;
   quantity: number;
   material_preference: string;
-  k_complexity: number;
-  k_tolerance: string;
-  k_finish: string;
-  k_cover: string;
+  id_tolerance: string;
+  id_finish: string;
+  id_cover: string;
   n_dimensions: number;
   k_otk: string;
   k_cert: string[];
@@ -63,27 +62,25 @@ let quantity = ref(1);
 
 let material_preference = ref("alum 1");
 
-const k_complexity = ref(0.75);
-let k_tolerance = ref("4");
-let k_finish = ref("3");
-let k_cover = ref("1");
+let id_tolerance = ref("4");
+let id_finish = ref("3");
+let id_cover = ref("1");
 let n_dimensions = ref(55);
 
 let k_otk = ref("1");
 let k_cert = ref(["a", "f"]);
 
 const payload = reactive({
-  service_id: 4,
+  service_id: "cnc_lathe",
   file_id,
   quantity,
   length,
   width,
   height: width,
   material_preference,
-  k_complexity,
-  k_tolerance,
-  k_finish,
-  k_cover,
+  id_tolerance,
+  id_finish,
+  id_cover,
   n_dimensions,
   k_otk,
   k_cert,
@@ -91,6 +88,7 @@ const payload = reactive({
 });
 
 let result = ref({
+  id: 0,
   detail_time: 0,
   detail_price: 0,
   total_price: 0,
@@ -140,8 +138,13 @@ async function submitOrder(payload: sendType) {
       console.error({ error });
     }
   }
-
-  router.push({ name: "order-list" });
+  const idToOpen = order_id.value == 0 ? result.value?.id : order_id.value;
+  console.log({ idToOpen });
+  // const idToOpen = 1;
+  router.push({
+    name: "profile",
+    query: idToOpen ? { orderId: String(idToOpen) } : undefined,
+  });
 }
 
 async function getOrder(id: number) {
@@ -157,10 +160,9 @@ async function getOrder(id: number) {
     if (data.quantity) quantity.value = data.quantity;
     if (data.material_preference)
       material_preference.value = data.material_preference;
-    if (data.k_complexity) k_complexity.value = data.k_complexity;
-    if (data.k_tolerance) k_tolerance.value = data.k_tolerance;
-    if (data.k_finish) k_finish.value = data.k_finish;
-    if (data.k_cover) k_cover.value = data.k_cover;
+    if (data.id_tolerance) id_tolerance.value = data.id_tolerance;
+    if (data.id_finish) id_finish.value = data.id_finish;
+    if (data.id_cover) id_cover.value = data.id_cover;
     if (data.n_dimensions) n_dimensions.value = data.n_dimensions;
     if (data.k_otk) k_otk.value = data.k_otk;
     if (data.k_cert) k_cert.value = data.k_cert;
@@ -176,10 +178,9 @@ async function getOrder(id: number) {
       width: width.value,
       height: width.value,
       material_preference: material_preference.value,
-      k_complexity: k_complexity.value,
-      k_tolerance: k_tolerance.value,
-      k_finish: k_finish.value,
-      k_cover: k_cover.value,
+      id_tolerance: id_tolerance.value,
+      id_finish: id_finish.value,
+      id_cover: id_cover.value,
       n_dimensions: n_dimensions.value,
       k_otk: k_otk.value,
       k_cert: k_cert.value,
@@ -292,13 +293,13 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5">
         <el-col :offset="2" :span="6">
-          <CoefficientFinish v-model="k_finish" />
+          <CoefficientFinish v-model="id_finish" />
         </el-col>
         <el-col :offset="1" :span="6">
-          <CoefficientCover v-model="k_cover" />
+          <CoefficientCover v-model="id_cover" />
         </el-col>
         <el-col :offset="1" :span="6">
-          <CoefficientTolerance v-model="k_tolerance" />
+          <CoefficientTolerance v-model="id_tolerance" />
         </el-col>
       </el-row>
 
