@@ -4,8 +4,16 @@ import { req_json_auth } from "../api";
 
 export interface IProfile {
   username: string;
+  email: string;
+  full_name: string;
   city: string;
-  payment_card_number: string;
+  payment_bank_name: string;
+  payment_inn: string;
+  payment_kpp: string;
+  payment_bik: string;
+  payment_cor_account: string;
+  payment_account: string;
+  payment_company_name: string;
 }
 
 const PROFILE_STORE_KEY = "profile-store";

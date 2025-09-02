@@ -14,6 +14,12 @@ const authStore = useAuthStore();
 const uploadHeaders = computed(() => ({
   Authorization: `Bearer ${authStore.getToken}`,
 }));
+const isDisabled = () => {
+  if (authStore.getToken) {
+    return false;
+  }
+  return true;
+};
 
 const loadModel = (response: any) => {
   console.log({ response });
@@ -30,6 +36,7 @@ const loadModel = (response: any) => {
     :action="`${API_BASE}/upload`"
     multiple
     :on-success="loadModel"
+    :disabled="isDisabled()"
   >
     <div class="custom">
       <Icon3D
@@ -45,6 +52,11 @@ const loadModel = (response: any) => {
 
 <style scoped>
 :deep(.el-upload-dragger) {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+}
+:deep(.el-upload.is-disabled .el-upload-dragger) {
+  background-color: #283d5b;
   padding: 10px;
   border: 1px solid var(--border-color);
 }

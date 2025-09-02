@@ -40,11 +40,11 @@ const onRegistration = async () => {
 <template>
   <el-dialog v-model="dialogFormVisible" title="Войти" width="500">
     <el-form :model="formData">
-      <el-form-item label="e-mail" :label-width="formLabelWidth">
+      <el-form-item label="Имя" :label-width="formLabelWidth">
         <el-input v-model="formData.username" autocomplete="off" />
       </el-form-item>
-      <el-form-item label="password" :label-width="formLabelWidth">
-        <el-input v-model="formData.password" type="password" />
+      <el-form-item label="Пароль" :label-width="formLabelWidth">
+        <el-input v-model="formData.password" type="password" show-password />
       </el-form-item>
     </el-form>
     <template #footer>

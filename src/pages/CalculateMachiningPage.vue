@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import { req_urlencoded, req_urlencoded_auth, req_json_auth } from "../api";
+import { req_urlencoded_auth, req_json_auth } from "../api";
 
 import Length from "../components/coefficients/Length.vue";
 import Diameter from "../components/coefficients/Diameter.vue";
@@ -15,14 +15,17 @@ import CoefficientFinish from "../components/coefficients/CoefficientFinish.vue"
 import CoefficientCover from "../components/coefficients/CoefficientCover.vue";
 import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
-import router from "../router";
 import { useRoute } from "vue-router";
 import UploadModel from "../components/UploadModel.vue";
 import UploadDrawings from "../components/UploadDrawings.vue";
 // @ts-ignore
 import CadShowById from "../components/CadShowById.vue";
 import { useProfileStore } from "../stores/profile.store";
+import { useAuthStore } from "../stores/auth.store";
+import { ElMessage } from "element-plus";
+import DialogInfoPayment from "../components/dialog/DialogInfoPayment.vue";
 
+const authStore = useAuthStore();
 const profileStore = useProfileStore();
 
 interface FormResponse {
@@ -33,7 +36,8 @@ interface FormResponse {
   length: number;
   width: number;
   quantity: number;
-  material_preference: string;
+  material_id: string;
+  material_form: string;
   id_tolerance: string;
   id_finish: string;
   id_cover: string;
@@ -60,7 +64,8 @@ let length = ref(120);
 let width = ref(30);
 let quantity = ref(1);
 
-let material_preference = ref("alum 1");
+let material_id = ref("alum_D16T");
+let material_form = ref("rod");
 
 let id_tolerance = ref("4");
 let id_finish = ref("3");
@@ -77,7 +82,8 @@ const payload = reactive({
   length,
   width,
   height: width,
-  material_preference,
+  material_id,
+  material_form,
   id_tolerance,
   id_finish,
   id_cover,
@@ -95,6 +101,9 @@ let result = ref({
   quantity: 1,
 });
 
+let isInfoVisible = ref(false);
+const isLoading = ref<boolean>(true);
+
 // Отправляем запрос на сервер при любом изменении данных
 watch(payload, sendData, { deep: true });
 
@@ -109,16 +118,23 @@ onMounted(() => {
 type sendType = typeof payload;
 
 async function sendData(payload: sendType) {
+  isLoading.value = true;
   try {
-    const res = await req_urlencoded("/anonymous-calc", "POST", payload);
+    const res = await req_urlencoded_auth("/anonymous-calc", "POST", payload);
     const data = (await res?.json()) as FormResponse;
     result.value = data;
   } catch (error) {
     console.error({ error });
   }
+  isLoading.value = false;
 }
 
 async function submitOrder(payload: sendType) {
+  if (!authStore.getToken) {
+    ElMessage.warning("Необходимо зарегистрироваться!");
+    return;
+  }
+  isLoading.value = true;
   if (order_id.value == 0) {
     try {
       const res = await req_urlencoded_auth("/orders", "POST", payload);
@@ -138,16 +154,13 @@ async function submitOrder(payload: sendType) {
       console.error({ error });
     }
   }
-  const idToOpen = order_id.value == 0 ? result.value?.id : order_id.value;
-  console.log({ idToOpen });
-  // const idToOpen = 1;
-  router.push({
-    name: "profile",
-    query: idToOpen ? { orderId: String(idToOpen) } : undefined,
-  });
+  isLoading.value = false;
+  isInfoVisible.value = true;
+  // ElMessage.success("Платежные документы отправлены на почту");
 }
 
 async function getOrder(id: number) {
+  isLoading.value = true;
   try {
     const res = await req_json_auth(`/orders/${id}`, "GET");
     const data = (await res?.json()) as FormResponse;
@@ -158,8 +171,8 @@ async function getOrder(id: number) {
     if (data.length) length.value = data.length;
     if (data.width) width.value = data.width;
     if (data.quantity) quantity.value = data.quantity;
-    if (data.material_preference)
-      material_preference.value = data.material_preference;
+    if (data.material_id) material_id.value = data.material_id;
+    if (data.material_form) material_form.value = data.material_form;
     if (data.id_tolerance) id_tolerance.value = data.id_tolerance;
     if (data.id_finish) id_finish.value = data.id_finish;
     if (data.id_cover) id_cover.value = data.id_cover;
@@ -171,13 +184,14 @@ async function getOrder(id: number) {
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
-      service_id: 4,
+      service_id: "cnc_lathe",
       file_id: file_id.value,
       quantity: quantity.value,
       length: length.value,
       width: width.value,
       height: width.value,
-      material_preference: material_preference.value,
+      material_id: material_id.value,
+      material_form: material_form.value,
       id_tolerance: id_tolerance.value,
       id_finish: id_finish.value,
       id_cover: id_cover.value,
@@ -189,11 +203,16 @@ async function getOrder(id: number) {
   } catch (error) {
     console.error({ error });
   }
+  isLoading.value = false;
 }
 </script>
 
 <template>
-  <el-row :gutter="0" style="min-height: 500px; background-color: #283d5b">
+  <el-row
+    :gutter="0"
+    style="min-height: 500px; background-color: #283d5b"
+    v-loading="isLoading"
+  >
     <!-- 1. Левая часть -->
     <el-col :offset="2" :span="9" style="padding: 30px 50px 40px 20px">
       <div style="color: white; font-size: 38px; padding-bottom: 40px">
@@ -272,7 +291,7 @@ async function getOrder(id: number) {
           class="submit"
           @click="submitOrder(payload)"
         >
-          {{ order_id != 0 ? "Редактировать заказ" : "Перейти к оформлению >" }}
+          {{ order_id != 0 ? "Сохранить заказ" : "Перейти к оформлению >" }}
         </el-button>
       </div>
     </el-col>
@@ -305,7 +324,7 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5">
         <el-col :offset="2" :span="13">
-          <MaterialMachining v-model="material_preference" />
+          <MaterialMachining v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="6">
           <CoefficientSize v-model="n_dimensions"
@@ -324,6 +343,7 @@ async function getOrder(id: number) {
         </el-col>
       </el-row>
     </el-col>
+    <DialogInfoPayment v-model="isInfoVisible" />
   </el-row>
 </template>
 

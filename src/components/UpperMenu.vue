@@ -98,22 +98,23 @@ function scrollToAbout() {
               <template #title>Решения</template>
               <el-sub-menu index="1-1">
                 <template #title>Механообрабатывающее производство</template>
-                <el-menu-item index="1-1-1" disabled>
-                  Сверлильные работы
-                </el-menu-item>
-                <el-menu-item index="1-1-2" disabled>Шлифовка</el-menu-item>
-                <el-menu-item index="/milling" :route="{ path: '/milling' }">
-                  Фрезерные работы
-                </el-menu-item>
                 <el-menu-item
                   index="/machining"
                   :route="{ path: '/machining' }"
                 >
                   Токарные работы
                 </el-menu-item>
+                <el-menu-item index="/milling" :route="{ path: '/milling' }">
+                  Фрезерные работы
+                </el-menu-item>
+
                 <el-menu-item index="1-1-5" disabled>
                   Раскрой металла / заготовительный участок
                 </el-menu-item>
+                <el-menu-item index="1-1-1" disabled>
+                  Сверлильные работы
+                </el-menu-item>
+                <el-menu-item index="1-1-2" disabled>Шлифовка</el-menu-item>
               </el-sub-menu>
               <el-menu-item index="/plastic" :route="{ path: '/plastic' }">
                 Производство из композитных материалов

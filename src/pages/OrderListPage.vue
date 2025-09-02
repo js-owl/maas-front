@@ -18,6 +18,19 @@ const formatDate = (_row: any, _column: any, cellValue: string) => {
   return cellValue.split("T")[0];
 };
 
+const serviceNames: any = { cnc_lathe: "токарная", cnc_milling: "фрезерная" };
+const getServiceName = (service_id: number): string => {
+  return serviceNames[service_id] || service_id;
+};
+
+const statusTexts: any = {
+  pending: "ожидание оплаты",
+  processing: "в проиводстве",
+};
+const getStatusText = (status: string): string => {
+  return statusTexts[status] || status;
+};
+
 const handleEdit = (row: IOrder): void => {
   switch (row.service_id) {
     case 2:
@@ -73,21 +86,25 @@ const handleDelete = async (row: IOrder): Promise<void> => {
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
       >
         <el-table-column prop="id" label="Номер заказа" width="150" />
-        <el-table-column prop="service_id" label="ID услуги" width="120" />
+        <el-table-column prop="service_id" label="Тип услуги" width="120">
+          <template #default="{ row }">
+            {{ getServiceName(row.service_id) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="created_at"
           label="Дата создания"
           :formatter="formatDate"
           width="150"
         />
-        <el-table-column
-          prop="material_preference"
-          label="Материал"
-          width="150"
-        />
+        <el-table-column prop="material_id" label="Материал" width="150" />
         <el-table-column prop="quantity" label="Кол-во" width="100" />
         <el-table-column prop="file_id" label="3D модель" width="100" />
-        <el-table-column prop="status" label="Статус" width="150" />
+        <el-table-column prop="status" label="Статус" width="150">
+          <template #default="{ row }">
+            {{ getStatusText(row.status) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="total_price" label="Цена" width="150" />
         <el-table-column fixed="right" label="Операции" min-width="150">
           <template #default="scope">

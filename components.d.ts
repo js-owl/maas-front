@@ -28,6 +28,7 @@ declare module 'vue' {
     CoefficientTooling: typeof import('./src/components/coefficients/CoefficientTooling.vue')['default']
     CoefficientType: typeof import('./src/components/coefficients/CoefficientType.vue')['default']
     DialogCall: typeof import('./src/components/dialog/DialogCall.vue')['default']
+    DialogInfoPayment: typeof import('./src/components/dialog/DialogInfoPayment.vue')['default']
     DialogLogin: typeof import('./src/components/dialog/DialogLogin.vue')['default']
     DialogRegistration: typeof import('./src/components/dialog/DialogRegistration.vue')['default']
     Diameter: typeof import('./src/components/coefficients/Diameter.vue')['default']
@@ -81,5 +82,8 @@ declare module 'vue' {
     VolumeCylinder: typeof import('./src/components/volumes/VolumeCylinder.vue')['default']
     VolumeRectangle: typeof import('./src/components/volumes/VolumeRectangle.vue')['default']
     Width: typeof import('./src/components/coefficients/Width.vue')['default']
+  }
+  export interface GlobalDirectives {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

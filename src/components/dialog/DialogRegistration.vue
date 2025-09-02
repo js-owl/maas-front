@@ -22,16 +22,15 @@ const form = ref<FormData>({
 const regStore = useRegStore();
 const loading = ref(false);
 
-const validateEmail = (
+const validateLogin = (
   _rule: any,
   value: string,
   callback: (error?: Error) => void
 ) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!value) {
-    callback(new Error("Пожалуйста, введите email"));
-  } else if (!emailRegex.test(value)) {
-    callback(new Error("Пожалуйста, введите корректный email"));
+    callback(new Error("Пожалуйста, введите логин"));
+  } else if (value.length < 4) {
+    callback(new Error("Логин должен содержать минимум 4 символа"));
   } else {
     callback();
   }
@@ -66,7 +65,7 @@ const validateConfirmPassword = (
 };
 
 const rules = ref<FormRules<FormData>>({
-  username: [{ validator: validateEmail, trigger: "blur" }],
+  username: [{ validator: validateLogin, trigger: "blur" }],
   password: [{ validator: validatePassword, trigger: "blur" }],
   confirmPassword: [{ validator: validateConfirmPassword, trigger: "blur" }],
 });
@@ -132,12 +131,8 @@ const submitForm = async () => {
       label-position="top"
       @submit.prevent="submitForm"
     >
-      <el-form-item label="E-mail*" prop="username">
-        <el-input
-          v-model="form.username"
-          placeholder="Введите email"
-          type="email"
-        />
+      <el-form-item label="Username*" prop="username">
+        <el-input v-model="form.username" placeholder="Введите username" />
       </el-form-item>
 
       <el-form-item label="Пароль*" prop="password">

@@ -2,11 +2,11 @@
 import { ref } from "vue";
 import SectionAbility from "../components/SectionAbility.vue";
 import SectionAdvantages from "../components/SectionAdvantages.vue";
-import UploadDrawings from "../components/UploadDrawings.vue";
-import UploadModel from "../components/UploadModel.vue";
+// import UploadDrawings from "../components/UploadDrawings.vue";
+// import UploadModel from "../components/UploadModel.vue";
 
-let file_id = ref(1);
-let drawing_id = ref(1);
+let file_id = ref(4);
+// let drawing_id = ref(1);
 </script>
 
 <template>
@@ -16,12 +16,12 @@ let drawing_id = ref(1);
     style="
       min-height: 600px;
       background-color: #283d5b;
-      padding: 150px 0 0 20px;
+      padding: 100px 0 50px 20px;
     "
   >
     <el-col :offset="2" :span="7">
       <div style="text-align: left; font-size: 60px; color: white">
-        ПРОИЗВОДСТВО ПО ТРЕБОВАНИЮ
+        ЦЕНТР КОЛЛЕКТИВНОГО ПРОИЗВОДСТВА
       </div>
       <p style="font-size: 30px; color: white">
         Получите доступ к огромному выбору производственных процессов,
@@ -30,11 +30,14 @@ let drawing_id = ref(1);
     </el-col>
     <el-col :offset="3" :span="9" style="text-align: center">
       <el-row :gutter="20">
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <UploadModel v-model="file_id" color="#283d5b" />
         </el-col>
         <el-col :span="12">
           <UploadDrawings v-model="drawing_id" color="#283d5b" />
+        </el-col> -->
+        <el-col :span="24">
+          <CadShowById v-model="file_id" />
         </el-col>
         <el-col :span="24">
           <el-button
@@ -49,7 +52,7 @@ let drawing_id = ref(1);
             "
             @click="$router.push('/machining')"
           >
-            Калькулятор стоимости изделия
+            Узнать цену изготовления данной детали
           </el-button>
         </el-col>
       </el-row>

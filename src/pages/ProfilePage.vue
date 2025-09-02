@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import type { FormInstance, FormRules } from "element-plus";
+import { type FormInstance, type FormRules } from "element-plus";
 import { onMounted, ref } from "vue";
 import { useProfileStore, type IProfile } from "../stores/profile.store";
 import router from "../router";
-import { req_json_auth } from "../api";
 
 const profileStore = useProfileStore();
 const profileForm = ref<IProfile>();
@@ -22,25 +21,9 @@ async function onSubmit() {
   await formRef.value.validate(async (valid) => {
     if (valid) {
       await profileStore.updateProfile(profileForm.value as IProfile);
+      router.go(0);
     }
   });
-}
-async function payOrder() {
-  const orderId = 1; //router.query.orderId;
-
-  if (orderId) {
-    try {
-      // Update order status to "paid"
-      await req_json_auth(`/orders/${orderId}`, "PUT", {
-        status: "paid",
-      });
-      console.log("Order status updated to paid");
-    } catch (error) {
-      console.error("Failed to update order status:", error);
-    }
-  }
-
-  router.push({ name: "order-list" });
 }
 </script>
 
@@ -48,14 +31,19 @@ async function payOrder() {
   <el-row
     :gutter="20"
     style="
+      display: flex;
+      align-items: center;
       background-color: #fff;
       padding-top: 30px;
       min-height: 100px;
       padding-left: 20px;
     "
   >
-    <el-col :offset="2" :span="20">
+    <el-col :offset="2" :span="4">
       <h1>Профиль</h1>
+    </el-col>
+    <el-col :span="6">
+      <el-button type="primary" @click="onSubmit"> Обновить профиль </el-button>
     </el-col>
   </el-row>
   <el-row
@@ -80,23 +68,27 @@ async function payOrder() {
           <div style="font-size: 24px; padding-bottom: 30px">
             Общая информация
           </div>
-          <el-form-item
-            v-if="profileForm"
-            label="Имя пользователя"
-            prop="username"
-          >
-            <el-input
-              v-model="profileForm.username"
-              placeholder="username"
-              disabled
-            />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSubmit">
-              Обновить информацию
-            </el-button>
-            <el-button type="success" @click="payOrder"> Оплатить </el-button>
-          </el-form-item>
+          <div v-if="profileForm">
+            <el-form-item label="Логин" prop="username">
+              <el-input
+                v-model="profileForm.username"
+                placeholder="username"
+                disabled
+              />
+            </el-form-item>
+            <el-form-item label="Email" prop="email">
+              <el-input
+                v-model="profileForm.email"
+                placeholder="Введите свой email"
+              />
+            </el-form-item>
+            <el-form-item label="Полное имя" prop="full_name">
+              <el-input
+                v-model="profileForm.full_name"
+                placeholder="Введите полное имя"
+              />
+            </el-form-item>
+          </div>
         </el-col>
 
         <el-col :offset="1" :span="6">
@@ -108,21 +100,55 @@ async function payOrder() {
           </el-form-item>
         </el-col>
 
-        <el-col :offset="1" :span="6">
+        <!-- <el-col :offset="1" :span="6">
           <div style="font-size: 24px; padding-bottom: 30px">
-            Информация о платеже
+            Платежная информация
           </div>
-          <el-form-item
-            v-if="profileForm"
-            label="Банковская карта"
-            prop="payment_card_number"
-          >
-            <el-input
-              v-model="profileForm.payment_card_number"
-              placeholder="Введите карту"
-            />
-          </el-form-item>
-        </el-col>
+          <div>
+            <el-form-item label="Наименование банка" prop="payment_bank_name">
+              <el-input
+                v-model="profileForm.payment_bank_name"
+                placeholder="Введите имя банка"
+              />
+            </el-form-item>
+            <el-form-item label="ИНН" prop="payment_inn">
+              <el-input
+                v-model="profileForm.payment_inn"
+                placeholder="Введите ИНН"
+              />
+            </el-form-item>
+            <el-form-item label="КПП" prop="payment_kpp">
+              <el-input
+                v-model="profileForm.payment_kpp"
+                placeholder="Введите КПП"
+              />
+            </el-form-item>
+            <el-form-item label="БИК" prop="payment_bik">
+              <el-input
+                v-model="profileForm.payment_bik"
+                placeholder="Введите БИК"
+              />
+            </el-form-item>
+            <el-form-item label="Корр.счет" prop="payment_cor_account">
+              <el-input
+                v-model="profileForm.payment_cor_account"
+                placeholder="Введите корреспондентский счет"
+              />
+            </el-form-item>
+            <el-form-item label="Расчетный счет" prop="payment_account">
+              <el-input
+                v-model="profileForm.payment_account"
+                placeholder="Введите расчетный счет"
+              />
+            </el-form-item>
+            <el-form-item label="Получатель" prop="payment_company_name">
+              <el-input
+                v-model="profileForm.payment_company_name"
+                placeholder="Введите получателя"
+              />
+            </el-form-item>
+          </div>
+        </el-col> -->
       </el-row>
     </el-form>
   </el-row>

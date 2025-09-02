@@ -15,6 +15,12 @@ const uploadHeaders = computed(() => ({
   Authorization: `Bearer ${authStore.getToken}`,
 }));
 
+const isDisabled = () => {
+  if (authStore.getToken) {
+    return false;
+  }
+  return true;
+};
 const loadModel = (response: any) => {
   console.log({ response });
   drawing_id.value = response.drawing_id;
@@ -30,6 +36,7 @@ const loadModel = (response: any) => {
     :action="`${API_BASE}/documents/upload`"
     multiple
     :on-success="loadModel"
+    :disabled="isDisabled()"
   >
     <div class="custom">
       <IconDrawing
@@ -45,6 +52,11 @@ const loadModel = (response: any) => {
 
 <style scoped>
 :deep(.el-upload-dragger) {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+}
+:deep(.el-upload.is-disabled .el-upload-dragger) {
+  background-color: #283d5b;
   padding: 10px;
   border: 1px solid var(--border-color);
 }
