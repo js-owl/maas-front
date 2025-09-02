@@ -2,7 +2,6 @@
 import { reactive, ref } from "vue";
 import { useAuthStore } from "../../stores/auth.store";
 import DialogRegistration from "./DialogRegistration.vue";
-import { useRouter } from "vue-router";
 
 let dialogFormVisible = defineModel<boolean>();
 const formLabelWidth = "140px";
@@ -15,7 +14,6 @@ const formData = reactive({
 const isRegistrationVisible = ref(false);
 
 const authStore = useAuthStore();
-const router = useRouter();
 
 const onSubmit = async () => {
   console.log("onSubmit", { formData });
@@ -26,8 +24,6 @@ const onSubmit = async () => {
   formData.username = "";
   formData.password = "";
   dialogFormVisible.value = false;
-
-  router.push({ name: "order-list" });
 };
 
 const onRegistration = async () => {
