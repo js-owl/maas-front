@@ -74,6 +74,8 @@ let n_dimensions = ref(55);
 
 let k_otk = ref("1");
 let k_cert = ref(["a", "f"]);
+// Длительность изготовления (в днях)
+let manufacture = ref<number>(6);
 
 const payload = reactive({
   service_id: "cnc_lathe",
@@ -90,6 +92,7 @@ const payload = reactive({
   n_dimensions,
   k_otk,
   k_cert,
+  manufacture,
   special_instructions: "aaa",
 });
 
@@ -198,6 +201,7 @@ async function getOrder(id: number) {
       n_dimensions: n_dimensions.value,
       k_otk: k_otk.value,
       k_cert: k_cert.value,
+      manufacture: manufacture.value,
       special_instructions: "aaa",
     });
   } catch (error) {
@@ -215,45 +219,31 @@ async function getOrder(id: number) {
   >
     <!-- 1. Левая часть -->
     <el-col :offset="2" :span="9" style="padding: 30px 50px 40px 20px">
-      <div style="color: white; font-size: 38px; padding-bottom: 40px">
+      <div style="color: white; font-size: 38px; padding-bottom: 30px">
         Токарная обработка <br />
         {{ order_id != 0 ? `(заказ ${order_id})` : "" }}
       </div>
-      <div v-if="profileStore.profile?.username == 'admin'">
-        <div style="color: white; font-size: 42px">
-          {{ Number(result?.detail_time ?? 0).toFixed(0) }} ч
+
+      <div style="border-top: 1px solid #577aad; border-bottom: 1px solid #577aad">
+        <div style="display: flex; justify-content: space-between; color: white; padding: 14px 0; border-bottom: 1px solid #577aad">
+          <div>Цена изготовления 1 ед.</div>
+          <div>{{ Number(result?.detail_price ?? 0).toLocaleString() }} р.</div>
         </div>
-        <div style="color: white; font-size: 20px; padding-bottom: 40px">
-          Трудоемкость изготовления 1 ед.
+        <div style="display: flex; justify-content: space-between; color: white; padding: 14px 0; border-bottom: 1px solid #577aad">
+          <div>Цена изготовления {{ result?.quantity || 0 }} ед.*</div>
+          <div>{{ Number(result?.total_price ?? 0).toLocaleString() }} р.</div>
         </div>
-      </div>
-      <div
-        style="
-          display: flex;
-          justify-content: space-between;
-          padding-bottom: 40px;
-        "
-      >
-        <div>
-          <div style="color: white; font-size: 40px">
-            {{ Number(result?.detail_price ?? 0).toFixed(0) }} руб
-          </div>
-          <div style="color: white; font-size: 20px">
-            Стоимость изготовления 1 ед.
-          </div>
+        <div style="display: flex; justify-content: space-between; color: white; padding: 14px 0; border-bottom: 1px solid #577aad">
+          <div>Трудоемкость</div>
+          <div>{{ Number(result?.detail_time ?? 0).toFixed(0) || "?" }}</div>
         </div>
-        <div>
-          <div style="color: white; font-size: 40px">
-            {{ Number(result?.total_price ?? 0).toFixed(0) }} руб
-          </div>
-          <div style="color: white; font-size: 20px">
-            Стоимость {{ result?.quantity || 0 }} ед.*
-          </div>
+        <div style="display: flex; justify-content: space-between; color: white; padding: 14px 0">
+          <div>Длительность изготовления</div>
+          <div>{{ manufacture }} дн.</div>
         </div>
       </div>
-      <div style="color: #577aad; font-size: 20px; padding-bottom: 40px">
-        *При увеличении количества единиц в заказе стоимость одного изделия
-        становится выгоднее.
+      <div style="color: #577aad; font-size: 16px; padding-top: 10px; padding-bottom: 30px">
+        *При увеличении количества единиц в заказе стоимость одного изделия становится выгоднее
       </div>
       <el-row
         :gutter="20"
