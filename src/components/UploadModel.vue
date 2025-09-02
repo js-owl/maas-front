@@ -62,23 +62,27 @@ const loadModel = (response: any) => {
             :color="color"
             style="display: block; width: 100px; height: 100px"
           />
-          <div class="el-upload__text" :style="{ color }" style="font-size: 22px">
+          <div
+            class="el-upload__text"
+            :style="{ color }"
+            style="font-size: 22px"
+          >
             3D-модель (STEP/STP/STL)
           </div>
         </div>
       </el-upload>
     </el-tooltip>
-    
+
     <DialogLogin v-model="isLoginDialogVisible" />
   </div>
 </template>
 
 <style scoped>
-::deep(.el-upload-dragger) {
+:deep(.el-upload-dragger) {
   padding: 10px;
   border: 1px solid var(--border-color);
 }
-::deep(.el-upload.is-disabled .el-upload-dragger) {
+:deep(.el-upload.is-disabled .el-upload-dragger) {
   background-color: #283d5b;
   padding: 10px;
   border: 1px solid var(--border-color);

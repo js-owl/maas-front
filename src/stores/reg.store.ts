@@ -31,8 +31,10 @@ export const useRegStore = defineStore("reg", () => {
       let errorMessage = `Registration failed: ${res.status} ${res.statusText}`;
       try {
         const errorData = await res.json();
-        const detail = (errorData && (errorData.detail || errorData.message)) || "";
-        const detailStr = typeof detail === "string" ? detail : JSON.stringify(detail);
+        const detail =
+          (errorData && (errorData.detail || errorData.message)) || "";
+        const detailStr =
+          typeof detail === "string" ? detail : JSON.stringify(detail);
         // Определяем кейс "пользователь уже существует"
         if (
           res.status === 409 ||

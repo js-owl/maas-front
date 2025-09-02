@@ -105,14 +105,15 @@ const submitForm = async () => {
     // Close dialog and reset form
     closeDialog();
   } catch (error) {
-    console.error("Form validation/submit failed:", error);
-    if (error instanceof Error && /уже существует/i.test(error.message)) {
+    console.error("Form validation/submit failed:", { error });
+    if (error instanceof Error && /400 Bad Request/i.test(error.message)) {
       usernameError.value = "Такой пользователь уже существует";
       return;
     }
     ElMessage({
       type: "error",
-      message: error instanceof Error ? error.message : "Ошибка при регистрации",
+      message:
+        error instanceof Error ? error.message : "Ошибка при регистрации",
     });
   } finally {
     loading.value = false;
