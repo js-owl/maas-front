@@ -19,6 +19,8 @@ const form = ref<FormData>({
   confirmPassword: "",
 });
 
+const usernameError = ref("");
+
 const regStore = useRegStore();
 const loading = ref(false);
 
@@ -78,6 +80,7 @@ const closeDialog = () => {
     password: "",
     confirmPassword: "",
   };
+  usernameError.value = "";
   // Clear validation errors
   if (formRef.value) {
     formRef.value.clearValidate();
@@ -102,11 +105,14 @@ const submitForm = async () => {
     // Close dialog and reset form
     closeDialog();
   } catch (error) {
-    console.error("Form validation failed:", error);
+    console.error("Form validation/submit failed:", error);
+    if (error instanceof Error && /уже существует/i.test(error.message)) {
+      usernameError.value = "Такой пользователь уже существует";
+      return;
+    }
     ElMessage({
       type: "error",
-      message:
-        error instanceof Error ? error.message : "Ошибка при регистрации",
+      message: error instanceof Error ? error.message : "Ошибка при регистрации",
     });
   } finally {
     loading.value = false;
@@ -131,8 +137,12 @@ const submitForm = async () => {
       label-position="top"
       @submit.prevent="submitForm"
     >
-      <el-form-item label="Username*" prop="username">
-        <el-input v-model="form.username" placeholder="Введите username" />
+      <el-form-item label="Username*" prop="username" :error="usernameError">
+        <el-input
+          v-model="form.username"
+          placeholder="Введите username"
+          @input="usernameError = ''"
+        />
       </el-form-item>
 
       <el-form-item label="Пароль*" prop="password">

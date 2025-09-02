@@ -28,9 +28,25 @@ export const useRegStore = defineStore("reg", () => {
     });
 
     if (!res.ok) {
-      const errorData = await res.json();
-      console.error("Registration failed:", errorData);
-      throw new Error(`Registration failed: ${res.status} ${res.statusText}`);
+      let errorMessage = `Registration failed: ${res.status} ${res.statusText}`;
+      try {
+        const errorData = await res.json();
+        const detail = (errorData && (errorData.detail || errorData.message)) || "";
+        const detailStr = typeof detail === "string" ? detail : JSON.stringify(detail);
+        // Определяем кейс "пользователь уже существует"
+        if (
+          res.status === 409 ||
+          /exist|already|уже существует/i.test(detailStr)
+        ) {
+          throw new Error("Такой пользователь уже существует");
+        }
+        if (detailStr) {
+          errorMessage = detailStr;
+        }
+      } catch (e) {
+        // Если не удалось распарсить json, оставляем дефолтное сообщение
+      }
+      throw new Error(errorMessage);
     }
 
     const data = (await res.json()) as RegResponse;
