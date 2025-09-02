@@ -13,6 +13,8 @@ const { color = "white" } = defineProps({
 const authStore = useAuthStore();
 const isLoginDialogVisible = ref(false);
 
+const isAuthorized = computed(() => Boolean(authStore.getToken));
+
 const uploadHeaders = computed(() => ({
   Authorization: `Bearer ${authStore.getToken}`,
 }));
@@ -39,38 +41,44 @@ const loadModel = (response: any) => {
 
 <template>
   <div>
-    <el-upload
-      class="upload"
-      :style="{ '--border-color': color }"
-      drag
-      :headers="uploadHeaders"
-      :action="`${API_BASE}/upload`"
-      multiple
-      :on-success="loadModel"
-      :disabled="isDisabled()"
-      @click="handleUploadClick"
+    <el-tooltip
+      content="Необходимо зарегистрироваться"
+      placement="top"
+      :disabled="isAuthorized"
     >
-      <div class="custom">
-        <Icon3D
-          :color="color"
-          style="display: block; width: 100px; height: 100px"
-        />
-        <div class="el-upload__text" :style="{ color }" style="font-size: 22px">
-          3D-модель (STEP/STP/STL)
+      <el-upload
+        class="upload"
+        :style="{ '--border-color': color }"
+        drag
+        :headers="uploadHeaders"
+        :action="`${API_BASE}/upload`"
+        multiple
+        :on-success="loadModel"
+        :disabled="isDisabled()"
+        @click="handleUploadClick"
+      >
+        <div class="custom">
+          <Icon3D
+            :color="color"
+            style="display: block; width: 100px; height: 100px"
+          />
+          <div class="el-upload__text" :style="{ color }" style="font-size: 22px">
+            3D-модель (STEP/STP/STL)
+          </div>
         </div>
-      </div>
-    </el-upload>
+      </el-upload>
+    </el-tooltip>
     
     <DialogLogin v-model="isLoginDialogVisible" />
   </div>
 </template>
 
 <style scoped>
-:deep(.el-upload-dragger) {
+::deep(.el-upload-dragger) {
   padding: 10px;
   border: 1px solid var(--border-color);
 }
-:deep(.el-upload.is-disabled .el-upload-dragger) {
+::deep(.el-upload.is-disabled .el-upload-dragger) {
   background-color: #283d5b;
   padding: 10px;
   border: 1px solid var(--border-color);
