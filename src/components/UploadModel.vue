@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { API_BASE } from "../api";
 import Icon3D from "../icons/Icon3D.vue";
 import { useAuthStore } from "../stores/auth.store";
+import DialogLogin from "./dialog/DialogLogin.vue";
 
 const file_id = defineModel<number>();
 const { color = "white" } = defineProps({
@@ -10,15 +11,24 @@ const { color = "white" } = defineProps({
 });
 
 const authStore = useAuthStore();
+const isLoginDialogVisible = ref(false);
 
 const uploadHeaders = computed(() => ({
   Authorization: `Bearer ${authStore.getToken}`,
 }));
+
 const isDisabled = () => {
   if (authStore.getToken) {
     return false;
   }
   return true;
+};
+
+const handleUploadClick = () => {
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true;
+    return;
+  }
 };
 
 const loadModel = (response: any) => {
@@ -28,26 +38,31 @@ const loadModel = (response: any) => {
 </script>
 
 <template>
-  <el-upload
-    class="upload"
-    :style="{ '--border-color': color }"
-    drag
-    :headers="uploadHeaders"
-    :action="`${API_BASE}/upload`"
-    multiple
-    :on-success="loadModel"
-    :disabled="isDisabled()"
-  >
-    <div class="custom">
-      <Icon3D
-        :color="color"
-        style="display: block; width: 100px; height: 100px"
-      />
-      <div class="el-upload__text" :style="{ color }" style="font-size: 22px">
-        3D-модель (STEP/STP/STL)
+  <div>
+    <el-upload
+      class="upload"
+      :style="{ '--border-color': color }"
+      drag
+      :headers="uploadHeaders"
+      :action="`${API_BASE}/upload`"
+      multiple
+      :on-success="loadModel"
+      :disabled="isDisabled()"
+      @click="handleUploadClick"
+    >
+      <div class="custom">
+        <Icon3D
+          :color="color"
+          style="display: block; width: 100px; height: 100px"
+        />
+        <div class="el-upload__text" :style="{ color }" style="font-size: 22px">
+          3D-модель (STEP/STP/STL)
+        </div>
       </div>
-    </div>
-  </el-upload>
+    </el-upload>
+    
+    <DialogLogin v-model="isLoginDialogVisible" />
+  </div>
 </template>
 
 <style scoped>
