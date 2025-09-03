@@ -24,13 +24,13 @@ const getServiceName = (service_id: number): string => {
 };
 
 const materialNames: Record<string, string> = {
-	alum_D16T: "Алюминий Д16Т",
-	steel_12X18H10T: "Сталь 12Х18Н10Т",
-	// дополнительные соответствия при необходимости
+  alum_D16T: "Алюминий Д16Т",
+  steel_12X18H10T: "Сталь 12Х18Н10Т",
+  // дополнительные соответствия при необходимости
 };
 const getMaterialName = (materialCode: string): string => {
-	if (!materialCode) return "";
-	return materialNames[materialCode] || materialCode;
+  if (!materialCode) return "";
+  return materialNames[materialCode] || materialCode;
 };
 
 const statusTexts: any = {
@@ -109,7 +109,7 @@ const handleDelete = async (row: IOrder): Promise<void> => {
         />
         <el-table-column prop="material_id" label="Материал" width="150">
           <template #default="{ row }">
-            {{ getMaterialName(row.material_id as unknown as string) }}
+            {{ getMaterialName(row.material_id) }}
           </template>
         </el-table-column>
         <el-table-column prop="quantity" label="Кол-во" width="100" />

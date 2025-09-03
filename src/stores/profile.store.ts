@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { req_json_auth } from "../api";
+import { ElMessage } from "element-plus";
 
 export interface IProfile {
   username: string;
@@ -132,6 +133,10 @@ export const useProfileStore = defineStore("user", () => {
 
       profile.value = enrichedProfileData;
       saveProfileToStorage(enrichedProfileData);
+      ElMessage({
+        type: "success",
+        message: "Профиль успешно обновлен!",
+      });
     }
   }
 

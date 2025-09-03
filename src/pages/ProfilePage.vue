@@ -42,7 +42,7 @@ function buildAddressString(): string {
   return addressParts.join(", ");
 }
 
-async function onSubmit() {
+async function onUpdate() {
   if (!formRef.value || !profileForm.value) return;
   await formRef.value.validate(async (valid) => {
     if (valid) {
@@ -51,7 +51,7 @@ async function onSubmit() {
       if (profile) {
         profile.city = buildAddressString();
         await profileStore.updateProfile(profile as IProfile);
-        router.go(0);
+        router.push({ name: "profile" });
       }
     }
   });
@@ -74,7 +74,7 @@ async function onSubmit() {
       <h1>Профиль</h1>
     </el-col>
     <el-col :span="6">
-      <el-button type="primary" @click="onSubmit"> Обновить профиль </el-button>
+      <el-button type="primary" @click="onUpdate"> Обновить профиль </el-button>
     </el-col>
   </el-row>
   <el-row

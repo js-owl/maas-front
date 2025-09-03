@@ -273,7 +273,7 @@ async function getOrder(id: number) {
           "
         >
           <div>Трудоемкость</div>
-          <div>{{ Number(result?.detail_time ?? 0).toFixed(0) || "?" }} ч.</div>
+          <div>{{ Number(result?.detail_time ?? 0).toFixed(2) || "?" }} ч.</div>
         </div>
         <div
           style="
