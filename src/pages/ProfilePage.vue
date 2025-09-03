@@ -9,7 +9,16 @@ const profileForm = ref<IProfile>();
 const formRef = ref<FormInstance>();
 
 onMounted(async () => {
-  profileForm.value = profileStore.profile;
+  // Если профиль уже загружен в store, используем его
+  if (profileStore.profile) {
+    profileForm.value = Object.assign({}, profileStore.profile);
+  } else {
+    // Если профиль не загружен, загружаем его
+    await profileStore.getProfile();
+    if (profileStore.profile) {
+      profileForm.value = Object.assign({}, profileStore.profile);
+    }
+  }
 });
 
 const rules = ref<FormRules<IProfile>>({
@@ -38,10 +47,12 @@ async function onSubmit() {
   await formRef.value.validate(async (valid) => {
     if (valid) {
       // Собираем адрес из отдельных полей в поле city
-      profileForm.value.city = buildAddressString();
-      
-      await profileStore.updateProfile(profileForm.value as IProfile);
-      router.go(0);
+      const profile = profileForm.value;
+      if (profile) {
+        profile.city = buildAddressString();
+        await profileStore.updateProfile(profile as IProfile);
+        router.go(0);
+      }
     }
   });
 }

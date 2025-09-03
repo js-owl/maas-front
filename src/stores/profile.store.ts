@@ -31,11 +31,55 @@ export const useProfileStore = defineStore("user", () => {
   const savedProfile = localStorage.getItem(PROFILE_STORE_KEY);
   if (savedProfile) {
     try {
-      profile.value = JSON.parse(savedProfile) as IProfile;
+      const parsedProfile = JSON.parse(savedProfile) as IProfile;
+      
+      // Парсим адрес из поля city и заполняем отдельные поля
+      const addressFields = parseAddressString(parsedProfile.city);
+      profile.value = {
+        ...parsedProfile,
+        ...addressFields
+      };
     } catch (error) {
       console.error("Failed to parse saved profile:", error);
       localStorage.removeItem(PROFILE_STORE_KEY);
     }
+  }
+
+  // Функция для разбора адреса из поля city на отдельные поля
+  function parseAddressString(cityString: string): Partial<IProfile> {
+    if (!cityString || typeof cityString !== 'string') {
+      return {
+        postal: "",
+        region: "",
+        city_name: "",
+        street: "",
+        building: "",
+        apartment: ""
+      };
+    }
+
+    // Разбиваем строку по запятой и убираем лишние пробелы
+    const parts = cityString.split(',').map(part => part.trim()).filter(part => part);
+    
+    // Инициализируем поля пустыми строками
+    const addressFields: Partial<IProfile> = {
+      postal: "",
+      region: "",
+      city_name: "",
+      street: "",
+      building: "",
+      apartment: ""
+    };
+
+    // Заполняем поля в зависимости от количества частей
+    if (parts.length >= 1) addressFields.postal = parts[0];
+    if (parts.length >= 2) addressFields.region = parts[1];
+    if (parts.length >= 3) addressFields.city_name = parts[2];
+    if (parts.length >= 4) addressFields.street = parts[3];
+    if (parts.length >= 5) addressFields.building = parts[4];
+    if (parts.length >= 6) addressFields.apartment = parts[5];
+
+    return addressFields;
   }
 
   function saveProfileToStorage(profileData: IProfile) {
@@ -58,8 +102,16 @@ export const useProfileStore = defineStore("user", () => {
     const r = await req_json_auth(`/profile/`, "GET");
     if (r) {
       const profileData = (await r.json()) as IProfile;
-      profile.value = profileData;
-      saveProfileToStorage(profileData);
+      
+      // Парсим адрес из поля city и заполняем отдельные поля
+      const addressFields = parseAddressString(profileData.city);
+      const enrichedProfileData = {
+        ...profileData,
+        ...addressFields
+      };
+      
+      profile.value = enrichedProfileData;
+      saveProfileToStorage(enrichedProfileData);
     }
   }
 
@@ -67,8 +119,16 @@ export const useProfileStore = defineStore("user", () => {
     const r = await req_json_auth(`/profile/`, "PUT", updated);
     if (r) {
       const profileData = (await r.json()) as IProfile;
-      profile.value = profileData;
-      saveProfileToStorage(profileData);
+      
+      // Парсим адрес из поля city и заполняем отдельные поля
+      const addressFields = parseAddressString(profileData.city);
+      const enrichedProfileData = {
+        ...profileData,
+        ...addressFields
+      };
+      
+      profile.value = enrichedProfileData;
+      saveProfileToStorage(enrichedProfileData);
     }
   }
 
