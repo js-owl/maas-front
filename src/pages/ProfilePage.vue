@@ -16,10 +16,30 @@ const rules = ref<FormRules<IProfile>>({
   username: [{ required: true, message: "Введите имя", trigger: "blur" }],
 });
 
+// Функция для сборки адреса из отдельных полей
+function buildAddressString(): string {
+  const profile = profileForm.value;
+  if (!profile) return "";
+  
+  const addressParts = [
+    profile.postal || "",
+    profile.region || "",
+    profile.city_name || "",
+    profile.street || "",
+    profile.building || "",
+    profile.apartment || ""
+  ].filter(part => part && part.trim()); // Убираем пустые значения
+  
+  return addressParts.join(", ");
+}
+
 async function onSubmit() {
   if (!formRef.value || !profileForm.value) return;
   await formRef.value.validate(async (valid) => {
     if (valid) {
+      // Собираем адрес из отдельных полей в поле city
+      profileForm.value.city = buildAddressString();
+      
       await profileStore.updateProfile(profileForm.value as IProfile);
       router.go(0);
     }
@@ -95,9 +115,26 @@ async function onSubmit() {
           <div style="font-size: 24px; padding-bottom: 30px">
             Адрес доставки
           </div>
-          <el-form-item v-if="profileForm" label="Город" prop="city">
-            <el-input v-model="profileForm.city" placeholder="Введите город" />
-          </el-form-item>
+          <div v-if="profileForm">
+            <el-form-item label="Индекс" prop="postal">
+              <el-input v-model="profileForm.postal" placeholder="Введите индекс" />
+            </el-form-item>
+            <el-form-item label="Регион/Область" prop="region">
+              <el-input v-model="profileForm.region" placeholder="Введите регион" />
+            </el-form-item>
+            <el-form-item label="Город" prop="city_name">
+              <el-input v-model="profileForm.city_name" placeholder="Введите город" />
+            </el-form-item>
+            <el-form-item label="Улица" prop="street">
+              <el-input v-model="profileForm.street" placeholder="Введите улицу" />
+            </el-form-item>
+            <el-form-item label="Дом/Строение" prop="building">
+              <el-input v-model="profileForm.building" placeholder="Введите номер дома" />
+            </el-form-item>
+            <el-form-item label="Квартира/Офис" prop="apartment">
+              <el-input v-model="profileForm.apartment" placeholder="Введите номер квартиры" />
+            </el-form-item>
+          </div>
         </el-col>
 
         <!-- <el-col :offset="1" :span="6">

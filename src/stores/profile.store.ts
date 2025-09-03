@@ -7,6 +7,12 @@ export interface IProfile {
   email: string;
   full_name: string;
   city: string;
+  postal: string;
+  region: string;
+  city_name: string;
+  street: string;
+  building: string;
+  apartment: string;
   payment_bank_name: string;
   payment_inn: string;
   payment_kpp: string;
