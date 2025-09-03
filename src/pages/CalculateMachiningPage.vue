@@ -110,8 +110,28 @@ let result = ref({
 let isInfoVisible = ref(false);
 const isLoading = ref<boolean>(true);
 
-// Отправляем запрос на сервер при любом изменении данных
-watch(payload, sendData, { deep: true });
+// Отправляем запрос на сервер при любом изменении данных (без комментария)
+watch(
+  () => ({
+    service_id: payload.service_id,
+    file_id: payload.file_id,
+    quantity: payload.quantity,
+    length: payload.length,
+    width: payload.width,
+    height: payload.height,
+    material_id: payload.material_id,
+    material_form: payload.material_form,
+    id_tolerance: payload.id_tolerance,
+    id_finish: payload.id_finish,
+    id_cover: payload.id_cover,
+    n_dimensions: payload.n_dimensions,
+    k_otk: payload.k_otk,
+    k_cert: payload.k_cert,
+    manufacturing_cycle: payload.manufacturing_cycle,
+  }),
+  sendData,
+  { deep: true }
+);
 
 onMounted(() => {
   if (order_id.value == 0) {
@@ -311,10 +331,7 @@ async function getOrder(id: number) {
         :gutter="5"
         style="background-color: #283d5b; padding-bottom: 30px"
       >
-        <el-col
-          :span="24"
-          style="padding-bottom: 10px; font-size: 30px; color: #577aad"
-        >
+        <el-col :span="24" style="padding-bottom: 10px; font-size: 30px; color: #577aad">
           Загрузите файлы для расчета
         </el-col>
         <el-col :span="12">
