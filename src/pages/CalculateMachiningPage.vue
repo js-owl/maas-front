@@ -44,7 +44,7 @@ interface FormResponse {
   n_dimensions: number;
   k_otk: string;
   k_cert: string[];
-  special_instructions: "aaa";
+  special_instructions: string;
   status: string;
   detail_price: number;
   total_price: number;
@@ -77,6 +77,7 @@ let k_otk = ref("1");
 let k_cert = ref(["a", "f"]);
 // Длительность изготовления (в днях)
 let manufacturing_cycle = ref<number>(0);
+let special_instructions = ref("");
 
 const payload = reactive({
   service_id: "cnc_lathe",
@@ -94,7 +95,7 @@ const payload = reactive({
   k_otk,
   k_cert,
   manufacturing_cycle,
-  special_instructions: "aaa",
+  special_instructions,
 });
 
 let result = ref({
@@ -186,8 +187,8 @@ async function getOrder(id: number) {
     if (data.k_cert) k_cert.value = data.k_cert;
     if (data.manufacturing_cycle)
       manufacturing_cycle.value = data.manufacturing_cycle;
-    // if (data.special_instructions)
-    //   special_instructions.value = data.special_instructions;
+    if (data.special_instructions)
+      special_instructions.value = data.special_instructions;
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
@@ -206,7 +207,7 @@ async function getOrder(id: number) {
       k_otk: k_otk.value,
       k_cert: k_cert.value,
       manufacturing_cycle: manufacturing_cycle.value,
-      special_instructions: "aaa",
+      special_instructions,
     });
   } catch (error) {
     console.error({ error });
@@ -383,6 +384,17 @@ async function getOrder(id: number) {
       <el-row :gutter="5" style="padding: 30px 0">
         <el-col :offset="2" :span="20">
           <CoefficientCertificate v-model="k_cert" />
+        </el-col>
+      </el-row>
+      <el-row :gutter="5" style="padding: 0 0 30px 0">
+        <el-col :offset="2" :span="20">
+          <div style="padding-bottom: 8px; color: #283d5b; font-weight: 600">Комментарий</div>
+          <el-input
+            v-model="special_instructions"
+            type="textarea"
+            :rows="3"
+            placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
+          />
         </el-col>
       </el-row>
     </el-col>
