@@ -23,6 +23,16 @@ const getServiceName = (service_id: number): string => {
   return serviceNames[service_id] || service_id;
 };
 
+const materialNames: Record<string, string> = {
+	alum_D16T: "Алюминий Д16Т",
+	steel_12X18H10T: "Сталь 12Х18Н10Т",
+	// дополнительные соответствия при необходимости
+};
+const getMaterialName = (materialCode: string): string => {
+	if (!materialCode) return "";
+	return materialNames[materialCode] || materialCode;
+};
+
 const statusTexts: any = {
   pending: "ожидание оплаты",
   processing: "в проиводстве",
@@ -97,7 +107,11 @@ const handleDelete = async (row: IOrder): Promise<void> => {
           :formatter="formatDate"
           width="150"
         />
-        <el-table-column prop="material_id" label="Материал" width="150" />
+        <el-table-column prop="material_id" label="Материал" width="150">
+          <template #default="{ row }">
+            {{ getMaterialName(row.material_id as unknown as string) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="quantity" label="Кол-во" width="100" />
         <el-table-column prop="file_id" label="3D модель" width="100" />
         <el-table-column prop="status" label="Статус" width="150">
