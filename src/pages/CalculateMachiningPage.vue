@@ -394,6 +394,7 @@ async function getOrder(id: number) {
             type="textarea"
             :rows="3"
             placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
+            :input-style="{ backgroundColor: '#577aad', color: '#fff' }"
           />
         </el-col>
       </el-row>
