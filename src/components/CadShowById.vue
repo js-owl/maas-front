@@ -88,7 +88,7 @@ async function getModel() {
 
 function renderModel() {
   const material = new THREE.MeshPhongMaterial({
-    color: 0x4488ff,
+    // color: 0x808080,
     specular: 0x111111,
     shininess: 200,
   });
