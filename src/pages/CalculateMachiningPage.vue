@@ -95,7 +95,6 @@ const payload = reactive({
   k_otk,
   k_cert,
   manufacturing_cycle,
-  special_instructions,
 });
 
 let result = ref({
@@ -110,28 +109,8 @@ let result = ref({
 let isInfoVisible = ref(false);
 const isLoading = ref<boolean>(true);
 
-// Отправляем запрос на сервер при любом изменении данных (без комментария)
-watch(
-  () => ({
-    service_id: payload.service_id,
-    file_id: payload.file_id,
-    quantity: payload.quantity,
-    length: payload.length,
-    width: payload.width,
-    height: payload.height,
-    material_id: payload.material_id,
-    material_form: payload.material_form,
-    id_tolerance: payload.id_tolerance,
-    id_finish: payload.id_finish,
-    id_cover: payload.id_cover,
-    n_dimensions: payload.n_dimensions,
-    k_otk: payload.k_otk,
-    k_cert: payload.k_cert,
-    manufacturing_cycle: payload.manufacturing_cycle,
-  }),
-  sendData,
-  { deep: true }
-);
+// Отправляем запрос на сервер при любом изменении данных
+watch(payload, sendData, { deep: true });
 
 onMounted(() => {
   if (order_id.value == 0) {
@@ -141,9 +120,9 @@ onMounted(() => {
   }
 });
 
-type sendType = typeof payload;
+// type sendType = typeof payload;
 
-async function sendData(payload: sendType) {
+async function sendData(payload: any) {
   isLoading.value = true;
   try {
     const res = await req_urlencoded_auth("/anonymous-calc", "POST", payload);
@@ -155,7 +134,7 @@ async function sendData(payload: sendType) {
   isLoading.value = false;
 }
 
-async function submitOrder(payload: sendType) {
+async function submitOrder(payload: any) {
   if (!authStore.getToken) {
     ElMessage.warning("Необходимо зарегистрироваться!");
     return;
@@ -331,7 +310,10 @@ async function getOrder(id: number) {
         :gutter="5"
         style="background-color: #283d5b; padding-bottom: 30px"
       >
-        <el-col :span="24" style="padding-bottom: 10px; font-size: 30px; color: #577aad">
+        <el-col
+          :span="24"
+          style="padding-bottom: 10px; font-size: 30px; color: #577aad"
+        >
           Загрузите файлы для расчета
         </el-col>
         <el-col :span="12">
@@ -350,7 +332,12 @@ async function getOrder(id: number) {
           type="primary"
           plain
           class="submit"
-          @click="submitOrder(payload)"
+          @click="
+            submitOrder({
+              ...payload,
+              special_instructions: special_instructions,
+            })
+          "
         >
           {{ order_id != 0 ? "Сохранить заказ" : "Перейти к оформлению >" }}
         </el-button>
@@ -405,7 +392,9 @@ async function getOrder(id: number) {
       </el-row>
       <el-row :gutter="5" style="padding: 0 0 30px 0">
         <el-col :offset="2" :span="20">
-          <div style="padding-bottom: 8px; color: #283d5b; font-weight: 600">Комментарий</div>
+          <div style="padding-bottom: 8px; color: #283d5b; font-weight: 600">
+            Комментарий
+          </div>
           <el-input
             v-model="special_instructions"
             type="textarea"
