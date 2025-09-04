@@ -20,7 +20,7 @@ import UploadModel from "../components/UploadModel.vue";
 import UploadDrawings from "../components/UploadDrawings.vue";
 // @ts-ignore
 import CadShowById from "../components/CadShowById.vue";
-import { useProfileStore } from "../stores/profile.store";
+import { useProfileStore, type IProfile } from "../stores/profile.store";
 import { useAuthStore } from "../stores/auth.store";
 import { ElMessage } from "element-plus";
 import DialogInfoPayment from "../components/dialog/DialogInfoPayment.vue";
@@ -142,6 +142,33 @@ onMounted(() => {
 
 // type sendType = typeof payload;
 
+function isProfileComplete(profile?: IProfile): boolean {
+  if (!profile) return false;
+  const required: Array<keyof IProfile> = [
+    "email",
+    "full_name",
+    "postal",
+    "region",
+    "city_name",
+    "street",
+    "building",
+  ];
+  return required.every((key) => {
+    const v = profile[key] as unknown as string | undefined;
+    return typeof v === "string" && v.trim().length > 0;
+  });
+}
+
+async function ensureProfileLoaded() {
+  if (!profileStore.profile) {
+    try {
+      await profileStore.getProfile();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+}
+
 async function sendData(payload: MachiningPayload) {
   isLoading.value = true;
   try {
@@ -180,6 +207,13 @@ async function submitOrder(payload: MachiningPayload) {
     }
   }
   isLoading.value = false;
+  // Проверяем профиль перед переходом к списку заказов
+  await ensureProfileLoaded();
+  if (!isProfileComplete(profileStore.profile)) {
+    ElMessage.warning("Заполните профиль перед оформлением заказа");
+    router.push({ name: "profile" });
+    return;
+  }
   isInfoVisible.value = true;
   router.push({ name: "order-list" });
 }
