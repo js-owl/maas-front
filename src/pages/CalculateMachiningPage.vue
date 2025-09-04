@@ -326,21 +326,33 @@ async function getOrder(id: number) {
         </el-col>
       </el-row>
 
-      <div class="center-button">
-        <el-button
-          type="primary"
-          plain
-          class="submit"
-          @click="
-            submitOrder({
-              ...payload,
-              special_instructions: special_instructions,
-            })
-          "
-        >
-          {{ order_id != 0 ? "Сохранить заказ" : "Перейти к оформлению >" }}
-        </el-button>
-      </div>
+      <el-row :gutter="5" class="upload-section">
+        <el-col :span="12">
+          <el-button
+            type="primary"
+            plain
+            class="submit"
+            @click="router.push({ name: 'order-list' })"
+          >
+            Отменить
+          </el-button>
+        </el-col>
+        <el-col :span="12">
+          <el-button
+            type="primary"
+            plain
+            class="submit"
+            @click="
+              submitOrder({
+                ...payload,
+                special_instructions: special_instructions,
+              })
+            "
+          >
+            {{ order_id != 0 ? "Сохранить заказ" : "Оформить заказ" }}
+          </el-button>
+        </el-col>
+      </el-row>
     </el-col>
 
     <!-- 2. Правая часть -->
@@ -430,7 +442,8 @@ async function getOrder(id: number) {
   border: 1px solid white;
   color: white;
   font-size: 26px;
-  padding: 30px 90px;
+  padding: 30px 0;
+  width: 100%;
 }
 
 /* Основные цвета и фоны */
