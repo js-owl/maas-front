@@ -4,6 +4,7 @@ import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { useAuthStore } from "../stores/auth.store";
 
 const authStore = useAuthStore();
@@ -133,16 +134,14 @@ function renderModel() {
 
   scene.add(model);
 
-  // Создаем карту окружения для отражений
+  // Создаем карту окружения для отражений (корректно)
   const pmremGenerator = new THREE.PMREMGenerator(renderer);
-  const envMap = pmremGenerator.fromScene(
-    new THREE.Scene().background = new THREE.Color(0x87CEEB), // Небесно-голубой фон
-    0.04
-  ).texture;
-  
-  // Применяем карту окружения к материалу
+  const environment = new RoomEnvironment();
+  const envMap = pmremGenerator.fromScene(environment, 0.04).texture;
+  scene.environment = envMap;
   material.envMap = envMap;
-  
+  pmremGenerator.dispose();
+
   // Устанавливаем фон сцены
   scene.background = new THREE.Color(0x2c3e50); // Темно-синий фон для контраста
   updateRendererSize();
