@@ -55,6 +55,25 @@ interface FormResponse {
   manufacturing_cycle: number;
 }
 
+type MachiningPayload = {
+  service_id: string;
+  file_id: number;
+  quantity: number;
+  length: number;
+  width: number;
+  height: number;
+  material_id: string;
+  material_form: string;
+  id_tolerance: string;
+  id_finish: string;
+  id_cover: string;
+  n_dimensions: number;
+  k_otk: string;
+  k_cert: string[];
+  manufacturing_cycle: number;
+  special_instructions?: string;
+};
+
 const route = useRoute();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
@@ -122,7 +141,7 @@ onMounted(() => {
 
 // type sendType = typeof payload;
 
-async function sendData(payload: any) {
+async function sendData(payload: MachiningPayload) {
   isLoading.value = true;
   try {
     const res = await req_urlencoded_auth("/anonymous-calc", "POST", payload);
@@ -134,7 +153,7 @@ async function sendData(payload: any) {
   isLoading.value = false;
 }
 
-async function submitOrder(payload: any) {
+async function submitOrder(payload: MachiningPayload) {
   if (!authStore.getToken) {
     ElMessage.warning("Необходимо зарегистрироваться!");
     return;
@@ -218,101 +237,59 @@ async function getOrder(id: number) {
 <template>
   <el-row
     :gutter="0"
-    style="min-height: 500px; background-color: #283d5b"
+    class="main-container"
     v-loading="isLoading"
     element-loading-background="rgba(0, 42, 68, 0.8)"
     element-loading-text="Расчет цены..."
     element-loading-custom-class="loading-top"
   >
     <!-- 1. Левая часть -->
-    <el-col :offset="2" :span="9" style="padding: 30px 50px 40px 20px">
-      <div style="color: white; font-size: 38px; padding-bottom: 30px">
+    <el-col :offset="2" :span="9" class="left-section">
+      <div class="title-text">
         Токарная обработка <br />
         {{ order_id != 0 ? `(заказ ${order_id})` : "" }}
       </div>
 
-      <div
-        style="
-          border-top: 1px solid #577aad;
-          border-bottom: 1px solid #577aad;
-          font-size: 24px;
-        "
-      >
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            color: white;
-            padding: 14px 0;
-            border-bottom: 1px solid #577aad;
-          "
-        >
+      <div class="price-section">
+        <div class="price-row">
           <div>Цена изготовления 1 ед.</div>
           <div>{{ Number(result?.detail_price ?? 0).toLocaleString() }} р.</div>
         </div>
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            color: white;
-            padding: 14px 0;
-            border-bottom: 1px solid #577aad;
-          "
-        >
+        <div class="price-row">
           <div>Цена изготовления {{ result?.quantity || 0 }} ед.*</div>
           <div>{{ Number(result?.total_price ?? 0).toLocaleString() }} р.</div>
         </div>
         <div
           v-if="profileStore.profile?.username == 'admin'"
-          style="
-            display: flex;
-            justify-content: space-between;
-            color: white;
-            padding: 14px 0;
-            border-bottom: 1px solid #577aad;
-          "
+          class="price-row"
         >
           <div>Трудоемкость</div>
           <div>{{ Number(result?.detail_time ?? 0).toFixed(2) || "?" }} ч.</div>
         </div>
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            color: white;
-            padding: 14px 0;
-          "
-        >
+        <div class="price-row-last">
           <div>Длительность изготовления</div>
           <div>{{ result?.manufacturing_cycle }} дн.</div>
         </div>
       </div>
-      <div
-        style="
-          color: #577aad;
-          font-size: 16px;
-          padding-top: 10px;
-          padding-bottom: 30px;
-        "
-      >
+      <div class="disclaimer-text">
         *При увеличении количества единиц в заказе стоимость одного изделия
         становится выгоднее
       </div>
       <el-row
         :gutter="20"
-        style="background-color: #283d5b; padding-bottom: 30px"
+        class="component-section"
       >
-        <el-col :offset="0" :span="24" style="color: #577aad">
+        <el-col :offset="0" :span="24" class="cad-section">
           <CadShowById v-model="file_id" />
         </el-col>
       </el-row>
       <el-row
         :gutter="5"
-        style="background-color: #283d5b; padding-bottom: 30px"
+        class="upload-section"
       >
         <el-col
           :span="24"
-          style="padding-bottom: 10px; font-size: 30px; color: #577aad"
+          class="upload-title"
         >
           Загрузите файлы для расчета
         </el-col>
@@ -322,12 +299,12 @@ async function getOrder(id: number) {
         <el-col :span="12">
           <UploadDrawings v-model="drawing_id" color="#fff" />
         </el-col>
-        <el-col :span="24" style="font-size: 20px; color: #577aad">
+        <el-col :span="24" class="upload-info">
           Максимальный размер 100Мб
         </el-col>
       </el-row>
 
-      <div style="display: flex; justify-content: center">
+      <div class="center-button">
         <el-button
           type="primary"
           plain
@@ -345,7 +322,7 @@ async function getOrder(id: number) {
     </el-col>
 
     <!-- 2. Правая часть -->
-    <el-col :span="13" style="background-color: #e5e5e5; padding-top: 30px">
+    <el-col :span="13" class="right-section">
       <el-row :gutter="5">
         <el-col :offset="2" :span="6">
           <Length v-model="length" />
@@ -379,20 +356,20 @@ async function getOrder(id: number) {
         /></el-col>
       </el-row>
 
-      <el-row :gutter="5" style="padding-top: 30px">
+      <el-row :gutter="5" class="row-spacing-top">
         <el-col :offset="2" :span="20">
           <CoefficientOtk v-model="k_otk" />
         </el-col>
       </el-row>
 
-      <el-row :gutter="5" style="padding: 30px 0">
+      <el-row :gutter="5" class="row-spacing-both">
         <el-col :offset="2" :span="20">
           <CoefficientCertificate v-model="k_cert" />
         </el-col>
       </el-row>
-      <el-row :gutter="5" style="padding: 0 0 30px 0">
+      <el-row :gutter="5" class="row-spacing-bottom">
         <el-col :offset="2" :span="20">
-          <div style="padding-bottom: 8px; color: #283d5b; font-weight: 600">
+          <div class="comment-label">
             Комментарий
           </div>
           <el-input
@@ -434,5 +411,107 @@ async function getOrder(id: number) {
   color: white;
   font-size: 26px;
   padding: 30px 90px;
+}
+
+/* Основные цвета и фоны */
+.main-container {
+  min-height: 500px;
+  background-color: #283d5b;
+}
+
+.left-section {
+  padding: 30px 50px 40px 20px;
+}
+
+.right-section {
+  background-color: #e5e5e5;
+  padding-top: 30px;
+}
+
+/* Текстовые стили */
+.title-text {
+  color: white;
+  font-size: 38px;
+  padding-bottom: 30px;
+}
+
+.price-section {
+  border-top: 1px solid #577aad;
+  border-bottom: 1px solid #577aad;
+  font-size: 24px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  padding: 14px 0;
+  border-bottom: 1px solid #577aad;
+}
+
+.price-row-last {
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  padding: 14px 0;
+}
+
+.disclaimer-text {
+  color: #577aad;
+  font-size: 16px;
+  padding-top: 10px;
+  padding-bottom: 30px;
+}
+
+/* Секции с компонентами */
+.component-section {
+  background-color: #283d5b;
+  padding-bottom: 30px;
+}
+
+.upload-section {
+  background-color: #283d5b;
+  padding-bottom: 30px;
+}
+
+.upload-title {
+  padding-bottom: 10px;
+  font-size: 30px;
+  color: #577aad;
+}
+
+.upload-info {
+  font-size: 20px;
+  color: #577aad;
+}
+
+.cad-section {
+  color: #577aad;
+}
+
+/* Кнопки и центрирование */
+.center-button {
+  display: flex;
+  justify-content: center;
+}
+
+/* Отступы для строк */
+.row-spacing-top {
+  padding-top: 30px;
+}
+
+.row-spacing-bottom {
+  padding: 0 0 30px 0;
+}
+
+.row-spacing-both {
+  padding: 30px 0;
+}
+
+/* Стили для комментариев */
+.comment-label {
+  padding-bottom: 8px;
+  color: #283d5b;
+  font-weight: 600;
 }
 </style>
