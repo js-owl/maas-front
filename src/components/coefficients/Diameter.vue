@@ -8,7 +8,7 @@ const width = defineModel();
     <el-input-number
       v-model="width"
       :min="1"
-      :max="1000"
+      :max="600"
       size="large"
       class="full"
     />

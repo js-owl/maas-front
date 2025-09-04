@@ -8,7 +8,7 @@ const length = defineModel();
     <el-input-number
       v-model="length"
       :min="1"
-      :max="1000"
+      :max="2000"
       size="large"
       class="full"
     />

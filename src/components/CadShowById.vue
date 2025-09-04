@@ -15,10 +15,10 @@ let geometry = ref();
 const container = ref(null);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ 
+const renderer = new THREE.WebGLRenderer({
   antialias: true,
   alpha: true,
-  powerPreference: "high-performance"
+  powerPreference: "high-performance",
 });
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -143,7 +143,7 @@ function renderModel() {
   pmremGenerator.dispose();
 
   // Устанавливаем фон сцены
-  scene.background = new THREE.Color(0x2c3e50); // Темно-синий фон для контраста
+  scene.background = new THREE.Color(0xffffff); // Темно-синий фон для контраста
   updateRendererSize();
   container.value.appendChild(renderer.domElement);
 
@@ -164,8 +164,8 @@ function renderModel() {
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
-  controls.minDistance = 100;
-  controls.maxDistance = 300;
+  controls.minDistance = 80;
+  controls.maxDistance = 200;
 
   window.addEventListener("resize", updateRendererSize);
 
@@ -186,21 +186,24 @@ function renderModel() {
   border-radius: 8px;
   margin-bottom: 10px;
   background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-  box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.3),
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   overflow: hidden;
   position: relative;
 }
 
 .stl-container::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 50%
+  );
   pointer-events: none;
   z-index: 1;
 }

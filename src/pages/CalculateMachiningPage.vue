@@ -15,7 +15,7 @@ import CoefficientFinish from "../components/coefficients/CoefficientFinish.vue"
 import CoefficientCover from "../components/coefficients/CoefficientCover.vue";
 import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import UploadModel from "../components/UploadModel.vue";
 import UploadDrawings from "../components/UploadDrawings.vue";
 // @ts-ignore
@@ -75,6 +75,7 @@ type MachiningPayload = {
 };
 
 const route = useRoute();
+const router = useRouter();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
 let file_id = ref(4);
@@ -180,7 +181,7 @@ async function submitOrder(payload: MachiningPayload) {
   }
   isLoading.value = false;
   isInfoVisible.value = true;
-  // ElMessage.success("Платежные документы отправлены на почту");
+  router.push({ name: "order-list" });
 }
 
 async function getOrder(id: number) {
@@ -225,7 +226,6 @@ async function getOrder(id: number) {
       k_otk: k_otk.value,
       k_cert: k_cert.value,
       manufacturing_cycle: manufacturing_cycle.value,
-      special_instructions,
     });
   } catch (error) {
     console.error({ error });
@@ -259,10 +259,7 @@ async function getOrder(id: number) {
           <div>Цена изготовления {{ result?.quantity || 0 }} ед.*</div>
           <div>{{ Number(result?.total_price ?? 0).toLocaleString() }} р.</div>
         </div>
-        <div
-          v-if="profileStore.profile?.username == 'admin'"
-          class="price-row"
-        >
+        <div v-if="profileStore.profile?.username == 'admin'" class="price-row">
           <div>Трудоемкость</div>
           <div>{{ Number(result?.detail_time ?? 0).toFixed(2) || "?" }} ч.</div>
         </div>
@@ -275,22 +272,13 @@ async function getOrder(id: number) {
         *При увеличении количества единиц в заказе стоимость одного изделия
         становится выгоднее
       </div>
-      <el-row
-        :gutter="20"
-        class="component-section"
-      >
+      <el-row :gutter="20" class="component-section">
         <el-col :offset="0" :span="24" class="cad-section">
           <CadShowById v-model="file_id" />
         </el-col>
       </el-row>
-      <el-row
-        :gutter="5"
-        class="upload-section"
-      >
-        <el-col
-          :span="24"
-          class="upload-title"
-        >
+      <el-row :gutter="5" class="upload-section">
+        <el-col :span="24" class="upload-title">
           Загрузите файлы для расчета
         </el-col>
         <el-col :span="12">
@@ -369,9 +357,7 @@ async function getOrder(id: number) {
       </el-row>
       <el-row :gutter="5" class="row-spacing-bottom">
         <el-col :offset="2" :span="20">
-          <div class="comment-label">
-            Комментарий
-          </div>
+          <div class="comment-label">Комментарий</div>
           <el-input
             v-model="special_instructions"
             type="textarea"
