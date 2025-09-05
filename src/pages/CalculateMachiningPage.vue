@@ -33,6 +33,7 @@ interface FormResponse {
   user_id: number;
   service_id: string;
   file_id: number;
+  document_ids: number;
   length: number;
   width: number;
   quantity: number;
@@ -58,6 +59,7 @@ interface FormResponse {
 type MachiningPayload = {
   service_id: string;
   file_id: number;
+  document_ids: number;
   quantity: number;
   length: number;
   width: number;
@@ -79,7 +81,7 @@ const router = useRouter();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
 let file_id = ref(4);
-let drawing_id = ref(1);
+let document_ids = ref(1);
 
 let length = ref(120);
 let width = ref(30);
@@ -102,6 +104,7 @@ let special_instructions = ref("");
 const payload = reactive({
   service_id: "cnc_lathe",
   file_id,
+  document_ids,
   quantity,
   length,
   width,
@@ -227,6 +230,7 @@ async function getOrder(id: number) {
 
     // Обновляем все поля из полученного заказа
     if (data.file_id) file_id.value = data.file_id;
+    if (data.document_ids) document_ids.value = data.document_ids;
     if (data.length) length.value = data.length;
     if (data.width) width.value = data.width;
     if (data.quantity) quantity.value = data.quantity;
@@ -247,6 +251,7 @@ async function getOrder(id: number) {
     Object.assign(payload, {
       service_id: "cnc_lathe",
       file_id: file_id.value,
+      document_ids: document_ids.value,
       quantity: quantity.value,
       length: length.value,
       width: width.value,
@@ -319,10 +324,13 @@ async function getOrder(id: number) {
           <UploadModel v-model="file_id" color="#fff" />
         </el-col>
         <el-col :span="12">
-          <UploadDrawings v-model="drawing_id" color="#fff" />
+          <UploadDrawings v-model="document_ids" color="#fff" />
         </el-col>
         <el-col :span="24" class="upload-info">
           Максимальный размер 100Мб
+        </el-col>
+        <el-col :span="24">
+          {{ document_ids }}
         </el-col>
       </el-row>
 

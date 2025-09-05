@@ -4,7 +4,7 @@ import { API_BASE } from "../api";
 import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from "../stores/auth.store";
 
-const drawing_id = defineModel<number>();
+const document_ids = defineModel<number>();
 const { color = "white" } = defineProps({
   color: String,
 });
@@ -21,9 +21,9 @@ const isDisabled = () => {
   }
   return true;
 };
-const loadModel = (response: any) => {
-  console.log({ response });
-  drawing_id.value = response.drawing_id;
+const loadDoc = (response: any) => {
+  console.log("loadDoc", response.document_id);
+  document_ids.value = response.document_id;
 };
 </script>
 
@@ -35,7 +35,7 @@ const loadModel = (response: any) => {
     :headers="uploadHeaders"
     :action="`${API_BASE}/documents/upload`"
     multiple
-    :on-success="loadModel"
+    :on-success="loadDoc"
     :disabled="isDisabled()"
   >
     <div class="custom">

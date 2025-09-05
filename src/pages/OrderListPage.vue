@@ -95,7 +95,7 @@ const handleDelete = async (row: IOrder): Promise<void> => {
         style="width: 100%"
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
       >
-        <el-table-column prop="id" label="Номер заказа" width="150" />
+        <el-table-column prop="id" label="№ заказа" width="100" />
         <el-table-column prop="service_id" label="Тип услуги" width="120">
           <template #default="{ row }">
             {{ getServiceName(row.service_id) }}
@@ -114,12 +114,13 @@ const handleDelete = async (row: IOrder): Promise<void> => {
         </el-table-column>
         <el-table-column prop="quantity" label="Кол-во" width="100" />
         <el-table-column prop="file_id" label="3D модель" width="100" />
+        <el-table-column prop="document_ids" label="Документы" width="150" />
         <el-table-column prop="status" label="Статус" width="150">
           <template #default="{ row }">
             {{ getStatusText(row.status) }}
           </template>
         </el-table-column>
-        <el-table-column prop="total_price" label="Цена" width="150" />
+        <el-table-column prop="total_price" label="Цена" width="100" />
         <el-table-column fixed="right" label="Операции" min-width="150">
           <template #default="scope">
             <el-button
