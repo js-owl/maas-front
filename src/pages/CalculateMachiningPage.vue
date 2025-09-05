@@ -465,7 +465,7 @@ async function getOrder(id: number) {
 }
 
 .right-section {
-  background-color: #e5e5e5;
+  background-color: #fff;
   padding-top: 30px;
 }
 

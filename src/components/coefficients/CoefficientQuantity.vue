@@ -4,7 +4,7 @@ const quantity = defineModel();
 
 <template>
   <div>
-    <p>Количество, шт</p>
+    <p style="color: #577aad; font-weight: 500">Количество, шт</p>
     <el-input-number
       v-model="quantity"
       :min="1"
@@ -17,5 +17,9 @@ const quantity = defineModel();
 <style scoped>
 .full {
   width: 100%;
+}
+.full :deep(.el-input__wrapper) {
+  border: 1px solid #577aad;
+  border-radius: 5px;
 }
 </style>

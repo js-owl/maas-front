@@ -17,12 +17,12 @@ onMounted(async () => {
 
 <template>
   <div>
-    <p>Шероховатость, Ra</p>
+    <p style="color: #577aad; font-weight: 500">Шероховатость, Ra</p>
     <el-select
       v-model="selected"
       placeholder="Выбрать"
       size="large"
-      style="display: block"
+      class="full"
     >
       <el-option
         v-for="item in finishes"
@@ -33,3 +33,14 @@ onMounted(async () => {
     </el-select>
   </div>
 </template>
+
+<style scoped>
+.full {
+  width: 100%;
+}
+
+.full :deep(.el-select__wrapper) {
+  border: 1px solid #577aad;
+  border-radius: 5px;
+}
+</style>

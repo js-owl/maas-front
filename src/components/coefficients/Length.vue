@@ -4,7 +4,7 @@ const length = defineModel();
 
 <template>
   <div>
-    <p>Длина, мм</p>
+    <p style="color: #577aad; font-weight: 500">Длина, мм</p>
     <el-input-number
       v-model="length"
       :min="1"
@@ -14,8 +14,14 @@ const length = defineModel();
     />
   </div>
 </template>
+
 <style scoped>
 .full {
   width: 100%;
+}
+
+.full :deep(.el-input__wrapper) {
+  border: 1px solid #577aad;
+  border-radius: 5px;
 }
 </style>

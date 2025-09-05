@@ -14,13 +14,13 @@ const materials = [
 
 <template>
   <div>
-    <p>Материал</p>
+    <p style="color: #577aad; font-weight: 500">Материал</p>
     <el-select
       v-model="selectedMaterial"
       value-key="label"
       placeholder="Выбрать"
       size="large"
-      style="display: block; width: 100%"
+      class="full"
     >
       <el-option
         v-for="item in materials"
@@ -31,3 +31,14 @@ const materials = [
     </el-select>
   </div>
 </template>
+
+<style scoped>
+.full {
+  width: 100%;
+}
+
+.full :deep(.el-select__wrapper) {
+  border: 1px solid #577aad;
+  border-radius: 5px;
+}
+</style>

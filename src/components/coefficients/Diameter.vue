@@ -4,7 +4,7 @@ const width = defineModel();
 
 <template>
   <div>
-    <p>Диаметр, мм</p>
+    <p style="color: #577aad; font-weight: 500">Диаметр, мм</p>
     <el-input-number
       v-model="width"
       :min="1"
@@ -17,5 +17,9 @@ const width = defineModel();
 <style scoped>
 .full {
   width: 100%;
+}
+.full :deep(.el-input__wrapper) {
+  border: 1px solid #577aad;
+  border-radius: 5px;
 }
 </style>
