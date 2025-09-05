@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { req_json } from "../../api";
+import { getCoefficients } from "../../services/coefficients.service";
 
 const selected = defineModel();
 const finishes = ref();
 
 onMounted(async () => {
-  const r = await req_json(`/calculator/coefficients/`, "GET");
-  const data = await r?.json();
-  finishes.value = data.finish.map((item: any) => ({
-    value: item.id,
-    label: item.value,
-  }));
+  try {
+    const coefficients = await getCoefficients();
+    finishes.value = coefficients.finish;
+  } catch (error) {
+    console.error("Failed to load finishes:", error);
+  }
 });
 </script>
 

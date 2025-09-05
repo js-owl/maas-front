@@ -1,18 +1,17 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { req_json } from "../../api";
+import { getCoefficients } from "../../services/coefficients.service";
 
 const selected = defineModel();
 const tolerances = ref();
 
 onMounted(async () => {
-  const r = await req_json(`/calculator/coefficients/`, "GET");
-  const data = await r?.json();
-  console.log(data);
-  tolerances.value = data.tolerance.map((item: any) => ({
-    value: item.id,
-    label: item.value,
-  }));
+  try {
+    const coefficients = await getCoefficients();
+    tolerances.value = coefficients.tolerance;
+  } catch (error) {
+    console.error("Failed to load tolerances:", error);
+  }
 });
 </script>
 
