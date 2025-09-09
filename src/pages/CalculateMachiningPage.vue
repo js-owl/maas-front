@@ -37,7 +37,7 @@ const router = useRouter();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
 let file_id = ref(4);
-let document_ids = ref("[1, 2]");
+let document_ids = ref([1, 2]);
 
 let length = ref(120);
 let width = ref(30);
@@ -157,10 +157,7 @@ async function submitOrder(payload: IOrderPayload) {
     }
   } else {
     const id = order_id.value;
-    console.log("160", payload.document_ids);
     try {
-      payload.document_ids = JSON.parse(payload.document_ids);
-      console.log("160", payload.document_ids);
       const res = await req_json_auth(`/orders/${id}`, "PUT", payload);
       const data = (await res?.json()) as IOrderResponse;
       result.value = data;
@@ -191,7 +188,7 @@ async function getOrder(id: number) {
     // Обновляем все поля из полученного заказа
     if (data.file_id) file_id.value = data.file_id;
     if (data.document_ids)
-      document_ids.value = JSON.stringify(data.document_ids);
+      document_ids.value = data.document_ids;
     if (data.length) length.value = data.length;
     if (data.width) width.value = data.width;
     if (data.quantity) quantity.value = data.quantity;

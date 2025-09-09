@@ -17,7 +17,7 @@ export interface IOrderBase {
 }
 
 export interface IOrderPayload extends IOrderBase {
-  document_ids: string;
+  document_ids: number[];
 }
 
 export interface IOrderResponse extends IOrderBase {
