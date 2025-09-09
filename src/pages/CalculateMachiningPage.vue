@@ -149,7 +149,7 @@ async function submitOrder(payload: IOrderPayload) {
   isLoading.value = true;
   if (order_id.value == 0) {
     try {
-      const res = await req_urlencoded_auth("/orders", "POST", payload);
+      const res = await req_json_auth("/orders", "POST", payload);
       const data = (await res?.json()) as IOrderResponse;
       result.value = data;
     } catch (error) {
