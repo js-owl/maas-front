@@ -28,6 +28,7 @@ import DialogInfoPayment from "../components/dialog/DialogInfoPayment.vue";
 import Height from "../components/coefficients/Height.vue";
 import type {
   IOrderPayload,
+  IOrderPostPayload,
   IOrderResponse,
 } from "../interfaces/order.interface";
 
@@ -39,7 +40,7 @@ const router = useRouter();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
 let file_id = ref(2);
-let document_ids = ref("[1, 2]");
+let document_ids = ref([1, 2]);
 
 let length = ref(120);
 let width = ref(30);
@@ -151,7 +152,12 @@ async function submitOrder(payload: IOrderPayload) {
   isLoading.value = true;
   if (order_id.value == 0) {
     try {
-      const res = await req_urlencoded_auth("/orders", "POST", payload);
+      // Для POST запроса преобразуем document_ids в строку
+      const postPayload: IOrderPostPayload = {
+        ...payload,
+        document_ids: JSON.stringify(payload.document_ids)
+      };
+      const res = await req_urlencoded_auth("/orders", "POST", postPayload);
       const data = (await res?.json()) as IOrderResponse;
       result.value = data;
     } catch (error) {
@@ -190,7 +196,7 @@ async function getOrder(id: number) {
     // Обновляем все поля из полученного заказа
     if (data.file_id) file_id.value = data.file_id;
     if (data.document_ids)
-      document_ids.value = JSON.stringify(data.document_ids);
+      document_ids.value = data.document_ids;
     if (data.length) length.value = data.length;
     if (data.width) width.value = data.width;
     if (data.height) height.value = data.height;
