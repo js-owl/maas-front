@@ -4,7 +4,7 @@ import { API_BASE } from "../api";
 import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from "../stores/auth.store";
 
-const document_ids = defineModel<number>();
+const document_ids = defineModel<string>();
 const { color = "white" } = defineProps({
   color: String,
 });

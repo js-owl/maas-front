@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { getCoefficients } from "../../services/coefficients.service";
+import { getCoefficients } from "./api-coefficients";
 
 const selected = defineModel();
 const coveres = ref();

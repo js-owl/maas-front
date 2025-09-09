@@ -1,39 +1,42 @@
-export interface IOrder {
-  id: number;
-  user_id: number;
-  service_id: number;
+export interface IOrderBase {
+  service_id: string;
   file_id: number;
   quantity: number;
-  dimensions: string;
-  material_preference: string;
-  special_instructions: string;
+  length: number;
+  width: number;
+  height: number;
+  material_id: string;
+  material_form: string;
+  id_tolerance: string;
+  id_finish: string;
+  id_cover: string;
+  n_dimensions: number;
+  k_otk: string;
+  k_cert: string[];
+  special_instructions?: string;
+}
+
+export interface IOrderPayload extends IOrderBase {
+  document_ids: string;
+}
+
+export interface IOrderResponse extends IOrderBase {
+  id: number;
+  user_id: number;
+  document_ids: number[];
+  composite_rig: string;
   status: string;
+  mat_volume: number;
+  detail_price: number;
+  detail_time: number;
   total_price: number;
+  mat_weight: number;
+  mat_price: number;
+  work_price: number;
+  k_quantity: number;
+  total_time: number;
   created_at: string;
   updated_at: string;
-  service: {
-    id: number;
-    name: string;
-    technology: string;
-    description: string;
-    base_price: number;
-    price_per_unit: number;
-    min_quantity: number;
-    max_quantity: number;
-    supported_materials: string;
-    capabilities: string;
-    is_active: true;
-    created_at: string;
-    updated_at: string;
-  };
-  file: {
-    id: number;
-    filename: string;
-    original_filename: string;
-    file_size: number;
-    file_type: string;
-    uploaded_by: number;
-    uploaded_at: string;
-    file_metadata: string;
-  };
+  message: string;
+  manufacturing_cycle: number;
 }

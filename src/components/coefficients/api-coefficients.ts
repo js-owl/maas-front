@@ -1,4 +1,4 @@
-import { req_json } from "../api";
+import { req_json } from "../../api";
 
 /**
  * Интерфейс для элемента коэффициента
@@ -14,8 +14,8 @@ export interface CoefficientItem {
  * Содержит массивы для каждого типа: шероховатость, покрытие, допуски
  */
 export interface CoefficientsData {
-  finish: CoefficientItem[];    // Шероховатость поверхности (Ra)
-  cover: CoefficientItem[];     // Типы покрытий
+  finish: CoefficientItem[]; // Шероховатость поверхности (Ra)
+  cover: CoefficientItem[]; // Типы покрытий
   tolerance: CoefficientItem[]; // Квалитеты точности
 }
 
@@ -30,7 +30,7 @@ let coefficientsPromise: Promise<CoefficientsData> | null = null;
 /**
  * Получает коэффициенты с сервера с использованием кеширования
  * Реализует паттерн синглтон для предотвращения множественных запросов
- * 
+ *
  * @returns Promise<CoefficientsData> - данные всех коэффициентов
  */
 export async function getCoefficients(): Promise<CoefficientsData> {
@@ -55,26 +55,26 @@ export async function getCoefficients(): Promise<CoefficientsData> {
       // Выполняем единственный API запрос к серверу
       const r = await req_json(`/calculator/coefficients/`, "GET");
       const data = await r?.json();
-      
+
       // Трансформируем данные сервера в унифицированный формат
       // Сервер возвращает объекты с полями id и value
       // Мы преобразуем их в объекты с полями value и label
       coefficientsCache = {
         // Шероховатость поверхности - массив вариантов Ra
         finish: data.finish.map((item: any) => ({
-          value: item.id,    // ID для отправки на сервер
+          value: item.id, // ID для отправки на сервер
           label: item.value, // Название для отображения пользователю
         })),
-        
+
         // Типы покрытий - массив вариантов покрытий
         cover: data.cover.map((item: any) => ({
-          value: item.id,    // ID для отправки на сервер
+          value: item.id, // ID для отправки на сервер
           label: item.value, // Название для отображения пользователю
         })),
-        
+
         // Квалитеты точности - массив вариантов допусков
         tolerance: data.tolerance.map((item: any) => ({
-          value: item.id,    // ID для отправки на сервер
+          value: item.id, // ID для отправки на сервер
           label: item.value, // Название для отображения пользователю
         })),
       };
@@ -84,12 +84,12 @@ export async function getCoefficients(): Promise<CoefficientsData> {
     } catch (error) {
       // Логируем ошибку для отладки
       console.error("Failed to load coefficients:", error);
-      
+
       // Очищаем промис при ошибке, чтобы можно было повторить запрос
       // Без этого при ошибке все последующие вызовы будут получать
       // отклоненный промис вместо попытки нового запроса
       coefficientsPromise = null;
-      
+
       // Пробрасываем ошибку дальше для обработки в компонентах
       throw error;
     }
@@ -102,7 +102,7 @@ export async function getCoefficients(): Promise<CoefficientsData> {
 /**
  * Очищает кеш коэффициентов
  * Полезно для принудительного обновления данных или при смене пользователя
- * 
+ *
  * Использование:
  * - При логауте пользователя
  * - При необходимости обновить данные
@@ -111,7 +111,7 @@ export async function getCoefficients(): Promise<CoefficientsData> {
 export function clearCoefficientsCache() {
   // Очищаем кеш данных
   coefficientsCache = null;
-  
+
   // Очищаем промис, чтобы следующий вызов создал новый запрос
   coefficientsPromise = null;
 }

@@ -3,7 +3,8 @@ import { computed, onMounted, reactive, ref, watch } from "vue";
 import { req_urlencoded_auth, req_json_auth } from "../api";
 
 import Length from "../components/coefficients/Length.vue";
-import Diameter from "../components/coefficients/Diameter.vue";
+import Width from "../components/coefficients/Width.vue";
+
 import CoefficientQuantity from "../components/coefficients/CoefficientQuantity.vue";
 
 import MaterialMachining from "../components/materials/MaterialMachining.vue";
@@ -24,6 +25,7 @@ import { useProfileStore, type IProfile } from "../stores/profile.store";
 import { useAuthStore } from "../stores/auth.store";
 import { ElMessage } from "element-plus";
 import DialogInfoPayment from "../components/dialog/DialogInfoPayment.vue";
+import Height from "../components/coefficients/Height.vue";
 import type {
   IOrderPayload,
   IOrderResponse,
@@ -36,11 +38,12 @@ const route = useRoute();
 const router = useRouter();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
-let file_id = ref(4);
+let file_id = ref(2);
 let document_ids = ref("[1, 2]");
 
 let length = ref(120);
 let width = ref(30);
+let height = ref(30);
 let quantity = ref(1);
 
 let material_id = ref("alum_D16T");
@@ -58,13 +61,13 @@ let manufacturing_cycle = ref<number>(0);
 let special_instructions = ref("");
 
 const payload = reactive({
-  service_id: "cnc_lathe",
+  service_id: "cnc_milling",
   file_id,
   document_ids,
   quantity,
   length,
   width,
-  height: width,
+  height,
   material_id,
   material_form,
   id_tolerance,
@@ -141,7 +144,6 @@ async function sendData(payload: IOrderPayload) {
 }
 
 async function submitOrder(payload: IOrderPayload) {
-  console.log("submitOrder", payload);
   if (!authStore.getToken) {
     ElMessage.warning("Необходимо зарегистрироваться!");
     return;
@@ -157,10 +159,7 @@ async function submitOrder(payload: IOrderPayload) {
     }
   } else {
     const id = order_id.value;
-    console.log("160", payload.document_ids);
     try {
-      payload.document_ids = JSON.parse(payload.document_ids);
-      console.log("160", payload.document_ids);
       const res = await req_json_auth(`/orders/${id}`, "PUT", payload);
       const data = (await res?.json()) as IOrderResponse;
       result.value = data;
@@ -194,6 +193,7 @@ async function getOrder(id: number) {
       document_ids.value = JSON.stringify(data.document_ids);
     if (data.length) length.value = data.length;
     if (data.width) width.value = data.width;
+    if (data.height) height.value = data.height;
     if (data.quantity) quantity.value = data.quantity;
     if (data.material_id) material_id.value = data.material_id;
     if (data.material_form) material_form.value = data.material_form;
@@ -210,13 +210,13 @@ async function getOrder(id: number) {
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
-      service_id: "cnc_lathe",
+      service_id: "cnc_milling",
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
       length: length.value,
       width: width.value,
-      height: width.value,
+      height: height.value,
       material_id: material_id.value,
       material_form: material_form.value,
       id_tolerance: id_tolerance.value,
@@ -246,7 +246,7 @@ async function getOrder(id: number) {
     <!-- 1. Левая часть -->
     <el-col :offset="2" :span="9" class="left-section">
       <div class="title-text">
-        Токарная обработка <br />
+        Фрезерная обработка <br />
         {{ order_id != 0 ? `(заказ ${order_id})` : "" }}
       </div>
 
@@ -331,10 +331,10 @@ async function getOrder(id: number) {
           <Length v-model="length" />
         </el-col>
         <el-col :offset="1" :span="6">
-          <Diameter v-model="width" />
+          <Width v-model="width" />
         </el-col>
         <el-col :offset="1" :span="6">
-          <CoefficientQuantity v-model="quantity" />
+          <Height v-model="height" />
         </el-col>
       </el-row>
 
@@ -355,8 +355,14 @@ async function getOrder(id: number) {
           <MaterialMachining v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="6">
-          <CoefficientSize v-model="n_dimensions"
-        /></el-col>
+          <CoefficientSize v-model="n_dimensions" />
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="5">
+        <el-col :offset="2" :span="6">
+          <CoefficientQuantity v-model="quantity" />
+        </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top">

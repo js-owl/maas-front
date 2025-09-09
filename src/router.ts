@@ -23,11 +23,14 @@ const routes = [
     component: () => import("./pages/CalculateMachiningPage.vue"),
     name: "machining",
   },
-  { path: "/milling", component: () => import("./pages/MillingPage.vue") },
   {
-    path: "/plastic",
-    component: () => import("./pages/CalculatePlasticPage.vue"),
+    path: "/milling",
+    component: () => import("./pages/CalculateMillingPage.vue"),
   },
+  // {
+  //   path: "/plastic",
+  //   component: () => import("./pages/CalculatePlasticPage.vue"),
+  // },
   { path: "/paint", component: () => import("./pages/CalculatePaintPage.vue") },
   // @ts-ignore
   { path: "/cad", component: () => import("./pages/CadPage.vue") },

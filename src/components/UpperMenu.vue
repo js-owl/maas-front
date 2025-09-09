@@ -116,10 +116,14 @@ function scrollToAbout() {
                 </el-menu-item>
                 <el-menu-item index="1-1-2" disabled>Шлифовка</el-menu-item>
               </el-sub-menu>
-              <el-menu-item index="/plastic" :route="{ path: '/plastic' }">
+              <el-menu-item
+                index="/plastic"
+                :route="{ path: '/plastic' }"
+                disabled
+              >
                 Производство из композитных материалов
               </el-menu-item>
-              <el-menu-item index="/paint" :route="{ path: '/paint' }">
+              <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
                 Нанесение лакокрасочных покрытий
               </el-menu-item>
               <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>

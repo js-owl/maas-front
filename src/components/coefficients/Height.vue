@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-const width = defineModel();
+const height = defineModel();
 </script>
 
 <template>
   <div>
-    <p style="color: #577aad; font-weight: 500">Ширина, мм</p>
+    <p style="color: #577aad; font-weight: 500">Высота, мм</p>
     <el-input-number
-      v-model="width"
+      v-model="height"
       :min="1"
       :max="1000"
       size="large"

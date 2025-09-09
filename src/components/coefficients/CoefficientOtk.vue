@@ -10,8 +10,7 @@ const otks = [
 
 <template>
   <div style="max-width: 1000px">
-    <h2>Вид контроля</h2>
-    <el-divider class="line" />
+    <div class="label">Вид контроля</div>
     <el-radio-group v-model="selected">
       <el-radio
         class="radio-item"
@@ -36,5 +35,12 @@ const otks = [
 
 :deep(.line) {
   border-color: #333;
+}
+
+.label {
+  padding-bottom: 12px;
+  color: #283d5b;
+  font-size: 24px;
+  font-weight: 700;
 }
 </style>

@@ -14,8 +14,7 @@ const certificates = [
 
 <template>
   <div style="max-width: 1000px">
-    <h2>Сертификаты и квалификации поставщиков</h2>
-    <el-divider class="line" />
+    <div class="label">Сертификаты и квалификации поставщиков</div>
     <el-checkbox-group v-model="selected">
       <el-checkbox
         v-for="option in certificates"
@@ -40,5 +39,12 @@ const certificates = [
 }
 :deep(.line) {
   border-color: #333;
+}
+
+.label {
+  padding-bottom: 12px;
+  color: #283d5b;
+  font-size: 24px;
+  font-weight: 700;
 }
 </style>

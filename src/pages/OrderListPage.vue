@@ -3,15 +3,15 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { Edit, Delete } from "@element-plus/icons-vue";
 import { req_json_auth } from "../api";
-import type { IOrder } from "../interfaces/order.interface";
+import type { IOrderResponse } from "../interfaces/order.interface";
 
 const router = useRouter();
-const orders = ref<IOrder[]>();
+const orders = ref<IOrderResponse[]>();
 const deleteLoading = ref<number | null>(null);
 
 onMounted(async () => {
   const r = await req_json_auth(`/orders/`, "GET");
-  orders.value = (await r?.json()) as IOrder[];
+  orders.value = (await r?.json()) as IOrderResponse[];
 });
 
 const formatDate = (_row: any, _column: any, cellValue: string) => {
@@ -41,12 +41,12 @@ const getStatusText = (status: string): string => {
   return statusTexts[status] || status;
 };
 
-const handleEdit = (row: IOrder): void => {
+const handleEdit = (row: IOrderResponse): void => {
   switch (row.service_id) {
-    case 2:
+    case "2":
       router.push({ path: "/plastic", query: { orderId: row.id.toString() } });
       break;
-    case 4:
+    case "4":
       router.push({
         path: "/machining",
         query: { orderId: row.id.toString() },
@@ -61,7 +61,7 @@ const handleEdit = (row: IOrder): void => {
   }
 };
 
-const handleDelete = async (row: IOrder): Promise<void> => {
+const handleDelete = async (row: IOrderResponse): Promise<void> => {
   deleteLoading.value = row.id;
   const r = await req_json_auth(`/admin/orders/${row.id}`, "DELETE");
   if (r?.ok) {

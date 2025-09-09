@@ -11,7 +11,6 @@ declare module 'vue' {
     CadShow: typeof import('./src/components/CadShow.vue')['default']
     CadShowById: typeof import('./src/components/CadShowById.vue')['default']
     CadUpload: typeof import('./src/components/CadUpload.vue')['default']
-    CalculateMilling: typeof import('./src/components/CalculateMilling.vue')['default']
     CardImage: typeof import('./src/components/CardImage.vue')['default']
     CardPrice: typeof import('./src/components/CardPrice.vue')['default']
     CardUpload: typeof import('./src/components/CardUpload.vue')['default']
@@ -33,7 +32,6 @@ declare module 'vue' {
     DialogRegistration: typeof import('./src/components/dialog/DialogRegistration.vue')['default']
     Diameter: typeof import('./src/components/coefficients/Diameter.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
-    ElCard: typeof import('element-plus/es')['ElCard']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElCol: typeof import('element-plus/es')['ElCol']
@@ -61,6 +59,7 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Footer: typeof import('./src/components/Footer.vue')['default']
+    Height: typeof import('./src/components/coefficients/Height.vue')['default']
     Length: typeof import('./src/components/coefficients/Length.vue')['default']
     MaterialMachining: typeof import('./src/components/materials/MaterialMachining.vue')['default']
     MaterialMilling: typeof import('./src/components/materials/MaterialMilling.vue')['default']
@@ -80,8 +79,6 @@ declare module 'vue' {
     UploadDrawings: typeof import('./src/components/UploadDrawings.vue')['default']
     UploadModel: typeof import('./src/components/UploadModel.vue')['default']
     UpperMenu: typeof import('./src/components/UpperMenu.vue')['default']
-    VolumeCylinder: typeof import('./src/components/volumes/VolumeCylinder.vue')['default']
-    VolumeRectangle: typeof import('./src/components/volumes/VolumeRectangle.vue')['default']
     Width: typeof import('./src/components/coefficients/Width.vue')['default']
   }
   export interface GlobalDirectives {
