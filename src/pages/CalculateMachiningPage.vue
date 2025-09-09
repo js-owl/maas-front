@@ -26,6 +26,7 @@ import { ElMessage } from "element-plus";
 import DialogInfoPayment from "../components/dialog/DialogInfoPayment.vue";
 import type {
   IOrderPayload,
+  IOrderPostPayload,
   IOrderResponse,
 } from "../interfaces/order.interface";
 
@@ -149,7 +150,12 @@ async function submitOrder(payload: IOrderPayload) {
   isLoading.value = true;
   if (order_id.value == 0) {
     try {
-      const res = await req_urlencoded_auth("/orders", "POST", payload);
+      // Для POST запроса преобразуем document_ids в строку
+      const postPayload: IOrderPostPayload = {
+        ...payload,
+        document_ids: JSON.stringify(payload.document_ids)
+      };
+      const res = await req_urlencoded_auth("/orders", "POST", postPayload);
       const data = (await res?.json()) as IOrderResponse;
       result.value = data;
     } catch (error) {

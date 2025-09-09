@@ -20,6 +20,10 @@ export interface IOrderPayload extends IOrderBase {
   document_ids: number[];
 }
 
+export interface IOrderPostPayload extends IOrderBase {
+  document_ids: string;
+}
+
 export interface IOrderResponse extends IOrderBase {
   id: number;
   user_id: number;
