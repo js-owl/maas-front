@@ -155,7 +155,7 @@ async function submitOrder(payload: IOrderPayload) {
       // Для POST запроса преобразуем document_ids в строку
       const postPayload: IOrderPostPayload = {
         ...payload,
-        document_ids: JSON.stringify(payload.document_ids)
+        document_ids: JSON.stringify(payload.document_ids),
       };
       const res = await req_urlencoded_auth("/orders", "POST", postPayload);
       const data = (await res?.json()) as IOrderResponse;
@@ -195,8 +195,7 @@ async function getOrder(id: number) {
 
     // Обновляем все поля из полученного заказа
     if (data.file_id) file_id.value = data.file_id;
-    if (data.document_ids)
-      document_ids.value = data.document_ids;
+    if (data.document_ids) document_ids.value = data.document_ids;
     if (data.length) length.value = data.length;
     if (data.width) width.value = data.width;
     if (data.height) height.value = data.height;
