@@ -18,6 +18,7 @@ import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 import { useRoute, useRouter } from "vue-router";
 import UploadModel from "../components/UploadModel.vue";
 import UploadDrawings from "../components/UploadDrawings.vue";
+import DocumentShowByIds from "../components/DocumentShowByIds.vue";
 // @ts-ignore
 import CadShowById from "../components/CadShowById.vue";
 import { useProfileStore, type IProfile } from "../stores/profile.store";
@@ -293,7 +294,7 @@ async function getOrder(id: number) {
           Максимальный размер 100Мб
         </el-col>
         <el-col :span="24">
-          {{ document_ids }}
+          <DocumentShowByIds :document-ids="document_ids" @remove="(id:number)=>{ const idx = document_ids.indexOf(id); if (idx>=0) document_ids.splice(idx,1); }" />
         </el-col>
       </el-row>
 
