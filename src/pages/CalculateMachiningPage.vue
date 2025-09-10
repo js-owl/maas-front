@@ -154,7 +154,8 @@ async function submitOrder(payload: IOrderPayload) {
       // Для POST запроса преобразуем document_ids в строку
       const postPayload: IOrderPostPayload = {
         ...payload,
-        document_ids: JSON.stringify(payload.document_ids),
+        // Берем именно массив id, а не ref/прокси
+        document_ids: JSON.stringify(document_ids.value ?? []),
       };
       const res = await req_urlencoded_auth("/orders", "POST", postPayload);
       const data = (await res?.json()) as IOrderResponse;
