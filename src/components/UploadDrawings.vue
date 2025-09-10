@@ -4,7 +4,7 @@ import { API_BASE } from "../api";
 import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from "../stores/auth.store";
 
-const document_ids = defineModel<number[]>();
+const document_ids = defineModel<number[]>({ default: [] });
 const { color = "white" } = defineProps({
   color: String,
 });
@@ -22,13 +22,13 @@ const isDisabled = () => {
   return true;
 };
 const loadDoc = (response: any) => {
-  console.log("loadDoc", response.document_id);
-  // Initialize as array if not already
+  const id = Number(response?.document_id);
+  console.log("loadDoc", id);
   if (!Array.isArray(document_ids.value)) {
     document_ids.value = [];
   }
-  // Add new document ID to the array
-  document_ids.value.push(response.document_id);
+  if (!Number.isFinite(id)) return;
+  if (!document_ids.value.includes(id)) document_ids.value.push(id);
 };
 </script>
 
