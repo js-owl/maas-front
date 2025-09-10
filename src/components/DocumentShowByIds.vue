@@ -25,6 +25,12 @@ async function ensureProfileLoaded() {
 }
 
 async function loadUserDocuments() {
+  // Запускаем загрузку только если есть documentIds
+  if (!Array.isArray(documentIds.value) || documentIds.value.length === 0) {
+    allDocuments.value = [];
+    isLoading.value = false;
+    return;
+  }
   isLoading.value = true;
   try {
     await ensureProfileLoaded();
@@ -58,11 +64,21 @@ function removeDocument(id: number) {
   if (idx >= 0) documentIds.value.splice(idx, 1);
 }
 
-onMounted(loadUserDocuments);
+onMounted(() => {
+  if (Array.isArray(documentIds.value) && documentIds.value.length > 0) {
+    loadUserDocuments();
+  }
+});
 watch(
   () => documentIds.value,
-  () => {
-    // react if ids change externally
+  (ids) => {
+    if (Array.isArray(ids) && ids.length > 0 && allDocuments.value.length === 0) {
+      loadUserDocuments();
+    }
+    if (!ids || ids.length === 0) {
+      // если список очистили — очистим отображение
+      allDocuments.value = [];
+    }
   }
 );
 </script>
