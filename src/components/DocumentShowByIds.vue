@@ -5,7 +5,7 @@ import { useProfileStore } from "../stores/profile.store";
 
 type DocumentInfo = {
   id: number;
-  filename: string;
+  original_filename: string;
 };
 
 const props = defineProps<{ documentIds: number[]; color?: string }>();
@@ -34,9 +34,12 @@ async function loadUserDocuments() {
       return;
     }
     const r = await req_json_auth(`/users/${userId}/documents`, "GET");
-    const data = (await r?.json()) as Array<{ id: number; filename: string }>; 
+    const data = (await r?.json()) as Array<{
+      id: number;
+      original_filename: string;
+    }>;
     allDocuments.value = Array.isArray(data)
-      ? data.map((d) => ({ id: d.id, filename: d.filename }))
+      ? data.map((d) => ({ id: d.id, original_filename: d.original_filename }))
       : [];
   } catch (e) {
     console.error(e);
@@ -66,17 +69,15 @@ watch(
   <div>
     <el-skeleton :loading="isLoading" animated>
       <template #default>
-        <div v-if="filteredDocuments.length === 0" style="color: #577aad; font-size: 14px">
+        <div
+          v-if="filteredDocuments.length === 0"
+          style="color: #577aad; font-size: 14px"
+        >
           Документы не выбраны
         </div>
         <div v-else>
-          <div
-            v-for="doc in filteredDocuments"
-            :key="doc.id"
-            class="doc-row"
-          >
-            <span class="doc-icon">PDF</span>
-            <span class="doc-name">{{ doc.filename }}</span>
+          <div v-for="doc in filteredDocuments" :key="doc.id" class="doc-row">
+            <span class="doc-name">{{ doc.original_filename }}</span>
             <span class="doc-actions">
               <el-button size="small" link @click="openDocument(doc.id)">
                 <span class="action-link">⤴</span>
@@ -90,40 +91,21 @@ watch(
       </template>
     </el-skeleton>
   </div>
-  
 </template>
 
 <style scoped>
 .doc-row {
-  display: grid;
-  grid-template-columns: 40px 1fr 60px;
-  align-items: center;
-  gap: 8px;
   padding: 6px 0;
 }
 
-.doc-icon {
-  width: 36px;
-  height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 3px;
-  background: #e8eef8;
-  color: #577aad;
-  font-weight: 700;
-  font-size: 10px;
-}
-
 .doc-name {
-  color: #283d5b;
+  color: white;
   font-size: 14px;
+  padding-right: 10px;
 }
 
 .doc-actions {
-  display: inline-flex;
-  gap: 6px;
-  justify-content: flex-end;
+  padding-right: 10px;
 }
 
 .action-link {
@@ -136,5 +118,3 @@ watch(
   font-weight: 700;
 }
 </style>
-
-
