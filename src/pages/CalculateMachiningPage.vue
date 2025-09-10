@@ -294,10 +294,7 @@ async function getOrder(id: number) {
           Максимальный размер 100Мб
         </el-col>
         <el-col :span="24">
-          <DocumentShowByIds
-            :document-ids="document_ids"
-            @remove="(id:number)=>{ const idx = document_ids.indexOf(id); if (idx>=0) document_ids.splice(idx,1); }"
-          />
+          <DocumentShowByIds v-model:document-ids="document_ids" />
         </el-col>
       </el-row>
 

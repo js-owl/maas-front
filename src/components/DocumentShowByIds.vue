@@ -8,15 +8,15 @@ type DocumentInfo = {
   original_filename: string;
 };
 
-const props = defineProps<{ documentIds: number[]; color?: string }>();
-const emit = defineEmits<{ (e: "remove", id: number): void }>();
+// Two-way binding with parent via v-model:document-ids
+const documentIds = defineModel<number[]>("documentIds", { default: [] });
 
 const profileStore = useProfileStore();
 const isLoading = ref<boolean>(false);
 const allDocuments = ref<DocumentInfo[]>([]);
 
 const filteredDocuments = computed<DocumentInfo[]>(() => {
-  const ids = new Set(props.documentIds ?? []);
+  const ids = new Set(documentIds.value ?? []);
   return allDocuments.value.filter((d) => ids.has(d.id));
 });
 
@@ -53,14 +53,16 @@ function openDocument(id: number) {
 }
 
 function removeDocument(id: number) {
-  emit("remove", id);
+  if (!Array.isArray(documentIds.value)) return;
+  const idx = documentIds.value.indexOf(id);
+  if (idx >= 0) documentIds.value.splice(idx, 1);
 }
 
 onMounted(loadUserDocuments);
 watch(
-  () => props.documentIds,
+  () => documentIds.value,
   () => {
-    // подгружать список при изменении ids (если понадобится в будущем)
+    // react if ids change externally
   }
 );
 </script>
