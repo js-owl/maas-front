@@ -88,14 +88,13 @@ function removeDocument(id: number) {
   if (idx >= 0) document_ids.value.splice(idx, 1);
 }
 
-function handlePdfViewerClose() {
-  // Очищаем blob URL для освобождения памяти
-  if (currentPdfUrl.value) {
+// Очищаем blob URL при закрытии диалога
+watch(pdfViewerVisible, (newVal) => {
+  if (!newVal && currentPdfUrl.value) {
     URL.revokeObjectURL(currentPdfUrl.value);
     currentPdfUrl.value = "";
   }
-  pdfViewerVisible.value = false;
-}
+});
 
 onMounted(() => {
   if (Array.isArray(document_ids.value) && document_ids.value.length > 0) {
@@ -148,10 +147,9 @@ watch(
     
     <!-- PDF Viewer Modal -->
     <DialogPdf
-      v-model:visible="pdfViewerVisible"
-      :pdf-url="currentPdfUrl"
-      :title="currentDocumentTitle"
-      @update:visible="handlePdfViewerClose"
+      v-model="pdfViewerVisible"
+      v-model:pdf-url="currentPdfUrl"
+      v-model:title="currentDocumentTitle"
     />
   </div>
 </template>
