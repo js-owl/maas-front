@@ -18,6 +18,7 @@ const allDocuments = ref<DocumentInfo[]>([]);
 const pdfViewerVisible = ref<boolean>(false);
 const currentPdfUrl = ref<string>("");
 const currentDocumentTitle = ref<string>("");
+const currentOriginalFilename = ref<string>("");
 
 const filteredDocuments = computed<DocumentInfo[]>(() => {
   const ids = new Set(document_ids.value ?? []);
@@ -74,6 +75,7 @@ async function openDocument(id: number) {
     // Устанавливаем данные для просмотрщика
     currentPdfUrl.value = pdfUrl;
     currentDocumentTitle.value = document.original_filename;
+    currentOriginalFilename.value = document.original_filename;
     pdfViewerVisible.value = true;
     
   } catch (error) {
@@ -93,6 +95,7 @@ watch(pdfViewerVisible, (newVal) => {
   if (!newVal && currentPdfUrl.value) {
     URL.revokeObjectURL(currentPdfUrl.value);
     currentPdfUrl.value = "";
+    currentOriginalFilename.value = "";
   }
 });
 
@@ -150,6 +153,7 @@ watch(
       v-model="pdfViewerVisible"
       v-model:pdf-url="currentPdfUrl"
       v-model:title="currentDocumentTitle"
+      v-model:original-filename="currentOriginalFilename"
     />
   </div>
 </template>

@@ -3,12 +3,13 @@ let dialogFormVisible = defineModel<boolean>()
 
 const pdfUrl = defineModel<string>('pdfUrl')
 const title = defineModel<string>('title', { default: 'Просмотр документа' })
+const originalFilename = defineModel<string>('originalFilename', { default: 'document.pdf' })
 
 const downloadPdf = () => {
   if (pdfUrl.value) {
     const link = document.createElement('a')
     link.href = pdfUrl.value
-    link.download = title.value || 'document.pdf'
+    link.download = originalFilename.value || 'document.pdf'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
