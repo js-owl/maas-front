@@ -47,9 +47,9 @@ async function loadUserDocuments() {
   isLoading.value = false;
 }
 
-async function openDocument(id: number) {
+async function downloadDoc(id: number) {
   try {
-    const doc = filteredDocuments.value.find(d => d.id === id);
+    const doc = filteredDocuments.value.find((d) => d.id === id);
     if (!doc) {
       ElMessage.error("Документ не найден");
       return;
@@ -57,7 +57,7 @@ async function openDocument(id: number) {
 
     // Загружаем PDF файл через API
     const response = await req_json_auth(`/documents/${id}/download`, "GET");
-    
+
     if (!response) {
       ElMessage.error("Ошибка загрузки документа");
       return;
@@ -66,21 +66,20 @@ async function openDocument(id: number) {
     // Создаем blob URL для PDF
     const blob = await response.blob();
     const pdfUrl = URL.createObjectURL(blob);
-    
+
     // Создаем ссылку для скачивания
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = pdfUrl;
     link.download = doc.original_filename;
-    link.target = '_blank';
+    link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     // Очищаем blob URL через некоторое время
     setTimeout(() => {
       URL.revokeObjectURL(pdfUrl);
     }, 1000);
-    
   } catch (error) {
     console.error("Ошибка при открытии документа:", error);
     ElMessage.error("Ошибка при открытии документа");
@@ -92,7 +91,6 @@ function removeDocument(id: number) {
   const idx = document_ids.value.indexOf(id);
   if (idx >= 0) document_ids.value.splice(idx, 1);
 }
-
 
 onMounted(() => {
   if (Array.isArray(document_ids.value) && document_ids.value.length > 0) {
@@ -131,8 +129,10 @@ watch(
           <div v-for="doc in filteredDocuments" :key="doc.id" class="doc-row">
             <span class="doc-name">{{ doc.original_filename }}</span>
             <span class="doc-actions">
-              <el-button size="small" link @click="openDocument(doc.id)">
-                <span class="action-link">open</span>
+              <el-button size="small" link @click="downloadDoc(doc.id)">
+                <el-icon color="white">
+                  <Download />
+                </el-icon>
               </el-button>
               <el-button size="small" link @click="removeDocument(doc.id)">
                 <span class="action-remove">✖</span>
@@ -159,11 +159,11 @@ watch(
 .doc-actions {
   padding-right: 10px;
 }
-
+/* 
 .action-link {
   color: #577aad;
   font-weight: 700;
-}
+} */
 
 .action-remove {
   color: #bc2b55;
