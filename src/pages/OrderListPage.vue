@@ -120,7 +120,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
         <el-table-column prop="file_id" label="3D модель" width="120">
           <template #default="{ row }">
             <div v-if="row.file_id" class="model-preview">
-              <CadPreview :file-id="row.file_id" :show-full-view="true" />
+              <CadPreview :file-id="row.file_id" />
             </div>
             <span v-else class="no-model">Нет модели</span>
           </template>

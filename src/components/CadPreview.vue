@@ -4,22 +4,15 @@ import { API_BASE } from "../api";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import * as THREE from "three";
 import { useAuthStore } from "../stores/auth.store";
-import { ElDialog } from "element-plus";
-// @ts-ignore
-import CadShowById from "./CadShowById.vue";
 
 const authStore = useAuthStore();
 
 type Props = {
   fileId: number;
-  showFullView?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  showFullView: false
-})
+const props = defineProps<Props>()
 
-const fullViewVisible = ref(false);
 const previewImage = ref<string>("");
 const isLoading = ref(false);
 
@@ -115,14 +108,6 @@ async function generatePreview() {
   }
 }
 
-function showFullView() {
-  if (!props.showFullView) return;
-  fullViewVisible.value = true;
-}
-
-function closeFullView() {
-  fullViewVisible.value = false;
-}
 
 // Генерируем превью при монтировании
 generatePreview();
@@ -130,7 +115,7 @@ generatePreview();
 
 <template>
   <div class="cad-preview-container">
-    <div class="stl-preview" @click="showFullView">
+    <div class="stl-preview">
       <div v-if="isLoading" class="loading-placeholder">
         <div class="spinner"></div>
       </div>
@@ -141,17 +126,6 @@ generatePreview();
         class="preview-image"
       />
     </div>
-    
-    <el-dialog
-      v-model="fullViewVisible"
-      title="3D Модель"
-      width="90%"
-      @close="closeFullView"
-    >
-      <div class="full-view-content">
-        <CadShowById :file-id="fileId" />
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -166,19 +140,11 @@ generatePreview();
   height: 60px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  cursor: pointer;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  transition: all 0.3s ease;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.stl-preview:hover {
-  border-color: #577aad;
-  box-shadow: 0 2px 8px rgba(87, 122, 173, 0.3);
-  transform: scale(1.05);
 }
 
 .preview-image {
@@ -210,15 +176,4 @@ generatePreview();
   100% { transform: rotate(360deg); }
 }
 
-.full-view-content {
-  width: 100%;
-  height: 600px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-}
-
-:deep(.el-dialog__body) {
-  padding: 20px;
-}
 </style>
