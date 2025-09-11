@@ -2,7 +2,6 @@
 import { onMounted, ref, watch, computed } from "vue";
 import { req_json_auth } from "../api";
 import { useProfileStore } from "../stores/profile.store";
-import DialogPdf from "./dialog/DialogPdf.vue";
 import { ElMessage } from "element-plus";
 
 type DocumentInfo = {
@@ -15,10 +14,6 @@ const document_ids = defineModel<number[]>();
 const profileStore = useProfileStore();
 const isLoading = ref<boolean>(false);
 const allDocuments = ref<DocumentInfo[]>([]);
-const pdfViewerVisible = ref<boolean>(false);
-const currentPdfUrl = ref<string>("");
-const currentDocumentTitle = ref<string>("");
-const currentOriginalFilename = ref<string>("");
 
 const filteredDocuments = computed<DocumentInfo[]>(() => {
   const ids = new Set(document_ids.value ?? []);
@@ -54,8 +49,8 @@ async function loadUserDocuments() {
 
 async function openDocument(id: number) {
   try {
-    const document = filteredDocuments.value.find(doc => doc.id === id);
-    if (!document) {
+    const doc = filteredDocuments.value.find(d => d.id === id);
+    if (!doc) {
       ElMessage.error("Документ не найден");
       return;
     }
@@ -72,11 +67,19 @@ async function openDocument(id: number) {
     const blob = await response.blob();
     const pdfUrl = URL.createObjectURL(blob);
     
-    // Устанавливаем данные для просмотрщика
-    currentPdfUrl.value = pdfUrl;
-    currentDocumentTitle.value = document.original_filename;
-    currentOriginalFilename.value = document.original_filename;
-    pdfViewerVisible.value = true;
+    // Создаем ссылку для скачивания
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = doc.original_filename;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Очищаем blob URL через некоторое время
+    setTimeout(() => {
+      URL.revokeObjectURL(pdfUrl);
+    }, 1000);
     
   } catch (error) {
     console.error("Ошибка при открытии документа:", error);
@@ -90,14 +93,6 @@ function removeDocument(id: number) {
   if (idx >= 0) document_ids.value.splice(idx, 1);
 }
 
-// Очищаем blob URL при закрытии диалога
-watch(pdfViewerVisible, (newVal) => {
-  if (!newVal && currentPdfUrl.value) {
-    URL.revokeObjectURL(currentPdfUrl.value);
-    currentPdfUrl.value = "";
-    currentOriginalFilename.value = "";
-  }
-});
 
 onMounted(() => {
   if (Array.isArray(document_ids.value) && document_ids.value.length > 0) {
@@ -147,14 +142,6 @@ watch(
         </div>
       </template>
     </el-skeleton>
-    
-    <!-- PDF Viewer Modal -->
-    <DialogPdf
-      v-model="pdfViewerVisible"
-      v-model:pdf-url="currentPdfUrl"
-      v-model:title="currentDocumentTitle"
-      v-model:original-filename="currentOriginalFilename"
-    />
   </div>
 </template>
 
