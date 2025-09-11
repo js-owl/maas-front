@@ -75,7 +75,7 @@ async function generatePreview() {
     const model = new THREE.Mesh(geometry, material);
     scene.add(model);
     
-    // Центрируем и позиционируем камеру
+    // Центрируем и позиционируем камеру для изометрического вида
     geometry.computeBoundingBox();
     const boundingBox = geometry.boundingBox;
     if (boundingBox) {
@@ -85,7 +85,16 @@ async function generatePreview() {
       
       const size = boundingBox.getSize(new THREE.Vector3());
       const maxDim = Math.max(size.x, size.y, size.z);
-      camera.position.set(0, 0, maxDim * 1.5);
+      
+      // Изометрическая позиция камеры
+      const distance = maxDim * 1.5;
+      const isometricAngle = Math.PI / 4; // 45 градусов
+      camera.position.set(
+        distance * Math.cos(isometricAngle),
+        distance * Math.sin(isometricAngle),
+        distance * Math.sin(isometricAngle)
+      );
+      camera.lookAt(0, 0, 0);
     }
     
     // Рендерим один кадр
