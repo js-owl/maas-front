@@ -5,6 +5,7 @@ import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import * as THREE from "three";
 import { useAuthStore } from "../stores/auth.store";
 import { ElDialog } from "element-plus";
+// @ts-ignore
 import CadShowById from "./CadShowById.vue";
 
 const authStore = useAuthStore();
