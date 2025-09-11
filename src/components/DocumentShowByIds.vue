@@ -2,6 +2,8 @@
 import { onMounted, ref, watch, computed } from "vue";
 import { req_json_auth } from "../api";
 import { useProfileStore } from "../stores/profile.store";
+import DialogPdf from "./dialog/DialogPdf.vue";
+import { ElMessage } from "element-plus";
 
 type DocumentInfo = {
   id: number;
@@ -13,6 +15,9 @@ const document_ids = defineModel<number[]>();
 const profileStore = useProfileStore();
 const isLoading = ref<boolean>(false);
 const allDocuments = ref<DocumentInfo[]>([]);
+const pdfViewerVisible = ref<boolean>(false);
+const currentPdfUrl = ref<string>("");
+const currentDocumentTitle = ref<string>("");
 
 const filteredDocuments = computed<DocumentInfo[]>(() => {
   const ids = new Set(document_ids.value ?? []);
@@ -46,15 +51,50 @@ async function loadUserDocuments() {
   isLoading.value = false;
 }
 
-// function openDocument(id: number) {
-//   const url = `${API_BASE}/documents/${id}/download`;
-//   window.open(url, "_blank");
-// }
+async function openDocument(id: number) {
+  try {
+    const document = filteredDocuments.value.find(doc => doc.id === id);
+    if (!document) {
+      ElMessage.error("Документ не найден");
+      return;
+    }
+
+    // Загружаем PDF файл через API
+    const response = await req_json_auth(`/documents/${id}/download`, "GET");
+    
+    if (!response) {
+      ElMessage.error("Ошибка загрузки документа");
+      return;
+    }
+
+    // Создаем blob URL для PDF
+    const blob = await response.blob();
+    const pdfUrl = URL.createObjectURL(blob);
+    
+    // Устанавливаем данные для просмотрщика
+    currentPdfUrl.value = pdfUrl;
+    currentDocumentTitle.value = document.original_filename;
+    pdfViewerVisible.value = true;
+    
+  } catch (error) {
+    console.error("Ошибка при открытии документа:", error);
+    ElMessage.error("Ошибка при открытии документа");
+  }
+}
 
 function removeDocument(id: number) {
   if (!Array.isArray(document_ids.value)) return;
   const idx = document_ids.value.indexOf(id);
   if (idx >= 0) document_ids.value.splice(idx, 1);
+}
+
+function handlePdfViewerClose() {
+  // Очищаем blob URL для освобождения памяти
+  if (currentPdfUrl.value) {
+    URL.revokeObjectURL(currentPdfUrl.value);
+    currentPdfUrl.value = "";
+  }
+  pdfViewerVisible.value = false;
 }
 
 onMounted(() => {
@@ -94,9 +134,9 @@ watch(
           <div v-for="doc in filteredDocuments" :key="doc.id" class="doc-row">
             <span class="doc-name">{{ doc.original_filename }}</span>
             <span class="doc-actions">
-              <!-- <el-button size="small" link @click="openDocument(doc.id)">
-                <span class="action-link">⤴</span>
-              </el-button> -->
+              <el-button size="small" link @click="openDocument(doc.id)">
+                <span class="action-link">open</span>
+              </el-button>
               <el-button size="small" link @click="removeDocument(doc.id)">
                 <span class="action-remove">✖</span>
               </el-button>
@@ -105,6 +145,14 @@ watch(
         </div>
       </template>
     </el-skeleton>
+    
+    <!-- PDF Viewer Modal -->
+    <DialogPdf
+      v-model:visible="pdfViewerVisible"
+      :pdf-url="currentPdfUrl"
+      :title="currentDocumentTitle"
+      @update:visible="handlePdfViewerClose"
+    />
   </div>
 </template>
 
