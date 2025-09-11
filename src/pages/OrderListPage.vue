@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { Edit, Delete } from "@element-plus/icons-vue";
 import { req_json_auth } from "../api";
 import type { IOrderResponse } from "../interfaces/order.interface";
+import CadPreview from "../components/CadPreview.vue";
 
 const router = useRouter();
 const orders = ref<IOrderResponse[]>();
@@ -116,7 +117,14 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
           </template>
         </el-table-column>
         <el-table-column prop="quantity" label="Кол-во" width="100" />
-        <el-table-column prop="file_id" label="3D модель" width="100" />
+        <el-table-column prop="file_id" label="3D модель" width="120">
+          <template #default="{ row }">
+            <div v-if="row.file_id" class="model-preview">
+              <CadPreview :file-id="row.file_id" :show-full-view="true" />
+            </div>
+            <span v-else class="no-model">Нет модели</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="document_ids" label="Документы" width="150" />
         <el-table-column prop="status" label="Статус" width="150">
           <template #default="{ row }">
@@ -153,3 +161,18 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
     </el-col>
   </el-row>
 </template>
+
+<style scoped>
+.model-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
+
+.no-model {
+  color: #909399;
+  font-style: italic;
+  font-size: 12px;
+}
+</style>
