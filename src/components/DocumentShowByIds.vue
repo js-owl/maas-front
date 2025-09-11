@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch, computed } from "vue";
-import { req_json_auth, API_BASE } from "../api";
+import { req_json_auth } from "../api";
 import { useProfileStore } from "../stores/profile.store";
 
 type DocumentInfo = {
@@ -8,15 +8,14 @@ type DocumentInfo = {
   original_filename: string;
 };
 
-// Two-way binding with parent via v-model:document-ids
-const documentIds = defineModel<number[]>("documentIds", { default: [] });
+const document_ids = defineModel<number[]>();
 
 const profileStore = useProfileStore();
 const isLoading = ref<boolean>(false);
 const allDocuments = ref<DocumentInfo[]>([]);
 
 const filteredDocuments = computed<DocumentInfo[]>(() => {
-  const ids = new Set(documentIds.value ?? []);
+  const ids = new Set(document_ids.value ?? []);
   return allDocuments.value.filter((d) => ids.has(d.id));
 });
 
@@ -25,12 +24,6 @@ async function ensureProfileLoaded() {
 }
 
 async function loadUserDocuments() {
-  // Запускаем загрузку только если есть documentIds
-  if (!Array.isArray(documentIds.value) || documentIds.value.length === 0) {
-    allDocuments.value = [];
-    isLoading.value = false;
-    return;
-  }
   isLoading.value = true;
   try {
     await ensureProfileLoaded();
@@ -53,26 +46,30 @@ async function loadUserDocuments() {
   isLoading.value = false;
 }
 
-function openDocument(id: number) {
-  const url = `${API_BASE}/documents/${id}/download`;
-  window.open(url, "_blank");
-}
+// function openDocument(id: number) {
+//   const url = `${API_BASE}/documents/${id}/download`;
+//   window.open(url, "_blank");
+// }
 
 function removeDocument(id: number) {
-  if (!Array.isArray(documentIds.value)) return;
-  const idx = documentIds.value.indexOf(id);
-  if (idx >= 0) documentIds.value.splice(idx, 1);
+  if (!Array.isArray(document_ids.value)) return;
+  const idx = document_ids.value.indexOf(id);
+  if (idx >= 0) document_ids.value.splice(idx, 1);
 }
 
 onMounted(() => {
-  if (Array.isArray(documentIds.value) && documentIds.value.length > 0) {
+  if (Array.isArray(document_ids.value) && document_ids.value.length > 0) {
     loadUserDocuments();
   }
 });
 watch(
-  () => documentIds.value,
+  () => document_ids.value,
   (ids) => {
-    if (Array.isArray(ids) && ids.length > 0 && allDocuments.value.length === 0) {
+    if (
+      Array.isArray(ids) &&
+      ids.length > 0 &&
+      allDocuments.value.length === 0
+    ) {
       loadUserDocuments();
     }
     if (!ids || ids.length === 0) {
@@ -97,9 +94,9 @@ watch(
           <div v-for="doc in filteredDocuments" :key="doc.id" class="doc-row">
             <span class="doc-name">{{ doc.original_filename }}</span>
             <span class="doc-actions">
-              <el-button size="small" link @click="openDocument(doc.id)">
+              <!-- <el-button size="small" link @click="openDocument(doc.id)">
                 <span class="action-link">⤴</span>
-              </el-button>
+              </el-button> -->
               <el-button size="small" link @click="removeDocument(doc.id)">
                 <span class="action-remove">✖</span>
               </el-button>

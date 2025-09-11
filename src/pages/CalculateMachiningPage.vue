@@ -39,7 +39,7 @@ const router = useRouter();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
 let file_id = ref(4);
-let document_ids = ref([1, 2]);
+let document_ids = ref<number[]>([]);
 
 let length = ref(120);
 let width = ref(30);
@@ -154,7 +154,6 @@ async function submitOrder(payload: IOrderPayload) {
       // Для POST запроса преобразуем document_ids в строку
       const postPayload: IOrderPostPayload = {
         ...payload,
-        // Берем именно массив id, а не ref/прокси
         document_ids: JSON.stringify(document_ids.value ?? []),
       };
       const res = await req_urlencoded_auth("/orders", "POST", postPayload);
@@ -295,7 +294,7 @@ async function getOrder(id: number) {
           Максимальный размер 100Мб
         </el-col>
         <el-col :span="24">
-          <DocumentShowByIds v-model:document-ids="document_ids" />
+          <DocumentShowByIds v-model="document_ids" />
         </el-col>
       </el-row>
 

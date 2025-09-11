@@ -43,12 +43,15 @@ const getStatusText = (status: string): string => {
 
 const handleEdit = (row: IOrderResponse): void => {
   switch (row.service_id) {
-    case "2":
-      router.push({ path: "/plastic", query: { orderId: row.id.toString() } });
-      break;
-    case "4":
+    case "cnc_lathe":
       router.push({
         path: "/machining",
+        query: { orderId: row.id.toString() },
+      });
+      break;
+    case "cnc_milling":
+      router.push({
+        path: "/milling",
         query: { orderId: row.id.toString() },
       });
       break;

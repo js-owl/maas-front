@@ -40,7 +40,7 @@ const router = useRouter();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
 let file_id = ref(2);
-let document_ids = ref([1, 2]);
+let document_ids = ref<number[]>([]);
 
 let length = ref(120);
 let width = ref(30);
@@ -296,7 +296,7 @@ async function getOrder(id: number) {
           Максимальный размер 100Мб
         </el-col>
         <el-col :span="24">
-          {{ document_ids }}
+          <DocumentShowByIds v-model="document_ids" />
         </el-col>
       </el-row>
 
