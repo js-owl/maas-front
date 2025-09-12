@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { API_BASE } from "../api";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import * as THREE from "three";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { useAuthStore } from "../stores/auth.store";
 
 const authStore = useAuthStore();
@@ -63,14 +64,26 @@ async function generatePreview() {
     scene.add(directionalLight);
 
     // Материал и модель
-    const material = new THREE.MeshPhongMaterial({
-      color: 0x4488ff,
-      specular: 0x111111,
-      shininess: 200,
+    const material = new THREE.MeshPhysicalMaterial({
+      color: 0x888888, // Базовый серый цвет металла
+      metalness: 0.9, // Высокая металличность
+      roughness: 0.1, // Низкая шероховатость для блеска
+      clearcoat: 1.0, // Прозрачное покрытие
+      clearcoatRoughness: 0.1, // Шероховатость покрытия
+      reflectivity: 1.0, // Высокая отражательная способность
+      envMapIntensity: 1.0, // Интенсивность отражения окружения
     });
 
     const model = new THREE.Mesh(geometry, material);
     scene.add(model);
+
+    // Создаем карту окружения для отражений
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    const environment = new RoomEnvironment();
+    const envMap = pmremGenerator.fromScene(environment, 0.04).texture;
+    scene.environment = envMap;
+    material.envMap = envMap;
+    pmremGenerator.dispose();
 
     // Центрируем и позиционируем камеру для изометрического вида
     geometry.computeBoundingBox();
