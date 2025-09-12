@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CadPreview: typeof import('./src/components/CadPreview.vue')['default']
     CadShow: typeof import('./src/components/CadShow.vue')['default']
     CadShowById: typeof import('./src/components/CadShowById.vue')['default']
     CadUpload: typeof import('./src/components/CadUpload.vue')['default']
