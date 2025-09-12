@@ -7,10 +7,12 @@ const materials = ref<Array<{ value: string; label: string }>>([]);
 
 // Функция для преобразования данных с бекенда в нужный формат
 function transformMaterials(backendData: any[]): Array<{ value: string; label: string }> {
-  return backendData.map(item => ({
-    value: item.id,
-    label: item.value
-  }));
+  return backendData
+    .filter(item => item.forms && item.forms.some((form: any) => form.id === "rod"))
+    .map(item => ({
+      value: item.id,
+      label: item.value
+    }));
 }
 
 // Загружаем материалы с бекенда
