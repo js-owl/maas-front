@@ -18,7 +18,7 @@ function transformMaterials(backendData: any[]): Array<{ value: string; label: s
 // Загружаем материалы с бекенда
 async function loadMaterials() {
   try {
-    const response = await req_json_auth("/materials", "GET");
+    const response = await req_json_auth("/calculator/materials", "GET");
     if (response?.ok) {
       const backendMaterials = await response.json();
       materials.value = transformMaterials(backendMaterials);

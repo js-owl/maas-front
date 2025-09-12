@@ -1,33 +1,47 @@
 <script lang="ts" setup>
-// price - руб/кг; density - кг/м3;
-const alum = { density: 2700, k_handle: 0.03 };
-const steel = { density: 7850, k_handle: 0.045 };
+import { ref, onMounted } from "vue";
+import { req_json_auth } from "../../api";
 
 const selectedMaterial = defineModel();
-const materials = [
-  {
-    value: "Алюминий 1",
-    label: "лист Д16/Д16Т/Д95/Д95Т",
-    price: 110,
-    density: alum.density,
-    k_handle: alum.k_handle,
-  },
-  {
-    value: "Алюминий 2",
-    label: "лист АМ/АМГ/АМЦ",
-    price: 110,
-    density: alum.density,
-    k_handle: alum.k_handle,
-  },
-  {
-    value: "Сталь 1",
-    label:
-      "лист 15Х, 20Х, 30Х, 35Х, 38ХА, 40Х, 45Х, 50Г, 12ХН, 20ХН, 40ХН, 14ХГН, 19ХГН, 20ХГНМ, 30ХМ",
-    price: 70,
-    density: steel.density,
-    k_handle: steel.k_handle,
-  },
-];
+const materials = ref<Array<{ value: string; label: string }>>([]);
+
+// Функция для преобразования данных с бекенда в нужный формат
+function transformMaterials(backendData: any[]): Array<{ value: string; label: string }> {
+  return backendData
+    .filter(item => item.forms && item.forms.some((form: any) => form.id === "plate"))
+    .map(item => ({
+      value: item.id,
+      label: item.value
+    }));
+}
+
+// Загружаем материалы с бекенда
+async function loadMaterials() {
+  try {
+    const response = await req_json_auth("/calculator/materials", "GET");
+    if (response?.ok) {
+      const backendMaterials = await response.json();
+      materials.value = transformMaterials(backendMaterials);
+    }
+  } catch (error) {
+    console.error("Error loading materials:", error);
+    // Fallback к статичным данным при ошибке
+    materials.value = [
+      {
+        value: "alum_D16T",
+        label: "Алюминий Д16Т",
+      },
+      {
+        value: "steel_12X18H10T",
+        label: "Сталь 12Х18Н10Т",
+      },
+    ];
+  }
+}
+
+onMounted(() => {
+  loadMaterials();
+});
 </script>
 
 <template>
