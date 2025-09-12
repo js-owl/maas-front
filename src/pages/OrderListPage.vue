@@ -117,7 +117,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
           </template>
         </el-table-column>
         <el-table-column prop="quantity" label="Кол-во" width="100" />
-        <el-table-column prop="file_id" label="3D модель" width="120">
+        <el-table-column prop="file_id" label="3D модель" width="200">
           <template #default="{ row }">
             <div v-if="row.file_id" class="model-preview">
               <CadPreview :file-id="row.file_id" />

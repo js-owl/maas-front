@@ -45,11 +45,11 @@ async function generatePreview() {
 
     // Создаем миниатюру
     const canvas = document.createElement("canvas");
-    canvas.width = 80;
-    canvas.height = 60;
+    canvas.width = 160;
+    canvas.height = 120;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, 80 / 60, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, 160 / 120, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
@@ -152,8 +152,8 @@ generatePreview();
 }
 
 .stl-preview {
-  width: 80px;
-  height: 60px;
+  width: 160px;
+  height: 120px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
