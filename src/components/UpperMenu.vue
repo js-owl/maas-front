@@ -73,7 +73,7 @@ function scrollToAbout() {
   <el-row :gutter="0" style="background-color: #be2a44">
     <el-col :offset="2" :span="21">
       <el-header
-        style="display: flex; justify-content: space-between; height: 80px"
+        style="display: flex; justify-content: space-between; height: 100px"
       >
         <div style="display: flex; align-items: center">
           <el-menu
@@ -159,7 +159,7 @@ function scrollToAbout() {
             </el-sub-menu>
           </el-menu>
         </div>
-        <div>
+        <div style="display: flex; align-items: center">
           <el-button
             type="primary"
             plain
@@ -218,6 +218,7 @@ function scrollToAbout() {
 <style scoped>
 .el-menu.el-menu--horizontal {
   border-bottom: none;
+  margin-right: 100px;
 }
 .el-menu-item {
   font-size: 18px;
@@ -234,7 +235,6 @@ function scrollToAbout() {
   /* padding: 5px; */
 }
 .first-element {
-  margin: 0 40px 0 0px;
   font-size: 30px;
   color: white !important;
   text-decoration: none;

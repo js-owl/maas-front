@@ -7,7 +7,7 @@ import Width from "../components/coefficients/Width.vue";
 
 import CoefficientQuantity from "../components/coefficients/CoefficientQuantity.vue";
 
-import MaterialMachining from "../components/materials/MaterialMachining.vue";
+import MaterialMilling from "../components/materials/MaterialMilling.vue";
 
 import CoefficientOtk from "../components/coefficients/CoefficientOtk.vue";
 import CoefficientCertificate from "../components/coefficients/CoefficientCertificate.vue";
@@ -48,7 +48,7 @@ let height = ref(30);
 let quantity = ref(1);
 
 let material_id = ref("alum_D16T");
-let material_form = ref("rod");
+let material_form = ref("plate");
 
 let id_tolerance = ref("4");
 let id_finish = ref("3");
@@ -84,6 +84,7 @@ let result = ref({
   id: 0,
   detail_time: 0,
   detail_price: 0,
+  detail_price_one: 0,
   total_price: 0,
   quantity: 1,
   manufacturing_cycle: 0,
@@ -257,12 +258,27 @@ async function getOrder(id: number) {
 
       <div class="price-section">
         <div class="price-row">
-          <div>Цена изготовления 1 ед.</div>
-          <div>{{ Number(result?.detail_price ?? 0).toLocaleString() }} р.</div>
+          <div>Стоимость 1 ед.</div>
+          <div>
+            {{ Number(result?.detail_price_one ?? 0).toLocaleString() }} р.
+          </div>
         </div>
         <div class="price-row">
-          <div>Цена изготовления {{ result?.quantity || 0 }} ед.*</div>
-          <div>{{ Number(result?.total_price ?? 0).toLocaleString() }} р.</div>
+          <div>Стоимость {{ result?.quantity || 0 }} ед.*</div>
+          <div>
+            <span>
+              {{ Number(result?.total_price ?? 0).toLocaleString() }} р.
+            </span>
+            <span
+              v-show="
+                Number(result?.detail_price ?? 0) !=
+                Number(result?.detail_price_one ?? 0)
+              "
+            >
+              ({{ Number(result?.detail_price ?? 0).toLocaleString() }} р. за 1
+              ед.)
+            </span>
+          </div>
         </div>
         <div v-if="profileStore.profile?.username == 'admin'" class="price-row">
           <div>Трудоемкость</div>
@@ -357,7 +373,7 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5">
         <el-col :offset="2" :span="13">
-          <MaterialMachining v-model="material_id" />
+          <MaterialMilling v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="6">
           <CoefficientSize v-model="n_dimensions" />

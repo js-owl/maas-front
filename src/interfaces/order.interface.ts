@@ -32,6 +32,7 @@ export interface IOrderResponse extends IOrderBase {
   status: string;
   mat_volume: number;
   detail_price: number;
+  detail_price_one: number;
   detail_time: number;
   total_price: number;
   mat_weight: number;

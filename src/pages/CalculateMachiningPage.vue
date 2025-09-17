@@ -82,6 +82,7 @@ let result = ref({
   id: 0,
   detail_time: 0,
   detail_price: 0,
+  detail_price_one: 0,
   total_price: 0,
   quantity: 1,
   manufacturing_cycle: 0,
@@ -255,12 +256,27 @@ async function getOrder(id: number) {
 
       <div class="price-section">
         <div class="price-row">
-          <div>Цена изготовления 1 ед.</div>
-          <div>{{ Number(result?.detail_price ?? 0).toLocaleString() }} р.</div>
+          <div>Стоимость 1 ед.</div>
+          <div>
+            {{ Number(result?.detail_price_one ?? 0).toLocaleString() }} р.
+          </div>
         </div>
         <div class="price-row">
-          <div>Цена изготовления {{ result?.quantity || 0 }} ед.*</div>
-          <div>{{ Number(result?.total_price ?? 0).toLocaleString() }} р.</div>
+          <div>Стоимость {{ result?.quantity || 0 }} ед.*</div>
+          <div>
+            <span>
+              {{ Number(result?.total_price ?? 0).toLocaleString() }} р.
+            </span>
+            <span
+              v-show="
+                Number(result?.detail_price ?? 0) !=
+                Number(result?.detail_price_one ?? 0)
+              "
+            >
+              ({{ Number(result?.detail_price ?? 0).toLocaleString() }} р. за 1
+              ед.)
+            </span>
+          </div>
         </div>
         <div v-if="profileStore.profile?.username == 'admin'" class="price-row">
           <div>Трудоемкость</div>
