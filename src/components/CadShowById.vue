@@ -182,7 +182,7 @@ function renderModel() {
 .stl-container {
   width: 100%;
   height: 400px;
-  border: 2px solid #577aad;
+  border: 2px solid var(--left-section-bg);
   border-radius: 8px;
   margin-bottom: 10px;
   background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);

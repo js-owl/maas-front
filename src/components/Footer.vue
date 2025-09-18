@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 // const store = useUserStore();
 
@@ -7,6 +7,11 @@ const activeIndex = ref("1");
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
 };
+let color = ref("");
+onMounted(() => {
+  const rootStyles = getComputedStyle(document.documentElement);
+  color.value = rootStyles.getPropertyValue("--upper-menu-bg").trim();
+});
 </script>
 
 <template>
@@ -15,7 +20,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
     style="
       display: flex;
       align-items: center;
-      background-color: #be2a44;
+      background-color: var(--upper-menu-bg);
       height: 120px;
     "
   >
@@ -25,7 +30,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
         class="el-menu-demo"
         mode="horizontal"
         @select="handleSelect"
-        background-color="#be2a44"
+        :background-color="color"
         text-color="#fff"
         active-text-color="black"
         :router="true"

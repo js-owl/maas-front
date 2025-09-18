@@ -250,7 +250,7 @@ async function getOrder(id: number) {
     <!-- 1. Левая часть -->
     <el-col :offset="2" :span="9" class="left-section">
       <div class="title-text">
-        Токарная обработка <br />
+        ТОКАРНАЯ ОБРАБОТКА <br />
         {{ order_id != 0 ? `(заказ ${order_id})` : "" }}
       </div>
 
@@ -437,7 +437,7 @@ async function getOrder(id: number) {
 /* Основные цвета и фоны */
 .main-container {
   min-height: 500px;
-  background-color: #283d5b;
+  background-color: var(--left-section-bg);
 }
 
 .left-section {
@@ -451,8 +451,9 @@ async function getOrder(id: number) {
 
 /* Текстовые стили */
 .title-text {
-  color: white;
+  color: var(--left-section-color);
   font-size: 38px;
+  font-weight: 600;
   padding-bottom: 30px;
 }
 
@@ -486,12 +487,12 @@ async function getOrder(id: number) {
 
 /* Секции с компонентами */
 .component-section {
-  background-color: #283d5b;
+  background-color: var(--left-section-bg);
   padding-bottom: 30px;
 }
 
 .upload-section {
-  background-color: #283d5b;
+  background-color: var(--left-section-bg);
   padding-bottom: 30px;
 }
 

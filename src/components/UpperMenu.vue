@@ -19,8 +19,13 @@ const authStore = useAuthStore();
 const profileStore = useProfileStore();
 const router = useRouter();
 
+let color = ref("");
+
 // Check token on component mount
 onMounted(() => {
+  const rootStyles = getComputedStyle(document.documentElement);
+  color.value = rootStyles.getPropertyValue("--upper-menu-bg").trim();
+
   checkTokenValidity();
   const tokenCheckInterval = setInterval(checkTokenValidity, 5 * 60 * 1000);
   onUnmounted(() => {
@@ -70,7 +75,7 @@ function scrollToAbout() {
 </script>
 
 <template>
-  <el-row :gutter="0" style="background-color: #be2a44">
+  <el-row :gutter="0" style="background-color: var(--upper-menu-bg)">
     <el-col :offset="2" :span="21">
       <el-header
         style="display: flex; justify-content: space-between; height: 100px"
@@ -81,7 +86,7 @@ function scrollToAbout() {
             class="el-menu-demo"
             mode="horizontal"
             :ellipsis="false"
-            background-color="#be2a44"
+            :background-color="color"
             text-color="#fff"
             active-text-color="#fff"
             :router="true"
@@ -168,7 +173,7 @@ function scrollToAbout() {
               color: white;
               border: none;
               margin-left: 20px;
-              font-size: 18px;
+              font-size: 20px;
               height: 80px;
               padding-left: 0px;
               font-weight: normal;
@@ -185,7 +190,7 @@ function scrollToAbout() {
           <el-button
             type="primary"
             plain
-            style="background-color: #be2a44; color: white"
+            style="background-color: var(--upper-menu-bg); color: white"
             @click="isLoginVisible = true"
           >
             Войти/ Регистрация
@@ -202,7 +207,7 @@ function scrollToAbout() {
           <el-button
             type="primary"
             plain
-            style="background-color: #be2a44; color: white"
+            style="background-color: var(--upper-menu-bg); color: white"
             @click="onLogout"
           >
             Выйти
@@ -221,17 +226,17 @@ function scrollToAbout() {
   margin-right: 100px;
 }
 .el-menu-item {
-  font-size: 18px;
+  font-size: 20px;
 }
 :deep(.el-header) {
   padding-left: 0px;
 }
 :deep(.el-sub-menu__title) {
-  font-size: 18px;
+  font-size: 20px;
   /* padding: 5px; */
 }
 :deep(.el-sub-menu) {
-  font-size: 18px;
+  font-size: 20px;
   /* padding: 5px; */
 }
 .first-element {

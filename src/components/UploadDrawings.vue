@@ -59,9 +59,10 @@ const loadDoc = (response: any) => {
 :deep(.el-upload-dragger) {
   padding: 10px;
   border: 1px solid var(--border-color);
+  background-color: var(--left-section-bg) !important;
 }
 :deep(.el-upload.is-disabled .el-upload-dragger) {
-  background-color: #283d5b;
+  background-color: var(--left-section-bg) !important;
   padding: 10px;
   border: 1px solid var(--border-color);
 }

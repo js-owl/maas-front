@@ -15,7 +15,7 @@ let file_id = ref(4);
     :gutter="0"
     style="
       min-height: 600px;
-      background-color: #283d5b;
+      background-color: var(--left-section-bg);
       padding: 100px 0 50px 20px;
     "
   >
@@ -64,7 +64,11 @@ let file_id = ref(4);
   <!-- Section Milestones -->
   <el-row
     :gutter="0"
-    style="background-color: #283d5b; padding-top: 30px; min-height: 300px"
+    style="
+      background-color: var(--left-section-bg);
+      padding-top: 30px;
+      min-height: 300px;
+    "
   >
     <el-col :offset="2" :span="20">
       <div
