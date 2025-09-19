@@ -146,7 +146,7 @@ function scrollToAbout() {
                 <el-menu-item index="1-2-3">Контактная сварка</el-menu-item>
               </el-sub-menu>
             </el-sub-menu>
-            <el-menu-item index="/#about" @click="scrollToAbout">
+            <el-menu-item v-show="false" index="/#about" @click="scrollToAbout">
               О нас
             </el-menu-item>
 
@@ -190,7 +190,12 @@ function scrollToAbout() {
           <el-button
             type="primary"
             plain
-            style="background-color: var(--upper-menu-bg); color: white"
+            style="
+              background-color: var(--upper-menu-bg);
+              color: white;
+              border: none;
+              font-size: 20px;
+            "
             @click="isLoginVisible = true"
           >
             Войти/ Регистрация
@@ -207,7 +212,12 @@ function scrollToAbout() {
           <el-button
             type="primary"
             plain
-            style="background-color: var(--upper-menu-bg); color: white"
+            style="
+              background-color: var(--upper-menu-bg);
+              color: white;
+              border: none;
+              font-size: 20px;
+            "
             @click="onLogout"
           >
             Выйти
@@ -223,7 +233,7 @@ function scrollToAbout() {
 <style scoped>
 .el-menu.el-menu--horizontal {
   border-bottom: none;
-  margin-right: 100px;
+  /* margin-right: 100px; */
 }
 .el-menu-item {
   font-size: 20px;
@@ -244,6 +254,7 @@ function scrollToAbout() {
   color: white !important;
   text-decoration: none;
   font-weight: 700;
+  margin-right: 100px !important;
 }
 .first-element.is-active {
   color: white !important;

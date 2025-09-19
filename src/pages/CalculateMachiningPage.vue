@@ -466,7 +466,7 @@ async function getOrder(id: number) {
 .price-row {
   display: flex;
   justify-content: space-between;
-  color: white;
+  color: var(--left-section-color);
   padding: 14px 0;
   border-bottom: 1px solid #577aad;
 }
@@ -474,7 +474,7 @@ async function getOrder(id: number) {
 .price-row-last {
   display: flex;
   justify-content: space-between;
-  color: white;
+  color: var(--left-section-color);
   padding: 14px 0;
 }
 
@@ -499,7 +499,8 @@ async function getOrder(id: number) {
 .upload-title {
   padding-bottom: 10px;
   font-size: 30px;
-  color: #577aad;
+  color: var(--left-section-color);
+  /* color: #577aad; */
 }
 
 .upload-info {
