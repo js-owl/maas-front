@@ -19,6 +19,11 @@ const routes = [
     component: () => import("./pages/PaintingPage.vue"),
   },
   {
+    path: "/mach",
+    component: () => import("./pages/MachPage.vue"),
+    name: "mach",
+  },
+  {
     path: "/machining",
     component: () => import("./pages/CalculateMachiningPage.vue"),
     name: "machining",
