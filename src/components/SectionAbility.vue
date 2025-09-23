@@ -29,14 +29,17 @@
       </el-col>
       <el-col :span="6">
         <div class="item">
-          <RouterLink to="/composite">
-            <el-image src="homePage/ability_composite.webp" fit="contain" />
-            <div class="overlay">
-              <p class="item-text">
-                Производство изделий из композитных материалов
-              </p>
+          <el-image src="homePage/ability_composite.webp" fit="contain" />
+          <div class="overlay-development">
+            <div class="development-text">
+              <p class="main-text">Раздел в разработке</p>
             </div>
-          </RouterLink>
+          </div>
+          <div class="overlay">
+            <p class="item-text">
+              Производство изделий из композитных материалов
+            </p>
+          </div>
         </div>
       </el-col>
       <el-col :span="6">
@@ -105,4 +108,31 @@
 .item-text:hover {
   color: #aaa;
 }
+
+.overlay-development {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(40, 61, 91, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.development-text {
+  text-align: center;
+  color: white;
+}
+
+.main-text {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 0 0 20px 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  opacity: 0.9;
+}
+
 </style>
