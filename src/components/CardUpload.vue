@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
+import { API_BASE_CAD } from "../api";
 
 const volume = ref(0);
 const handleSuccess = (response: any) => {
@@ -12,7 +13,7 @@ const handleSuccess = (response: any) => {
   <el-upload
     class="upload-demo"
     drag
-    action="http://mdgkd-vlabal.int.kronshtadt.ru:7000/calculate-volume/"
+    :action="`${API_BASE_CAD}/calculate-volume/`"
     multiple
     :on-success="handleSuccess"
   >

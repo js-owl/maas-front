@@ -248,7 +248,7 @@ async function getOrder(id: number) {
     element-loading-custom-class="loading-top"
   >
     <!-- 1. Левая часть -->
-    <el-col :offset="2" :span="9" class="left-section">
+    <el-col :offset="3" :span="8" class="left-section">
       <div class="title-text">
         ТОКАРНАЯ ОБРАБОТКА <br />
         {{ order_id != 0 ? `(заказ ${order_id})` : "" }}
@@ -262,7 +262,7 @@ async function getOrder(id: number) {
           </div>
         </div>
         <div class="price-row">
-          <div>Стоимость {{ result?.quantity || 0 }} ед.*</div>
+          <div>Общая стоимость {{ result?.quantity || 0 }} ед.*</div>
           <div>
             <span>
               {{ Number(result?.total_price ?? 0).toLocaleString() }} р.
@@ -346,34 +346,34 @@ async function getOrder(id: number) {
     <!-- 2. Правая часть -->
     <el-col :span="13" class="right-section">
       <el-row :gutter="5">
-        <el-col :offset="2" :span="6">
+        <el-col :offset="2" :span="5">
           <Length v-model="length" />
         </el-col>
-        <el-col :offset="1" :span="6">
+        <el-col :offset="1" :span="5">
           <Diameter v-model="width" />
         </el-col>
-        <el-col :offset="1" :span="6">
+        <el-col :offset="1" :span="5">
           <CoefficientQuantity v-model="quantity" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5">
-        <el-col :offset="2" :span="6">
+        <el-col :offset="2" :span="5">
           <CoefficientFinish v-model="id_finish" />
         </el-col>
-        <el-col :offset="1" :span="6">
+        <el-col :offset="1" :span="5">
           <CoefficientCover v-model="id_cover" />
         </el-col>
-        <el-col :offset="1" :span="6">
+        <el-col :offset="1" :span="5">
           <CoefficientTolerance v-model="id_tolerance" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5">
-        <el-col :offset="2" :span="13">
+        <el-col :offset="2" :span="11">
           <MaterialMachining v-model="material_id" />
         </el-col>
-        <el-col :offset="1" :span="6">
+        <el-col :offset="1" :span="5">
           <CoefficientSize v-model="n_dimensions"
         /></el-col>
       </el-row>
@@ -390,7 +390,7 @@ async function getOrder(id: number) {
         </el-col>
       </el-row>
       <el-row :gutter="5" class="row-spacing-bottom">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="2" :span="17">
           <div class="label">Комментарий</div>
           <el-input
             v-model="special_instructions"

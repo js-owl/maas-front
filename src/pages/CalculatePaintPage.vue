@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { reactive, ref, watch } from "vue";
-import CardUpload from "../components/CardUploadDrawing.vue";
 import { API_BASE } from "../api";
 
 import CoefficientQuantity from "../components/coefficients/CoefficientQuantity.vue";

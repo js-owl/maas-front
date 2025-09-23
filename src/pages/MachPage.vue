@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { Check, Tools, ArrowLeft } from '@element-plus/icons-vue'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { Check, Tools, ArrowLeft } from "@element-plus/icons-vue";
 
-const router = useRouter()
-const activeTab = ref('equipment')
+const router = useRouter();
+const activeTab = ref("equipment");
 
 const goBack = () => {
-  router.push('/')
-}
+  router.push("/");
+};
 </script>
 
 <template>
@@ -24,7 +24,9 @@ const goBack = () => {
           </div>
           <div class="application-item">
             <el-icon class="check-icon"><Check /></el-icon>
-            <span>Нарезание резьбы (метрической, дюймовой, трапецеидальной);</span>
+            <span
+              >Нарезание резьбы (метрической, дюймовой, трапецеидальной);</span
+            >
           </div>
           <div class="application-item">
             <el-icon class="check-icon"><Check /></el-icon>
@@ -46,9 +48,14 @@ const goBack = () => {
 
         <!-- Calculator Section -->
         <div class="calculator-section">
-          <div class="calculator-box" @click="router.push({ name: 'machining' })">
+          <div
+            class="calculator-box"
+            @click="router.push({ name: 'machining' })"
+          >
             <el-icon class="calculator-icon"><Tools /></el-icon>
-            <span class="calculator-text">Калькулятор стоимости токарной обработки</span>
+            <span class="calculator-text"
+              >Калькулятор стоимости токарной обработки</span
+            >
           </div>
         </div>
 
@@ -62,16 +69,22 @@ const goBack = () => {
       </div>
     </el-col>
 
-     <!-- 2. Правая часть -->
+    <!-- 2. Правая часть -->
     <el-col :span="13" class="right-section">
       <div class="technical-section">
         <h2 class="section-title">ТОКАРНАЯ ОБРАБОТКА</h2>
         <p class="description">
-          Токарная обработка представляет собой механическую операцию, при которой вращающаяся деталь обрабатывается режущим инструментом, последовательно снимающим слои материала. Технология позволяет создавать цилиндрические, конические и сложные профилированные поверхности с высокой степенью точности. Применяется в производстве металлических, пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
+          Токарная обработка представляет собой механическую операцию, при
+          которой вращающаяся деталь обрабатывается режущим инструментом,
+          последовательно снимающим слои материала. Технология позволяет
+          создавать цилиндрические, конические и сложные профилированные
+          поверхности с высокой степенью точности. Применяется в производстве
+          металлических, пластиковых и других изделий, обеспечивая превосходное
+          качество финишной обработки.
         </p>
 
         <h3 class="section-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</h3>
-        
+
         <!-- Tabs -->
         <el-tabs v-model="activeTab" class="tech-tabs">
           <el-tab-pane label="Оборудование" name="equipment">
@@ -88,9 +101,13 @@ const goBack = () => {
           </el-tab-pane>
           <el-tab-pane label="Материалы" name="materials">
             <div class="tab-content">
-              <div class="requirement-item">Нержавеющие, легированные стали</div>
+              <div class="requirement-item">
+                Нержавеющие, легированные стали
+              </div>
               <div class="requirement-item">Полиамиды, фторопласт</div>
-              <div class="requirement-item">Алюминиевые, бронзовые, медные сплавы</div>
+              <div class="requirement-item">
+                Алюминиевые, бронзовые, медные сплавы
+              </div>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -142,7 +159,7 @@ const goBack = () => {
 }
 
 .check-icon {
-  color: #4CAF50;
+  color: #4caf50;
   margin-right: 15px;
   font-size: 18px;
 }
@@ -257,27 +274,27 @@ const goBack = () => {
   .left-section {
     padding: 20px;
   }
-  
+
   .right-section {
     padding: 20px;
   }
-  
+
   .title-text {
     font-size: 20px;
   }
-  
+
   .section-title {
     font-size: 16px;
   }
-  
+
   .application-item {
     font-size: 14px;
   }
-  
+
   .calculator-text {
     font-size: 14px;
   }
-  
+
   .description {
     font-size: 14px;
   }

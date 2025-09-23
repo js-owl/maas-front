@@ -48,7 +48,7 @@ const loadDoc = (response: any) => {
         :color="color"
         style="display: block; width: 100px; height: 100px"
       />
-      <div class="el-upload__text" :style="{ color }" style="font-size: 22px">
+      <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
         Чертежи, документация
       </div>
     </div>

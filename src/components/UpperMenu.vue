@@ -76,9 +76,14 @@ function scrollToAbout() {
 
 <template>
   <el-row :gutter="0" style="background-color: var(--upper-menu-bg)">
-    <el-col :offset="2" :span="21">
+    <el-col :offset="3" :span="18">
       <el-header
-        style="display: flex; justify-content: space-between; height: 100px"
+        style="
+          display: flex;
+          justify-content: space-between;
+          height: 100px;
+          margin-right: -40px;
+        "
       >
         <div style="display: flex; align-items: center">
           <el-menu

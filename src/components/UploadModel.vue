@@ -65,7 +65,7 @@ const loadModel = (response: any) => {
           <div
             class="el-upload__text"
             :style="{ color }"
-            style="font-size: 22px"
+            style="font-size: 20px"
           >
             3D-модель (STEP/STP/STL)
           </div>

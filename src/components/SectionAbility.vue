@@ -3,7 +3,7 @@
     style="background-color: #fff; padding-bottom: 40px; min-height: 600px"
   >
     <el-row :gutter="20">
-      <el-col :offset="2" :span="20">
+      <el-col :offset="3" :span="18">
         <div
           style="
             text-align: center;
@@ -17,7 +17,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col :offset="2" :span="7">
+      <el-col :offset="3" :span="6">
         <div class="item">
           <RouterLink to="/mechanical">
             <el-image src="homePage/ability_mechanical.webp" fit="cover" />
@@ -27,7 +27,7 @@
           </RouterLink>
         </div>
       </el-col>
-      <el-col :span="7">
+      <el-col :span="6">
         <div class="item">
           <RouterLink to="/composite">
             <el-image src="homePage/ability_composite.webp" fit="contain" />
@@ -39,7 +39,7 @@
           </RouterLink>
         </div>
       </el-col>
-      <el-col :span="7">
+      <el-col :span="6">
         <div class="item">
           <RouterLink to="/painting">
             <el-image src="homePage/ability_painting.webp" fit="cover" />
@@ -51,7 +51,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="20" style="margin-top: 15px">
-      <el-col :offset="2" :span="7">
+      <el-col :offset="3" :span="6">
         <div class="item">
           <el-image src="homePage/ability_assembly.webp" fit="cover" />
           <div class="overlay">
@@ -59,7 +59,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="7">
+      <el-col :span="6">
         <div class="item">
           <el-image src="homePage/ability_thermo.webp" fit="cover" />
           <div class="overlay">
@@ -67,7 +67,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="7">
+      <el-col :span="6">
         <div class="item">
           <el-image src="homePage/ability_welding.webp" class="item-img" />
           <div class="overlay">

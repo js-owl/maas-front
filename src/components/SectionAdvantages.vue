@@ -3,7 +3,7 @@
     style="background-color: #fff; padding-bottom: 40px; min-height: 600px"
   >
     <el-row :gutter="20">
-      <el-col :offset="2" :span="20">
+      <el-col :offset="3" :span="18">
         <div
           style="
             text-align: center;
@@ -16,8 +16,8 @@
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="20">
-      <el-col :offset="2" :span="6">
+    <el-row :gutter="40" style="margin-right: 10px">
+      <el-col :offset="3" :span="6">
         <div class="item">
           <div style="font-size: 26px">СРОКИ РАБОТЫ</div>
           <p style="font-size: 22px">
@@ -26,7 +26,7 @@
           </p>
         </div>
       </el-col>
-      <el-col :offset="1" :span="6">
+      <el-col :offset="0" :span="6">
         <div class="item">
           <div style="font-size: 26px">ДОСТАВКА И УПАКОВКА</div>
           <p style="font-size: 22px">
@@ -35,7 +35,7 @@
           </p>
         </div>
       </el-col>
-      <el-col :offset="1" :span="6">
+      <el-col :offset="0" :span="6">
         <div class="item">
           <div style="font-size: 26px">
             ПРОВЕРЕННЫЕ МАТЕРИАЛЫ И ОБОРУДОВАНИЕ
@@ -47,8 +47,8 @@
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="20" style="margin-top: 30px">
-      <el-col :offset="2" :span="6">
+    <el-row :gutter="40" style="margin-top: 30px; margin-right: 10px">
+      <el-col :offset="3" :span="6">
         <div class="item">
           <div style="font-size: 26px">ДОГОВОР И ГАРАНТИЯ КАЧЕСТВА</div>
           <p style="font-size: 22px">
@@ -57,7 +57,7 @@
           </p>
         </div>
       </el-col>
-      <el-col :offset="1" :span="6">
+      <el-col :offset="0" :span="6">
         <div class="item">
           <div style="font-size: 26px">ГИБКОСТЬ</div>
           <p style="font-size: 22px">
@@ -66,7 +66,7 @@
           </p>
         </div>
       </el-col>
-      <el-col :offset="1" :span="6">
+      <el-col :offset="0" :span="6">
         <div class="item">
           <div style="font-size: 26px">СОТРУДНИЧЕСТВО</div>
           <p style="font-size: 22px">
@@ -88,6 +88,7 @@
   flex-direction: column;
   justify-content: space-between;
   color: white;
-  padding: 10px;
+  padding: 15px;
+  border-radius: 10px;
 }
 </style>
