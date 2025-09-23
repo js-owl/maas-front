@@ -44,12 +44,15 @@
       </el-col>
       <el-col :span="6">
         <div class="item">
-          <RouterLink to="/painting">
-            <el-image src="homePage/ability_painting.webp" fit="cover" />
-            <div class="overlay">
-              <p class="item-text">Нанесение лакокрасочных покрытий</p>
+          <el-image src="homePage/ability_painting.webp" fit="cover" />
+          <div class="overlay-development">
+            <div class="development-text">
+              <p class="main-text">Раздел в разработке</p>
             </div>
-          </RouterLink>
+          </div>
+          <div class="overlay">
+            <p class="item-text">Нанесение лакокрасочных покрытий</p>
+          </div>
         </div>
       </el-col>
     </el-row>
@@ -57,6 +60,11 @@
       <el-col :offset="3" :span="6">
         <div class="item">
           <el-image src="homePage/ability_assembly.webp" fit="cover" />
+          <div class="overlay-development">
+            <div class="development-text">
+              <p class="main-text">Раздел в разработке</p>
+            </div>
+          </div>
           <div class="overlay">
             <p class="item-text">Сборочное производство</p>
           </div>
@@ -65,6 +73,11 @@
       <el-col :span="6">
         <div class="item">
           <el-image src="homePage/ability_thermo.webp" fit="cover" />
+          <div class="overlay-development">
+            <div class="development-text">
+              <p class="main-text">Раздел в разработке</p>
+            </div>
+          </div>
           <div class="overlay">
             <p class="item-text">Лабораторные исследования</p>
           </div>
@@ -73,6 +86,11 @@
       <el-col :span="6">
         <div class="item">
           <el-image src="homePage/ability_welding.webp" class="item-img" />
+          <div class="overlay-development">
+            <div class="development-text">
+              <p class="main-text">Раздел в разработке</p>
+            </div>
+          </div>
           <div class="overlay">
             <p class="item-text">Сварочное производство</p>
           </div>
@@ -128,7 +146,7 @@
 }
 
 .main-text {
-  font-size: 48px;
+  font-size: 34px;
   font-weight: bold;
   margin: 0 0 20px 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
