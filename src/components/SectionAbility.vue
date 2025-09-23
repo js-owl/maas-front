@@ -1,3 +1,70 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const abilities = ref([
+  {
+    id: 1,
+    image: 'homePage/ability_mechanical.webp',
+    title: 'Механообрабатывающее производство',
+    link: '/mechanical',
+    fit: 'cover',
+    isDevelopment: false,
+    span: 6,
+    offset: 3
+  },
+  {
+    id: 2,
+    image: 'homePage/ability_composite.webp',
+    title: 'Производство изделий из композитных материалов',
+    link: null,
+    fit: 'contain',
+    isDevelopment: true,
+    span: 6,
+    offset: 0
+  },
+  {
+    id: 3,
+    image: 'homePage/ability_painting.webp',
+    title: 'Нанесение лакокрасочных покрытий',
+    link: null,
+    fit: 'cover',
+    isDevelopment: true,
+    span: 6,
+    offset: 0
+  },
+  {
+    id: 4,
+    image: 'homePage/ability_assembly.webp',
+    title: 'Сборочное производство',
+    link: null,
+    fit: 'cover',
+    isDevelopment: true,
+    span: 6,
+    offset: 3
+  },
+  {
+    id: 5,
+    image: 'homePage/ability_thermo.webp',
+    title: 'Лабораторные исследования',
+    link: null,
+    fit: 'cover',
+    isDevelopment: true,
+    span: 6,
+    offset: 0
+  },
+  {
+    id: 6,
+    image: 'homePage/ability_welding.webp',
+    title: 'Сварочное производство',
+    link: null,
+    fit: 'cover',
+    isDevelopment: true,
+    span: 6,
+    offset: 0
+  }
+])
+</script>
+
 <template>
   <section
     style="background-color: #fff; padding-bottom: 40px; min-height: 600px"
@@ -16,84 +83,75 @@
         </div>
       </el-col>
     </el-row>
+    
+    <!-- Первый ряд -->
     <el-row :gutter="20">
-      <el-col :offset="3" :span="6">
+      <el-col 
+        v-for="ability in abilities.slice(0, 3)" 
+        :key="ability.id"
+        :offset="ability.offset" 
+        :span="ability.span"
+      >
         <div class="item">
-          <RouterLink to="/mechanical">
-            <el-image src="homePage/ability_mechanical.webp" fit="cover" />
+          <component 
+            :is="ability.link ? 'RouterLink' : 'div'" 
+            :to="ability.link"
+          >
+            <el-image 
+              :src="ability.image" 
+              :fit="ability.fit"
+              :class="{ 'item-img': ability.id === 6 }"
+            />
+            
+            <div 
+              v-if="ability.isDevelopment" 
+              class="overlay-development"
+            >
+              <div class="development-text">
+                <p class="main-text">Раздел в разработке</p>
+              </div>
+            </div>
+            
             <div class="overlay">
-              <p class="item-text">Механообрабатывающее производство</p>
+              <p class="item-text">{{ ability.title }}</p>
             </div>
-          </RouterLink>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="item">
-          <el-image src="homePage/ability_composite.webp" fit="contain" />
-          <div class="overlay-development">
-            <div class="development-text">
-              <p class="main-text">Раздел в разработке</p>
-            </div>
-          </div>
-          <div class="overlay">
-            <p class="item-text">
-              Производство изделий из композитных материалов
-            </p>
-          </div>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="item">
-          <el-image src="homePage/ability_painting.webp" fit="cover" />
-          <div class="overlay-development">
-            <div class="development-text">
-              <p class="main-text">Раздел в разработке</p>
-            </div>
-          </div>
-          <div class="overlay">
-            <p class="item-text">Нанесение лакокрасочных покрытий</p>
-          </div>
+          </component>
         </div>
       </el-col>
     </el-row>
+    
+    <!-- Второй ряд -->
     <el-row :gutter="20" style="margin-top: 15px">
-      <el-col :offset="3" :span="6">
+      <el-col 
+        v-for="ability in abilities.slice(3, 6)" 
+        :key="ability.id"
+        :offset="ability.offset" 
+        :span="ability.span"
+      >
         <div class="item">
-          <el-image src="homePage/ability_assembly.webp" fit="cover" />
-          <div class="overlay-development">
-            <div class="development-text">
-              <p class="main-text">Раздел в разработке</p>
+          <component 
+            :is="ability.link ? 'RouterLink' : 'div'" 
+            :to="ability.link"
+          >
+            <el-image 
+              :src="ability.image" 
+              :fit="ability.fit"
+              :class="{ 'item-img': ability.id === 6 }"
+            />
+            
+            <div 
+              v-if="ability.isDevelopment" 
+              class="overlay-development"
+            >
+              <div class="development-text">
+                <p class="main-text">Раздел в разработке</p>
+              </div>
             </div>
-          </div>
-          <div class="overlay">
-            <p class="item-text">Сборочное производство</p>
-          </div>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="item">
-          <el-image src="homePage/ability_thermo.webp" fit="cover" />
-          <div class="overlay-development">
-            <div class="development-text">
-              <p class="main-text">Раздел в разработке</p>
+            
+            <div class="overlay">
+              <p class="item-text">{{ ability.title }}</p>
             </div>
-          </div>
-          <div class="overlay">
-            <p class="item-text">Лабораторные исследования</p>
-          </div>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="item">
-          <el-image src="homePage/ability_welding.webp" class="item-img" />
-          <div class="overlay-development">
-            <div class="development-text">
-              <p class="main-text">Раздел в разработке</p>
-            </div>
-          </div>
-          <div class="overlay">
-            <p class="item-text">Сварочное производство</p>
-          </div>
+          </component>
         </div>
       </el-col>
     </el-row>
