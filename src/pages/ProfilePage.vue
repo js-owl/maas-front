@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { type FormInstance, type FormRules } from "element-plus";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useProfileStore, type IProfile } from "../stores/profile.store";
 import router from "../router";
 
@@ -13,11 +13,34 @@ onMounted(async () => {
   // Если профиль уже загружен в store, используем его
   if (profileStore.profile) {
     profileForm.value = Object.assign({}, profileStore.profile);
+    // Устанавливаем activeTab на основе user_type из профиля
+    const profile = profileStore.profile as IProfile;
+    if (profile && profile.user_type) {
+      activeTab.value = profile.user_type;
+    }
   } else {
     // Если профиль не загружен, загружаем его
     await profileStore.getProfile();
     if (profileStore.profile) {
       profileForm.value = Object.assign({}, profileStore.profile);
+      // Устанавливаем activeTab на основе user_type из профиля
+      const profile = profileStore.profile as IProfile;
+      if (profile && profile.user_type) {
+        activeTab.value = profile.user_type;
+      }
+    }
+  }
+});
+
+// Синхронизируем activeTab с user_type в профиле и автоматически сохраняем
+watch(activeTab, async (newTab) => {
+  if (profileForm.value) {
+    profileForm.value.user_type = newTab;
+    // Автоматически сохраняем изменения при переключении вкладки
+    try {
+      await profileStore.updateProfile(profileForm.value as IProfile);
+    } catch (error) {
+      console.error("Ошибка при автоматическом сохранении:", error);
     }
   }
 });
@@ -51,6 +74,8 @@ async function onUpdate() {
       const profile = profileForm.value;
       if (profile) {
         profile.city = buildAddressString();
+        // Убеждаемся, что user_type синхронизирован с activeTab
+        profile.user_type = activeTab.value;
         await profileStore.updateProfile(profile as IProfile);
         router.push({ name: "profile" });
       }
@@ -192,9 +217,9 @@ async function onUpdate() {
                       placeholder="Введите свой email"
                     />
                   </el-form-item>
-                  <el-form-item label="Расчетный счет" prop="ras_account">
+                  <el-form-item label="Расчетный счет" prop="payment_account">
                     <el-input
-                      v-model="profileForm.ras_account"
+                      v-model="profileForm.payment_account"
                       placeholder="Введите расчетный счет"
                     />
                   </el-form-item>

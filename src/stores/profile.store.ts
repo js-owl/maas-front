@@ -7,7 +7,7 @@ export interface IProfile {
   username: string;
   email: string;
   full_name: string;
-  ras_account: string;
+  user_type: string; // "individual" | "legal"
   city: string;
   postal: string;
   region: string;
