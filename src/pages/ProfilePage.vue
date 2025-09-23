@@ -7,6 +7,7 @@ import router from "../router";
 const profileStore = useProfileStore();
 const profileForm = ref<IProfile>();
 const formRef = ref<FormInstance>();
+const activeTab = ref("individual");
 
 onMounted(async () => {
   // Если профиль уже загружен в store, используем его
@@ -94,130 +95,187 @@ async function onUpdate() {
       label-position="top"
       style="width: 100%"
     >
-      <el-row :gutter="20">
-        <el-col :offset="2" :span="6">
-          <div style="font-size: 24px; padding-bottom: 30px">
-            Общая информация
-          </div>
-          <div v-if="profileForm">
-            <el-form-item label="Логин" prop="username">
-              <el-input
-                v-model="profileForm.username"
-                placeholder="username"
-                disabled
-              />
-            </el-form-item>
-            <el-form-item label="Email" prop="email">
-              <el-input
-                v-model="profileForm.email"
-                placeholder="Введите свой email"
-              />
-            </el-form-item>
-            <el-form-item label="Полное имя" prop="full_name">
-              <el-input
-                v-model="profileForm.full_name"
-                placeholder="Введите полное имя"
-              />
-            </el-form-item>
-          </div>
-        </el-col>
+      <!-- Вкладки для физических и юридических лиц -->
+      <el-col :offset="2" :span="20">
+        <el-tabs v-model="activeTab" class="profile-tabs">
+          <el-tab-pane label="Физлицо" name="individual">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <div style="font-size: 24px; padding-bottom: 30px">
+                  Общая информация
+                </div>
+                <div v-if="profileForm">
+                  <el-form-item label="Логин" prop="username">
+                    <el-input
+                      v-model="profileForm.username"
+                      placeholder="username"
+                      disabled
+                    />
+                  </el-form-item>
+                  <el-form-item label="Email" prop="email">
+                    <el-input
+                      v-model="profileForm.email"
+                      placeholder="Введите свой email"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Полное имя" prop="full_name">
+                    <el-input
+                      v-model="profileForm.full_name"
+                      placeholder="Введите полное имя"
+                    />
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="12">
+                <div style="font-size: 24px; padding-bottom: 30px">
+                  Адрес доставки
+                </div>
+                <div v-if="profileForm">
+                  <el-form-item label="Индекс" prop="postal">
+                    <el-input
+                      v-model="profileForm.postal"
+                      placeholder="Введите индекс"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Регион/Область" prop="region">
+                    <el-input
+                      v-model="profileForm.region"
+                      placeholder="Введите регион"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Город" prop="city_name">
+                    <el-input
+                      v-model="profileForm.city_name"
+                      placeholder="Введите город"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Улица" prop="street">
+                    <el-input
+                      v-model="profileForm.street"
+                      placeholder="Введите улицу"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Дом/Строение" prop="building">
+                    <el-input
+                      v-model="profileForm.building"
+                      placeholder="Введите номер дома"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Квартира/Офис" prop="apartment">
+                    <el-input
+                      v-model="profileForm.apartment"
+                      placeholder="Введите номер квартиры"
+                    />
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+          
+          <el-tab-pane label="Юрлицо" name="legal">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <div style="font-size: 24px; padding-bottom: 30px">
+                  Общая информация
+                </div>
+                <div v-if="profileForm">
+                  <el-form-item label="Логин" prop="username">
+                    <el-input
+                      v-model="profileForm.username"
+                      placeholder="username"
+                      disabled
+                    />
+                  </el-form-item>
+                  <el-form-item label="Email" prop="email">
+                    <el-input
+                      v-model="profileForm.email"
+                      placeholder="Введите свой email"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Расчетный счет" prop="ras_account">
+                    <el-input
+                      v-model="profileForm.ras_account"
+                      placeholder="Введите расчетный счет"
+                    />
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="12">
+                <div style="font-size: 24px; padding-bottom: 30px">
+                  Адрес доставки
+                </div>
+                <div v-if="profileForm">
+                  <el-form-item label="Индекс" prop="postal">
+                    <el-input
+                      v-model="profileForm.postal"
+                      placeholder="Введите индекс"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Регион/Область" prop="region">
+                    <el-input
+                      v-model="profileForm.region"
+                      placeholder="Введите регион"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Город" prop="city_name">
+                    <el-input
+                      v-model="profileForm.city_name"
+                      placeholder="Введите город"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Улица" prop="street">
+                    <el-input
+                      v-model="profileForm.street"
+                      placeholder="Введите улицу"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Дом/Строение" prop="building">
+                    <el-input
+                      v-model="profileForm.building"
+                      placeholder="Введите номер дома"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Квартира/Офис" prop="apartment">
+                    <el-input
+                      v-model="profileForm.apartment"
+                      placeholder="Введите номер квартиры"
+                    />
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+        </el-tabs>
+      </el-col>
 
-        <el-col :offset="1" :span="6">
-          <div style="font-size: 24px; padding-bottom: 30px">
-            Адрес доставки
-          </div>
-          <div v-if="profileForm">
-            <el-form-item label="Индекс" prop="postal">
-              <el-input
-                v-model="profileForm.postal"
-                placeholder="Введите индекс"
-              />
-            </el-form-item>
-            <el-form-item label="Регион/Область" prop="region">
-              <el-input
-                v-model="profileForm.region"
-                placeholder="Введите регион"
-              />
-            </el-form-item>
-            <el-form-item label="Город" prop="city_name">
-              <el-input
-                v-model="profileForm.city_name"
-                placeholder="Введите город"
-              />
-            </el-form-item>
-            <el-form-item label="Улица" prop="street">
-              <el-input
-                v-model="profileForm.street"
-                placeholder="Введите улицу"
-              />
-            </el-form-item>
-            <el-form-item label="Дом/Строение" prop="building">
-              <el-input
-                v-model="profileForm.building"
-                placeholder="Введите номер дома"
-              />
-            </el-form-item>
-            <el-form-item label="Квартира/Офис" prop="apartment">
-              <el-input
-                v-model="profileForm.apartment"
-                placeholder="Введите номер квартиры"
-              />
-            </el-form-item>
-          </div>
-        </el-col>
-
-        <!-- <el-col :offset="1" :span="6">
-          <div style="font-size: 24px; padding-bottom: 30px">
-            Платежная информация
-          </div>
-          <div>
-            <el-form-item label="Наименование банка" prop="payment_bank_name">
-              <el-input
-                v-model="profileForm.payment_bank_name"
-                placeholder="Введите имя банка"
-              />
-            </el-form-item>
-            <el-form-item label="ИНН" prop="payment_inn">
-              <el-input
-                v-model="profileForm.payment_inn"
-                placeholder="Введите ИНН"
-              />
-            </el-form-item>
-            <el-form-item label="КПП" prop="payment_kpp">
-              <el-input
-                v-model="profileForm.payment_kpp"
-                placeholder="Введите КПП"
-              />
-            </el-form-item>
-            <el-form-item label="БИК" prop="payment_bik">
-              <el-input
-                v-model="profileForm.payment_bik"
-                placeholder="Введите БИК"
-              />
-            </el-form-item>
-            <el-form-item label="Корр.счет" prop="payment_cor_account">
-              <el-input
-                v-model="profileForm.payment_cor_account"
-                placeholder="Введите корреспондентский счет"
-              />
-            </el-form-item>
-            <el-form-item label="Расчетный счет" prop="payment_account">
-              <el-input
-                v-model="profileForm.payment_account"
-                placeholder="Введите расчетный счет"
-              />
-            </el-form-item>
-            <el-form-item label="Получатель" prop="payment_company_name">
-              <el-input
-                v-model="profileForm.payment_company_name"
-                placeholder="Введите получателя"
-              />
-            </el-form-item>
-          </div>
-        </el-col> -->
-      </el-row>
     </el-form>
   </el-row>
 </template>
 
-<style scoped></style>
+<style scoped>
+.profile-tabs {
+  margin-top: 20px;
+}
+
+:deep(.el-tabs__header) {
+  margin-bottom: 30px;
+}
+
+:deep(.el-tabs__nav-wrap::after) {
+  background-color: #e4e7ed;
+}
+
+:deep(.el-tabs__item) {
+  font-size: 16px;
+  font-weight: 500;
+  color: #606266;
+}
+
+:deep(.el-tabs__item.is-active) {
+  color: #409eff;
+}
+
+:deep(.el-tabs__active-bar) {
+  background-color: #409eff;
+}
+</style>
