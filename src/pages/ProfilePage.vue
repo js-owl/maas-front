@@ -15,6 +15,21 @@ onMounted(async () => {
     profileForm.value = Object.assign({}, profileStore.profile);
     // Устанавливаем activeTab на основе user_type из профиля
     const profile = profileStore.profile as IProfile;
+    if (profile && profile.user_type) {
+      activeTab.value = profile.user_type;
+    } else {
+      // Если user_type не установлен, устанавливаем по умолчанию
+      if (profileForm.value) {
+        (profileForm.value as IProfile).user_type = activeTab.value;
+      }
+    }
+  } else {
+    // Если профиль не загружен, загружаем его
+    await profileStore.getProfile();
+    if (profileStore.profile) {
+      profileForm.value = Object.assign({}, profileStore.profile);
+      // Устанавливаем activeTab на основе user_type из профиля
+      const profile = profileStore.profile as IProfile;
       if (profile && profile.user_type) {
         activeTab.value = profile.user_type;
       } else {
@@ -23,22 +38,7 @@ onMounted(async () => {
           (profileForm.value as IProfile).user_type = activeTab.value;
         }
       }
-    } else {
-      // Если профиль не загружен, загружаем его
-      await profileStore.getProfile();
-      if (profileStore.profile) {
-        profileForm.value = Object.assign({}, profileStore.profile);
-        // Устанавливаем activeTab на основе user_type из профиля
-        const profile = profileStore.profile as IProfile;
-        if (profile && profile.user_type) {
-          activeTab.value = profile.user_type;
-        } else {
-          // Если user_type не установлен, устанавливаем по умолчанию
-          if (profileForm.value) {
-            (profileForm.value as IProfile).user_type = activeTab.value;
-          }
-        }
-      }
+    }
   }
 });
 
@@ -59,11 +59,11 @@ const rules = ref<FormRules<IProfile>>({
   username: [{ required: true, message: "Введите имя", trigger: "blur" }],
   email: [
     { required: true, message: "Введите email", trigger: "blur" },
-    { 
-      type: "email", 
-      message: "Введите корректный email", 
-      trigger: ["blur", "change"] 
-    }
+    {
+      type: "email",
+      message: "Введите корректный email",
+      trigger: ["blur", "change"],
+    },
   ],
 });
 

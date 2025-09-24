@@ -24,19 +24,26 @@ onMounted(() => {
       height: 120px;
     "
   >
-    <el-col :offset="2" :span="19">
+    <el-col :offset="3" :span="18">
       <el-menu
         :default-active="activeIndex"
         class="el-menu-demo"
         mode="horizontal"
-        @select="handleSelect"
+        :ellipsis="false"
         :background-color="color"
         text-color="#fff"
-        active-text-color="black"
+        active-text-color="#fff"
         :router="true"
+        @select="handleSelect"
       >
-        <el-menu-item index="6" class="first-element"> ЦКП </el-menu-item>
-        <el-menu-item index="7" style="font-size: 24px">
+        <el-menu-item index="/" :route="{ path: '/' }" class="first-element">
+          ЦКП
+        </el-menu-item>
+        <el-menu-item
+          index="/machining"
+          :route="{ path: '/machining' }"
+          style="font-size: 24px"
+        >
           Калькулятор стоимости изделия
         </el-menu-item>
       </el-menu>
@@ -47,16 +54,31 @@ onMounted(() => {
 <style scoped>
 .el-menu.el-menu--horizontal {
   border-bottom: none;
+  /* margin-right: 100px; */
 }
-.el-menu.el-menu--horizontal.is-active {
-  color: white !important;
-  border-bottom: none !important;
+.el-menu-item {
+  font-size: 20px;
+}
+:deep(.el-header) {
+  padding-left: 0px;
+}
+:deep(.el-sub-menu__title) {
+  font-size: 20px;
+  /* padding: 5px; */
+}
+:deep(.el-sub-menu) {
+  font-size: 20px;
+  /* padding: 5px; */
 }
 .first-element {
-  margin: 0 40px 0 0px;
   font-size: 30px;
-  color: white;
+  color: white !important;
   text-decoration: none;
   font-weight: 700;
+  margin-right: 50px !important;
+}
+.first-element.is-active {
+  color: white !important;
+  border-bottom: none !important;
 }
 </style>

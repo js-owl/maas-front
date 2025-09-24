@@ -80,6 +80,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SectionAbility: typeof import('./src/components/SectionAbility.vue')['default']
+    SectionAbout: typeof import('./src/components/SectionAbout.vue')['default']
     SectionAdvantages: typeof import('./src/components/SectionAdvantages.vue')['default']
     SectionModel: typeof import('./src/components/SectionModel.vue')['default']
     UploadDrawings: typeof import('./src/components/UploadDrawings.vue')['default']
