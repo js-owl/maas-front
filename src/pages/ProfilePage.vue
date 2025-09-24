@@ -96,7 +96,7 @@ async function onUpdate() {
       padding-left: 20px;
     "
   >
-    <el-col :offset="2" :span="4">
+    <el-col :offset="3" :span="4">
       <h1>Профиль</h1>
     </el-col>
     <el-col :span="6">
@@ -121,11 +121,11 @@ async function onUpdate() {
       style="width: 100%"
     >
       <!-- Вкладки для физических и юридических лиц -->
-      <el-col :offset="2" :span="20">
+      <el-col :offset="3" :span="18">
         <el-tabs v-model="activeTab" class="profile-tabs">
-          <el-tab-pane label="Физлицо" name="individual">
+          <el-tab-pane label="Частное лицо" name="individual">
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="11">
                 <div style="font-size: 24px; padding-bottom: 30px">
                   Общая информация
                 </div>
@@ -151,7 +151,7 @@ async function onUpdate() {
                   </el-form-item>
                 </div>
               </el-col>
-              <el-col :span="12">
+              <el-col :offset="2" :span="11">
                 <div style="font-size: 24px; padding-bottom: 30px">
                   Адрес доставки
                 </div>
@@ -196,10 +196,10 @@ async function onUpdate() {
               </el-col>
             </el-row>
           </el-tab-pane>
-          
-          <el-tab-pane label="Юрлицо" name="legal">
+
+          <el-tab-pane label="Компания" name="legal">
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="11">
                 <div style="font-size: 24px; padding-bottom: 30px">
                   Общая информация
                 </div>
@@ -217,6 +217,46 @@ async function onUpdate() {
                       placeholder="Введите свой email"
                     />
                   </el-form-item>
+                  <el-form-item label="Получатель" prop="payment_company_name">
+                    <el-input
+                      v-model="profileForm.payment_company_name"
+                      placeholder="Введите получателя"
+                    />
+                  </el-form-item>
+
+                  <el-form-item
+                    label="Наименование банка"
+                    prop="payment_bank_name"
+                  >
+                    <el-input
+                      v-model="profileForm.payment_bank_name"
+                      placeholder="Введите имя банка"
+                    />
+                  </el-form-item>
+                  <el-form-item label="ИНН" prop="payment_inn">
+                    <el-input
+                      v-model="profileForm.payment_inn"
+                      placeholder="Введите ИНН"
+                    />
+                  </el-form-item>
+                  <el-form-item label="КПП" prop="payment_kpp">
+                    <el-input
+                      v-model="profileForm.payment_kpp"
+                      placeholder="Введите КПП"
+                    />
+                  </el-form-item>
+                  <el-form-item label="БИК" prop="payment_bik">
+                    <el-input
+                      v-model="profileForm.payment_bik"
+                      placeholder="Введите БИК"
+                    />
+                  </el-form-item>
+                  <el-form-item label="Корр.счет" prop="payment_cor_account">
+                    <el-input
+                      v-model="profileForm.payment_cor_account"
+                      placeholder="Введите корреспондентский счет"
+                    />
+                  </el-form-item>
                   <el-form-item label="Расчетный счет" prop="payment_account">
                     <el-input
                       v-model="profileForm.payment_account"
@@ -225,7 +265,7 @@ async function onUpdate() {
                   </el-form-item>
                 </div>
               </el-col>
-              <el-col :span="12">
+              <el-col :offset="2" :span="11">
                 <div style="font-size: 24px; padding-bottom: 30px">
                   Адрес доставки
                 </div>
@@ -272,7 +312,6 @@ async function onUpdate() {
           </el-tab-pane>
         </el-tabs>
       </el-col>
-
     </el-form>
   </el-row>
 </template>

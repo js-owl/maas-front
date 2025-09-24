@@ -1,68 +1,68 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 
 const abilities = ref([
   {
     id: 1,
-    image: 'homePage/ability_mechanical.webp',
-    title: 'Механообрабатывающее производство',
-    link: '/mechanical',
-    fit: 'cover',
+    image: "homePage/ability_mechanical.webp",
+    title: "Механообрабатывающее производство",
+    link: "/mechanical",
+    fit: "cover",
     isDevelopment: false,
     span: 6,
-    offset: 3
+    offset: 3,
   },
   {
     id: 2,
-    image: 'homePage/ability_composite.webp',
-    title: 'Производство изделий из композитных материалов',
+    image: "homePage/ability_composite.webp",
+    title: "Производство изделий из композитных материалов",
     link: null,
-    fit: 'contain',
+    fit: "contain",
     isDevelopment: true,
     span: 6,
-    offset: 0
+    offset: 0,
   },
   {
     id: 3,
-    image: 'homePage/ability_painting.webp',
-    title: 'Нанесение лакокрасочных покрытий',
+    image: "homePage/ability_painting.webp",
+    title: "Нанесение лакокрасочных покрытий",
     link: null,
-    fit: 'cover',
+    fit: "cover",
     isDevelopment: true,
     span: 6,
-    offset: 0
+    offset: 0,
   },
   {
     id: 4,
-    image: 'homePage/ability_assembly.webp',
-    title: 'Сборочное производство',
+    image: "homePage/ability_assembly.webp",
+    title: "Сборочное производство",
     link: null,
-    fit: 'cover',
+    fit: "cover",
     isDevelopment: true,
     span: 6,
-    offset: 3
+    offset: 3,
   },
   {
     id: 5,
-    image: 'homePage/ability_thermo.webp',
-    title: 'Лабораторные исследования',
+    image: "homePage/ability_thermo.webp",
+    title: "Лабораторные исследования",
     link: null,
-    fit: 'cover',
+    fit: "cover",
     isDevelopment: true,
     span: 6,
-    offset: 0
+    offset: 0,
   },
   {
     id: 6,
-    image: 'homePage/ability_welding.webp',
-    title: 'Сварочное производство',
+    image: "homePage/ability_welding.webp",
+    title: "Сварочное производство",
     link: null,
-    fit: 'cover',
+    fit: "cover",
     isDevelopment: true,
     span: 6,
-    offset: 0
-  }
-])
+    offset: 0,
+  },
+]);
 </script>
 
 <template>
@@ -83,35 +83,32 @@ const abilities = ref([
         </div>
       </el-col>
     </el-row>
-    
+
     <!-- Первый ряд -->
     <el-row :gutter="20">
-      <el-col 
-        v-for="ability in abilities.slice(0, 3)" 
+      <el-col
+        v-for="ability in abilities.slice(0, 3)"
         :key="ability.id"
-        :offset="ability.offset" 
+        :offset="ability.offset"
         :span="ability.span"
       >
         <div class="item">
-          <component 
-            :is="ability.link ? 'RouterLink' : 'div'" 
+          <component
+            :is="ability.link ? 'RouterLink' : 'div'"
             :to="ability.link"
           >
-            <el-image 
-              :src="ability.image" 
+            <el-image
+              :src="ability.image"
               :fit="ability.fit"
               :class="{ 'item-img': ability.id === 6 }"
             />
-            
-            <div 
-              v-if="ability.isDevelopment" 
-              class="overlay-development"
-            >
+
+            <div v-if="ability.isDevelopment" class="overlay-development">
               <div class="development-text">
                 <p class="main-text">Раздел в разработке</p>
               </div>
             </div>
-            
+
             <div class="overlay">
               <p class="item-text">{{ ability.title }}</p>
             </div>
@@ -119,35 +116,32 @@ const abilities = ref([
         </div>
       </el-col>
     </el-row>
-    
+
     <!-- Второй ряд -->
     <el-row :gutter="20" style="margin-top: 15px">
-      <el-col 
-        v-for="ability in abilities.slice(3, 6)" 
+      <el-col
+        v-for="ability in abilities.slice(3, 6)"
         :key="ability.id"
-        :offset="ability.offset" 
+        :offset="ability.offset"
         :span="ability.span"
       >
         <div class="item">
-          <component 
-            :is="ability.link ? 'RouterLink' : 'div'" 
+          <component
+            :is="ability.link ? 'RouterLink' : 'div'"
             :to="ability.link"
           >
-            <el-image 
-              :src="ability.image" 
+            <el-image
+              :src="ability.image"
               :fit="ability.fit"
               :class="{ 'item-img': ability.id === 6 }"
             />
-            
-            <div 
-              v-if="ability.isDevelopment" 
-              class="overlay-development"
-            >
+
+            <div v-if="ability.isDevelopment" class="overlay-development">
               <div class="development-text">
                 <p class="main-text">Раздел в разработке</p>
               </div>
             </div>
-            
+
             <div class="overlay">
               <p class="item-text">{{ ability.title }}</p>
             </div>
@@ -210,5 +204,4 @@ const abilities = ref([
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   opacity: 0.9;
 }
-
 </style>
