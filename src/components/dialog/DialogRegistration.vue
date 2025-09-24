@@ -142,10 +142,10 @@ const submitForm = async () => {
       label-position="top"
       @submit.prevent="submitForm"
     >
-      <el-form-item label="Тип пользователя*" prop="user_type">
+      <el-form-item prop="user_type">
         <el-radio-group v-model="form.user_type">
-          <el-radio value="individual">Физическое лицо</el-radio>
-          <el-radio value="legal">Юридическое лицо</el-radio>
+          <el-radio-button value="individual">Частное лицо</el-radio-button>
+          <el-radio-button value="legal">Компания</el-radio-button>
         </el-radio-group>
       </el-form-item>
 

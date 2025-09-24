@@ -39,13 +39,22 @@ onMounted(() => {
         <el-menu-item index="/" :route="{ path: '/' }" class="first-element">
           ЦКП
         </el-menu-item>
-        <el-menu-item
-          index="/machining"
-          :route="{ path: '/machining' }"
-          style="font-size: 24px"
-        >
-          Калькулятор стоимости изделия
-        </el-menu-item>
+        
+        <!-- Кнопки калькуляторов -->
+        <div class="calculator-buttons">
+          <el-button 
+            class="calculator-button"
+            @click="$router.push('/machining')"
+          >
+            Калькулятор стоимости токарной обработки
+          </el-button>
+          <el-button 
+            class="calculator-button"
+            @click="$router.push('/milling')"
+          >
+            Калькулятор стоимости фрезерной обработки
+          </el-button>
+        </div>
       </el-menu>
     </el-col>
   </el-row>
@@ -80,5 +89,37 @@ onMounted(() => {
 .first-element.is-active {
   color: white !important;
   border-bottom: none !important;
+}
+
+.calculator-buttons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-left: 0px;
+  height: 100%;
+}
+
+.calculator-button {
+  background-color: transparent !important;
+  border: 1px solid #d3d4d6 !important;
+  color: #d3d4d6 !important;
+  padding: 12px 24px !important;
+  font-size: 16px !important;
+  border-radius: 4px !important;
+  transition: all 0.3s ease !important;
+}
+
+.calculator-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.calculator-button:focus {
+  background-color: transparent !important;
+  border-color: #d3d4d6 !important;
+  color: #d3d4d6 !important;
 }
 </style>
