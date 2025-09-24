@@ -42,16 +42,10 @@ onMounted(async () => {
   }
 });
 
-// Синхронизируем activeTab с user_type в профиле и автоматически сохраняем
-watch(activeTab, async (newTab) => {
+// Синхронизируем activeTab с user_type в профиле
+watch(activeTab, (newTab) => {
   if (profileForm.value) {
     profileForm.value.user_type = newTab;
-    // Автоматически сохраняем изменения при переключении вкладки
-    try {
-      await profileStore.updateProfile(profileForm.value as IProfile);
-    } catch (error) {
-      console.error("Ошибка при автоматическом сохранении:", error);
-    }
   }
 });
 
@@ -138,10 +132,10 @@ async function onUpdate() {
       label-position="top"
       style="width: 100%"
     >
-      <!-- Вкладки для физических и юридических лиц -->
+      <!-- Контент профиля в зависимости от user_type -->
       <el-col :offset="3" :span="18">
-        <el-tabs v-model="activeTab" class="profile-tabs">
-          <el-tab-pane label="Частное лицо" name="individual">
+        <!-- Частное лицо -->
+        <div v-if="activeTab === 'individual'" class="profile-content">
             <el-row :gutter="20">
               <el-col :span="11">
                 <div style="font-size: 24px; padding-bottom: 30px">
@@ -214,9 +208,10 @@ async function onUpdate() {
                 </div>
               </el-col>
             </el-row>
-          </el-tab-pane>
+        </div>
 
-          <el-tab-pane label="Компания" name="legal">
+        <!-- Компания -->
+        <div v-if="activeTab === 'legal'" class="profile-content">
             <el-row :gutter="20">
               <el-col :span="11">
                 <div style="font-size: 24px; padding-bottom: 30px">
@@ -329,37 +324,14 @@ async function onUpdate() {
                 </div>
               </el-col>
             </el-row>
-          </el-tab-pane>
-        </el-tabs>
+        </div>
       </el-col>
     </el-form>
   </el-row>
 </template>
 
 <style scoped>
-.profile-tabs {
+.profile-content {
   margin-top: 20px;
-}
-
-:deep(.el-tabs__header) {
-  margin-bottom: 30px;
-}
-
-:deep(.el-tabs__nav-wrap::after) {
-  background-color: #e4e7ed;
-}
-
-:deep(.el-tabs__item) {
-  font-size: 16px;
-  font-weight: 500;
-  color: #606266;
-}
-
-:deep(.el-tabs__item.is-active) {
-  color: #409eff;
-}
-
-:deep(.el-tabs__active-bar) {
-  background-color: #409eff;
 }
 </style>
