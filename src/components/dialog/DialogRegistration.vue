@@ -10,6 +10,7 @@ interface FormData {
   username: string;
   password: string;
   confirmPassword: string;
+  user_type: string;
 }
 
 const formRef = ref<FormInstance>();
@@ -17,6 +18,7 @@ const form = ref<FormData>({
   username: "",
   password: "",
   confirmPassword: "",
+  user_type: "individual",
 });
 
 const usernameError = ref("");
@@ -67,6 +69,7 @@ const validateConfirmPassword = (
 };
 
 const rules = ref<FormRules<FormData>>({
+  user_type: [{ required: true, message: "Выберите тип пользователя", trigger: "change" }],
   username: [{ validator: validateLogin, trigger: "blur" }],
   password: [{ validator: validatePassword, trigger: "blur" }],
   confirmPassword: [{ validator: validateConfirmPassword, trigger: "blur" }],
@@ -79,6 +82,7 @@ const closeDialog = () => {
     username: "",
     password: "",
     confirmPassword: "",
+    user_type: "individual",
   };
   usernameError.value = "";
   // Clear validation errors
@@ -138,6 +142,13 @@ const submitForm = async () => {
       label-position="top"
       @submit.prevent="submitForm"
     >
+      <el-form-item label="Тип пользователя*" prop="user_type">
+        <el-radio-group v-model="form.user_type">
+          <el-radio value="individual">Физическое лицо</el-radio>
+          <el-radio value="legal">Юридическое лицо</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
       <el-form-item label="Username*" prop="username" :error="usernameError">
         <el-input
           v-model="form.username"

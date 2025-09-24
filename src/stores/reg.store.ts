@@ -17,6 +17,7 @@ export const useRegStore = defineStore("reg", () => {
     const payload = {
       username: formData.value.username,
       password: formData.value.password,
+      user_type: formData.value.user_type,
     };
 
     console.log("reg.store: register", { payload });
