@@ -39,16 +39,16 @@ onMounted(() => {
         <el-menu-item index="/" :route="{ path: '/' }" class="first-element">
           ЦКП
         </el-menu-item>
-        
+
         <!-- Кнопки калькуляторов -->
         <div class="calculator-buttons">
-          <el-button 
+          <el-button
             class="calculator-button"
             @click="$router.push('/machining')"
           >
             Калькулятор стоимости токарной обработки
           </el-button>
-          <el-button 
+          <el-button
             class="calculator-button"
             @click="$router.push('/milling')"
           >

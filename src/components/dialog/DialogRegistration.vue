@@ -69,7 +69,9 @@ const validateConfirmPassword = (
 };
 
 const rules = ref<FormRules<FormData>>({
-  user_type: [{ required: true, message: "Выберите тип пользователя", trigger: "change" }],
+  user_type: [
+    { required: true, message: "Выберите тип пользователя", trigger: "change" },
+  ],
   username: [{ validator: validateLogin, trigger: "blur" }],
   password: [{ validator: validatePassword, trigger: "blur" }],
   confirmPassword: [{ validator: validateConfirmPassword, trigger: "blur" }],
