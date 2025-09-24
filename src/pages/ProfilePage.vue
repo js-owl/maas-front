@@ -46,8 +46,59 @@ onMounted(async () => {
 watch(activeTab, (newTab) => {
   if (profileForm.value) {
     profileForm.value.user_type = newTab;
+    // Перевалидируем поля при изменении типа пользователя
+    if (formRef.value) {
+      formRef.value.validateField('payment_inn');
+      formRef.value.validateField('payment_kpp');
+      formRef.value.validateField('payment_bik');
+    }
   }
 });
+
+// Валидация ИНН для юридических лиц
+const validatePaymentInn = (
+  _rule: any,
+  value: string,
+  callback: (error?: Error) => void
+) => {
+  if (!value) {
+    callback();
+  } else if (profileForm.value?.user_type === "legal" && value.length < 10) {
+    callback(new Error("ИНН должен содержать минимум 10 символов для юридических лиц"));
+  } else {
+    callback();
+  }
+};
+
+// Валидация КПП для юридических лиц
+const validatePaymentKpp = (
+  _rule: any,
+  value: string,
+  callback: (error?: Error) => void
+) => {
+  if (!value) {
+    callback();
+  } else if (profileForm.value?.user_type === "legal" && value.length < 9) {
+    callback(new Error("КПП должен содержать минимум 9 символов для юридических лиц"));
+  } else {
+    callback();
+  }
+};
+
+// Валидация БИК для юридических лиц
+const validatePaymentBik = (
+  _rule: any,
+  value: string,
+  callback: (error?: Error) => void
+) => {
+  if (!value) {
+    callback();
+  } else if (profileForm.value?.user_type === "legal" && value.length < 9) {
+    callback(new Error("БИК должен содержать минимум 9 символов для юридических лиц"));
+  } else {
+    callback();
+  }
+};
 
 const rules = ref<FormRules<IProfile>>({
   username: [{ required: true, message: "Введите имя", trigger: "blur" }],
@@ -59,6 +110,9 @@ const rules = ref<FormRules<IProfile>>({
       trigger: ["blur", "change"],
     },
   ],
+  payment_inn: [{ validator: validatePaymentInn, trigger: ["blur", "change"] }],
+  payment_kpp: [{ validator: validatePaymentKpp, trigger: ["blur", "change"] }],
+  payment_bik: [{ validator: validatePaymentBik, trigger: ["blur", "change"] }],
 });
 
 // Функция для сборки адреса из отдельных полей
