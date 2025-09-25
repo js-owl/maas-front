@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
+import { req_json } from "../../api";
 
 const dialogFormVisible = defineModel<boolean>();
 
@@ -96,9 +97,8 @@ const submitForm = async () => {
 
     console.log("Call request submitted:", form.value);
 
-    // Here you would typically send the data to your backend
-    // For now, we'll just show a success message
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+    // Отправляем данные на бэкенд
+    await req_json("/call-request", "POST", form.value);
 
     ElMessage({
       type: "success",
@@ -109,7 +109,7 @@ const submitForm = async () => {
     // Close dialog and reset form
     closeDialog();
   } catch (error) {
-    console.error("Form validation failed:", error);
+    console.error("Form submission failed:", error);
     ElMessage({
       type: "error",
       message: "Ошибка при отправке заявки. Попробуйте еще раз.",
