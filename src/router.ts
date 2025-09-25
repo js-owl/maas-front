@@ -36,9 +36,7 @@ const routes = [
   //   path: "/plastic",
   //   component: () => import("./pages/CalculatePlasticPage.vue"),
   // },
-  { path: "/paint", component: () => import("./pages/CalculatePaintPage.vue") },
-  // @ts-ignore
-  { path: "/cad", component: () => import("./pages/CadPage.vue") },
+  // { path: "/paint", component: () => import("./pages/CalculatePaintPage.vue") },
   {
     path: "/order-list",
     // @ts-ignore

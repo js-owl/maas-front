@@ -2,7 +2,7 @@
   <el-row
     id="about"
     :gutter="20"
-    style="background-color: #eee; padding-top: 30px; min-height: 500px"
+    style="background-color: #fff; padding-top: 30px; min-height: 500px"
   >
     <el-col :offset="3" :span="8">
       <div

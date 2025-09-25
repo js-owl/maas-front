@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import SectionModel from "../components/SectionModel.vue";
-import SectionAbility from "../components/SectionAbility.vue";
-import SectionAdvantages from "../components/SectionAdvantages.vue";
+import SectionModel from "../components/sections/SectionModel.vue";
+import SectionAbility from "../components/sections/SectionAbility.vue";
+import SectionAbout from "../components/sections/SectionAbout.vue";
+import SectionAdvantages from "../components/sections/SectionAdvantages.vue";
 </script>
 
 <template>

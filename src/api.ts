@@ -3,9 +3,8 @@ import { useAuthStore } from "./stores/auth.store";
 import router from "./router";
 
 // API Base URLs
-export const API_BASE_CAD = "http://mdgkd-vlabal.int.kronshtadt.ru:7000";
 export const API_BASE = "http://mdgkd-vlabal.int.kronshtadt.ru:8000";
-// export const API_BASE = "http://localhost:8000";
+// export const API_BASE = "https://lk-api.maas.int.kronshtadt.ru";
 
 // Helper function to convert object to URL-encoded string
 const toUrlEncoded = (o: any): string => {

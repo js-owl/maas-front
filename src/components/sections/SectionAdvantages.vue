@@ -6,7 +6,7 @@
       <el-col :offset="3" :span="18">
         <div
           style="
-            text-align: center;
+            text-align: left;
             font-size: 60px;
             color: #283d5b;
             padding: 40px 0;
@@ -16,7 +16,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="40" style="margin-right: 10px">
+    <el-row :gutter="60" style="margin-right: 10px">
       <el-col :offset="3" :span="6">
         <div class="item">
           <div style="font-size: 26px">СРОКИ РАБОТЫ</div>
@@ -47,7 +47,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="40" style="margin-top: 30px; margin-right: 10px">
+    <el-row :gutter="60" style="margin-top: 30px; margin-right: 10px">
       <el-col :offset="3" :span="6">
         <div class="item">
           <div style="font-size: 26px">ДОГОВОР И ГАРАНТИЯ КАЧЕСТВА</div>
@@ -83,11 +83,11 @@
 .item {
   width: 100%;
   height: 300px;
-  background-color: #283d5b;
+  background-color: #d1e5ff;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  color: white;
+  color: #283d5b;
   padding: 15px;
   border-radius: 10px;
 }
