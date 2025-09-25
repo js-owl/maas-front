@@ -6,23 +6,21 @@ import { ElMessage } from "element-plus";
 const dialogFormVisible = defineModel<boolean>();
 
 interface FormData {
-  firstName: string;
-  lastName: string;
+  name: string;
   phone: string;
-  service: string;
-  company: string;
-  message: string;
+  product: string;
+  time: string;
+  additional: string;
   agreement: boolean;
 }
 
 const formRef = ref<FormInstance>();
 const form = ref<FormData>({
-  firstName: "",
-  lastName: "",
+  name: "",
   phone: "",
-  service: "",
-  company: "",
-  message: "",
+  product: "",
+  time: "",
+  additional: "",
   agreement: false,
 });
 
@@ -34,9 +32,7 @@ const validatePhone = (
   callback: (error?: Error) => void
 ) => {
   const phoneRegex = /^[\d\s()+.-]{10,}$/;
-  if (!value) {
-    callback(new Error("Пожалуйста, введите номер телефона"));
-  } else if (!phoneRegex.test(value)) {
+  if (value && !phoneRegex.test(value)) {
     callback(new Error("Пожалуйста, введите корректный номер телефона"));
   } else {
     callback();
@@ -56,7 +52,7 @@ const validateAgreement = (
 };
 
 const rules = ref<FormRules<FormData>>({
-  firstName: [
+  name: [
     { required: true, message: "Пожалуйста, введите имя", trigger: "blur" },
     {
       min: 2,
@@ -64,15 +60,13 @@ const rules = ref<FormRules<FormData>>({
       trigger: "blur",
     },
   ],
-  lastName: [
-    { required: true, message: "Пожалуйста, введите фамилию", trigger: "blur" },
-    {
-      min: 2,
-      message: "Фамилия должна содержать минимум 2 символа",
-      trigger: "blur",
-    },
+  phone: [
+    { required: true, message: "Пожалуйста, введите номер телефона", trigger: "blur" },
+    { validator: validatePhone, trigger: "blur" }
   ],
-  phone: [{ validator: validatePhone, trigger: "blur" }],
+  time: [
+    { required: true, message: "Пожалуйста, выберите удобное время", trigger: "change" },
+  ],
   agreement: [{ validator: validateAgreement, trigger: "change" }],
 });
 
@@ -80,12 +74,11 @@ const closeDialog = () => {
   dialogFormVisible.value = false;
   // Reset form when closing
   form.value = {
-    firstName: "",
-    lastName: "",
+    name: "",
     phone: "",
-    service: "",
-    company: "",
-    message: "",
+    product: "",
+    time: "",
+    additional: "",
     agreement: false,
   };
   // Clear validation errors
@@ -144,45 +137,48 @@ const submitForm = async () => {
       label-position="top"
       @submit.prevent="submitForm"
     >
-      <el-form-item label="Имя*" prop="firstName">
-        <el-input v-model="form.firstName" placeholder="Введите имя" />
+      <el-form-item label="Имя" prop="name">
+        <el-input v-model="form.name" placeholder="Введите имя" />
       </el-form-item>
 
-      <el-form-item label="Фамилия*" prop="lastName">
-        <el-input v-model="form.lastName" placeholder="Введите фамилию" />
-      </el-form-item>
-
-      <el-form-item label="Телефон*" prop="phone">
+      <el-form-item label="Телефон" prop="phone">
         <el-input v-model="form.phone" placeholder="+7 (___) ___-__-__" />
       </el-form-item>
 
-      <el-form-item label="Какая услуга вас интересует?" prop="service">
+      <el-form-item label="Какой продукт вас интересует?" prop="product">
         <el-select
-          v-model="form.service"
-          placeholder="Выберите услугу"
+          v-model="form.product"
+          placeholder="Выберите продукт"
           style="width: 100%"
         >
           <el-option label="Токарные работы" value="machining" />
           <el-option label="Фрезерные работы" value="milling" />
-          <el-option
-            label="Производство из композитных материалов"
-            value="plastic"
-          />
-          <el-option label="Лакокрасочные покрытия" value="paint" />
           <el-option label="Другое" value="other" />
         </el-select>
       </el-form-item>
 
-      <el-form-item label="Название компании" prop="company">
-        <el-input
-          v-model="form.company"
-          placeholder="Введите название компании"
-        />
+      <el-form-item label="Когда Вам позвонить?" prop="time">
+        <el-select
+          v-model="form.time"
+          placeholder="Выберите удобное время"
+          style="width: 100%"
+        >
+          <el-option label="9:00 - 10:00" value="09:00-10:00" />
+          <el-option label="10:00 - 11:00" value="10:00-11:00" />
+          <el-option label="11:00 - 12:00" value="11:00-12:00" />
+          <el-option label="12:00 - 13:00" value="12:00-13:00" />
+          <el-option label="13:00 - 14:00" value="13:00-14:00" />
+          <el-option label="14:00 - 15:00" value="14:00-15:00" />
+          <el-option label="15:00 - 16:00" value="15:00-16:00" />
+          <el-option label="16:00 - 17:00" value="16:00-17:00" />
+          <el-option label="17:00 - 18:00" value="17:00-18:00" />
+          <el-option label="18:00 - 19:00" value="18:00-19:00" />
+        </el-select>
       </el-form-item>
 
-      <el-form-item label="Дополнительная информация" prop="message">
+      <el-form-item label="Дополнительная информация" prop="additional">
         <el-input
-          v-model="form.message"
+          v-model="form.additional"
           type="textarea"
           :rows="3"
           placeholder="Опишите ваш запрос или оставьте комментарий"
