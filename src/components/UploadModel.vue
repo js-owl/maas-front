@@ -4,13 +4,8 @@ import { API_BASE } from "../api";
 import Icon3D from "../icons/Icon3D.vue";
 import { useAuthStore } from "../stores/auth.store";
 import DialogLogin from "./dialog/DialogLogin.vue";
-// @ts-ignore
-import CadShowById from "./CadShowById.vue";
-// @ts-ignore
-import StpShowById from "./StpShowById.vue";
 
 const file_id = defineModel<number>();
-const fileType = ref<'stl' | 'stp' | 'unknown'>("unknown");
 const { color = "white" } = defineProps({
   color: String,
 });
@@ -42,14 +37,6 @@ const loadModel = (response: any) => {
   console.log({ response });
   file_id.value = response.file_id;
 };
-
-const onFileChange = (file: any) => {
-  const name: string = file?.name || file?.raw?.name || "";
-  const ext = name.split('.').pop()?.toLowerCase();
-  if (ext === 'stl') fileType.value = 'stl';
-  else if (ext === 'stp' || ext === 'step') fileType.value = 'stp';
-  else fileType.value = 'unknown';
-};
 </script>
 
 <template>
@@ -67,7 +54,6 @@ const onFileChange = (file: any) => {
         :action="`${API_BASE}/upload`"
         multiple
         :on-success="loadModel"
-        :on-change="onFileChange"
         :disabled="isDisabled()"
         @click="handleUploadClick"
       >
@@ -88,11 +74,6 @@ const onFileChange = (file: any) => {
     </el-tooltip>
 
     <DialogLogin v-model="isLoginDialogVisible" />
-
-    <div v-if="file_id">
-      <CadShowById v-if="fileType === 'stl'" v-model="file_id" />
-      <StpShowById v-else-if="fileType === 'stp'" v-model="file_id" />
-    </div>
   </div>
 </template>
 
