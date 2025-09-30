@@ -1,122 +1,132 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { Check, Tools, ArrowLeft } from "@element-plus/icons-vue";
+import IconDrawing from "../icons/IconDrawing.vue";
 
-const router = useRouter();
-const activeTab = ref("equipment");
-
-const goBack = () => {
-  router.push("/");
-};
+const items = ref([
+  { id: 1, text: "Точение цилиндрических и конусных поверхностей" },
+  { id: 2, text: "Нарезание резьбы (метрической, дюймовой, трапецеидальной)" },
+  { id: 3, text: "Снятие фасок, канавок и пазов" },
+  { id: 4, text: "Наружное и внутреннее точение, резьба" },
+  { id: 5, text: "Высокоточное сверление и обработка отверстий, расточка" },
+  { id: 6, text: "Фасонная обработка торцевых и сложных поверхностей" },
+]);
 </script>
 
 <template>
   <el-row :gutter="0" class="main-container">
     <!-- 1. Левая часть -->
-    <el-col :offset="2" :span="9" class="left-section">
-      <div class="applications-section">
-        <h2 class="section-title">ПРИМЕНЕНИЕ</h2>
-        <div class="applications-list">
-          <div class="application-item">
-            <el-icon class="check-icon"><Check /></el-icon>
-            <span>Точение цилиндрических и конусных поверхностей;</span>
-          </div>
-          <div class="application-item">
-            <el-icon class="check-icon"><Check /></el-icon>
-            <span
-              >Нарезание резьбы (метрической, дюймовой, трапецеидальной);</span
-            >
-          </div>
-          <div class="application-item">
-            <el-icon class="check-icon"><Check /></el-icon>
-            <span>Снятие фасок, канавок и пазов.</span>
-          </div>
-          <div class="application-item">
-            <el-icon class="check-icon"><Check /></el-icon>
-            <span>Наружное и внутреннее точение, резьба.</span>
-          </div>
-          <div class="application-item">
-            <el-icon class="check-icon"><Check /></el-icon>
-            <span>Высокоточное сверление и обработка отверстий, расточка.</span>
-          </div>
-          <div class="application-item">
-            <el-icon class="check-icon"><Check /></el-icon>
-            <span>Фасонная обработка торцевых и сложных поверхностей;</span>
-          </div>
+    <el-col :offset="3" :span="8" class="left-section">
+      <div class="title-text">ПРИМЕНЕНИЕ</div>
+      <div v-for="item in items" :key="item.id" class="items">
+        <!-- <el-icon class="check-icon"><Check /></el-icon> -->
+        <div style="padding-top: 5px">
+          <el-image src="arrow.webp" fit="cover" class="check-img" />
         </div>
-
-        <!-- Calculator Section -->
-        <div class="calculator-section">
-          <div
-            class="calculator-box"
-            @click="router.push({ name: 'machining' })"
-          >
-            <el-icon class="calculator-icon"><Tools /></el-icon>
-            <span class="calculator-text"
-              >Калькулятор стоимости токарной обработки</span
-            >
-          </div>
+        <div>{{ item.text }}</div>
+      </div>
+      <div
+        style="
+          display: flex;
+          margin-top: 50px;
+          padding: 15px;
+          background-color: white;
+          width: 350px;
+          margin-bottom: 30px;
+        "
+      >
+        <div>
+          <IconDrawing
+            color="black"
+            style="
+              display: block;
+              width: 100px;
+              height: 100px;
+              padding-right: 20px;
+            "
+          />
         </div>
-
-        <!-- Back Button -->
-        <div class="back-button-section">
-          <el-button class="back-button" @click="goBack">
-            <el-icon><ArrowLeft /></el-icon>
-            В меню
-          </el-button>
+        <div
+          style="font-size: 22px; cursor: pointer"
+          @click="$router.push('/machining')"
+        >
+          Калькулятор стоимости токарной обработки
         </div>
       </div>
+      <el-row>
+        <el-col :span="12">
+          <el-button
+            type="primary"
+            plain
+            class="submit"
+            @click="$router.push({ name: 'order-list' })"
+          >
+            < В меню
+          </el-button>
+        </el-col>
+      </el-row>
     </el-col>
 
     <!-- 2. Правая часть -->
     <el-col :span="13" class="right-section">
-      <div class="technical-section">
-        <h2 class="section-title">ТОКАРНАЯ ОБРАБОТКА</h2>
-        <p class="description">
-          Токарная обработка представляет собой механическую операцию, при
-          которой вращающаяся деталь обрабатывается режущим инструментом,
-          последовательно снимающим слои материала. Технология позволяет
-          создавать цилиндрические, конические и сложные профилированные
-          поверхности с высокой степенью точности. Применяется в производстве
-          металлических, пластиковых и других изделий, обеспечивая превосходное
-          качество финишной обработки.
-        </p>
-
-        <h3 class="section-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</h3>
-
-        <!-- Tabs -->
-        <el-tabs v-model="activeTab" class="tech-tabs">
-          <el-tab-pane label="Оборудование" name="equipment">
-            <div class="tab-content">
-              <div class="requirement-item">Токарно-винторезные станки</div>
-              <div class="requirement-item">Станок с ЧПУ</div>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="Размеры детали/заготовки" name="dimensions">
-            <div class="tab-content">
-              <div class="requirement-item">длина до 1000 мм</div>
-              <div class="requirement-item">диаметр до 600 мм</div>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="Материалы" name="materials">
-            <div class="tab-content">
-              <div class="requirement-item">
-                Нержавеющие, легированные стали
-              </div>
-              <div class="requirement-item">Полиамиды, фторопласт</div>
-              <div class="requirement-item">
-                Алюминиевые, бронзовые, медные сплавы
-              </div>
-            </div>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
+      <el-row>
+        <el-col
+          :offset="2"
+          :span="17"
+          style="font-size: 38px; font-weight: 600; padding-bottom: 30px"
+        >
+          <div>ТОКАРНАЯ ОБРАБОТКА</div>
+        </el-col>
+        <el-col :offset="2" :span="17" style="padding-bottom: 40px">
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officiis,
+          tempora magni soluta delectus expedita perferendis quis rem quae id
+          eos esse. Consequuntur obcaecati debitis, necessitatibus inventore
+          fugiat aperiam natus veritatis officia sed, placeat totam recusandae
+          sint perferendis. Sed repudiandae maxime molestiae sit et, sapiente
+          nesciunt, itaque blanditiis tempora cum expedita cumque reiciendis?
+          Maxime nostrum maiores alias assumenda molestias doloremque mollitia.
+          Eveniet ab ad, ratione minima animi dolor accusamus qui nam tempora
+          perferendis laboriosam, assumenda explicabo molestiae dolorum beatae
+          culpa, commodi velit nostrum doloremque accusantium quod quae
+          reprehenderit suscipit corrupti! Non tempore doloremque cumque ex
+          optio facere aperiam cupiditate quibusdam eum?
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col
+          :offset="2"
+          :span="17"
+          style="font-size: 38px; font-weight: 600; padding-bottom: 30px"
+        >
+          <div>ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
+        </el-col>
+      </el-row>
+      <el-row style="padding-bottom: 30px">
+        <el-col :offset="2" :span="8">
+          <div class="mark">Оборудование</div>
+          <div class="mark-text">Токарно-винторезные станки</div>
+          <div class="mark-text">Станок с ЧПУ</div>
+        </el-col>
+        <el-col :offset="1" :span="8">
+          <div class="mark">Размеры детали/ заготовки</div>
+          <div class="mark-text">Длина до 1000 мм</div>
+          <div class="mark-text">Диаметр до 600 мм</div>
+        </el-col>
+      </el-row>
+      <el-row style="padding-bottom: 30px">
+        <el-col :offset="2" :span="8">
+          <div class="mark">Материалы</div>
+          <div class="mark-text">Нержавеющие, легированные стали</div>
+          <div class="mark-text">Полиамиды, фторопласт</div>
+          <div class="mark-text">Алюминиевые, бронзовые, медные сплавы</div>
+        </el-col>
+        <el-col :offset="1" :span="8"> </el-col>
+      </el-row>
     </el-col>
   </el-row>
 </template>
 
 <style scoped>
+/* Основные цвета и фоны */
 .main-container {
   min-height: 500px;
   background-color: var(--left-section-bg);
@@ -126,177 +136,50 @@ const goBack = () => {
   padding: 30px 50px 40px 20px;
 }
 
-.title-text {
-  font-size: 24px;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 30px;
-  text-transform: uppercase;
-}
-
-.section-title {
-  color: white;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  text-transform: uppercase;
-}
-
-.applications-section {
-  margin-bottom: 40px;
-}
-
-.applications-list {
-  margin-bottom: 30px;
-}
-
-.application-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  color: white;
-  font-size: 16px;
-}
-
-.check-icon {
-  color: #4caf50;
-  margin-right: 15px;
-  font-size: 18px;
-}
-
-.calculator-section {
-  margin-bottom: 30px;
-}
-
-.calculator-box {
-  background-color: #34495e;
-  padding: 20px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.calculator-box:hover {
-  background-color: #2c3e50;
-}
-
-.calculator-icon {
-  font-size: 24px;
-  margin-right: 15px;
-  color: #3498db;
-}
-
-.calculator-text {
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.back-button-section {
-  margin-top: 30px;
-}
-
-.back-button {
-  background-color: #34495e;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 16px;
-  border-radius: 6px;
-}
-
-.back-button:hover {
-  background-color: #2c3e50;
-}
-
 .right-section {
   background-color: #fff;
   padding-top: 30px;
 }
 
-.technical-section {
-  color: white;
+/* Текстовые стили */
+.title-text {
+  color: var(--left-section-color);
+  font-size: 38px;
+  font-weight: 600;
+  padding-bottom: 30px;
 }
 
-.description {
-  color: #bdc3c7;
+.items {
+  display: flex;
+  color: var(--left-section-color);
+  padding-bottom: 30px;
+  font-size: 24px;
+}
+.check-img {
+  width: 38px;
+  height: 38px;
+  margin-right: 25px;
+}
+.mark {
+  background-color: #d1e5ff;
+  padding: 10px;
+  width: fit-content;
   font-size: 16px;
-  line-height: 1.6;
-  margin-bottom: 30px;
-}
-
-.tech-tabs {
-  margin-top: 20px;
-}
-
-:deep(.el-tabs__header) {
+  font-weight: 600;
   margin-bottom: 20px;
+  border-radius: 5px;
+}
+.mark-text {
+  padding-bottom: 10px;
+  font-size: 18px;
 }
 
-:deep(.el-tabs__nav-wrap::after) {
-  background-color: #34495e;
-}
-
-:deep(.el-tabs__item) {
-  color: #bdc3c7;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-:deep(.el-tabs__item.is-active) {
+.submit {
+  background-color: var(--upper-menu-bg);
+  border: 1px solid white;
   color: white;
-}
-
-:deep(.el-tabs__active-bar) {
-  background-color: #3498db;
-}
-
-.tab-content {
-  padding: 20px 0;
-}
-
-.requirement-item {
-  background-color: #34495e;
-  padding: 15px 20px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  color: white;
-  font-size: 16px;
-}
-
-.requirement-item:last-child {
-  margin-bottom: 0;
-}
-
-@media (max-width: 768px) {
-  .left-section {
-    padding: 20px;
-  }
-
-  .right-section {
-    padding: 20px;
-  }
-
-  .title-text {
-    font-size: 20px;
-  }
-
-  .section-title {
-    font-size: 16px;
-  }
-
-  .application-item {
-    font-size: 14px;
-  }
-
-  .calculator-text {
-    font-size: 14px;
-  }
-
-  .description {
-    font-size: 14px;
-  }
+  font-size: 26px;
+  padding: 30px 0;
+  width: 100%;
 }
 </style>

@@ -36,15 +36,16 @@ const validatePhone = (
     callback();
     return;
   }
-  
+
   // Получаем чистый номер (только цифры)
-  const cleanNumber = value.replace(/\D/g, '');
-  
+  const cleanNumber = value.replace(/\D/g, "");
+
   // Проверяем, что номер содержит от 10 до 11 цифр и начинается с 7 или 8
-  const isValid = (cleanNumber.length === 11 && cleanNumber.startsWith('7')) ||
-                  (cleanNumber.length === 10 && cleanNumber.startsWith('9')) ||
-                  (cleanNumber.length === 11 && cleanNumber.startsWith('8'));
-  
+  const isValid =
+    (cleanNumber.length === 11 && cleanNumber.startsWith("7")) ||
+    (cleanNumber.length === 10 && cleanNumber.startsWith("9")) ||
+    (cleanNumber.length === 11 && cleanNumber.startsWith("8"));
+
   if (!isValid) {
     callback(new Error("Пожалуйста, введите корректный номер телефона"));
   } else {
@@ -67,34 +68,42 @@ const validateAgreement = (
 // Функции для маски телефона
 const formatPhone = (value: string) => {
   if (!value) return value;
-  
+
   // Убираем все нечисловые символы
-  const numbers = value.replace(/\D/g, '');
-  
+  const numbers = value.replace(/\D/g, "");
+
   // Нормализуем номер
   let cleanNumber = numbers;
-  if (numbers.startsWith('8') && numbers.length === 11) {
-    cleanNumber = '7' + numbers.slice(1);
-  } else if (numbers.startsWith('9') && numbers.length === 10) {
-    cleanNumber = '7' + numbers;
+  if (numbers.startsWith("8") && numbers.length === 11) {
+    cleanNumber = "7" + numbers.slice(1);
+  } else if (numbers.startsWith("9") && numbers.length === 10) {
+    cleanNumber = "7" + numbers;
   }
-  
+
   // Форматируем номер
   if (cleanNumber.length <= 1) return cleanNumber;
   if (cleanNumber.length <= 4) return `+7 (${cleanNumber.slice(1)}`;
-  if (cleanNumber.length <= 7) return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4)}`;
-  if (cleanNumber.length <= 9) return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4, 7)}-${cleanNumber.slice(7)}`;
-  return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4, 7)}-${cleanNumber.slice(7, 9)}-${cleanNumber.slice(9, 11)}`;
+  if (cleanNumber.length <= 7)
+    return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4)}`;
+  if (cleanNumber.length <= 9)
+    return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(
+      4,
+      7
+    )}-${cleanNumber.slice(7)}`;
+  return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(
+    4,
+    7
+  )}-${cleanNumber.slice(7, 9)}-${cleanNumber.slice(9, 11)}`;
 };
 
 const parsePhone = (value: string) => {
   if (!value) return value;
-  
+
   // Убираем все нечисловые символы
-  const numbers = value.replace(/\D/g, '');
-  
+  const numbers = value.replace(/\D/g, "");
+
   // Если номер начинается с 8, заменяем на 7
-  return numbers.startsWith('8') ? '7' + numbers.slice(1) : numbers;
+  return numbers.startsWith("8") ? "7" + numbers.slice(1) : numbers;
 };
 
 const rules = ref<FormRules<FormData>>({
@@ -107,11 +116,19 @@ const rules = ref<FormRules<FormData>>({
     },
   ],
   phone: [
-    { required: true, message: "Пожалуйста, введите номер телефона", trigger: "blur" },
-    { validator: validatePhone, trigger: "blur" }
+    {
+      required: true,
+      message: "Пожалуйста, введите номер телефона",
+      trigger: "blur",
+    },
+    { validator: validatePhone, trigger: "blur" },
   ],
   time: [
-    { required: true, message: "Пожалуйста, выберите удобное время", trigger: "change" },
+    {
+      required: true,
+      message: "Пожалуйста, выберите удобное время",
+      trigger: "change",
+    },
   ],
   agreement: [{ validator: validateAgreement, trigger: "change" }],
 });
@@ -187,8 +204,8 @@ const submitForm = async () => {
       </el-form-item>
 
       <el-form-item label="Телефон" prop="phone">
-        <el-input 
-          v-model="form.phone" 
+        <el-input
+          v-model="form.phone"
           placeholder="+7 (___) ___-__-__"
           :formatter="(value: string) => formatPhone(value)"
           :parser="(value: string) => parsePhone(value)"

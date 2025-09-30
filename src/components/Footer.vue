@@ -44,13 +44,13 @@ onMounted(() => {
         <div class="calculator-buttons">
           <el-button
             class="calculator-button"
-            @click="$router.push('/machining')"
+            @click="$router.push('/machining2')"
           >
             Калькулятор стоимости токарной обработки
           </el-button>
           <el-button
             class="calculator-button"
-            @click="$router.push('/milling')"
+            @click="$router.push('/milling2')"
           >
             Калькулятор стоимости фрезерной обработки
           </el-button>

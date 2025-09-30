@@ -136,8 +136,8 @@ function scrollToAbout() {
               <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
                 Нанесение лакокрасочных покрытий
               </el-menu-item>
-              <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
-                Сборочная линия
+              <el-menu-item index="/printing" :route="{ path: '/printing' }">
+                3D печать
               </el-menu-item>
               <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
                 Лабораторные исследования

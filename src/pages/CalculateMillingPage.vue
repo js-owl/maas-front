@@ -47,8 +47,8 @@ let width = ref(30);
 let height = ref(30);
 let quantity = ref(1);
 
-let material_id = ref("alum_D16T");
-let material_form = ref("plate");
+let material_id = ref("alum_D16");
+let material_form = ref("sheet");
 
 let id_tolerance = ref("4");
 let id_finish = ref("3");

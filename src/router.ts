@@ -29,14 +29,25 @@ const routes = [
     name: "machining",
   },
   {
+    path: "/machining2",
+    component: () => import("./pages/CalculateMachiningPage2.vue"),
+    name: "machining2",
+  },
+  {
     path: "/milling",
     component: () => import("./pages/CalculateMillingPage.vue"),
+    name: "milling",
   },
-  // {
-  //   path: "/plastic",
-  //   component: () => import("./pages/CalculatePlasticPage.vue"),
-  // },
-  // { path: "/paint", component: () => import("./pages/CalculatePaintPage.vue") },
+  {
+    path: "/milling2",
+    component: () => import("./pages/CalculateMillingPage2.vue"),
+    name: "milling2",
+  },
+  {
+    path: "/printing",
+    component: () => import("./pages/CalculatePrintingPage.vue"),
+    name: "printing",
+  },
   {
     path: "/order-list",
     // @ts-ignore

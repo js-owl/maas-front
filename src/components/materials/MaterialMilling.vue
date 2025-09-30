@@ -12,7 +12,7 @@ function transformMaterials(
   return backendData
     .filter(
       (item) =>
-        item.forms && item.forms.some((form: any) => form.id === "plate")
+        item.forms && item.forms.some((form: any) => form.id === "sheet")
     )
     .map((item) => ({
       value: item.id,

@@ -134,7 +134,7 @@ async function ensureProfileLoaded() {
 async function sendData(payload: IOrderPayload) {
   isLoading.value = true;
   try {
-    const res = await req_urlencoded_auth("/anonymous-calc", "POST", payload);
+    const res = await req_urlencoded_auth("/anonymous-calc2", "POST", payload);
     const data = (await res?.json()) as IOrderResponse;
     result.value = data;
   } catch (error) {
