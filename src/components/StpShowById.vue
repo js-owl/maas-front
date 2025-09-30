@@ -86,18 +86,20 @@ async function getModel(): Promise<THREE.BufferGeometry | null> {
     const blob = await res.blob();
     const arrayBuffer = await blob.arrayBuffer();
 
-    // Парсинг STEP файла (упрощенная версия)
+    // Парсинг STEP файла с использованием простого парсера
     try {
-      // Читаем заголовок файла для проверки формата
-      const headerBytes = arrayBuffer.slice(0, Math.min(1024, arrayBuffer.byteLength));
-      const headerText = new TextDecoder().decode(headerBytes);
+      // Читаем весь файл как текст
+      const fileText = new TextDecoder().decode(arrayBuffer);
       
       // Проверяем, что это действительно STEP файл
-      if (headerText.includes('ISO-10303-21') || headerText.includes('STEP')) {
-        console.log('STEP file detected, creating complex geometry...');
+      if (fileText.includes('ISO-10303-21') || fileText.includes('STEP')) {
+        console.log('STEP file detected, parsing geometry...');
         
-        // Создаем геометрию для STEP файлов
-        const geometry = await convertStepToThreeJS();
+        // Парсим STEP файл
+        const stepData = parseStepFile(fileText);
+        
+        // Создаем геометрию на основе данных STEP
+        const geometry = await convertStepDataToThreeJS(stepData);
         return geometry;
       }
     } catch (e) {
@@ -113,38 +115,145 @@ async function getModel(): Promise<THREE.BufferGeometry | null> {
   }
 }
 
-async function convertStepToThreeJS(): Promise<THREE.BufferGeometry> {
+// Простой парсер STEP файлов
+function parseStepFile(fileText: string): any {
   try {
-    // Создаем сложную демонстрационную геометрию для STEP файлов
+    const lines = fileText.split('\n');
+    const entities: any[] = [];
+    const coordinates: number[][] = [];
+    
+    // Ищем геометрические сущности в STEP файле
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      
+      // Ищем CARTESIAN_POINT (координаты точек)
+      if (trimmedLine.includes('CARTESIAN_POINT')) {
+        const coords = extractCoordinates(trimmedLine);
+        if (coords && coords.length >= 3) {
+          coordinates.push(coords.slice(0, 3));
+        }
+      }
+      
+      // Ищем CYLINDRICAL_SURFACE (цилиндрические поверхности)
+      if (trimmedLine.includes('CYLINDRICAL_SURFACE')) {
+        entities.push({ type: 'cylinder', data: trimmedLine });
+      }
+      
+      // Ищем PLANE (плоскости)
+      if (trimmedLine.includes('PLANE')) {
+        entities.push({ type: 'plane', data: trimmedLine });
+      }
+      
+      // Ищем SPHERICAL_SURFACE (сферические поверхности)
+      if (trimmedLine.includes('SPHERICAL_SURFACE')) {
+        entities.push({ type: 'sphere', data: trimmedLine });
+      }
+    }
+    
+    return {
+      entities,
+      coordinates,
+      totalEntities: entities.length,
+      totalPoints: coordinates.length
+    };
+  } catch (e) {
+    console.error('STEP parsing error:', e);
+    return { entities: [], coordinates: [], totalEntities: 0, totalPoints: 0 };
+  }
+}
+
+// Извлекает координаты из строки STEP
+function extractCoordinates(line: string): number[] | null {
+  try {
+    // Ищем числа в скобках после CARTESIAN_POINT
+    const match = line.match(/\(([^)]+)\)/);
+    if (match) {
+      const coordsStr = match[1];
+      const coords = coordsStr.split(',').map(c => {
+        const num = parseFloat(c.trim());
+        return isNaN(num) ? 0 : num;
+      });
+      return coords;
+    }
+  } catch (e) {
+    console.error('Coordinate extraction error:', e);
+  }
+  return null;
+}
+
+async function convertStepDataToThreeJS(stepData: any): Promise<THREE.BufferGeometry> {
+  try {
+    console.log('Converting STEP data:', stepData);
+    
     const geometries: THREE.BufferGeometry[] = [];
     
-    // Основная часть - цилиндр
-    const mainBody = new THREE.CylinderGeometry(8, 12, 20, 16);
-    mainBody.translate(0, 0, 0);
-    geometries.push(mainBody);
+    // Если найдены координаты в STEP файле, создаем геометрию на их основе
+    if (stepData.coordinates && stepData.coordinates.length > 0) {
+      console.log(`Found ${stepData.coordinates.length} coordinate points in STEP file`);
+      
+      // Создаем точки на основе найденных координат
+      const points = stepData.coordinates;
+      const positions: number[] = [];
+      const normals: number[] = [];
+      
+      for (const point of points) {
+        positions.push(point[0] * 10, point[1] * 10, point[2] * 10); // Масштабируем
+        normals.push(0, 1, 0); // Простые нормали
+      }
+      
+      if (positions.length > 0) {
+        const pointGeometry = new THREE.BufferGeometry();
+        pointGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        pointGeometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+        geometries.push(pointGeometry);
+      }
+    }
     
-    // Верхняя часть - сфера
-    const topPart = new THREE.SphereGeometry(6, 12, 8);
-    topPart.translate(0, 12, 0);
-    geometries.push(topPart);
+    // Создаем геометрию на основе найденных сущностей
+    if (stepData.entities && stepData.entities.length > 0) {
+      console.log(`Found ${stepData.entities.length} geometric entities`);
+      
+      for (const entity of stepData.entities) {
+        switch (entity.type) {
+          case 'cylinder':
+            const cylinder = new THREE.CylinderGeometry(5, 8, 15, 16);
+            geometries.push(cylinder);
+            break;
+          case 'sphere':
+            const sphere = new THREE.SphereGeometry(6, 12, 8);
+            geometries.push(sphere);
+            break;
+          case 'plane':
+            const plane = new THREE.PlaneGeometry(10, 10);
+            geometries.push(plane);
+            break;
+        }
+      }
+    }
     
-    // Нижняя часть - конус
-    const bottomPart = new THREE.ConeGeometry(8, 12, 12);
-    bottomPart.translate(0, -16, 0);
-    geometries.push(bottomPart);
-    
-    // Боковые детали - торы
-    const leftDetail = new THREE.TorusGeometry(3, 1, 8, 16);
-    leftDetail.translate(-15, 0, 0);
-    leftDetail.rotateY(Math.PI / 2);
-    geometries.push(leftDetail);
-    
-    const rightDetail = new THREE.TorusGeometry(3, 1, 8, 16);
-    rightDetail.translate(15, 0, 0);
-    rightDetail.rotateY(Math.PI / 2);
-    geometries.push(rightDetail);
+    // Если ничего не найдено, создаем демонстрационную геометрию
+    if (geometries.length === 0) {
+      console.log('No geometric entities found, creating demo geometry');
+      
+      // Создаем сложную демонстрационную геометрию
+      const mainBody = new THREE.CylinderGeometry(8, 12, 20, 16);
+      mainBody.translate(0, 0, 0);
+      geometries.push(mainBody);
+      
+      const topPart = new THREE.SphereGeometry(6, 12, 8);
+      topPart.translate(0, 12, 0);
+      geometries.push(topPart);
+      
+      const bottomPart = new THREE.ConeGeometry(8, 12, 12);
+      bottomPart.translate(0, -16, 0);
+      geometries.push(bottomPart);
+    }
     
     // Объединяем все геометрии
+    if (geometries.length === 1) {
+      return geometries[0];
+    }
+    
     const merged = new THREE.BufferGeometry();
     const positions: number[] = [];
     const normals: number[] = [];
