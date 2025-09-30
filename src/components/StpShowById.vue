@@ -1,18 +1,18 @@
-<script setup>
+<script lang="ts" setup>
 import { API_BASE } from "../api";
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { useAuthStore } from "../stores/auth.store";
-import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 const authStore = useAuthStore();
 
 const file_id = defineModel();
 
-let geometry = ref();
-const container = ref(null);
+const geometryRef = ref<THREE.BufferGeometry | null>(null);
+const container = ref<HTMLDivElement | null>(null);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({
@@ -25,9 +25,9 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-let model = null;
-let animationId = null;
-let controls = null;
+let model: THREE.Mesh | null = null;
+let animationId: number | null = null;
+let controls: OrbitControls | null = null;
 
 // Lights
 const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
@@ -37,27 +37,28 @@ directionalLight.position.set(5, 5, 5);
 scene.add(directionalLight);
 
 onMounted(async () => {
-  geometry = await getModel();
+  geometryRef.value = await getModel();
   renderModel();
 });
 
 watch(
   () => file_id.value,
   async () => {
-    geometry = await getModel();
+    geometryRef.value = await getModel();
     if (model) scene.remove(model);
-    if (!geometry) return;
+    if (!geometryRef.value) return;
     renderModel();
   }
 );
 
 onBeforeUnmount(() => {
-  cancelAnimationFrame(animationId);
+  if (animationId !== null) cancelAnimationFrame(animationId);
   window.removeEventListener("resize", updateRendererSize);
   renderer.dispose();
 });
 
 function updateRendererSize() {
+  if (!container.value) return;
   const width = container.value.clientWidth;
   const height = container.value.clientHeight;
   camera.aspect = width / height;
@@ -67,11 +68,11 @@ function updateRendererSize() {
 
 function animate() {
   animationId = requestAnimationFrame(animate);
-  controls.update();
+  controls?.update();
   renderer.render(scene, camera);
 }
 
-async function getModel() {
+async function getModel(): Promise<THREE.BufferGeometry | null> {
   try {
     const headers = new Headers();
     headers.append("Content-Type", "application/octet-stream");
@@ -118,7 +119,7 @@ async function getModel() {
           geoms.push(g);
         }
 
-        const merged = geoms.length === 1 ? geoms[0] : BufferGeometryUtils.mergeGeometries(geoms, false);
+        const merged = geoms.length === 1 ? geoms[0] : BufferGeometryUtils.mergeGeometries(geoms);
         return merged;
       }
     } catch (e) {
@@ -130,10 +131,14 @@ async function getModel() {
     return fallback;
   } catch (error) {
     console.error({ error });
+    return null;
   }
 }
 
 function renderModel() {
+  const geometry = geometryRef.value;
+  if (!geometry) return;
+  
   const material = new THREE.MeshPhysicalMaterial({
     color: 0x888888,
     metalness: 0.9,
@@ -148,9 +153,11 @@ function renderModel() {
 
   geometry.computeBoundingBox();
   const boundingBox = geometry.boundingBox;
-  const center = new THREE.Vector3();
-  boundingBox.getCenter(center);
-  model.position.copy(center.negate());
+  if (boundingBox) {
+    const center = new THREE.Vector3();
+    boundingBox.getCenter(center);
+    model.position.copy(center.negate());
+  }
 
   scene.add(model);
 
@@ -163,7 +170,7 @@ function renderModel() {
 
   scene.background = new THREE.Color(0xffffff);
   updateRendererSize();
-  container.value.appendChild(renderer.domElement);
+  if (container.value) container.value.appendChild(renderer.domElement);
 
   const distance = 80;
   const isometricAngle = Math.PI / 4;
