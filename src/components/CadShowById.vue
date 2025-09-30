@@ -117,6 +117,13 @@ async function getModel(): Promise<THREE.BufferGeometry | null> {
     } catch (_) {}
 
     fileTypeInfo.value = getFileTypeInfo(fileType);
+    // Автопереход в полноэкранный режим для STEP/STP
+    if (fileType === 'step') {
+      if (!isFullscreen.value) {
+        isFullscreen.value = true;
+        requestAnimationFrame(() => updateRendererSize());
+      }
+    }
 
     // Загружаем геометрию в зависимости от типа файла
     const geometry = await loadGeometry(arrayBuffer, fileType);
