@@ -16,4 +16,26 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
   ],
+  optimizeDeps: {
+    exclude: ['occt-import-js']
+  },
+  server: {
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+    },
+  },
+  build: {
+    rollupOptions: {
+      external: [],
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && assetInfo.name.endsWith('.wasm')) {
+            return 'assets/[name]-[hash][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
+        },
+      },
+    },
+  },
 });
