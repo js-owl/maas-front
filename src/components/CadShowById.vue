@@ -1,18 +1,18 @@
-<script setup>
+<script lang="ts" setup>
 import { API_BASE } from "../api";
-import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { useAuthStore } from "../stores/auth.store";
+import { loadGeometry, getFileTypeInfo } from "../utils/fileUtils";
 
 const authStore = useAuthStore();
 
-const file_id = defineModel();
+const file_id = defineModel<number>();
 
-let geometry = ref();
-const container = ref(null);
+const geometryRef = ref<THREE.BufferGeometry | null>(null);
+const container = ref<HTMLDivElement | null>(null);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({
@@ -25,9 +25,10 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-let model = null;
-let animationId = null;
-let controls = null;
+let model: THREE.Mesh | null = null;
+let animationId: number | null = null;
+let controls: OrbitControls | null = null;
+const fileTypeInfo = ref(getFileTypeInfo('unknown'));
 
 // Освещение для металлического эффекта
 const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
@@ -52,7 +53,7 @@ pointLight.position.set(0, 10, 0);
 scene.add(pointLight);
 
 onMounted(async () => {
-  geometry = await getModel();
+  geometryRef.value = await getModel();
   renderModel();
 });
 
@@ -60,22 +61,23 @@ watch(
   () => file_id.value,
   async (newVal) => {
     console.log(`${newVal}`);
-    geometry = await getModel();
+    geometryRef.value = await getModel();
 
     if (model) scene.remove(model);
-    if (!geometry) return;
+    if (!geometryRef.value) return;
 
     renderModel();
   }
 );
 
 onBeforeUnmount(() => {
-  cancelAnimationFrame(animationId);
+  if (animationId !== null) cancelAnimationFrame(animationId);
   window.removeEventListener("resize", updateRendererSize);
   renderer.dispose();
 });
 
 function updateRendererSize() {
+  if (!container.value) return;
   const width = container.value.clientWidth;
   const height = container.value.clientHeight;
   camera.aspect = width / height;
@@ -85,11 +87,11 @@ function updateRendererSize() {
 
 function animate() {
   animationId = requestAnimationFrame(animate);
-  controls.update();
+  controls?.update();
   renderer.render(scene, camera);
 }
 
-async function getModel() {
+async function getModel(): Promise<THREE.BufferGeometry | null> {
   try {
     const headers = new Headers();
     headers.append("Content-Type", "application/octet-stream");
@@ -103,15 +105,35 @@ async function getModel() {
     });
     const blob = await res.blob();
     const arrayBuffer = await blob.arrayBuffer();
-    const geometry = new STLLoader().parse(arrayBuffer);
+
+    // Определяем тип файла по содержимому/заголовку
+    let fileType: 'stl' | 'stp' | 'step' = 'stl';
+    try {
+      const headerBytes = arrayBuffer.slice(0, Math.min(512, arrayBuffer.byteLength));
+      const headerText = new TextDecoder().decode(headerBytes);
+      // STEP-файлы обычно содержат маркер ISO-10303-21 в первых строках
+      if (headerText.includes('ISO-10303-21')) fileType = 'step';
+    } catch (_) {}
+
+    fileTypeInfo.value = getFileTypeInfo(fileType);
+
+    // Загружаем геометрию в зависимости от типа файла
+    const geometry = await loadGeometry(arrayBuffer, fileType);
+    
+    if (!geometry) {
+      throw new Error(`Не удалось загрузить файл типа ${fileType}`);
+    }
 
     return geometry;
   } catch (error) {
     console.error({ error });
+    return null;
   }
 }
 
 function renderModel() {
+  const geometry = geometryRef.value;
+  if (!geometry) return;
   // Создаем металлический материал
   const material = new THREE.MeshPhysicalMaterial({
     color: 0x888888, // Базовый серый цвет металла
@@ -128,9 +150,11 @@ function renderModel() {
   // Центрируем модель
   geometry.computeBoundingBox();
   const boundingBox = geometry.boundingBox;
-  const center = new THREE.Vector3();
-  boundingBox.getCenter(center);
-  model.position.copy(center.negate());
+  if (boundingBox) {
+    const center = new THREE.Vector3();
+    boundingBox.getCenter(center);
+    model.position.copy(center.negate());
+  }
 
   scene.add(model);
 
@@ -145,7 +169,7 @@ function renderModel() {
   // Устанавливаем фон сцены
   scene.background = new THREE.Color(0xffffff); // Темно-синий фон для контраста
   updateRendererSize();
-  container.value.appendChild(renderer.domElement);
+  if (container.value) container.value.appendChild(renderer.domElement);
 
   // Настройка изометрической камеры
   const distance = 80;
@@ -175,10 +199,48 @@ function renderModel() {
 </script>
 
 <template>
-  <div ref="container" class="stl-container"></div>
+  <div class="cad-viewer-wrapper">
+    <div class="file-info" v-if="fileTypeInfo.name !== 'Неизвестный'">
+      <div 
+        class="file-type-badge"
+        :style="{ backgroundColor: fileTypeInfo.color }"
+      >
+        {{ fileTypeInfo.name }}
+      </div>
+      <div class="file-description">{{ fileTypeInfo.description }}</div>
+    </div>
+    <div ref="container" class="stl-container"></div>
+  </div>
 </template>
 
 <style scoped>
+.cad-viewer-wrapper {
+  width: 100%;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 4px 0;
+}
+
+.file-type-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.file-description {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
 .stl-container {
   width: 100%;
   height: 400px;

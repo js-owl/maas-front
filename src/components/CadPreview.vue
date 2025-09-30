@@ -1,21 +1,23 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { API_BASE } from "../api";
-import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { useAuthStore } from "../stores/auth.store";
+import { getFileType, loadGeometry, getFileTypeInfo } from "../utils/fileUtils";
 
 const authStore = useAuthStore();
 
 type Props = {
   fileId: number;
+  filename?: string;
 };
 
 const props = defineProps<Props>();
 
 const previewImage = ref<string>("");
 const isLoading = ref(false);
+const fileTypeInfo = ref(getFileTypeInfo('unknown'));
 
 // Создаем превью изображение
 async function generatePreview() {
@@ -41,7 +43,17 @@ async function generatePreview() {
 
     const blob = await res.blob();
     const arrayBuffer = await blob.arrayBuffer();
-    const geometry = new STLLoader().parse(arrayBuffer);
+    
+    // Определяем тип файла
+    const fileType = props.filename ? getFileType(props.filename) : 'stl';
+    fileTypeInfo.value = getFileTypeInfo(fileType);
+    
+    // Загружаем геометрию в зависимости от типа файла
+    const geometry = await loadGeometry(arrayBuffer, fileType);
+    
+    if (!geometry) {
+      throw new Error(`Не удалось загрузить файл типа ${fileType}`);
+    }
 
     // Создаем миниатюру
     const canvas = document.createElement("canvas");
@@ -135,12 +147,19 @@ generatePreview();
       <div v-if="isLoading" class="loading-placeholder">
         <div class="spinner"></div>
       </div>
-      <img
-        v-else-if="previewImage"
-        :src="previewImage"
-        alt="3D Model Preview"
-        class="preview-image"
-      />
+      <div v-else-if="previewImage" class="preview-wrapper">
+        <img
+          :src="previewImage"
+          alt="3D Model Preview"
+          class="preview-image"
+        />
+        <div 
+          class="file-type-badge"
+          :style="{ backgroundColor: fileTypeInfo.color }"
+        >
+          {{ fileTypeInfo.name }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -163,11 +182,30 @@ generatePreview();
   justify-content: center;
 }
 
+.preview-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .preview-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 3px;
+}
+
+.file-type-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-size: 8px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  z-index: 1;
 }
 
 .loading-placeholder {
