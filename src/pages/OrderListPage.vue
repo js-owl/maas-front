@@ -19,7 +19,11 @@ const formatDate = (_row: any, _column: any, cellValue: string) => {
   return cellValue.split("T")[0];
 };
 
-const serviceNames: any = { cnc_lathe: "токарная", cnc_milling: "фрезерная" };
+const serviceNames: any = {
+  cnc_lathe: "токарная",
+  cnc_milling: "фрезерная",
+  printing: "3D печать",
+};
 const getServiceName = (service_id: number): string => {
   return serviceNames[service_id] || service_id;
 };
@@ -53,6 +57,12 @@ const handleEdit = (row: IOrderResponse): void => {
     case "cnc_milling":
       router.push({
         path: "/milling",
+        query: { orderId: row.id.toString() },
+      });
+      break;
+    case "printing":
+      router.push({
+        path: "/printing",
         query: { orderId: row.id.toString() },
       });
       break;

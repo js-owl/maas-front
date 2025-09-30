@@ -86,6 +86,7 @@ let result = ref({
   total_price: 0,
   quantity: 1,
   manufacturing_cycle: 0,
+  suitable_machines: [],
 });
 
 let isInfoVisible = ref(false);
@@ -376,6 +377,13 @@ async function getOrder(id: number) {
         <el-col :offset="1" :span="5">
           <CoefficientSize v-model="n_dimensions"
         /></el-col>
+      </el-row>
+
+      <el-row :gutter="5" class="row-spacing-top">
+        <el-col :offset="2" :span="20">
+          <div class="label">Подходящее оборудование</div>
+          <div v-for="item in result.suitable_machines">{{ item }}</div>
+        </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top">

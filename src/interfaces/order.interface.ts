@@ -7,10 +7,10 @@ export interface IOrderBase {
   height: number;
   material_id: string;
   material_form: string;
-  id_tolerance: string;
-  id_finish: string;
+  id_tolerance?: string;
+  id_finish?: string;
   id_cover: string;
-  n_dimensions: number;
+  n_dimensions?: number;
   k_otk: string;
   k_cert: string[];
   special_instructions?: string;
@@ -44,4 +44,5 @@ export interface IOrderResponse extends IOrderBase {
   updated_at: string;
   message: string;
   manufacturing_cycle: number;
+  suitable_machines: [];
 }

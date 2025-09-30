@@ -11,10 +11,7 @@ import MaterialMilling from "../components/materials/MaterialMilling.vue";
 
 import CoefficientOtk from "../components/coefficients/CoefficientOtk.vue";
 import CoefficientCertificate from "../components/coefficients/CoefficientCertificate.vue";
-import CoefficientTolerance from "../components/coefficients/CoefficientTolerance.vue";
-import CoefficientFinish from "../components/coefficients/CoefficientFinish.vue";
 import CoefficientCover from "../components/coefficients/CoefficientCover.vue";
-import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
 import { useRoute, useRouter } from "vue-router";
 import UploadModel from "../components/UploadModel.vue";
@@ -39,7 +36,7 @@ const route = useRoute();
 const router = useRouter();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
-let file_id = ref(2);
+let file_id = ref(1);
 let document_ids = ref<number[]>([]);
 
 let length = ref(120);
@@ -50,10 +47,7 @@ let quantity = ref(1);
 let material_id = ref("alum_D16");
 let material_form = ref("sheet");
 
-let id_tolerance = ref("4");
-let id_finish = ref("3");
 let id_cover = ref("1");
-let n_dimensions = ref(55);
 
 let k_otk = ref("1");
 let k_cert = ref(["a", "f"]);
@@ -62,7 +56,7 @@ let manufacturing_cycle = ref<number>(0);
 let special_instructions = ref("");
 
 const payload = reactive({
-  service_id: "cnc_milling",
+  service_id: "printing",
   file_id,
   document_ids,
   quantity,
@@ -71,10 +65,7 @@ const payload = reactive({
   height,
   material_id,
   material_form,
-  id_tolerance,
-  id_finish,
   id_cover,
-  n_dimensions,
   k_otk,
   k_cert,
   manufacturing_cycle,
@@ -203,10 +194,7 @@ async function getOrder(id: number) {
     if (data.quantity) quantity.value = data.quantity;
     if (data.material_id) material_id.value = data.material_id;
     if (data.material_form) material_form.value = data.material_form;
-    if (data.id_tolerance) id_tolerance.value = data.id_tolerance;
-    if (data.id_finish) id_finish.value = data.id_finish;
     if (data.id_cover) id_cover.value = data.id_cover;
-    if (data.n_dimensions) n_dimensions.value = data.n_dimensions;
     if (data.k_otk) k_otk.value = data.k_otk;
     if (data.k_cert) k_cert.value = data.k_cert;
     if (data.manufacturing_cycle)
@@ -225,10 +213,7 @@ async function getOrder(id: number) {
       height: height.value,
       material_id: material_id.value,
       material_form: material_form.value,
-      id_tolerance: id_tolerance.value,
-      id_finish: id_finish.value,
       id_cover: id_cover.value,
-      n_dimensions: n_dimensions.value,
       k_otk: k_otk.value,
       k_cert: k_cert.value,
       manufacturing_cycle: manufacturing_cycle.value,
@@ -360,23 +345,11 @@ async function getOrder(id: number) {
       </el-row>
 
       <el-row :gutter="5">
-        <el-col :offset="2" :span="5">
-          <CoefficientFinish v-model="id_finish" />
-        </el-col>
-        <el-col :offset="1" :span="5">
-          <CoefficientCover v-model="id_cover" />
-        </el-col>
-        <el-col :offset="1" :span="5">
-          <CoefficientTolerance v-model="id_tolerance" />
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="5">
         <el-col :offset="2" :span="11">
           <MaterialMilling v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="5">
-          <CoefficientSize v-model="n_dimensions" />
+          <CoefficientCover v-model="id_cover" />
         </el-col>
       </el-row>
 
