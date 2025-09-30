@@ -29,6 +29,7 @@ let model: THREE.Mesh | null = null;
 let animationId: number | null = null;
 let controls: OrbitControls | null = null;
 const fileTypeInfo = ref(getFileTypeInfo('unknown'));
+const isFullscreen = ref(false);
 
 // Освещение для металлического эффекта
 const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
@@ -196,10 +197,16 @@ function renderModel() {
   // Инициализация анимации
   animate();
 }
+
+function toggleFullscreen() {
+  isFullscreen.value = !isFullscreen.value;
+  // Подождем пока класс применится, затем пересчитаем размеры
+  requestAnimationFrame(() => updateRendererSize());
+}
 </script>
 
 <template>
-  <div class="cad-viewer-wrapper">
+  <div class="cad-viewer-wrapper" :class="{ fullscreen: isFullscreen }">
     <div class="file-info" v-if="fileTypeInfo.name !== 'Неизвестный'">
       <div 
         class="file-type-badge"
@@ -208,6 +215,9 @@ function renderModel() {
         {{ fileTypeInfo.name }}
       </div>
       <div class="file-description">{{ fileTypeInfo.description }}</div>
+      <el-button size="small" type="primary" plain @click="toggleFullscreen">
+        {{ isFullscreen ? 'Свернуть' : 'На весь экран' }}
+      </el-button>
     </div>
     <div ref="container" class="stl-container"></div>
   </div>
@@ -216,6 +226,14 @@ function renderModel() {
 <style scoped>
 .cad-viewer-wrapper {
   width: 100%;
+}
+
+.cad-viewer-wrapper.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #fff;
+  padding: 8px 8px 0 8px;
 }
 
 .file-info {
@@ -252,6 +270,11 @@ function renderModel() {
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   overflow: hidden;
   position: relative;
+}
+
+.cad-viewer-wrapper.fullscreen .stl-container {
+  height: calc(100vh - 56px);
+  border-radius: 8px;
 }
 
 .stl-container::before {
