@@ -66,6 +66,12 @@ const routes = [
     component: () => import("./components/UniversalCADViewer.vue"),
     name: "cad",
   },
+  {
+    path: "/cad2",
+    // @ts-ignore
+    component: () => import("./components/STPViewer.vue"),
+    name: "cad2",
+  },
 
   { path: "/:patchMatch(.*)*", component: NotFoundPage },
 ];
