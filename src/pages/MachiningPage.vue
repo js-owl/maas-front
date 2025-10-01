@@ -77,18 +77,12 @@ const items = ref([
           <div>ТОКАРНАЯ ОБРАБОТКА</div>
         </el-col>
         <el-col :offset="2" :span="17" style="padding-bottom: 40px">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officiis,
-          tempora magni soluta delectus expedita perferendis quis rem quae id
-          eos esse. Consequuntur obcaecati debitis, necessitatibus inventore
-          fugiat aperiam natus veritatis officia sed, placeat totam recusandae
-          sint perferendis. Sed repudiandae maxime molestiae sit et, sapiente
-          nesciunt, itaque blanditiis tempora cum expedita cumque reiciendis?
-          Maxime nostrum maiores alias assumenda molestias doloremque mollitia.
-          Eveniet ab ad, ratione minima animi dolor accusamus qui nam tempora
-          perferendis laboriosam, assumenda explicabo molestiae dolorum beatae
-          culpa, commodi velit nostrum doloremque accusantium quod quae
-          reprehenderit suscipit corrupti! Non tempore doloremque cumque ex
-          optio facere aperiam cupiditate quibusdam eum?
+          Токарная обработка представляет собой механическую операцию, при которой 
+          вращающаяся деталь обрабатывается режущим инструментом, последовательно 
+          снимающим слои материала. Технология позволяет создавать цилиндрические, 
+          конические и сложные профилированные поверхности с высокой степенью точности. 
+          Применяется в производстве металлических, пластиковых и других изделий, 
+          обеспечивая превосходное качество финишной обработки.
         </el-col>
       </el-row>
       <el-row>
