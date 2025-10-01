@@ -21,8 +21,6 @@ import UploadDrawings from "../components/UploadDrawings.vue";
 import DocumentShowByIds from "../components/DocumentShowByIds.vue";
 // @ts-ignore
 import CadShowById from "../components/CadShowById.vue";
-// @ts-ignore
-import StpShowById from "../components/StpShowById.vue";
 import { useProfileStore, type IProfile } from "../stores/profile.store";
 import { useAuthStore } from "../stores/auth.store";
 import { ElMessage } from "element-plus";
@@ -41,7 +39,6 @@ const router = useRouter();
 const order_id = computed(() => Number(route.query.orderId) || 0);
 
 let file_id = ref(4);
-let fileType = ref<'stl' | 'stp' | 'unknown'>('unknown');
 let document_ids = ref<number[]>([]);
 
 let length = ref(120);
@@ -296,8 +293,7 @@ async function getOrder(id: number) {
       </div>
       <el-row :gutter="20" class="component-section">
         <el-col :offset="0" :span="24" class="cad-section">
-          <CadShowById v-if="fileType === 'stl'" v-model="file_id" />
-          <StpShowById v-if="fileType === 'stp'" v-model="file_id" />
+          <CadShowById v-model="file_id" />
         </el-col>
       </el-row>
       <el-row :gutter="5" class="upload-section">
@@ -305,7 +301,7 @@ async function getOrder(id: number) {
           Загрузите файлы для расчета
         </el-col>
         <el-col :span="12">
-          <UploadModel v-model="file_id" v-model:fileType="fileType" color="#fff" />
+          <UploadModel v-model="file_id" color="#fff" />
         </el-col>
         <el-col :span="12">
           <UploadDrawings v-model="document_ids" color="#fff" />

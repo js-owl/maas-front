@@ -12,7 +12,7 @@ function transformMaterials(
   return backendData
     .filter(
       (item) =>
-        item.forms && item.forms.some((form: any) => form.id === "sheet")
+        item.forms && item.forms.some((form: any) => form.id === "powder")
     )
     .map((item) => ({
       value: item.id,
@@ -24,7 +24,7 @@ function transformMaterials(
 async function loadMaterials() {
   try {
     const response = await req_json_auth(
-      "/calculator/materials?service_id=cnc_milling",
+      "/calculator/materials?service_id=printing",
       "GET"
     );
     if (response?.ok) {

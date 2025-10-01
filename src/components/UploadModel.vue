@@ -6,7 +6,6 @@ import { useAuthStore } from "../stores/auth.store";
 import DialogLogin from "./dialog/DialogLogin.vue";
 
 const file_id = defineModel<number>();
-const fileType = defineModel<'stl' | 'stp' | 'unknown'>('fileType');
 const { color = "white" } = defineProps({
   color: String,
 });
@@ -34,21 +33,9 @@ const handleUploadClick = () => {
   }
 };
 
-const loadModel = (response: any, uploadFile: any) => {
-  console.log({ response, uploadFile });
+const loadModel = (response: any) => {
+  console.log({ response });
   file_id.value = response.file_id;
-  
-  // Определяем тип файла по имени
-  const fileName = uploadFile?.name || '';
-  const extension = fileName.split('.').pop()?.toLowerCase();
-  
-  if (extension === 'stl') {
-    fileType.value = 'stl';
-  } else if (extension === 'stp' || extension === 'step') {
-    fileType.value = 'stp';
-  } else {
-    fileType.value = 'unknown';
-  }
 };
 </script>
 

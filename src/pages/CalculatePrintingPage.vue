@@ -7,7 +7,7 @@ import Width from "../components/coefficients/Width.vue";
 
 import CoefficientQuantity from "../components/coefficients/CoefficientQuantity.vue";
 
-import MaterialMilling from "../components/materials/MaterialMilling.vue";
+import MaterialPrinting from "../components/materials/MaterialPrinting.vue";
 
 import CoefficientOtk from "../components/coefficients/CoefficientOtk.vue";
 import CoefficientCertificate from "../components/coefficients/CoefficientCertificate.vue";
@@ -44,8 +44,8 @@ let width = ref(30);
 let height = ref(30);
 let quantity = ref(1);
 
-let material_id = ref("alum_D16");
-let material_form = ref("sheet");
+let material_id = ref("PA11");
+let material_form = ref("powder");
 
 let id_cover = ref("1");
 
@@ -204,7 +204,7 @@ async function getOrder(id: number) {
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
-      service_id: "cnc_milling",
+      service_id: "printing",
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
@@ -346,7 +346,7 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5">
         <el-col :offset="2" :span="11">
-          <MaterialMilling v-model="material_id" />
+          <MaterialPrinting v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="5">
           <CoefficientCover v-model="id_cover" />

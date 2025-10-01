@@ -8,7 +8,7 @@ const routes = [
   { path: "/", component: HomePage, name: "home" },
   {
     path: "/mechanical",
-    component: () => import("./pages/MechanicalPage.vue"),
+    component: () => import("./pages/MachiningPage.vue"),
   },
   {
     path: "/composite",
@@ -20,7 +20,7 @@ const routes = [
   },
   {
     path: "/mach",
-    component: () => import("./pages/MachPage.vue"),
+    component: () => import("./pages/MachiningPage.vue"),
     name: "mach",
   },
   {
@@ -59,18 +59,6 @@ const routes = [
     // @ts-ignore
     component: () => import("./pages/ProfilePage.vue"),
     name: "profile",
-  },
-  {
-    path: "/cad",
-    // @ts-ignore
-    component: () => import("./components/UniversalCADViewer.vue"),
-    name: "cad",
-  },
-  {
-    path: "/cad2",
-    // @ts-ignore
-    component: () => import("./components/STPViewer.vue"),
-    name: "cad2",
   },
 
   { path: "/:patchMatch(.*)*", component: NotFoundPage },

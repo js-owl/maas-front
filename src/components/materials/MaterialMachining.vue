@@ -22,7 +22,10 @@ function transformMaterials(
 // Загружаем материалы с бекенда
 async function loadMaterials() {
   try {
-    const response = await req_json_auth("/calculator/materials", "GET");
+    const response = await req_json_auth(
+      "/calculator/materials?service_id=cnc_lathe",
+      "GET"
+    );
     if (response?.ok) {
       const backendMaterials = await response.json();
       materials.value = transformMaterials(backendMaterials);
