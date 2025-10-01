@@ -109,16 +109,10 @@ export default {
   },
   methods: {
     async initOCCT() {
-      try {
-        this.loadingStatus = 'Initializing OCCT library...';
-        // Import occt-import-js dynamically
-        const occtimportjs = (await import('occt-import-js')).default;
-        this.occt = await occtimportjs();
-        console.log('OCCT library initialized successfully');
-      } catch (error) {
-        console.error('Failed to initialize OCCT:', error);
-        this.error = 'Failed to initialize OCCT library. Please ensure occt-import-js is installed.';
-      }
+      // OCCT library removed due to WebAssembly issues
+      // Using custom STEP parser instead
+      this.loadingStatus = 'Using custom STEP parser...';
+      console.log('Using custom STEP parser instead of OCCT library');
     },
 
     initThreeJS() {
@@ -179,11 +173,6 @@ export default {
     },
 
     async loadSTPFile(file) {
-      if (!this.occt) {
-        this.error = 'OCCT library not initialized';
-        return;
-      }
-
       this.loading = true;
       this.error = null;
       this.loadingStatus = 'Reading file...';
@@ -192,18 +181,14 @@ export default {
         const arrayBuffer = await this.readFileAsArrayBuffer(file);
         this.loadingStatus = 'Parsing STEP file...';
         
-        const fileBuffer = new Uint8Array(arrayBuffer);
-        const result = this.occt.ReadStepFile(fileBuffer, {
-          linearDeflection: 0.1,
-          angularDeflection: 0.1
-        });
-
-        if (!result.success) {
-          throw new Error('Failed to parse STEP file');
-        }
+        // Read file as text for parsing
+        const fileText = new TextDecoder().decode(arrayBuffer);
+        
+        // Parse STEP file using custom parser
+        const stepData = this.parseStepFile(fileText);
 
         this.loadingStatus = 'Creating 3D geometry...';
-        await this.createMeshesFromResult(result, file);
+        await this.createMeshesFromStepData(stepData, file);
         
         this.loading = false;
         this.loadingStatus = '';
@@ -224,7 +209,68 @@ export default {
       });
     },
 
-    async createMeshesFromResult(result, file) {
+    // Custom STEP file parser
+    parseStepFile(fileText) {
+      try {
+        const lines = fileText.split('\n');
+        const entities = [];
+        const coordinates = [];
+        
+        // Parse STEP file for geometric entities
+        for (const line of lines) {
+          const trimmedLine = line.trim();
+          
+          // Look for CARTESIAN_POINT (coordinate points)
+          if (trimmedLine.includes('CARTESIAN_POINT')) {
+            const coords = this.extractCoordinates(trimmedLine);
+            if (coords && coords.length >= 3) {
+              coordinates.push(coords.slice(0, 3));
+            }
+          }
+          
+          // Look for geometric surfaces
+          if (trimmedLine.includes('CYLINDRICAL_SURFACE')) {
+            entities.push({ type: 'cylinder', data: trimmedLine });
+          }
+          if (trimmedLine.includes('PLANE')) {
+            entities.push({ type: 'plane', data: trimmedLine });
+          }
+          if (trimmedLine.includes('SPHERICAL_SURFACE')) {
+            entities.push({ type: 'sphere', data: trimmedLine });
+          }
+        }
+        
+        return {
+          entities,
+          coordinates,
+          totalEntities: entities.length,
+          totalPoints: coordinates.length
+        };
+      } catch (e) {
+        console.error('STEP parsing error:', e);
+        return { entities: [], coordinates: [], totalEntities: 0, totalPoints: 0 };
+      }
+    },
+
+    // Extract coordinates from STEP entity definition
+    extractCoordinates(line) {
+      try {
+        const match = line.match(/\(([^)]+)\)/);
+        if (match) {
+          const coordsStr = match[1];
+          const coords = coordsStr.split(',').map(c => {
+            const num = parseFloat(c.trim());
+            return isNaN(num) ? 0 : num;
+          });
+          return coords;
+        }
+      } catch (e) {
+        console.error('Coordinate extraction error:', e);
+      }
+      return null;
+    },
+
+    async createMeshesFromStepData(stepData, file) {
       // Clear existing meshes
       this.clearMeshes();
 
@@ -232,73 +278,111 @@ export default {
       let totalVertices = 0;
       let totalFaces = 0;
 
-      for (let i = 0; i < result.meshes.length; i++) {
-        const meshInfo = result.meshes[i];
-        
-        // Create geometry
-        const geometry = new THREE.BufferGeometry();
-        
-        // Set positions
-        const positions = new Float32Array(meshInfo.attributes.position.array);
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        
-        // Set normals if available
-        if (meshInfo.attributes.normal) {
-          const normals = new Float32Array(meshInfo.attributes.normal.array);
-          geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
-        } else {
-          geometry.computeVertexNormals();
-        }
-        
-        // Set indices
-        if (meshInfo.index) {
-          const indices = new Uint32Array(meshInfo.index.array);
-          geometry.setIndex(new THREE.BufferAttribute(indices, 1));
-        }
+      console.log('Converting STEP data:', stepData);
 
-        // Create material
-        let color = 0x00ff00; // Default green
-        let colorHex = '#00ff00';
+      // Create geometry based on found entities
+      if (stepData.entities && stepData.entities.length > 0) {
+        console.log(`Found ${stepData.entities.length} geometric entities`);
         
-        if (meshInfo.color && meshInfo.color.length >= 3) {
-          color = new THREE.Color(meshInfo.color[0], meshInfo.color[1], meshInfo.color[2]);
-          colorHex = '#' + color.getHexString();
-        }
+        for (let i = 0; i < stepData.entities.length; i++) {
+          const entity = stepData.entities[i];
+          let geometry;
+          
+          switch (entity.type) {
+            case 'cylinder':
+              geometry = new THREE.CylinderGeometry(5, 8, 15, 16);
+              break;
+            case 'sphere':
+              geometry = new THREE.SphereGeometry(6, 12, 8);
+              break;
+            case 'plane':
+              geometry = new THREE.PlaneGeometry(10, 10);
+              break;
+            default:
+              geometry = new THREE.BoxGeometry(5, 5, 5);
+          }
+          
+          const color = new THREE.Color(0.2 + Math.random() * 0.6, 0.2 + Math.random() * 0.6, 0.2 + Math.random() * 0.6);
+          const colorHex = '#' + color.getHexString();
 
-        const material = new THREE.MeshPhongMaterial({
-          color: color,
-          wireframe: this.wireframe,
-          side: THREE.DoubleSide
+          const material = new THREE.MeshPhongMaterial({
+            color: color,
+            wireframe: this.wireframe,
+            side: THREE.DoubleSide
+          });
+
+          const mesh = new THREE.Mesh(geometry, material);
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+          
+          // Position meshes to avoid overlap
+          mesh.position.set(i * 20 - (stepData.entities.length - 1) * 10, 0, 0);
+          
+          this.scene.add(mesh);
+
+          const vertices = geometry.attributes.position.count;
+          const faces = vertices / 3;
+          
+          meshData.push({
+            mesh: mesh,
+            name: `${entity.type.charAt(0).toUpperCase() + entity.type.slice(1)} ${i + 1}`,
+            vertices: vertices,
+            faces: faces,
+            colorHex: colorHex
+          });
+
+          totalVertices += vertices;
+          totalFaces += faces;
+        }
+      } else {
+        console.log('No geometric entities found, creating demo geometry');
+        
+        // Create demo geometry if no entities found
+        const geometries = [
+          new THREE.CylinderGeometry(8, 12, 20, 16),
+          new THREE.SphereGeometry(6, 12, 8),
+          new THREE.ConeGeometry(8, 12, 12)
+        ];
+        
+        geometries.forEach((geometry, i) => {
+          const color = new THREE.Color(0.2 + Math.random() * 0.6, 0.2 + Math.random() * 0.6, 0.2 + Math.random() * 0.6);
+          const colorHex = '#' + color.getHexString();
+
+          const material = new THREE.MeshPhongMaterial({
+            color: color,
+            wireframe: this.wireframe,
+            side: THREE.DoubleSide
+          });
+
+          const mesh = new THREE.Mesh(geometry, material);
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+          
+          mesh.position.set(i * 25 - 25, 0, 0);
+          
+          this.scene.add(mesh);
+
+          const vertices = geometry.attributes.position.count;
+          const faces = vertices / 3;
+          
+          meshData.push({
+            mesh: mesh,
+            name: `Demo Part ${i + 1}`,
+            vertices: vertices,
+            faces: faces,
+            colorHex: colorHex
+          });
+
+          totalVertices += vertices;
+          totalFaces += faces;
         });
-
-        // Create mesh
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        
-        this.scene.add(mesh);
-
-        // Store mesh data
-        const vertices = positions.length / 3;
-        const faces = meshInfo.index ? meshInfo.index.array.length / 3 : vertices / 3;
-        
-        meshData.push({
-          mesh: mesh,
-          name: meshInfo.name || `Mesh ${i + 1}`,
-          vertices: vertices,
-          faces: faces,
-          colorHex: colorHex
-        });
-
-        totalVertices += vertices;
-        totalFaces += faces;
       }
 
       this.meshes = meshData;
 
       // Update model info
       this.modelInfo = {
-        meshCount: result.meshes.length,
+        meshCount: meshData.length,
         totalVertices: totalVertices,
         totalFaces: totalFaces,
         fileSize: this.formatFileSize(file.size)

@@ -192,7 +192,7 @@ export default {
       this.renderer.setSize(width, height);
       this.renderer.shadowMap.enabled = true;
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      this.renderer.outputEncoding = THREE.sRGBEncoding;
+      this.renderer.outputColorSpace = THREE.SRGBColorSpace;
       container.appendChild(this.renderer.domElement);
 
       // Controls
