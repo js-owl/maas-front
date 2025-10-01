@@ -60,6 +60,12 @@ const routes = [
     component: () => import("./pages/ProfilePage.vue"),
     name: "profile",
   },
+  {
+    path: "/cad",
+    // @ts-ignore
+    component: () => import("./components/UniversalCADViewer.vue"),
+    name: "cad",
+  },
 
   { path: "/:patchMatch(.*)*", component: NotFoundPage },
 ];
