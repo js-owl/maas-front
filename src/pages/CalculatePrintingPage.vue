@@ -22,6 +22,7 @@ import { useProfileStore, type IProfile } from "../stores/profile.store";
 import { useAuthStore } from "../stores/auth.store";
 import { ElMessage } from "element-plus";
 import DialogInfoPayment from "../components/dialog/DialogInfoPayment.vue";
+import SuitableMachines from "../components/SuitableMachines.vue";
 import Height from "../components/coefficients/Height.vue";
 import type {
   IOrderPayload,
@@ -79,6 +80,7 @@ let result = ref({
   total_price: 0,
   quantity: 1,
   manufacturing_cycle: 0,
+  suitable_machines: [],
 });
 
 let isInfoVisible = ref(false);
@@ -356,6 +358,12 @@ async function getOrder(id: number) {
       <el-row :gutter="5">
         <el-col :offset="2" :span="6">
           <CoefficientQuantity v-model="quantity" />
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
+        <el-col :offset="2" :span="20">
+          <SuitableMachines :machines="result.suitable_machines" />
         </el-col>
       </el-row>
 
