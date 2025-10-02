@@ -380,7 +380,7 @@ async function getOrder(id: number) {
         /></el-col>
       </el-row>
 
-      <el-row :gutter="5" class="row-spacing-top">
+      <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.user_type === 'admin'">
         <el-col :offset="2" :span="20">
           <SuitableMachines :machines="result.suitable_machines" />
         </el-col>

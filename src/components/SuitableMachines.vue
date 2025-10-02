@@ -1,3 +1,11 @@
+<script lang="ts" setup>
+interface Props {
+  machines: string[];
+}
+
+defineProps<Props>();
+</script>
+
 <template>
   <div class="suitable-machines" style="max-width: 1000px">
     <div class="label">Подходящее оборудование</div>
@@ -8,14 +16,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-interface Props {
-  machines: string[];
-}
-
-defineProps<Props>();
-</script>
 
 <style scoped>
 .suitable-machines {
