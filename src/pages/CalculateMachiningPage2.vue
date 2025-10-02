@@ -25,6 +25,7 @@ import { useProfileStore, type IProfile } from "../stores/profile.store";
 import { useAuthStore } from "../stores/auth.store";
 import { ElMessage } from "element-plus";
 import DialogInfoPayment from "../components/dialog/DialogInfoPayment.vue";
+import SuitableMachines from "../components/SuitableMachines.vue";
 import type {
   IOrderPayload,
   IOrderPostPayload,
@@ -381,8 +382,7 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5" class="row-spacing-top">
         <el-col :offset="2" :span="20">
-          <div class="label">Подходящее оборудование</div>
-          <div v-for="item in result.suitable_machines">{{ item }}</div>
+          <SuitableMachines :machines="result.suitable_machines" />
         </el-col>
       </el-row>
 
