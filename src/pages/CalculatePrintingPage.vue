@@ -48,7 +48,7 @@ let quantity = ref(1);
 let material_id = ref("PA11");
 let material_form = ref("powder");
 
-let id_cover = ref<string[]>([]);
+let id_cover = ref<string[]>(['1']);
 
 let k_otk = ref("1");
 let k_cert = ref(["a", "f"]);
@@ -351,13 +351,13 @@ async function getOrder(id: number) {
           <MaterialPrinting v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="5">
-          <CoefficientCover v-model="id_cover" />
+          <CoefficientQuantity v-model="quantity" />
         </el-col>
       </el-row>
 
-      <el-row :gutter="5">
-        <el-col :offset="2" :span="6">
-          <CoefficientQuantity v-model="quantity" />
+      <el-row :gutter="5" class="row-spacing-top">
+        <el-col :offset="2" :span="20">
+          <CoefficientCover v-model="id_cover" />
         </el-col>
       </el-row>
 

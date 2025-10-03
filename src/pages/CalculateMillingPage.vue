@@ -53,7 +53,7 @@ let material_form = ref("sheet");
 
 let id_tolerance = ref("4");
 let id_finish = ref("3");
-let id_cover = ref<string[]>([]);
+let id_cover = ref<string[]>(['1']);
 let n_dimensions = ref(55);
 
 let k_otk = ref("1");
@@ -366,10 +366,10 @@ async function getOrder(id: number) {
           <CoefficientFinish v-model="id_finish" />
         </el-col>
         <el-col :offset="1" :span="5">
-          <CoefficientCover v-model="id_cover" />
+          <CoefficientTolerance v-model="id_tolerance" />
         </el-col>
         <el-col :offset="1" :span="5">
-          <CoefficientTolerance v-model="id_tolerance" />
+          <CoefficientSize v-model="n_dimensions" />
         </el-col>
       </el-row>
 
@@ -378,13 +378,14 @@ async function getOrder(id: number) {
           <MaterialMilling v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="5">
-          <CoefficientSize v-model="n_dimensions" />
+          <CoefficientQuantity v-model="quantity" />
         </el-col>
       </el-row>
 
-      <el-row :gutter="5">
-        <el-col :offset="2" :span="6">
-          <CoefficientQuantity v-model="quantity" />
+
+      <el-row :gutter="5" class="row-spacing-top">
+        <el-col :offset="2" :span="20">
+          <CoefficientCover v-model="id_cover" />
         </el-col>
       </el-row>
 
