@@ -379,15 +379,15 @@ async function getOrder(id: number) {
         </el-col>
       </el-row>
 
-      <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
-        <el-col :offset="2" :span="20">
-          <SuitableMachines :machines="result.suitable_machines" />
-        </el-col>
-      </el-row>
-
       <el-row :gutter="5" class="row-spacing-top">
         <el-col :offset="2" :span="20">
           <CoefficientCover v-model="id_cover" />
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
+        <el-col :offset="2" :span="20">
+          <SuitableMachines :machines="result.suitable_machines" />
         </el-col>
       </el-row>
 
