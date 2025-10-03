@@ -4,7 +4,7 @@ const quantity = defineModel();
 
 <template>
   <div>
-    <p style="color: #577aad; font-weight: 500">Количество типоразмеров</p>
+    <p style="color: #577aad; font-weight: 500">Кол-во типоразмеров</p>
     <el-input-number
       v-model="quantity"
       :min="1"

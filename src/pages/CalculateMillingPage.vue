@@ -53,7 +53,7 @@ let material_form = ref("sheet");
 
 let id_tolerance = ref("4");
 let id_finish = ref("3");
-let id_cover = ref("1");
+let id_cover = ref<string[]>([]);
 let n_dimensions = ref(55);
 
 let k_otk = ref("1");
@@ -207,7 +207,7 @@ async function getOrder(id: number) {
     if (data.material_form) material_form.value = data.material_form;
     if (data.id_tolerance) id_tolerance.value = data.id_tolerance;
     if (data.id_finish) id_finish.value = data.id_finish;
-    if (data.id_cover) id_cover.value = data.id_cover;
+    if (data.id_cover) id_cover.value = Array.isArray(data.id_cover) ? data.id_cover : [data.id_cover];
     if (data.n_dimensions) n_dimensions.value = data.n_dimensions;
     if (data.k_otk) k_otk.value = data.k_otk;
     if (data.k_cert) k_cert.value = data.k_cert;

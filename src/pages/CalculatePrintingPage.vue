@@ -48,7 +48,7 @@ let quantity = ref(1);
 let material_id = ref("PA11");
 let material_form = ref("powder");
 
-let id_cover = ref("1");
+let id_cover = ref<string[]>([]);
 
 let k_otk = ref("1");
 let k_cert = ref(["a", "f"]);
@@ -196,7 +196,7 @@ async function getOrder(id: number) {
     if (data.quantity) quantity.value = data.quantity;
     if (data.material_id) material_id.value = data.material_id;
     if (data.material_form) material_form.value = data.material_form;
-    if (data.id_cover) id_cover.value = data.id_cover;
+    if (data.id_cover) id_cover.value = Array.isArray(data.id_cover) ? data.id_cover : [data.id_cover];
     if (data.k_otk) k_otk.value = data.k_otk;
     if (data.k_cert) k_cert.value = data.k_cert;
     if (data.manufacturing_cycle)

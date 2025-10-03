@@ -9,7 +9,7 @@ export interface IOrderBase {
   material_form: string;
   id_tolerance?: string;
   id_finish?: string;
-  id_cover: string;
+  id_cover: string[];
   n_dimensions?: number;
   k_otk: string;
   k_cert: string[];

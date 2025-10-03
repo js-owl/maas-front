@@ -51,7 +51,7 @@ let material_form = ref("rod");
 
 let id_tolerance = ref("4");
 let id_finish = ref("3");
-let id_cover = ref("1");
+let id_cover = ref<string[]>(['1']);
 let n_dimensions = ref(55);
 
 let k_otk = ref("1");
@@ -205,7 +205,7 @@ async function getOrder(id: number) {
     if (data.material_form) material_form.value = data.material_form;
     if (data.id_tolerance) id_tolerance.value = data.id_tolerance;
     if (data.id_finish) id_finish.value = data.id_finish;
-    if (data.id_cover) id_cover.value = data.id_cover;
+    if (data.id_cover) id_cover.value = Array.isArray(data.id_cover) ? data.id_cover : [data.id_cover];
     if (data.n_dimensions) n_dimensions.value = data.n_dimensions;
     if (data.k_otk) k_otk.value = data.k_otk;
     if (data.k_cert) k_cert.value = data.k_cert;
@@ -364,10 +364,10 @@ async function getOrder(id: number) {
           <CoefficientFinish v-model="id_finish" />
         </el-col>
         <el-col :offset="1" :span="5">
-          <CoefficientCover v-model="id_cover" />
+          <CoefficientTolerance v-model="id_tolerance" />
         </el-col>
         <el-col :offset="1" :span="5">
-          <CoefficientTolerance v-model="id_tolerance" />
+          <CoefficientSize v-model="n_dimensions" />
         </el-col>
       </el-row>
 
@@ -376,13 +376,18 @@ async function getOrder(id: number) {
           <MaterialMachining v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="5">
-          <CoefficientSize v-model="n_dimensions"
-        /></el-col>
+        </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
         <el-col :offset="2" :span="20">
           <SuitableMachines :machines="result.suitable_machines" />
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="5" class="row-spacing-top">
+        <el-col :offset="2" :span="20">
+          <CoefficientCover v-model="id_cover" />
         </el-col>
       </el-row>
 
