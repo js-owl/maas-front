@@ -7,24 +7,19 @@ const materials = ref<Array<{ value: string; label: string }>>([]);
 
 // Функция для преобразования данных с бекенда в нужный формат
 function transformMaterials(
-  backendData: any[]
+  prop: any
 ): Array<{ value: string; label: string }> {
-  return backendData
-    .filter(
-      (item) =>
-        item.forms && item.forms.some((form: any) => form.id === "sheet")
-    )
-    .map((item) => ({
-      value: item.id,
-      label: item.value,
-    }));
+  return prop.materials.map((x: any) => ({
+    value: x.id,
+    label: x.name,
+  }));
 }
 
 // Загружаем материалы с бекенда
 async function loadMaterials() {
   try {
     const response = await req_json_auth(
-      "/calculator/materials?service_id=cnc_milling",
+      "/calculator/materials?service_id=cnc-milling",
       "GET"
     );
     if (response?.ok) {
