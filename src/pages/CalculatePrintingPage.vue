@@ -57,7 +57,7 @@ let manufacturing_cycle = ref<number>(0);
 let special_instructions = ref("");
 
 const payload = reactive({
-  service_id: "printing",
+  service_id: "3dprinting",
   file_id,
   document_ids,
   quantity,
@@ -206,7 +206,7 @@ async function getOrder(id: number) {
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
-      service_id: "printing",
+      service_id: "3dprinting",
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
@@ -361,7 +361,11 @@ async function getOrder(id: number) {
         </el-col>
       </el-row>
 
-      <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
+      <el-row
+        :gutter="5"
+        class="row-spacing-top"
+        v-if="profileStore.profile?.username === 'admin'"
+      >
         <el-col :offset="2" :span="20">
           <SuitableMachines :machines="result.suitable_machines" />
         </el-col>
