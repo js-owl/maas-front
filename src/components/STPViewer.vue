@@ -193,14 +193,14 @@
 <script setup>
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import { ref, shallowRef, markRaw, onMounted, onBeforeUnmount, computed, watch } from "vue";
 
 // DOM references
 const canvasContainer = ref(null);
 const fileInputRef = ref(null);
 
 // State
-const meshes = ref([]);
+const meshes = shallowRef([]); // shallow to avoid proxying Mesh instances
 const loading = ref(false);
 const loadingStatus = ref("");
 const loadingProgress = ref(0);
@@ -215,11 +215,11 @@ const isDragOver = ref(false);
 const isDestroyed = ref(false);
 
 // Three.js objects
-const scene = ref(null);
-const camera = ref(null);
-const renderer = ref(null);
-const controls = ref(null);
-const gridHelper = ref(null);
+const scene = shallowRef(null);
+const camera = shallowRef(null);
+const renderer = shallowRef(null);
+const controls = shallowRef(null);
+const gridHelper = shallowRef(null);
 
 // OCCT library state
 const occt = ref(null);
@@ -235,19 +235,19 @@ const initThreeJS = () => {
   const height = container.clientHeight;
 
   // Scene
-  scene.value = new THREE.Scene();
+  scene.value = markRaw(new THREE.Scene());
   scene.value.background = new THREE.Color(0xf5f5f5);
 
   // Camera
-  camera.value = new THREE.PerspectiveCamera(75, width / height, 0.1, 10000);
+  camera.value = markRaw(new THREE.PerspectiveCamera(75, width / height, 0.1, 10000));
   camera.value.position.set(100, 100, 100);
   camera.value.updateMatrixWorld();
 
   // Renderer
-  renderer.value = new THREE.WebGLRenderer({
+  renderer.value = markRaw(new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
-  });
+  }));
   renderer.value.setSize(width, height);
   renderer.value.shadowMap.enabled = true;
   renderer.value.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -255,7 +255,7 @@ const initThreeJS = () => {
   container.appendChild(renderer.value.domElement);
 
   // Controls
-  controls.value = new OrbitControls(camera.value, renderer.value.domElement);
+  controls.value = markRaw(new OrbitControls(camera.value, renderer.value.domElement));
   controls.value.enableDamping = true;
   controls.value.dampingFactor = 0.05;
   controls.value.screenSpacePanning = false;
@@ -277,7 +277,7 @@ const initThreeJS = () => {
   scene.value.add(hemisphereLight);
 
   // Grid
-  gridHelper.value = new THREE.GridHelper(200, 20, 0x888888, 0xcccccc);
+  gridHelper.value = markRaw(new THREE.GridHelper(200, 20, 0x888888, 0xcccccc));
   scene.value.add(gridHelper.value);
 
   // Handle window resize
@@ -409,7 +409,7 @@ const createMeshesFromOCCTResult = async (result, file) => {
   for (let i = 0; i < result.meshes.length; i++) {
     const meshInfo = result.meshes[i];
 
-    const geometry = new THREE.BufferGeometry();
+    const geometry = markRaw(new THREE.BufferGeometry());
 
     const positions = new Float32Array(meshInfo.attributes.position.array);
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -443,13 +443,13 @@ const createMeshesFromOCCTResult = async (result, file) => {
       colorHex = "#" + color.getHexString();
     }
 
-    const material = new THREE.MeshPhongMaterial({
+    const material = markRaw(new THREE.MeshPhongMaterial({
       color: color,
       wireframe: wireframe.value,
       side: THREE.DoubleSide,
-    });
+    }));
 
-    const mesh = new THREE.Mesh(geometry, material);
+    const mesh = markRaw(new THREE.Mesh(geometry, material));
     mesh.castShadow = true;
     mesh.receiveShadow = true;
 
