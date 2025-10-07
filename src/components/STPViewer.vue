@@ -293,12 +293,10 @@ const loadOCCTLibrary = async () => {
     // Import the OCCT module dynamically
     const occtImport = await import("occt-import-js");
 
-    // IMPORTANT: Use relative path for WASM file (NO leading slash)
+    // Use Vite public root path so the correct WASM binary is fetched
     occt.value = await occtImport.default({
       locateFile: (path) => {
-        if (path.endsWith(".wasm")) {
-          return "occt-import-js.wasm"; // ✅ Relative path (no leading slash)
-        }
+        if (path.endsWith(".wasm")) return "/occt-import-js.wasm";
         return path;
       },
     });
