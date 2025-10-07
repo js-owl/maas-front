@@ -74,6 +74,7 @@ declare module 'vue' {
     SectionAbout: typeof import('./src/components/sections/SectionAbout.vue')['default']
     SectionAdvantages: typeof import('./src/components/sections/SectionAdvantages.vue')['default']
     SectionModel: typeof import('./src/components/sections/SectionModel.vue')['default']
+    STPViewer: typeof import('./src/components/STPViewer.vue')['default']
     SuitableMachines: typeof import('./src/components/SuitableMachines.vue')['default']
     UploadDrawings: typeof import('./src/components/UploadDrawings.vue')['default']
     UploadModel: typeof import('./src/components/UploadModel.vue')['default']

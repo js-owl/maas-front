@@ -7,12 +7,12 @@ const coveres = ref();
 
 onMounted(async () => {
   try {
-    // const coefficients = await getCoefficients();
-    const coefficients  = [
-    { value: "1", label: "Покраска" },
-    { value: "2", label: "Гальваника" }
-  ];
-    coveres.value = coefficients //.cover;
+    const coefficients = await getCoefficients();
+    //   const coefficients  = [
+    //   { value: "1", label: "Покраска" },
+    //   { value: "2", label: "Гальваника" }
+    // ];
+    coveres.value = coefficients.cover;
   } catch (error) {
     console.error("Failed to load covers:", error);
   }
