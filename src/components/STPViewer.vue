@@ -194,9 +194,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { ref, shallowRef, markRaw, onMounted, onBeforeUnmount, computed, watch } from "vue";
-// Use the exact WASM built for this package version
-// Vite will emit a URL to the file in dist
-import occtWasmUrl from "occt-import-js/dist/occt-import-js.wasm?url";
 
 // DOM references
 const canvasContainer = ref(null);
@@ -296,9 +293,10 @@ const loadOCCTLibrary = async () => {
     // Import the OCCT module dynamically
     const occtImport = await import("occt-import-js");
 
-    // Point to the package's own WASM asset to ensure version compatibility
+    // Load from Vite public dir; respects BASE_URL in dev/prod
+    const wasmUrl = `${import.meta.env.BASE_URL}occt-import-js.wasm`;
     occt.value = await occtImport.default({
-      locateFile: (path) => (path.endsWith(".wasm") ? occtWasmUrl : path),
+      locateFile: (path) => (path.endsWith(".wasm") ? wasmUrl : path),
     });
 
     occtLoaded.value = true;
