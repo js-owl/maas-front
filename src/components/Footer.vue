@@ -36,7 +36,11 @@ onMounted(() => {
         :router="true"
         @select="handleSelect"
       >
-        <el-menu-item index="/" :route="{ path: '/' }" class="first-element">
+        <el-menu-item
+          index="/stp"
+          :route="{ path: '/stp' }"
+          class="first-element"
+        >
           ЦКП
         </el-menu-item>
 

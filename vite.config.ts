@@ -16,16 +16,4 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
   ],
-  optimizeDeps: {
-    include: ["three", "occt-import-js"],
-  },
-  define: {
-    global: "globalThis",
-  },
-  resolve: {
-    alias: {
-      "occt-import-js": "occt-import-js/dist/occt-import-js.js",
-    },
-  },
-  assetsInclude: ["**/*.wasm"],
 });
