@@ -1,166 +1,3 @@
-<template>
-  <div class="stp-viewer">
-    <!-- Header -->
-    <header class="viewer-header">
-      <div class="header-content">
-        <div class="header-left">
-          <h1 class="viewer-title">
-            <span class="icon">📐</span>
-            STP File Viewer
-          </h1>
-          <p class="viewer-subtitle">Upload and visualize STP/STEP files in your browser</p>
-        </div>
-        <div class="header-right">
-          <div class="file-info" v-if="modelInfo">
-            <span class="file-type">{{ fileType }}</span>
-            <span class="file-size">{{ modelInfo.fileSize }}</span>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Controls -->
-    <div class="controls-panel">
-      <div class="file-controls">
-        <input 
-          type="file" 
-          @change="handleFileUpload" 
-          accept=".stp,.step"
-          ref="fileInput"
-          class="file-input"
-        />
-        <button @click="fileInput && fileInput.click()" class="btn btn-primary">
-          <span class="icon">📁</span>
-          Choose STP File
-        </button>
-        <div class="drag-hint" v-if="!hasModel">
-          <span>or drag & drop your file here</span>
-        </div>
-      </div>
-
-      <div class="view-controls" v-if="hasModel">
-        <button @click="resetCamera" class="btn btn-outline">
-          <span class="icon">🎯</span>
-          Reset View
-        </button>
-        <button @click="toggleWireframe" class="btn btn-outline">
-          <span class="icon">{{ wireframe ? '🔲' : '⬜' }}</span>
-          {{ wireframe ? 'Solid' : 'Wireframe' }}
-        </button>
-        <button @click="toggleGrid" class="btn btn-outline">
-          <span class="icon">{{ showGrid ? '⊞' : '⊠' }}</span>
-          {{ showGrid ? 'Hide Grid' : 'Show Grid' }}
-        </button>
-        <select v-model="selectedMesh" @change="focusOnMesh" class="mesh-select" v-if="meshes.length > 1">
-          <option value="">All Parts</option>
-          <option v-for="(mesh, index) in meshes" :key="index" :value="index">
-            {{ mesh.name || `Part ${index + 1}` }}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <!-- 3D Canvas Container -->
-    <div 
-      ref="canvasContainer" 
-      class="canvas-container"
-      @dragover.prevent
-      @dragenter.prevent
-      @drop="handleFileDrop"
-      :class="{ 'drag-over': isDragOver }"
-    >
-      <!-- Loading Overlay -->
-      <div v-if="loading" class="overlay loading-overlay">
-        <div class="loading-content">
-          <div class="spinner"></div>
-          <h3>Loading STP File</h3>
-          <p>{{ loadingStatus }}</p>
-          <div class="progress-bar">
-            <div class="progress-fill" :style="{ width: loadingProgress + '%' }"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Error Overlay -->
-      <div v-if="error" class="overlay error-overlay">
-        <div class="error-content">
-          <div class="error-icon">⚠️</div>
-          <h3>Error Loading File</h3>
-          <p>{{ error }}</p>
-          <button @click="clearError" class="btn btn-danger">Try Again</button>
-        </div>
-      </div>
-
-      <!-- Drop Zone -->
-      <div v-if="!hasModel && !loading && !error" class="overlay drop-zone">
-        <div class="drop-content">
-          <div class="drop-icon">📁</div>
-          <h3>Drop your STP file here</h3>
-          <p>Supports .stp and .step files</p>
-          <button @click="fileInput && fileInput.click()" class="btn btn-primary large">
-            <span class="icon">📁</span>
-            Browse Files
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Info Panel -->
-    <div class="info-panel" v-if="modelInfo">
-      <div class="info-header">
-        <h3>
-          <span class="icon">ℹ️</span>
-          Model Information
-        </h3>
-        <button @click="toggleInfoPanel" class="toggle-btn">
-          {{ showInfoPanel ? '▼' : '▲' }}
-        </button>
-      </div>
-      
-      <div v-show="showInfoPanel" class="info-content">
-        <div class="info-grid">
-          <div class="info-card">
-            <div class="info-label">File Type</div>
-            <div class="info-value">{{ fileType }}</div>
-          </div>
-          <div class="info-card">
-            <div class="info-label">File Size</div>
-            <div class="info-value">{{ modelInfo.fileSize }}</div>
-          </div>
-          <div class="info-card">
-            <div class="info-label">Parts</div>
-            <div class="info-value">{{ modelInfo.meshCount || 1 }}</div>
-          </div>
-          <div class="info-card">
-            <div class="info-label">Vertices</div>
-            <div class="info-value">{{ modelInfo.totalVertices.toLocaleString() }}</div>
-          </div>
-          <div class="info-card">
-            <div class="info-label">Faces</div>
-            <div class="info-value">{{ modelInfo.totalFaces.toLocaleString() }}</div>
-          </div>
-        </div>
-        
-        <div v-if="meshes.length > 1" class="mesh-details">
-          <h4>Part Details</h4>
-          <div class="mesh-list">
-            <div v-for="(mesh, index) in meshes" :key="index" class="mesh-item">
-              <div class="mesh-color" :style="{ backgroundColor: mesh.colorHex }"></div>
-              <div class="mesh-info">
-                <div class="mesh-name">{{ mesh.name || `Part ${index + 1}` }}</div>
-                <div class="mesh-stats">{{ mesh.vertices.toLocaleString() }} vertices, {{ mesh.faces.toLocaleString() }} faces</div>
-              </div>
-              <button @click="focusOnSingleMesh(index)" class="btn btn-outline small">
-                Focus
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import * as THREE from 'three'
@@ -603,6 +440,169 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', onWindowResize)
 })
 </script>
+
+<template>
+  <div class="stp-viewer">
+    <!-- Header -->
+    <header class="viewer-header">
+      <div class="header-content">
+        <div class="header-left">
+          <h1 class="viewer-title">
+            <span class="icon">📐</span>
+            STP File Viewer
+          </h1>
+          <p class="viewer-subtitle">Upload and visualize STP/STEP files in your browser</p>
+        </div>
+        <div class="header-right">
+          <div class="file-info" v-if="modelInfo">
+            <span class="file-type">{{ fileType }}</span>
+            <span class="file-size">{{ modelInfo.fileSize }}</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Controls -->
+    <div class="controls-panel">
+      <div class="file-controls">
+        <input 
+          type="file" 
+          @change="handleFileUpload" 
+          accept=".stp,.step"
+          ref="fileInput"
+          class="file-input"
+        />
+        <button @click="fileInput && fileInput.click()" class="btn btn-primary">
+          <span class="icon">📁</span>
+          Choose STP File
+        </button>
+        <div class="drag-hint" v-if="!hasModel">
+          <span>or drag & drop your file here</span>
+        </div>
+      </div>
+
+      <div class="view-controls" v-if="hasModel">
+        <button @click="resetCamera" class="btn btn-outline">
+          <span class="icon">🎯</span>
+          Reset View
+        </button>
+        <button @click="toggleWireframe" class="btn btn-outline">
+          <span class="icon">{{ wireframe ? '🔲' : '⬜' }}</span>
+          {{ wireframe ? 'Solid' : 'Wireframe' }}
+        </button>
+        <button @click="toggleGrid" class="btn btn-outline">
+          <span class="icon">{{ showGrid ? '⊞' : '⊠' }}</span>
+          {{ showGrid ? 'Hide Grid' : 'Show Grid' }}
+        </button>
+        <select v-model="selectedMesh" @change="focusOnMesh" class="mesh-select" v-if="meshes.length > 1">
+          <option value="">All Parts</option>
+          <option v-for="(mesh, index) in meshes" :key="index" :value="index">
+            {{ mesh.name || `Part ${index + 1}` }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 3D Canvas Container -->
+    <div 
+      ref="canvasContainer" 
+      class="canvas-container"
+      @dragover.prevent
+      @dragenter.prevent
+      @drop="handleFileDrop"
+      :class="{ 'drag-over': isDragOver }"
+    >
+      <!-- Loading Overlay -->
+      <div v-if="loading" class="overlay loading-overlay">
+        <div class="loading-content">
+          <div class="spinner"></div>
+          <h3>Loading STP File</h3>
+          <p>{{ loadingStatus }}</p>
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{ width: loadingProgress + '%' }"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Overlay -->
+      <div v-if="error" class="overlay error-overlay">
+        <div class="error-content">
+          <div class="error-icon">⚠️</div>
+          <h3>Error Loading File</h3>
+          <p>{{ error }}</p>
+          <button @click="clearError" class="btn btn-danger">Try Again</button>
+        </div>
+      </div>
+
+      <!-- Drop Zone -->
+      <div v-if="!hasModel && !loading && !error" class="overlay drop-zone">
+        <div class="drop-content">
+          <div class="drop-icon">📁</div>
+          <h3>Drop your STP file here</h3>
+          <p>Supports .stp and .step files</p>
+          <button @click="fileInput && fileInput.click()" class="btn btn-primary large">
+            <span class="icon">📁</span>
+            Browse Files
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="info-panel" v-if="modelInfo">
+      <div class="info-header">
+        <h3>
+          <span class="icon">ℹ️</span>
+          Model Information
+        </h3>
+        <button @click="toggleInfoPanel" class="toggle-btn">
+          {{ showInfoPanel ? '▼' : '▲' }}
+        </button>
+      </div>
+      
+      <div v-show="showInfoPanel" class="info-content">
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-label">File Type</div>
+            <div class="info-value">{{ fileType }}</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">File Size</div>
+            <div class="info-value">{{ modelInfo.fileSize }}</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Parts</div>
+            <div class="info-value">{{ modelInfo.meshCount || 1 }}</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Vertices</div>
+            <div class="info-value">{{ modelInfo.totalVertices.toLocaleString() }}</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Faces</div>
+            <div class="info-value">{{ modelInfo.totalFaces.toLocaleString() }}</div>
+          </div>
+        </div>
+        
+        <div v-if="meshes.length > 1" class="mesh-details">
+          <h4>Part Details</h4>
+          <div class="mesh-list">
+            <div v-for="(mesh, index) in meshes" :key="index" class="mesh-item">
+              <div class="mesh-color" :style="{ backgroundColor: mesh.colorHex }"></div>
+              <div class="mesh-info">
+                <div class="mesh-name">{{ mesh.name || `Part ${index + 1}` }}</div>
+                <div class="mesh-stats">{{ mesh.vertices.toLocaleString() }} vertices, {{ mesh.faces.toLocaleString() }} faces</div>
+              </div>
+              <button @click="focusOnSingleMesh(index)" class="btn btn-outline small">
+                Focus
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .stp-viewer {
