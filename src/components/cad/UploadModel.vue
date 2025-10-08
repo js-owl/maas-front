@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 import { API_BASE } from "../../api";
 import Icon3D from "../../icons/Icon3D.vue";
 import { useAuthStore } from "../../stores/auth.store";
-import DialogLogin from "./dialog/DialogLogin.vue";
+import DialogLogin from "../dialog/DialogLogin.vue";
 
 const file_id = defineModel<number>();
 const { color = "white" } = defineProps({
