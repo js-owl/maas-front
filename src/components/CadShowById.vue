@@ -10,13 +10,13 @@ import STPViewer from "./STPViewer.vue";
 const authStore = useAuthStore();
 
 const file_id = defineModel();
-const fileType = ref<'stl' | 'stp' | null>(null);
+const detectedType = ref(null);
 const isLoading = ref(true);
 
 // Определяем тип файла по его ID
 async function detectFileType(id) {
   if (!id) {
-    fileType.value = null;
+    detectedType.value = null;
     isLoading.value = false;
     return;
   }
@@ -36,7 +36,7 @@ async function detectFileType(id) {
     
     if (!res.ok) {
       console.error("Failed to fetch file info");
-      fileType.value = null;
+      detectedType.value = null;
       isLoading.value = false;
       return;
     }
@@ -46,15 +46,15 @@ async function detectFileType(id) {
     const extension = filename.split(".").pop()?.toLowerCase();
 
     if (extension === "stl") {
-      fileType.value = "stl";
+      detectedType.value = "stl";
     } else if (extension === "stp" || extension === "step") {
-      fileType.value = "stp";
+      detectedType.value = "stp";
     } else {
-      fileType.value = null;
+      detectedType.value = null;
     }
   } catch (error) {
     console.error("Error detecting file type:", error);
-    fileType.value = null;
+    detectedType.value = null;
   } finally {
     isLoading.value = false;
   }
@@ -67,7 +67,7 @@ watch(
     if (newFileId) {
       detectFileType(newFileId);
     } else {
-      fileType.value = null;
+      detectedType.value = null;
       isLoading.value = false;
     }
   },
@@ -84,10 +84,10 @@ watch(
     </div>
     
     <!-- STL Viewer -->
-    <STLViewer v-else-if="fileType === 'stl'" v-model="file_id" />
+    <STLViewer v-else-if="detectedType === 'stl'" v-model="file_id" />
     
     <!-- STP Viewer -->
-    <STPViewer v-else-if="fileType === 'stp'" v-model="file_id" />
+    <STPViewer v-else-if="detectedType === 'stp'" v-model="file_id" />
     
     <!-- Placeholder для неизвестного типа -->
     <div v-else class="file-type-placeholder">
