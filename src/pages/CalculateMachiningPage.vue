@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import { req_urlencoded_auth, req_json_auth } from "../api";
+import { req_urlencoded_auth, req_json_auth, API_BASE } from "../api";
 
 import Length from "../components/coefficients/Length.vue";
 import Diameter from "../components/coefficients/Diameter.vue";
@@ -21,6 +21,8 @@ import UploadDrawings from "../components/UploadDrawings.vue";
 import DocumentShowByIds from "../components/DocumentShowByIds.vue";
 // @ts-ignore
 import CadShowById from "../components/CadShowById.vue";
+// @ts-ignore
+import STPViewer from "../components/STPViewer.vue";
 import { useProfileStore, type IProfile } from "../stores/profile.store";
 import { useAuthStore } from "../stores/auth.store";
 import { ElMessage } from "element-plus";
@@ -41,6 +43,7 @@ const order_id = computed(() => Number(route.query.orderId) || 0);
 
 let file_id = ref(4);
 let document_ids = ref<number[]>([]);
+let fileType = ref<'stl' | 'stp' | null>(null);
 
 let length = ref(120);
 let width = ref(30);
@@ -99,8 +102,16 @@ watch(payload, sendData, { deep: true });
 onMounted(() => {
   if (order_id.value == 0) {
     sendData(payload);
+    detectFileType(file_id.value);
   } else {
     getOrder(order_id.value);
+  }
+});
+
+// Отслеживаем изменение file_id для определения типа файла
+watch(file_id, (newFileId) => {
+  if (newFileId) {
+    detectFileType(newFileId);
   }
 });
 
@@ -130,6 +141,46 @@ async function ensureProfileLoaded() {
     } catch (e) {
       console.error(e);
     }
+  }
+}
+
+async function detectFileType(id: number) {
+  if (!id) {
+    fileType.value = null;
+    return;
+  }
+  
+  try {
+    const headers = new Headers();
+    if (authStore.getToken) {
+      headers.append("Authorization", `Bearer ${authStore.getToken}`);
+    }
+
+    const res = await fetch(`${API_BASE}/files/${id}`, {
+      method: "GET",
+      headers: headers,
+    });
+    
+    if (!res.ok) {
+      console.error("Failed to fetch file info");
+      fileType.value = null;
+      return;
+    }
+
+    const fileInfo = await res.json();
+    const filename = fileInfo.filename || fileInfo.name || "";
+    const extension = filename.split(".").pop()?.toLowerCase();
+
+    if (extension === "stl") {
+      fileType.value = "stl";
+    } else if (extension === "stp" || extension === "step") {
+      fileType.value = "stp";
+    } else {
+      fileType.value = null;
+    }
+  } catch (error) {
+    console.error("Error detecting file type:", error);
+    fileType.value = null;
   }
 }
 
@@ -233,6 +284,11 @@ async function getOrder(id: number) {
       k_cert: k_cert.value,
       manufacturing_cycle: manufacturing_cycle.value,
     });
+    
+    // Определяем тип файла после загрузки заказа
+    if (file_id.value) {
+      await detectFileType(file_id.value);
+    }
   } catch (error) {
     console.error({ error });
   }
@@ -295,7 +351,11 @@ async function getOrder(id: number) {
       </div>
       <el-row :gutter="20" class="component-section">
         <el-col :offset="0" :span="24" class="cad-section">
-          <CadShowById v-model="file_id" />
+          <CadShowById v-if="fileType === 'stl'" v-model="file_id" />
+          <STPViewer v-else-if="fileType === 'stp'" :file-id="file_id" />
+          <div v-else class="file-type-placeholder">
+            <p>Загрузите файл для предварительного просмотра</p>
+          </div>
         </el-col>
       </el-row>
       <el-row :gutter="5" class="upload-section">
@@ -550,5 +610,17 @@ async function getOrder(id: number) {
   color: #283d5b;
   font-size: 24px;
   font-weight: 700;
+}
+
+/* Placeholder для типа файла */
+.file-type-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background-color: rgba(87, 122, 173, 0.1);
+  border-radius: 8px;
+  color: #577aad;
+  font-size: 18px;
 }
 </style>

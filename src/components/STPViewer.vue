@@ -162,9 +162,21 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { API_BASE } from '../api'
+import { useAuthStore } from '../stores/auth.store'
+
+const props = defineProps({
+  fileId: {
+    type: Number,
+    required: false,
+    default: undefined
+  }
+})
+
+const authStore = useAuthStore()
 
 // Reactive state
 const meshes = ref([])
@@ -488,6 +500,41 @@ function clearError() {
   error.value = null
 }
 
+async function loadFileFromServer(id) {
+  if (!id) return
+  
+  try {
+    loading.value = true
+    loadingStatus.value = 'Загрузка файла с сервера...'
+    loadingProgress.value = 10
+    
+    const headers = new Headers()
+    if (authStore.getToken) {
+      headers.append('Authorization', `Bearer ${authStore.getToken}`)
+    }
+
+    const res = await fetch(`${API_BASE}/files/${id}/download`, {
+      method: 'GET',
+      headers: headers,
+    })
+    
+    if (!res.ok) {
+      throw new Error('Не удалось загрузить файл с сервера')
+    }
+
+    loadingProgress.value = 30
+    const blob = await res.blob()
+    const file = new File([blob], 'model.stp', { type: 'application/stp' })
+    
+    loadingProgress.value = 50
+    await loadFile(file)
+  } catch (err) {
+    console.error('Error loading file from server:', err)
+    error.value = 'Ошибка загрузки файла: ' + err.message
+    loading.value = false
+  }
+}
+
 function formatFileSize(bytes) {
   if (bytes === 0) return '0 Bytes'
   const k = 1024
@@ -536,6 +583,18 @@ onMounted(() => {
   initThreeJS()
   animate()
   loadOCCTLibrary()
+  
+  // Если передан fileId, загружаем файл автоматически
+  if (props.fileId) {
+    loadFileFromServer(props.fileId)
+  }
+})
+
+// Отслеживаем изменение fileId
+watch(() => props.fileId, (newFileId) => {
+  if (newFileId) {
+    loadFileFromServer(newFileId)
+  }
 })
 
 onBeforeUnmount(() => {
