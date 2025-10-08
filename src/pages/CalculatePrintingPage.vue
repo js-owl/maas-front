@@ -14,10 +14,10 @@ import CoefficientCertificate from "../components/coefficients/CoefficientCertif
 import CoefficientCover from "../components/coefficients/CoefficientCover.vue";
 
 import { useRoute, useRouter } from "vue-router";
-import UploadModel from "../components/UploadModel.vue";
+import UploadModel from "../components/cad/UploadModel.vue";
 import UploadDrawings from "../components/UploadDrawings.vue";
 // @ts-ignore
-import CadShowById from "../components/CadShowById.vue";
+import CadShowById from "../components/cad/CadShowById.vue";
 import { useProfileStore, type IProfile } from "../stores/profile.store";
 import { useAuthStore } from "../stores/auth.store";
 import { ElMessage } from "element-plus";

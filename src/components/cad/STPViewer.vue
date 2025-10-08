@@ -2,8 +2,8 @@
 import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { API_BASE } from '../api'
-import { useAuthStore } from '../stores/auth.store'
+import { API_BASE } from '../../api'
+import { useAuthStore } from '../../stores/auth.store'
 
 const file_id = defineModel()
 

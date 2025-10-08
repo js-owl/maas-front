@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, computed } from "vue";
-import { API_BASE } from "../api";
-import { useAuthStore } from "../stores/auth.store";
+import { API_BASE } from "../../api";
+import { useAuthStore } from "../../stores/auth.store";
 // @ts-ignore
 import STLViewer from "./STLViewer.vue";
 // @ts-ignore

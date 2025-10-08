@@ -1,11 +1,11 @@
 <script setup>
-import { API_BASE } from "../api";
+import { API_BASE } from "../../api";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { useAuthStore } from "../stores/auth.store";
+import { useAuthStore } from "../../stores/auth.store";
 
 const authStore = useAuthStore();
 

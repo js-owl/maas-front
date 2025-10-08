@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import { Edit, Delete } from "@element-plus/icons-vue";
 import { req_json_auth } from "../api";
 import type { IOrderResponse } from "../interfaces/order.interface";
-import CadPreview from "../components/CadPreview.vue";
+import CadPreview from "../components/cad/CadPreview.vue";
 
 const router = useRouter();
 const orders = ref<IOrderResponse[]>();

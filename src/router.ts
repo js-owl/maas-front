@@ -69,12 +69,6 @@ const routes = [
     component: () => import("./pages/ProfilePage.vue"),
     name: "profile",
   },
-  {
-    path: "/stp",
-    // @ts-ignore
-    component: () => import("./components/STPViewer.vue"),
-    name: "profile",
-  },
 
   { path: "/:patchMatch(.*)*", component: NotFoundPage },
 ];

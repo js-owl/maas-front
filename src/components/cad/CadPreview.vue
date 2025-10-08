@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { API_BASE } from "../api";
+import { API_BASE } from "../../api";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { useAuthStore } from "../stores/auth.store";
+import { useAuthStore } from "../../stores/auth.store";
 
 const authStore = useAuthStore();
 

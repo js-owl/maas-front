@@ -8,8 +8,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    CadPreview: typeof import('./src/components/CadPreview.vue')['default']
-    CadShowById: typeof import('./src/components/CadShowById.vue')['default']
+    CadPreview: typeof import('./src/components/cad/CadPreview.vue')['default']
+    CadShowById: typeof import('./src/components/cad/CadShowById.vue')['default']
     CoefficientCertificate: typeof import('./src/components/coefficients/CoefficientCertificate.vue')['default']
     CoefficientCover: typeof import('./src/components/coefficients/CoefficientCover.vue')['default']
     CoefficientFinish: typeof import('./src/components/coefficients/CoefficientFinish.vue')['default']
@@ -75,11 +75,11 @@ declare module 'vue' {
     SectionAbout: typeof import('./src/components/sections/SectionAbout.vue')['default']
     SectionAdvantages: typeof import('./src/components/sections/SectionAdvantages.vue')['default']
     SectionModel: typeof import('./src/components/sections/SectionModel.vue')['default']
-    STLViewer: typeof import('./src/components/STLViewer.vue')['default']
-    STPViewer: typeof import('./src/components/STPViewer.vue')['default']
+    STLViewer: typeof import('./src/components/cad/STLViewer.vue')['default']
+    STPViewer: typeof import('./src/components/cad/STPViewer.vue')['default']
     SuitableMachines: typeof import('./src/components/SuitableMachines.vue')['default']
     UploadDrawings: typeof import('./src/components/UploadDrawings.vue')['default']
-    UploadModel: typeof import('./src/components/UploadModel.vue')['default']
+    UploadModel: typeof import('./src/components/cad/UploadModel.vue')['default']
     UpperMenu: typeof import('./src/components/UpperMenu.vue')['default']
     Width: typeof import('./src/components/coefficients/Width.vue')['default']
   }
