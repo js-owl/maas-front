@@ -87,7 +87,7 @@ watch(
     <STLViewer v-else-if="fileType === 'stl'" v-model="file_id" />
     
     <!-- STP Viewer -->
-    <STPViewer v-else-if="fileType === 'stp'" :file-id="file_id" />
+    <STPViewer v-else-if="fileType === 'stp'" v-model="file_id" />
     
     <!-- Placeholder для неизвестного типа -->
     <div v-else class="file-type-placeholder">

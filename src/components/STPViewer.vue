@@ -5,13 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { API_BASE } from '../api'
 import { useAuthStore } from '../stores/auth.store'
 
-const props = defineProps({
-  fileId: {
-    type: Number,
-    required: false,
-    default: undefined
-  }
-})
+const file_id = defineModel()
 
 const authStore = useAuthStore()
 
@@ -421,14 +415,14 @@ onMounted(() => {
   animate()
   loadOCCTLibrary()
   
-  // Если передан fileId, загружаем файл автоматически
-  if (props.fileId) {
-    loadFileFromServer(props.fileId)
+  // Если передан file_id, загружаем файл автоматически
+  if (file_id.value) {
+    loadFileFromServer(file_id.value)
   }
 })
 
-// Отслеживаем изменение fileId
-watch(() => props.fileId, (newFileId) => {
+// Отслеживаем изменение file_id
+watch(() => file_id.value, (newFileId) => {
   if (newFileId) {
     loadFileFromServer(newFileId)
   }
