@@ -490,11 +490,10 @@ onBeforeUnmount(() => {
 <style scoped>
 .stp-viewer {
   width: 100%;
-  height: 100vh;
+  height: 400px;
   display: flex;
   flex-direction: column;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f8f9fa;
 }
 
 .file-input {
@@ -502,14 +501,15 @@ onBeforeUnmount(() => {
 }
 
 .canvas-container {
-  flex: 1;
+  width: 100%;
+  height: 100%;
   position: relative;
   background: #ffffff;
-  border: 2px dashed #dee2e6;
-  margin: 0 20px;
+  border: 2px solid var(--left-section-bg);
   border-radius: 8px;
   overflow: hidden;
   transition: border-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .canvas-container.drag-over {
@@ -617,8 +617,8 @@ onBeforeUnmount(() => {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .canvas-container {
-    margin: 0 10px;
+  .stp-viewer {
+    height: 300px;
   }
 }
 </style>
