@@ -432,25 +432,6 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="stp-viewer">
-    <!-- Header -->
-    <header class="viewer-header">
-      <div class="header-content">
-        <div class="header-left">
-          <h1 class="viewer-title">
-            <span class="icon">📐</span>
-            STP File Viewer
-          </h1>
-          <p class="viewer-subtitle">Upload and visualize STP/STEP files in your browser</p>
-        </div>
-        <div class="header-right">
-          <div class="file-info" v-if="modelInfo">
-            <span class="file-type">{{ fileType }}</span>
-            <span class="file-size">{{ modelInfo.fileSize }}</span>
-          </div>
-        </div>
-      </div>
-    </header>
-
     <!-- Controls -->
     <div class="controls-panel">
       <div class="file-controls">
@@ -547,66 +528,6 @@ onBeforeUnmount(() => {
   flex-direction: column;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f8f9fa;
-}
-
-.viewer-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.header-left {
-  flex: 1;
-}
-
-.viewer-title {
-  margin: 0 0 5px 0;
-  font-size: 1.8em;
-  font-weight: 300;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.viewer-subtitle {
-  margin: 0;
-  opacity: 0.9;
-  font-size: 0.9em;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.file-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 5px;
-}
-
-.file-type {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8em;
-  font-weight: 500;
-}
-
-.file-size {
-  font-size: 0.8em;
-  opacity: 0.8;
 }
 
 .controls-panel {
@@ -768,12 +689,6 @@ onBeforeUnmount(() => {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .header-content {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
-  }
-  
   .controls-panel {
     flex-direction: column;
     align-items: stretch;
