@@ -432,46 +432,13 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="stp-viewer">
-    <!-- Controls -->
-    <div class="controls-panel">
-      <div class="file-controls">
-        <input 
-          type="file" 
-          @change="handleFileUpload" 
-          accept=".stp,.step"
-          ref="fileInput"
-          class="file-input"
-        />
-        <button @click="fileInput && fileInput.click()" class="btn btn-primary">
-          <span class="icon">📁</span>
-          Choose STP File
-        </button>
-        <div class="drag-hint" v-if="!hasModel">
-          <span>or drag & drop your file here</span>
-        </div>
-      </div>
-
-      <div class="view-controls" v-if="hasModel">
-        <button @click="resetCamera" class="btn btn-outline">
-          <span class="icon">🎯</span>
-          Reset View
-        </button>
-        <button @click="toggleWireframe" class="btn btn-outline">
-          <span class="icon">{{ wireframe ? '🔲' : '⬜' }}</span>
-          {{ wireframe ? 'Solid' : 'Wireframe' }}
-        </button>
-        <button @click="toggleGrid" class="btn btn-outline">
-          <span class="icon">{{ showGrid ? '⊞' : '⊠' }}</span>
-          {{ showGrid ? 'Hide Grid' : 'Show Grid' }}
-        </button>
-        <select v-model="selectedMesh" @change="focusOnMesh" class="mesh-select" v-if="meshes.length > 1">
-          <option value="">All Parts</option>
-          <option v-for="(mesh, index) in meshes" :key="index" :value="index">
-            {{ mesh.name || `Part ${index + 1}` }}
-          </option>
-        </select>
-      </div>
-    </div>
+    <input 
+      type="file" 
+      @change="handleFileUpload" 
+      accept=".stp,.step"
+      ref="fileInput"
+      class="file-input"
+    />
 
     <!-- 3D Canvas Container -->
     <div 
@@ -530,47 +497,8 @@ onBeforeUnmount(() => {
   background: #f8f9fa;
 }
 
-.controls-panel {
-  padding: 15px 20px;
-  background: white;
-  border-bottom: 1px solid #e9ecef;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.file-controls {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
 .file-input {
   display: none;
-}
-
-.drag-hint {
-  color: #6c757d;
-  font-size: 0.9em;
-  font-style: italic;
-}
-
-.view-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.mesh-select {
-  padding: 8px 12px;
-  border: 1px solid #dee2e6;
-  border-radius: 6px;
-  background: white;
-  font-size: 0.9em;
-  min-width: 150px;
 }
 
 .canvas-container {
@@ -689,15 +617,6 @@ onBeforeUnmount(() => {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .controls-panel {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .view-controls {
-    justify-content: center;
-  }
-  
   .canvas-container {
     margin: 0 10px;
   }
