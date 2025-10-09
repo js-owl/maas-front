@@ -43,12 +43,12 @@ async function loadOCCTLibrary() {
   if (occtLoaded.value) {
     return
   }
-  
+
   // Если библиотека уже загружается, ждем завершения текущей загрузки
   if (occtLoadingPromise) {
     return occtLoadingPromise
   }
-  
+
   // Создаем новый Promise для загрузки
   occtLoadingPromise = (async () => {
     try {
@@ -66,18 +66,19 @@ async function loadOCCTLibrary() {
             return `${import.meta.env.VITE_BASE_PATH || '/'}occt-import-js.wasm`
           }
           return path
-        }
+        },
       })
       occtLoaded.value = true
     } catch (e) {
       console.error('OCCT library loading failed:', e)
       occtLoaded.value = false
       occtLoadingPromise = null // Сбрасываем, чтобы можно было повторить попытку
-      error.value = 'Failed to load OCCT library. Please refresh the page and try again. Error: ' + e.message
+      error.value =
+        'Failed to load OCCT library. Please refresh the page and try again. Error: ' + e.message
       throw e
     }
   })()
-  
+
   return occtLoadingPromise
 }
 
@@ -157,7 +158,8 @@ async function loadFile(file) {
     if (occtLoaded.value) {
       await loadSTPFile(file)
     } else {
-      error.value = 'STP/STEP file support requires the occt-import-js library. Please refresh the page and try again. If the problem persists, check the browser console for more details.'
+      error.value =
+        'STP/STEP file support requires the occt-import-js library. Please refresh the page and try again. If the problem persists, check the browser console for more details.'
     }
   } else {
     error.value = 'Unsupported file format'
@@ -213,7 +215,11 @@ async function createMeshesFromOCCTResult(result, file) {
       const indices = new Uint32Array(meshInfo.index.array)
       geometry.setIndex(new THREE.BufferAttribute(indices, 1))
     }
-    let color = new THREE.Color(0.2 + Math.random() * 0.6, 0.2 + Math.random() * 0.6, 0.2 + Math.random() * 0.6)
+    let color = new THREE.Color(
+      0.2 + Math.random() * 0.6,
+      0.2 + Math.random() * 0.6,
+      0.2 + Math.random() * 0.6
+    )
     let colorHex = '#' + color.getHexString()
     if (meshInfo.color && meshInfo.color.length >= 3) {
       color = new THREE.Color(meshInfo.color[0], meshInfo.color[1], meshInfo.color[2])
@@ -221,7 +227,7 @@ async function createMeshesFromOCCTResult(result, file) {
     }
     const material = new THREE.MeshPhongMaterial({
       color: color,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
     })
     const mesh = new THREE.Mesh(geometry, material)
     mesh.castShadow = true
@@ -234,7 +240,7 @@ async function createMeshesFromOCCTResult(result, file) {
       name: meshInfo.name || `Part ${i + 1}`,
       vertices: vertices,
       faces: faces,
-      colorHex: colorHex
+      colorHex: colorHex,
     })
     totalVertices += vertices
     totalFaces += faces
@@ -244,7 +250,7 @@ async function createMeshesFromOCCTResult(result, file) {
     meshCount: result.meshes.length,
     totalVertices: totalVertices,
     totalFaces: totalFaces,
-    fileSize: formatFileSize(file.size)
+    fileSize: formatFileSize(file.size),
   }
   fitCameraToModel()
 }
@@ -259,7 +265,7 @@ function readFileAsArrayBuffer(file) {
 }
 
 function clearMeshes() {
-  meshes.value.forEach(meshData => {
+  meshes.value.forEach((meshData) => {
     if (meshData.mesh && scene) {
       scene.remove(meshData.mesh)
       meshData.mesh.geometry?.dispose()
@@ -274,7 +280,7 @@ function clearMeshes() {
 function fitCameraToModel() {
   if (meshes.value.length === 0) return
   const box = new THREE.Box3()
-  meshes.value.forEach(meshData => {
+  meshes.value.forEach((meshData) => {
     box.expandByObject(meshData.mesh)
   })
   const center = box.getCenter(new THREE.Vector3())
@@ -293,7 +299,7 @@ function resetCamera() {
 
 function focusOnMesh() {
   if (selectedMesh.value === '') {
-    meshes.value.forEach(meshData => {
+    meshes.value.forEach((meshData) => {
       meshData.mesh.visible = true
     })
     fitCameraToModel()
@@ -327,12 +333,12 @@ function clearError() {
 
 async function loadFileFromServer(id) {
   if (!id) return
-  
+
   try {
     loading.value = true
     loadingStatus.value = 'Загрузка файла с сервера...'
     loadingProgress.value = 10
-    
+
     const headers = new Headers()
     if (authStore.getToken) {
       headers.append('Authorization', `Bearer ${authStore.getToken}`)
@@ -342,7 +348,7 @@ async function loadFileFromServer(id) {
       method: 'GET',
       headers: headers,
     })
-    
+
     if (!res.ok) {
       throw new Error('Не удалось загрузить файл с сервера')
     }
@@ -350,7 +356,7 @@ async function loadFileFromServer(id) {
     loadingProgress.value = 30
     const blob = await res.blob()
     const file = new File([blob], 'model.stp', { type: 'application/stp' })
-    
+
     loadingProgress.value = 50
     await loadFile(file)
   } catch (err) {
@@ -387,7 +393,7 @@ function animate() {
 }
 
 function disposeThreeJS() {
-  meshes.value.forEach(meshData => {
+  meshes.value.forEach((meshData) => {
     if (meshData.mesh) {
       scene?.remove(meshData.mesh)
       meshData.mesh.geometry?.dispose()
@@ -406,7 +412,7 @@ function disposeThreeJS() {
 onMounted(() => {
   initThreeJS()
   animate()
-  
+
   // Если передан file_id, загружаем файл автоматически
   if (file_id.value) {
     loadFileFromServer(file_id.value)
@@ -414,11 +420,14 @@ onMounted(() => {
 })
 
 // Отслеживаем изменение file_id
-watch(() => file_id.value, (newFileId) => {
-  if (newFileId) {
-    loadFileFromServer(newFileId)
+watch(
+  () => file_id.value,
+  (newFileId) => {
+    if (newFileId) {
+      loadFileFromServer(newFileId)
+    }
   }
-})
+)
 
 onBeforeUnmount(() => {
   isDestroyed = true
@@ -429,17 +438,17 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="stp-viewer">
-    <input 
-      type="file" 
-      @change="handleFileUpload" 
+    <input
+      type="file"
+      @change="handleFileUpload"
       accept=".stp,.step"
       ref="fileInput"
       class="file-input"
     />
 
     <!-- 3D Canvas Container -->
-    <div 
-      ref="canvasContainer" 
+    <div
+      ref="canvasContainer"
       class="canvas-container"
       @dragover.prevent
       @dragenter.prevent
@@ -573,4 +582,3 @@ onBeforeUnmount(() => {
   }
 }
 </style>
-
