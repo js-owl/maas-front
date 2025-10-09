@@ -30,6 +30,7 @@ let isDestroyed = false
 // OCCT
 let occt = null
 const occtLoaded = ref(false)
+let occtLoadingPromise = null
 
 // Refs
 const canvasContainer = ref(null)
@@ -38,29 +39,46 @@ const fileInput = ref(null)
 const hasModel = computed(() => meshes.value.length > 0)
 
 async function loadOCCTLibrary() {
-  try {
-    loadingStatus.value = 'Loading OCCT library...'
-    let occtimportjs
-    try {
-      occtimportjs = (await import('occt-import-js')).default
-    } catch (importError) {
-      console.error('Failed to import occt-import-js:', importError)
-      throw importError
-    }
-    occt = await occtimportjs({
-      locateFile: (path) => {
-        if (path.endsWith('.wasm')) {
-          return '/site-dev/occt-import-js.wasm'
-        }
-        return path
-      }
-    })
-    occtLoaded.value = true
-  } catch (e) {
-    console.error('OCCT library loading failed:', e)
-    occtLoaded.value = false
-    error.value = 'Failed to load OCCT library. Please refresh the page and try again. Error: ' + e.message
+  // Если библиотека уже загружена, возвращаем успешный результат
+  if (occtLoaded.value) {
+    return
   }
+  
+  // Если библиотека уже загружается, ждем завершения текущей загрузки
+  if (occtLoadingPromise) {
+    return occtLoadingPromise
+  }
+  
+  // Создаем новый Promise для загрузки
+  occtLoadingPromise = (async () => {
+    try {
+      loadingStatus.value = 'Loading OCCT library...'
+      let occtimportjs
+      try {
+        occtimportjs = (await import('occt-import-js')).default
+      } catch (importError) {
+        console.error('Failed to import occt-import-js:', importError)
+        throw importError
+      }
+      occt = await occtimportjs({
+        locateFile: (path) => {
+          if (path.endsWith('.wasm')) {
+            return '/site-dev/occt-import-js.wasm'
+          }
+          return path
+        }
+      })
+      occtLoaded.value = true
+    } catch (e) {
+      console.error('OCCT library loading failed:', e)
+      occtLoaded.value = false
+      occtLoadingPromise = null // Сбрасываем, чтобы можно было повторить попытку
+      error.value = 'Failed to load OCCT library. Please refresh the page and try again. Error: ' + e.message
+      throw e
+    }
+  })()
+  
+  return occtLoadingPromise
 }
 
 function initThreeJS() {
@@ -388,7 +406,6 @@ function disposeThreeJS() {
 onMounted(() => {
   initThreeJS()
   animate()
-  loadOCCTLibrary()
   
   // Если передан file_id, загружаем файл автоматически
   if (file_id.value) {
