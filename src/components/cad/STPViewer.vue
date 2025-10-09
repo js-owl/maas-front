@@ -15,7 +15,6 @@ const loading = ref(false)
 const loadingStatus = ref('')
 const loadingProgress = ref(0)
 const error = ref(null)
-const wireframe = ref(false)
 const modelInfo = ref(null)
 const selectedMesh = ref('')
 const fileType = ref('')
@@ -204,7 +203,6 @@ async function createMeshesFromOCCTResult(result, file) {
     }
     const material = new THREE.MeshPhongMaterial({
       color: color,
-      wireframe: wireframe.value,
       side: THREE.DoubleSide
     })
     const mesh = new THREE.Mesh(geometry, material)
@@ -273,13 +271,6 @@ function fitCameraToModel() {
 
 function resetCamera() {
   fitCameraToModel()
-}
-
-function toggleWireframe() {
-  wireframe.value = !wireframe.value
-  meshes.value.forEach(meshData => {
-    meshData.mesh.material.wireframe = wireframe.value
-  })
 }
 
 function focusOnMesh() {
