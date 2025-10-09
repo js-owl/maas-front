@@ -17,7 +17,6 @@ const loadingProgress = ref(0)
 const error = ref(null)
 const wireframe = ref(false)
 const showGrid = ref(true)
-const showInfoPanel = ref(true)
 const modelInfo = ref(null)
 const selectedMesh = ref('')
 const fileType = ref('')
@@ -293,10 +292,6 @@ function toggleGrid() {
   if (gridHelper) gridHelper.visible = showGrid.value
 }
 
-function toggleInfoPanel() {
-  showInfoPanel.value = !showInfoPanel.value
-}
-
 function focusOnMesh() {
   if (selectedMesh.value === '') {
     meshes.value.forEach(meshData => {
@@ -541,60 +536,6 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
-
-    <!-- Info Panel -->
-    <div class="info-panel" v-if="modelInfo">
-      <div class="info-header">
-        <h3>
-          <span class="icon">ℹ️</span>
-          Model Information
-        </h3>
-        <button @click="toggleInfoPanel" class="toggle-btn">
-          {{ showInfoPanel ? '▼' : '▲' }}
-        </button>
-      </div>
-      
-      <div v-show="showInfoPanel" class="info-content">
-        <div class="info-grid">
-          <div class="info-card">
-            <div class="info-label">File Type</div>
-            <div class="info-value">{{ fileType }}</div>
-          </div>
-          <div class="info-card">
-            <div class="info-label">File Size</div>
-            <div class="info-value">{{ modelInfo.fileSize }}</div>
-          </div>
-          <div class="info-card">
-            <div class="info-label">Parts</div>
-            <div class="info-value">{{ modelInfo.meshCount || 1 }}</div>
-          </div>
-          <div class="info-card">
-            <div class="info-label">Vertices</div>
-            <div class="info-value">{{ modelInfo.totalVertices.toLocaleString() }}</div>
-          </div>
-          <div class="info-card">
-            <div class="info-label">Faces</div>
-            <div class="info-value">{{ modelInfo.totalFaces.toLocaleString() }}</div>
-          </div>
-        </div>
-        
-        <div v-if="meshes.length > 1" class="mesh-details">
-          <h4>Part Details</h4>
-          <div class="mesh-list">
-            <div v-for="(mesh, index) in meshes" :key="index" class="mesh-item">
-              <div class="mesh-color" :style="{ backgroundColor: mesh.colorHex }"></div>
-              <div class="mesh-info">
-                <div class="mesh-name">{{ mesh.name || `Part ${index + 1}` }}</div>
-                <div class="mesh-stats">{{ mesh.vertices.toLocaleString() }} vertices, {{ mesh.faces.toLocaleString() }} faces</div>
-              </div>
-              <button @click="focusOnSingleMesh(index)" class="btn btn-outline small">
-                Focus
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -816,143 +757,6 @@ onBeforeUnmount(() => {
   color: #6c757d;
 }
 
-.info-panel {
-  background: white;
-  border-top: 1px solid #e9ecef;
-  margin: 0 20px 20px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.info-header {
-  padding: 15px 20px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.info-header h3 {
-  margin: 0;
-  color: #495057;
-  font-size: 1.1em;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.toggle-btn {
-  background: none;
-  border: none;
-  color: #6c757d;
-  cursor: pointer;
-  font-size: 1.2em;
-  padding: 5px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-}
-
-.toggle-btn:hover {
-  background: #e9ecef;
-}
-
-.info-content {
-  padding: 20px;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.info-card {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 6px;
-  text-align: center;
-  transition: transform 0.2s ease;
-}
-
-.info-card:hover {
-  transform: translateY(-2px);
-}
-
-.info-label {
-  font-size: 0.8em;
-  color: #6c757d;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 5px;
-}
-
-.info-value {
-  font-size: 1.2em;
-  font-weight: 600;
-  color: #495057;
-}
-
-.mesh-details h4 {
-  margin: 0 0 15px 0;
-  color: #495057;
-  font-size: 1em;
-  font-weight: 600;
-}
-
-.mesh-list {
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.mesh-item {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  background: #f8f9fa;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  transition: all 0.2s ease;
-}
-
-.mesh-item:hover {
-  background: #e9ecef;
-  transform: translateX(5px);
-}
-
-.mesh-color {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 0 0 1px #dee2e6;
-  margin-right: 12px;
-  flex-shrink: 0;
-}
-
-.mesh-info {
-  flex: 1;
-}
-
-.mesh-name {
-  font-weight: 600;
-  color: #495057;
-  margin-bottom: 2px;
-}
-
-.mesh-stats {
-  font-size: 0.8em;
-  color: #6c757d;
-}
-
-.btn.small {
-  padding: 6px 12px;
-  font-size: 0.8em;
-}
-
 .btn.large {
   padding: 12px 24px;
   font-size: 1em;
@@ -981,15 +785,6 @@ onBeforeUnmount(() => {
   
   .canvas-container {
     margin: 0 10px;
-  }
-  
-  .info-panel {
-    margin: 0 10px 10px;
-  }
-  
-  .info-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 10px;
   }
 }
 </style>
