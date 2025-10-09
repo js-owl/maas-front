@@ -16,7 +16,6 @@ const loadingStatus = ref('')
 const loadingProgress = ref(0)
 const error = ref(null)
 const wireframe = ref(false)
-const showGrid = ref(true)
 const modelInfo = ref(null)
 const selectedMesh = ref('')
 const fileType = ref('')
@@ -27,7 +26,6 @@ let scene = null
 let camera = null
 let renderer = null
 let controls = null
-let gridHelper = null
 let isDestroyed = false
 
 // OCCT
@@ -104,9 +102,6 @@ function initThreeJS() {
 
   const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.3)
   scene.add(hemisphereLight)
-
-  gridHelper = new THREE.GridHelper(200, 20, 0x888888, 0xcccccc)
-  scene.add(gridHelper)
 
   window.addEventListener('resize', onWindowResize)
 }
@@ -287,11 +282,6 @@ function toggleWireframe() {
   })
 }
 
-function toggleGrid() {
-  showGrid.value = !showGrid.value
-  if (gridHelper) gridHelper.visible = showGrid.value
-}
-
 function focusOnMesh() {
   if (selectedMesh.value === '') {
     meshes.value.forEach(meshData => {
@@ -402,7 +392,6 @@ function disposeThreeJS() {
   scene = null
   camera = null
   controls = null
-  gridHelper = null
 }
 
 onMounted(() => {
