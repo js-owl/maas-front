@@ -450,19 +450,6 @@ onBeforeUnmount(() => {
           <button @click="clearError" class="btn btn-danger">Try Again</button>
         </div>
       </div>
-
-      <!-- Drop Zone -->
-      <div v-if="!hasModel && !loading && !error" class="overlay drop-zone">
-        <div class="drop-content">
-          <div class="drop-icon">📁</div>
-          <h3>Drop your STP file here</h3>
-          <p>Supports .stp and .step files</p>
-          <button @click="fileInput && fileInput.click()" class="btn btn-primary large">
-            <span class="icon">📁</span>
-            Browse Files
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -560,39 +547,6 @@ onBeforeUnmount(() => {
 .error-content p {
   margin: 0 0 20px 0;
   color: #6c757d;
-}
-
-.drop-zone {
-  color: #6c757d;
-}
-
-.drop-content {
-  max-width: 300px;
-}
-
-.drop-icon {
-  font-size: 4em;
-  margin-bottom: 15px;
-  opacity: 0.5;
-}
-
-.drop-content h3 {
-  margin: 0 0 10px 0;
-  color: #495057;
-}
-
-.drop-content p {
-  margin: 0 0 20px 0;
-  color: #6c757d;
-}
-
-.btn.large {
-  padding: 12px 24px;
-  font-size: 1em;
-}
-
-.icon {
-  font-size: 1.1em;
 }
 
 /* Responsive Design */
