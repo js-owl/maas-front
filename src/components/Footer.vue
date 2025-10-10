@@ -59,19 +59,13 @@ onMounted(() => {
         </div>
 
         <div class="right-section">
-          <div class="calculator-buttons">
-            <el-button
-              class="calculator-button"
-              @click="$router.push('/machining2')"
-            >
+          <div class="calculator-links">
+            <router-link to="/machining2" class="vertical-link">
               Калькулятор стоимости токарной обработки
-            </el-button>
-            <el-button
-              class="calculator-button"
-              @click="$router.push('/milling2')"
-            >
+            </router-link>
+            <router-link to="/milling2" class="vertical-link">
               Калькулятор стоимости фрезерной обработки
-            </el-button>
+            </router-link>
           </div>
         </div>
       </div>
@@ -98,7 +92,7 @@ onMounted(() => {
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .vertical-links {
@@ -159,36 +153,10 @@ onMounted(() => {
   border-bottom: none !important;
 }
 
-.calculator-buttons {
+.calculator-links {
   display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-left: 0px;
-  height: 100%;
-}
-
-.calculator-button {
-  background-color: transparent !important;
-  border: 1px solid #d3d4d6 !important;
-  color: #d3d4d6 !important;
-  padding: 12px 24px !important;
-  font-size: 16px !important;
-  border-radius: 4px !important;
-  transition: all 0.3s ease !important;
-}
-
-.calculator-button:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  border-color: #ffffff !important;
-  color: #ffffff !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.calculator-button:focus {
-  background-color: transparent !important;
-  border-color: #d3d4d6 !important;
-  color: #d3d4d6 !important;
+  flex-direction: column;
+  gap: 12px;
 }
 
 @media (max-width: 1200px) {
@@ -200,6 +168,11 @@ onMounted(() => {
   .right-section {
     align-items: flex-start;
     width: 100%;
+  }
+
+  .left-section {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .vertical-link {
