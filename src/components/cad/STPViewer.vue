@@ -63,7 +63,7 @@ async function loadOCCTLibrary() {
       occt = await occtimportjs({
         locateFile: (path) => {
           if (path.endsWith('.wasm')) {
-            return `${import.meta.env.VITE_BASE_PATH || '/'}occt-import-js.wasm`
+            return '/site-dev/occt-import-js.wasm' // `${import.meta.env.VITE_BASE_PATH || '/'}occt-import-js.wasm`
           }
           return path
         },

@@ -20,7 +20,6 @@ declare module 'vue' {
     CoefficientTolerance: typeof import('./src/components/coefficients/CoefficientTolerance.vue')['default']
     CoefficientTooling: typeof import('./src/components/coefficients/CoefficientTooling.vue')['default']
     CoefficientType: typeof import('./src/components/coefficients/CoefficientType.vue')['default']
-    copy: typeof import('./src/components/CadShowById copy.vue')['default']
     DialogCall: typeof import('./src/components/dialog/DialogCall.vue')['default']
     DialogInfoPayment: typeof import('./src/components/dialog/DialogInfoPayment.vue')['default']
     DialogLogin: typeof import('./src/components/dialog/DialogLogin.vue')['default']
