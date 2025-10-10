@@ -75,6 +75,12 @@ const routes = [
     component: () => import("./pages/LicensePage.vue"),
     name: "license",
   },
+  {
+    path: "/offer-client",
+    // @ts-ignore
+    component: () => import("./pages/OfferClientPage.vue"),
+    name: "offer-client",
+  },
 
   { path: "/:patchMatch(.*)*", component: NotFoundPage },
 ];

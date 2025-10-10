@@ -51,6 +51,13 @@ onMounted(() => {
           Политика обработки персональных данных
         </el-menu-item>
 
+        <el-menu-item
+          index="/offer-client"
+          :route="{ path: '/offer-client' }"
+        >
+          Публичная оферта для клиентов
+        </el-menu-item>
+
         <!-- Кнопки калькуляторов -->
         <div class="calculator-buttons">
           <el-button
