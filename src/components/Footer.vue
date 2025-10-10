@@ -44,6 +44,13 @@ onMounted(() => {
           ЦКП
         </el-menu-item>
 
+        <el-menu-item
+          index="/license"
+          :route="{ path: '/license' }"
+        >
+          Лицензионное соглашение
+        </el-menu-item>
+
         <!-- Кнопки калькуляторов -->
         <div class="calculator-buttons">
           <el-button
@@ -71,6 +78,9 @@ onMounted(() => {
 }
 .el-menu-item {
   font-size: 20px;
+}
+.el-menu-item.is-active {
+  border-bottom: none !important;
 }
 :deep(.el-header) {
   padding-left: 0px;
