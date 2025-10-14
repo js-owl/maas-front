@@ -1,84 +1,104 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { Edit, Delete } from '@element-plus/icons-vue'
-import { req_json_auth } from '../api'
-import type { IOrderResponse } from '../interfaces/order.interface'
-import CadPreview from './cad/CadPreview.vue'
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { Edit, Delete } from "@element-plus/icons-vue";
+import { req_json_auth } from "../api";
+import type { IOrderResponse } from "../interfaces/order.interface";
+import CadPreview from "./cad/CadPreview.vue";
 
-const router = useRouter()
-const orders = ref<IOrderResponse[]>()
-const deleteLoading = ref<number | null>(null)
+const router = useRouter();
+const orders = ref<IOrderResponse[]>();
+const deleteLoading = ref<number | null>(null);
 
 onMounted(async () => {
-  const r = await req_json_auth(`/orders/`, 'GET')
-  orders.value = (await r?.json()) as IOrderResponse[]
-})
+  const r = await req_json_auth(`/orders/`, "GET");
+  orders.value = (await r?.json()) as IOrderResponse[];
+});
 
 const formatDate = (_row: any, _column: any, cellValue: string) => {
-  return cellValue.split('T')[0]
-}
+  return cellValue.split("T")[0];
+};
 
 const serviceNames: any = {
-  cnc_lathe: 'токарная',
-  cnc_milling: 'фрезерная',
-  printing: '3D печать',
-}
+  cnc_lathe: "токарная",
+  cnc_milling: "фрезерная",
+  printing: "3D печать",
+};
 const getServiceName = (service_id: number): string => {
-  return serviceNames[service_id] || service_id
-}
+  return serviceNames[service_id] || service_id;
+};
 
 const materialNames: Record<string, string> = {
-  alum_D16T: 'Алюминий Д16Т',
-  steel_12X18H10T: 'Сталь 12Х18Н10Т',
-}
+  alum_D16T: "Алюминий Д16Т",
+  steel_12X18H10T: "Сталь 12Х18Н10Т",
+};
 const getMaterialName = (materialCode: string): string => {
-  if (!materialCode) return ''
-  return materialNames[materialCode] || materialCode
-}
+  if (!materialCode) return "";
+  return materialNames[materialCode] || materialCode;
+};
 
 const statusTexts: any = {
-  pending: 'ожидание оплаты',
-  processing: 'в проиводстве',
-}
+  pending: "ожидание оплаты",
+  processing: "в проиводстве",
+};
 const getStatusText = (status: string): string => {
-  return statusTexts[status] || status
-}
+  return statusTexts[status] || status;
+};
 
 const handleEdit = (row: IOrderResponse): void => {
   switch (row.service_id) {
-    case 'cnc_lathe':
-      router.push({ path: '/machining', query: { orderId: row.id.toString() } })
-      break
-    case 'cnc_milling':
-      router.push({ path: '/milling', query: { orderId: row.id.toString() } })
-      break
-    case 'printing':
-      router.push({ path: '/printing', query: { orderId: row.id.toString() } })
-      break
+    case "cnc_lathe":
+      router.push({
+        path: "/machining",
+        query: { orderId: row.id.toString() },
+      });
+      break;
+    case "cnc_milling":
+      router.push({
+        path: "/milling",
+        query: { orderId: row.id.toString() },
+      });
+      break;
+    case "printing":
+      router.push({
+        path: "/printing",
+        query: { orderId: row.id.toString() },
+      });
+      break;
     default:
-      router.push({ path: '/machining', query: { orderId: row.id.toString() } })
-      break
+      router.push({
+        path: "/machining",
+        query: { orderId: row.id.toString() },
+      });
+      break;
   }
-}
+};
 
 const handleDelete = async (row: IOrderResponse): Promise<void> => {
-  deleteLoading.value = row.id
-  const r = await req_json_auth(`/admin/orders/${row.id}`, 'DELETE')
+  deleteLoading.value = row.id;
+  const r = await req_json_auth(`/admin/orders/${row.id}`, "DELETE");
   if (r?.ok) {
-    if (orders.value) orders.value = orders.value.filter((item) => item.id !== row.id)
+    if (orders.value) {
+      orders.value = orders.value.filter((item) => item.id !== row.id);
+    }
   }
-  deleteLoading.value = null
-}
+  deleteLoading.value = null;
+};
 </script>
 
 <template>
-  <el-row :gutter="20" style="background-color: #fff; padding: 30px 0 0px 20px; min-height: 100px">
+  <el-row
+    :gutter="20"
+    style="background-color: #fff; padding: 30px 0 0px 20px; min-height: 100px"
+  >
     <el-col :offset="1" :span="22">
       <h1>Мои заказы</h1>
     </el-col>
   </el-row>
-  <el-row :gutter="20" style="background-color: #fff; padding-top: 0px; min-height: 500px">
+  <el-row
+    :gutter="20"
+    style="background-color: #fff; padding-top: 0px; min-height: 500px"
+  >
     <el-col :offset="1" :span="22">
       <el-table
         stripe
@@ -122,7 +142,12 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
         <el-table-column prop="total_price" label="Цена" width="100" />
         <el-table-column fixed="right" label="Операции" min-width="150">
           <template #default="scope">
-            <el-button link type="primary" size="small" @click="handleEdit(scope.row)">
+            <el-button
+              link
+              type="primary"
+              size="small"
+              @click="handleEdit(scope.row)"
+            >
               <el-icon color="blue" class="no-inherit">
                 <Edit />
               </el-icon>
