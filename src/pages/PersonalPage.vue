@@ -74,10 +74,23 @@ const activeKey = computed(() => {
   border-radius: 8px;
   padding: 16px;
   min-height: 60vh;
+  /* Prevent grid child from overflowing horizontally */
+  min-width: 0;
+  /* Allow inner scroll for wide tables/content */
+  overflow: auto;
 }
 
 @media (max-width: 1024px) {
   .personal-layout { grid-template-columns: 1fr; }
+}
+
+/* Make Element Plus tables adapt inside the content block */
+:deep(.content .el-table) {
+  width: 100%;
+}
+
+:deep(.content .el-table__body-wrapper) {
+  overflow: auto;
 }
 </style>
 
