@@ -1,20 +1,33 @@
 <template>
-  <div class="personal-layout">
-    <aside class="sidebar">
-      <el-menu :default-active="activeKey" class="menu" router>
-        <el-menu-item index="/personal/profile">
-          <span>Профиль</span>
-        </el-menu-item>
-        <el-menu-item index="/personal/orders">
-          <span>Заказы</span>
-        </el-menu-item>
-      </el-menu>
-    </aside>
-    <main class="content">
-      <RouterView />
-    </main>
-  </div>
-  
+  <el-row
+    :gutter="0"
+    style="
+      background-color: var(--left-section-bg);
+      padding-top: 30px;
+      min-height: 300px;
+    "
+  >
+    <el-col :offset="3" :span="18">
+      <div class="page-title">Мой профиль</div>
+
+      <div class="personal-layout">
+        <aside class="sidebar">
+          <el-menu :default-active="activeKey" class="menu" router>
+            <el-menu-item index="/personal/profile">
+              <span>Профиль</span>
+            </el-menu-item>
+            <el-menu-item index="/personal/orders">
+              <span>Заказы</span>
+            </el-menu-item>
+          </el-menu>
+        </aside>
+        <main class="content">
+          <RouterView />
+        </main>
+      </div>
+    </el-col>
+  </el-row>
+
 </template>
 
 <script setup lang="ts">
@@ -30,6 +43,13 @@ const activeKey = computed(() => {
 </script>
 
 <style scoped>
+.page-title {
+  text-align: left;
+  font-size: 32px;
+  color: white;
+  padding: 0 0 24px 0;
+}
+
 .personal-layout {
   display: grid;
   grid-template-columns: 260px 1fr;
