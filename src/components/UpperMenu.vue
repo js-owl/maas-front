@@ -105,7 +105,7 @@ function scrollToAbout() {
               ЦКП
             </el-menu-item>
             <el-sub-menu index="1">
-              <template #title>Решения</template>
+              <template #title>Услуги</template>
               <el-sub-menu index="1-1">
                 <template #title>Механообрабатывающее производство</template>
                 <el-menu-item
@@ -196,7 +196,7 @@ function scrollToAbout() {
         </div>
 
         <div v-else style="display: flex; align-items: center">
-          <span style="color: white; padding-right: 5px">
+          <span style="color: white; padding-right: 5px; cursor: pointer; font-size: 20px;" @click="router.push({ path: '/personal' })">
             {{ profileStore.profile?.username }}
           </span>
           <el-icon :size="30" style="margin-right: 10px; color: white; cursor: pointer" @click="router.push({ path: '/personal' })">
