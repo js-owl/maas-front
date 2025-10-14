@@ -54,6 +54,24 @@ const routes: RouteRecordRaw[] = [
     name: "order-list",
   },
   {
+    path: "/personal",
+    component: () => import("./pages/PersonalPage.vue"),
+    children: [
+      { path: "", redirect: { name: "personal-profile" } },
+      {
+        path: "profile",
+        component: () => import("./pages/ProfilePage.vue"),
+        name: "personal-profile",
+      },
+      {
+        path: "orders",
+        component: () => import("./pages/OrderListPage.vue"),
+        name: "personal-orders",
+      },
+    ],
+    name: "personal",
+  },
+  {
     path: "/profile",
     component: () => import("./pages/ProfilePage.vue"),
     name: "profile",
