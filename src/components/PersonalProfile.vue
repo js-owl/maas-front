@@ -92,7 +92,7 @@ async function onUpdate() {
         profile.city = buildAddressString()
         profile.user_type = activeTab.value
         await profileStore.updateProfile(profile as IProfile)
-        router.push({ name: 'profile' })
+        router.push({ path: '/personal/profile' })
       }
     }
   })

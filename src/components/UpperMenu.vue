@@ -157,9 +157,6 @@ function scrollToAbout() {
 
             <el-sub-menu index="5" v-show="authStore.getToken">
               <template #title>Кабинет</template>
-              <el-menu-item index="/profile" :route="{ path: '/profile' }">
-                Профиль
-              </el-menu-item>
               
             </el-sub-menu>
           </el-menu>

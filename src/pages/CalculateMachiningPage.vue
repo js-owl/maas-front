@@ -182,7 +182,7 @@ async function submitOrder(payload: IOrderPayload) {
   await ensureProfileLoaded();
   if (!isProfileComplete(profileStore.profile)) {
     ElMessage.warning("Заполните профиль перед оформлением заказа");
-    router.push({ name: "profile" });
+    router.push({ path: "/personal/profile" });
     return;
   }
   isInfoVisible.value = true;
