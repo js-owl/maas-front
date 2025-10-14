@@ -1,15 +1,6 @@
 <template>
-  <el-row
-    :gutter="0"
-    style="
-      background-color: var(--left-section-bg);
-      padding-top: 30px;
-      min-height: 300px;
-    "
-  >
+  <el-row :gutter="0" style="padding-top: 30px; min-height: 300px">
     <el-col :offset="3" :span="18">
-      <div class="page-title">Мой профиль</div>
-
       <div class="personal-layout">
         <aside class="sidebar">
           <el-menu :default-active="activeKey" class="menu" router>
@@ -27,7 +18,6 @@
       </div>
     </el-col>
   </el-row>
-
 </template>
 
 <script setup lang="ts">
@@ -43,13 +33,6 @@ const activeKey = computed(() => {
 </script>
 
 <style scoped>
-.page-title {
-  text-align: left;
-  font-size: 32px;
-  color: white;
-  padding: 0 0 24px 0;
-}
-
 .personal-layout {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -81,7 +64,9 @@ const activeKey = computed(() => {
 }
 
 @media (max-width: 1024px) {
-  .personal-layout { grid-template-columns: 1fr; }
+  .personal-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Make Element Plus tables adapt inside the content block */
@@ -93,5 +78,3 @@ const activeKey = computed(() => {
   overflow: auto;
 }
 </style>
-
-
