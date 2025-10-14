@@ -60,7 +60,7 @@ const routes: RouteRecordRaw[] = [
       { path: "", redirect: { name: "personal-profile" } },
       {
         path: "profile",
-        component: () => import("./pages/ProfilePage.vue"),
+        component: () => import("./components/PersonalProfile.vue"),
         name: "personal-profile",
       },
       {
