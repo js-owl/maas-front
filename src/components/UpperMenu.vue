@@ -155,10 +155,6 @@ function scrollToAbout() {
               О нас
             </el-menu-item>
 
-            <el-sub-menu index="5" v-show="authStore.getToken">
-              <template #title>Кабинет</template>
-              
-            </el-sub-menu>
           </el-menu>
         </div>
         <div style="display: flex; align-items: center">
@@ -203,7 +199,7 @@ function scrollToAbout() {
           <span style="color: white; padding-right: 5px">
             {{ profileStore.profile?.username }}
           </span>
-          <el-icon :size="30" style="margin-right: 10px; color: white">
+          <el-icon :size="30" style="margin-right: 10px; color: white; cursor: pointer" @click="router.push({ path: '/personal' })">
             <User />
           </el-icon>
           <el-button
