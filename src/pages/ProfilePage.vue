@@ -1,158 +1,140 @@
 <script lang="ts" setup>
-import { type FormInstance, type FormRules } from "element-plus";
-import { onMounted, ref, watch } from "vue";
-import { useProfileStore, type IProfile } from "../stores/profile.store";
-import router from "../router";
+import { type FormInstance, type FormRules } from 'element-plus'
+import { onMounted, ref, watch } from 'vue'
+import { useProfileStore, type IProfile } from '../stores/profile.store'
+import router from '../router'
 
-const profileStore = useProfileStore();
-const profileForm = ref<IProfile>();
-const formRef = ref<FormInstance>();
-const activeTab = ref("individual");
+const profileStore = useProfileStore()
+const profileForm = ref<IProfile>()
+const formRef = ref<FormInstance>()
+const activeTab = ref('individual')
 
 onMounted(async () => {
   // Если профиль уже загружен в store, используем его
   if (profileStore.profile) {
-    profileForm.value = Object.assign({}, profileStore.profile);
+    profileForm.value = Object.assign({}, profileStore.profile)
     // Устанавливаем activeTab на основе user_type из профиля
-    const profile = profileStore.profile as IProfile;
+    const profile = profileStore.profile as IProfile
     if (profile && profile.user_type) {
-      activeTab.value = profile.user_type;
+      activeTab.value = profile.user_type
     } else {
       // Если user_type не установлен, устанавливаем по умолчанию
       if (profileForm.value) {
-        (profileForm.value as IProfile).user_type = activeTab.value;
+        ;(profileForm.value as IProfile).user_type = activeTab.value
       }
     }
   } else {
     // Если профиль не загружен, загружаем его
-    await profileStore.getProfile();
+    await profileStore.getProfile()
     if (profileStore.profile) {
-      profileForm.value = Object.assign({}, profileStore.profile);
+      profileForm.value = Object.assign({}, profileStore.profile)
       // Устанавливаем activeTab на основе user_type из профиля
-      const profile = profileStore.profile as IProfile;
+      const profile = profileStore.profile as IProfile
       if (profile && profile.user_type) {
-        activeTab.value = profile.user_type;
+        activeTab.value = profile.user_type
       } else {
         // Если user_type не установлен, устанавливаем по умолчанию
         if (profileForm.value) {
-          (profileForm.value as IProfile).user_type = activeTab.value;
+          ;(profileForm.value as IProfile).user_type = activeTab.value
         }
       }
     }
   }
-});
+})
 
 // Синхронизируем activeTab с user_type в профиле
 watch(activeTab, (newTab) => {
   if (profileForm.value) {
-    profileForm.value.user_type = newTab;
+    profileForm.value.user_type = newTab
     // Перевалидируем поля при изменении типа пользователя
     if (formRef.value) {
-      formRef.value.validateField("payment_inn");
-      formRef.value.validateField("payment_kpp");
-      formRef.value.validateField("payment_bik");
+      formRef.value.validateField('payment_inn')
+      formRef.value.validateField('payment_kpp')
+      formRef.value.validateField('payment_bik')
     }
   }
-});
+})
 
 // Валидация ИНН для юридических лиц
-const validatePaymentInn = (
-  _rule: any,
-  value: string,
-  callback: (error?: Error) => void
-) => {
+const validatePaymentInn = (_rule: any, value: string, callback: (error?: Error) => void) => {
   if (!value) {
-    callback();
-  } else if (profileForm.value?.user_type === "legal" && value.length < 10) {
-    callback(
-      new Error("ИНН должен содержать минимум 10 символов для юридических лиц")
-    );
+    callback()
+  } else if (profileForm.value?.user_type === 'legal' && value.length < 10) {
+    callback(new Error('ИНН должен содержать минимум 10 символов для юридических лиц'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 
 // Валидация КПП для юридических лиц
-const validatePaymentKpp = (
-  _rule: any,
-  value: string,
-  callback: (error?: Error) => void
-) => {
+const validatePaymentKpp = (_rule: any, value: string, callback: (error?: Error) => void) => {
   if (!value) {
-    callback();
-  } else if (profileForm.value?.user_type === "legal" && value.length < 9) {
-    callback(
-      new Error("КПП должен содержать минимум 9 символов для юридических лиц")
-    );
+    callback()
+  } else if (profileForm.value?.user_type === 'legal' && value.length < 9) {
+    callback(new Error('КПП должен содержать минимум 9 символов для юридических лиц'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 
 // Валидация БИК для юридических лиц
-const validatePaymentBik = (
-  _rule: any,
-  value: string,
-  callback: (error?: Error) => void
-) => {
+const validatePaymentBik = (_rule: any, value: string, callback: (error?: Error) => void) => {
   if (!value) {
-    callback();
-  } else if (profileForm.value?.user_type === "legal" && value.length < 9) {
-    callback(
-      new Error("БИК должен содержать минимум 9 символов для юридических лиц")
-    );
+    callback()
+  } else if (profileForm.value?.user_type === 'legal' && value.length < 9) {
+    callback(new Error('БИК должен содержать минимум 9 символов для юридических лиц'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 
 const rules = ref<FormRules<IProfile>>({
-  username: [{ required: true, message: "Введите имя", trigger: "blur" }],
+  username: [{ required: true, message: 'Введите имя', trigger: 'blur' }],
   email: [
-    { required: true, message: "Введите email", trigger: "blur" },
+    { required: true, message: 'Введите email', trigger: 'blur' },
     {
-      type: "email",
-      message: "Введите корректный email",
-      trigger: ["blur", "change"],
+      type: 'email',
+      message: 'Введите корректный email',
+      trigger: ['blur', 'change'],
     },
   ],
-  payment_inn: [{ validator: validatePaymentInn, trigger: ["blur", "change"] }],
-  payment_kpp: [{ validator: validatePaymentKpp, trigger: ["blur", "change"] }],
-  payment_bik: [{ validator: validatePaymentBik, trigger: ["blur", "change"] }],
-});
+  payment_inn: [{ validator: validatePaymentInn, trigger: ['blur', 'change'] }],
+  payment_kpp: [{ validator: validatePaymentKpp, trigger: ['blur', 'change'] }],
+  payment_bik: [{ validator: validatePaymentBik, trigger: ['blur', 'change'] }],
+})
 
 // Функция для сборки адреса из отдельных полей
 function buildAddressString(): string {
-  const profile = profileForm.value;
-  if (!profile) return "";
+  const profile = profileForm.value
+  if (!profile) return ''
 
   const addressParts = [
-    profile.postal || "",
-    profile.region || "",
-    profile.city_name || "",
-    profile.street || "",
-    profile.building || "",
-    profile.apartment || "",
-  ].filter((part) => part && part.trim()); // Убираем пустые значения
+    profile.postal || '',
+    profile.region || '',
+    profile.city_name || '',
+    profile.street || '',
+    profile.building || '',
+    profile.apartment || '',
+  ].filter((part) => part && part.trim()) // Убираем пустые значения
 
-  return addressParts.join(", ");
+  return addressParts.join(', ')
 }
 
 async function onUpdate() {
-  if (!formRef.value || !profileForm.value) return;
+  if (!formRef.value || !profileForm.value) return
   await formRef.value.validate(async (valid) => {
     if (valid) {
       // Собираем адрес из отдельных полей в поле city
-      const profile = profileForm.value;
+      const profile = profileForm.value
       if (profile) {
-        profile.city = buildAddressString();
+        profile.city = buildAddressString()
         // Убеждаемся, что user_type синхронизирован с activeTab
-        profile.user_type = activeTab.value;
-        await profileStore.updateProfile(profile as IProfile);
-        router.push({ name: "profile" });
+        profile.user_type = activeTab.value
+        await profileStore.updateProfile(profile as IProfile)
+        router.push({ name: 'profile' })
       }
     }
-  });
+  })
 }
 </script>
 
@@ -168,7 +150,7 @@ async function onUpdate() {
       padding-left: 20px;
     "
   >
-    <el-col :offset="3" :span="4">
+    <el-col :offset="1" :span="4">
       <h1>Профиль</h1>
     </el-col>
     <el-col :span="6">
@@ -177,12 +159,7 @@ async function onUpdate() {
   </el-row>
   <el-row
     :gutter="20"
-    style="
-      background-color: #fff;
-      padding-top: 30px;
-      min-height: 500px;
-      padding-left: 20px;
-    "
+    style="background-color: #fff; padding-top: 30px; min-height: 500px; padding-left: 20px"
   >
     <el-form
       ref="formRef"
@@ -193,21 +170,15 @@ async function onUpdate() {
       style="width: 100%"
     >
       <!-- Контент профиля в зависимости от user_type -->
-      <el-col :offset="3" :span="18">
+      <el-col :offset="1" :span="22">
         <!-- Частное лицо -->
         <div v-if="activeTab === 'individual'" class="profile-content">
           <el-row :gutter="20">
             <el-col :span="11">
-              <div style="font-size: 24px; padding-bottom: 30px">
-                Общая информация
-              </div>
+              <div style="font-size: 24px; padding-bottom: 30px">Общая информация</div>
               <div v-if="profileForm">
                 <el-form-item label="Логин" prop="username">
-                  <el-input
-                    v-model="profileForm.username"
-                    placeholder="username"
-                    disabled
-                  />
+                  <el-input v-model="profileForm.username" placeholder="username" disabled />
                 </el-form-item>
                 <el-form-item label="Email" prop="email">
                   <el-input
@@ -217,53 +188,30 @@ async function onUpdate() {
                   />
                 </el-form-item>
                 <el-form-item label="Полное имя" prop="full_name">
-                  <el-input
-                    v-model="profileForm.full_name"
-                    placeholder="Введите полное имя"
-                  />
+                  <el-input v-model="profileForm.full_name" placeholder="Введите полное имя" />
                 </el-form-item>
               </div>
             </el-col>
             <el-col :offset="2" :span="11">
-              <div style="font-size: 24px; padding-bottom: 30px">
-                Адрес доставки
-              </div>
+              <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки</div>
               <div v-if="profileForm">
                 <el-form-item label="Индекс" prop="postal">
-                  <el-input
-                    v-model="profileForm.postal"
-                    placeholder="Введите индекс"
-                  />
+                  <el-input v-model="profileForm.postal" placeholder="Введите индекс" />
                 </el-form-item>
                 <el-form-item label="Регион/Область" prop="region">
-                  <el-input
-                    v-model="profileForm.region"
-                    placeholder="Введите регион"
-                  />
+                  <el-input v-model="profileForm.region" placeholder="Введите регион" />
                 </el-form-item>
                 <el-form-item label="Город" prop="city_name">
-                  <el-input
-                    v-model="profileForm.city_name"
-                    placeholder="Введите город"
-                  />
+                  <el-input v-model="profileForm.city_name" placeholder="Введите город" />
                 </el-form-item>
                 <el-form-item label="Улица" prop="street">
-                  <el-input
-                    v-model="profileForm.street"
-                    placeholder="Введите улицу"
-                  />
+                  <el-input v-model="profileForm.street" placeholder="Введите улицу" />
                 </el-form-item>
                 <el-form-item label="Дом/Строение" prop="building">
-                  <el-input
-                    v-model="profileForm.building"
-                    placeholder="Введите номер дома"
-                  />
+                  <el-input v-model="profileForm.building" placeholder="Введите номер дома" />
                 </el-form-item>
                 <el-form-item label="Квартира/Офис" prop="apartment">
-                  <el-input
-                    v-model="profileForm.apartment"
-                    placeholder="Введите номер квартиры"
-                  />
+                  <el-input v-model="profileForm.apartment" placeholder="Введите номер квартиры" />
                 </el-form-item>
               </div>
             </el-col>
@@ -274,16 +222,10 @@ async function onUpdate() {
         <div v-if="activeTab === 'legal'" class="profile-content">
           <el-row :gutter="20">
             <el-col :span="11">
-              <div style="font-size: 24px; padding-bottom: 30px">
-                Общая информация
-              </div>
+              <div style="font-size: 24px; padding-bottom: 30px">Общая информация</div>
               <div v-if="profileForm">
                 <el-form-item label="Логин" prop="username">
-                  <el-input
-                    v-model="profileForm.username"
-                    placeholder="username"
-                    disabled
-                  />
+                  <el-input v-model="profileForm.username" placeholder="username" disabled />
                 </el-form-item>
                 <el-form-item label="Email" prop="email">
                   <el-input
@@ -299,32 +241,20 @@ async function onUpdate() {
                   />
                 </el-form-item>
 
-                <el-form-item
-                  label="Наименование банка"
-                  prop="payment_bank_name"
-                >
+                <el-form-item label="Наименование банка" prop="payment_bank_name">
                   <el-input
                     v-model="profileForm.payment_bank_name"
                     placeholder="Введите имя банка"
                   />
                 </el-form-item>
                 <el-form-item label="ИНН" prop="payment_inn">
-                  <el-input
-                    v-model="profileForm.payment_inn"
-                    placeholder="Введите ИНН"
-                  />
+                  <el-input v-model="profileForm.payment_inn" placeholder="Введите ИНН" />
                 </el-form-item>
                 <el-form-item label="КПП" prop="payment_kpp">
-                  <el-input
-                    v-model="profileForm.payment_kpp"
-                    placeholder="Введите КПП"
-                  />
+                  <el-input v-model="profileForm.payment_kpp" placeholder="Введите КПП" />
                 </el-form-item>
                 <el-form-item label="БИК" prop="payment_bik">
-                  <el-input
-                    v-model="profileForm.payment_bik"
-                    placeholder="Введите БИК"
-                  />
+                  <el-input v-model="profileForm.payment_bik" placeholder="Введите БИК" />
                 </el-form-item>
                 <el-form-item label="Корр.счет" prop="payment_cor_account">
                   <el-input
@@ -341,45 +271,25 @@ async function onUpdate() {
               </div>
             </el-col>
             <el-col :offset="2" :span="11">
-              <div style="font-size: 24px; padding-bottom: 30px">
-                Адрес доставки
-              </div>
+              <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки</div>
               <div v-if="profileForm">
                 <el-form-item label="Индекс" prop="postal">
-                  <el-input
-                    v-model="profileForm.postal"
-                    placeholder="Введите индекс"
-                  />
+                  <el-input v-model="profileForm.postal" placeholder="Введите индекс" />
                 </el-form-item>
                 <el-form-item label="Регион/Область" prop="region">
-                  <el-input
-                    v-model="profileForm.region"
-                    placeholder="Введите регион"
-                  />
+                  <el-input v-model="profileForm.region" placeholder="Введите регион" />
                 </el-form-item>
                 <el-form-item label="Город" prop="city_name">
-                  <el-input
-                    v-model="profileForm.city_name"
-                    placeholder="Введите город"
-                  />
+                  <el-input v-model="profileForm.city_name" placeholder="Введите город" />
                 </el-form-item>
                 <el-form-item label="Улица" prop="street">
-                  <el-input
-                    v-model="profileForm.street"
-                    placeholder="Введите улицу"
-                  />
+                  <el-input v-model="profileForm.street" placeholder="Введите улицу" />
                 </el-form-item>
                 <el-form-item label="Дом/Строение" prop="building">
-                  <el-input
-                    v-model="profileForm.building"
-                    placeholder="Введите номер дома"
-                  />
+                  <el-input v-model="profileForm.building" placeholder="Введите номер дома" />
                 </el-form-item>
                 <el-form-item label="Квартира/Офис" prop="apartment">
-                  <el-input
-                    v-model="profileForm.apartment"
-                    placeholder="Введите номер квартиры"
-                  />
+                  <el-input v-model="profileForm.apartment" placeholder="Введите номер квартиры" />
                 </el-form-item>
               </div>
             </el-col>
