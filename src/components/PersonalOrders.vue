@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { Edit, Delete } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
-import CadPreview from '../components/cad/CadPreview.vue'
+import CadPreview from './cad/CadPreview.vue'
 
 const router = useRouter()
 const orders = ref<IOrderResponse[]>()
@@ -31,7 +31,6 @@ const getServiceName = (service_id: number): string => {
 const materialNames: Record<string, string> = {
   alum_D16T: 'Алюминий Д16Т',
   steel_12X18H10T: 'Сталь 12Х18Н10Т',
-  // дополнительные соответствия при необходимости
 }
 const getMaterialName = (materialCode: string): string => {
   if (!materialCode) return ''
@@ -49,28 +48,16 @@ const getStatusText = (status: string): string => {
 const handleEdit = (row: IOrderResponse): void => {
   switch (row.service_id) {
     case 'cnc_lathe':
-      router.push({
-        path: '/machining',
-        query: { orderId: row.id.toString() },
-      })
+      router.push({ path: '/machining', query: { orderId: row.id.toString() } })
       break
     case 'cnc_milling':
-      router.push({
-        path: '/milling',
-        query: { orderId: row.id.toString() },
-      })
+      router.push({ path: '/milling', query: { orderId: row.id.toString() } })
       break
     case 'printing':
-      router.push({
-        path: '/printing',
-        query: { orderId: row.id.toString() },
-      })
+      router.push({ path: '/printing', query: { orderId: row.id.toString() } })
       break
     default:
-      router.push({
-        path: '/machining',
-        query: { orderId: row.id.toString() },
-      })
+      router.push({ path: '/machining', query: { orderId: row.id.toString() } })
       break
   }
 }
@@ -79,10 +66,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
   deleteLoading.value = row.id
   const r = await req_json_auth(`/admin/orders/${row.id}`, 'DELETE')
   if (r?.ok) {
-    console.log('deleted successfully')
-    if (orders.value) {
-      orders.value = orders.value.filter((item) => item.id !== row.id)
-    }
+    if (orders.value) orders.value = orders.value.filter((item) => item.id !== row.id)
   }
   deleteLoading.value = null
 }
@@ -175,3 +159,5 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
   font-size: 12px;
 }
 </style>
+
+

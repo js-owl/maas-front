@@ -67,6 +67,8 @@ declare module 'vue' {
     PaintPrepare: typeof import('./src/components/coefficients/PaintPrepare.vue')['default']
     PaintPrimer: typeof import('./src/components/coefficients/PaintPrimer.vue')['default']
     PaintType: typeof import('./src/components/coefficients/PaintType.vue')['default']
+    PersonalOrders: typeof import('./src/components/PersonalOrders.vue')['default']
+    PersonalProfile: typeof import('./src/components/PersonalProfile.vue')['default']
     PlasticPreparation: typeof import('./src/components/coefficients/PlasticPreparation.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

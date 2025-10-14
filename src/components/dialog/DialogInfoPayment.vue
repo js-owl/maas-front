@@ -7,7 +7,7 @@ const handleClose = () => {
   console.log("handleClose");
   dialogVisible.value = false;
   router.push({
-    name: "order-list",
+    name: "personal-orders",
   });
 };
 </script>

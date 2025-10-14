@@ -160,12 +160,7 @@ function scrollToAbout() {
               <el-menu-item index="/profile" :route="{ path: '/profile' }">
                 Профиль
               </el-menu-item>
-              <el-menu-item
-                index="/order-list"
-                :route="{ path: '/order-list' }"
-              >
-                Мои заказы
-              </el-menu-item>
+              
             </el-sub-menu>
           </el-menu>
         </div>

@@ -48,11 +48,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import("./pages/CalculatePrintingPage.vue"),
     name: "printing",
   },
-  {
-    path: "/order-list",
-    component: () => import("./pages/OrderListPage.vue"),
-    name: "order-list",
-  },
+  
   {
     path: "/personal",
     component: () => import("./pages/PersonalPage.vue"),
@@ -65,7 +61,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: "orders",
-        component: () => import("./pages/PersonalOrders.vue"),
+        component: () => import("./components/PersonalOrders.vue"),
         name: "personal-orders",
       },
     ],

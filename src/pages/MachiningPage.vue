@@ -58,7 +58,7 @@ const items = ref([
             type="primary"
             plain
             class="submit"
-            @click="$router.push({ name: 'order-list' })"
+            @click="$router.push({ path: '/personal/orders' })"
           >
             < В меню
           </el-button>

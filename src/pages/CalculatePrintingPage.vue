@@ -177,7 +177,7 @@ async function submitOrder(payload: IOrderPayload) {
     return;
   }
   isInfoVisible.value = true;
-  router.push({ name: "order-list" });
+  router.push({ path: "/personal/orders" });
 }
 
 async function getOrder(id: number) {
@@ -309,7 +309,7 @@ async function getOrder(id: number) {
             type="primary"
             plain
             class="submit"
-            @click="router.push({ name: 'order-list' })"
+            @click="router.push({ path: '/personal/orders' })"
           >
             Отменить
           </el-button>
