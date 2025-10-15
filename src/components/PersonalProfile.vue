@@ -106,7 +106,7 @@ async function onUpdate() {
       display: flex;
       align-items: center;
       background-color: #fff;
-      padding-top: 30px;
+      padding-top: 10px;
       min-height: 100px;
       padding-left: 20px;
     "
@@ -145,7 +145,7 @@ async function onUpdate() {
               </div>
             </el-col>
             <el-col :offset="2" :span="11">
-              <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки</div>
+              <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки по умолчанию</div>
               <div v-if="profileForm">
                 <el-form-item label="Индекс" prop="postal">
                   <el-input v-model="profileForm.postal" placeholder="Введите индекс" />
@@ -205,7 +205,7 @@ async function onUpdate() {
               </div>
             </el-col>
             <el-col :offset="2" :span="11">
-              <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки</div>
+              <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки по умолчанию</div>
               <div v-if="profileForm">
                 <el-form-item label="Индекс" prop="postal">
                   <el-input v-model="profileForm.postal" placeholder="Введите индекс" />

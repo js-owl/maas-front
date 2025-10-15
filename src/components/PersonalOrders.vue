@@ -89,7 +89,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
 <template>
   <el-row
     :gutter="20"
-    style="background-color: #fff; padding: 30px 0 0px 20px; min-height: 100px"
+    style="background-color: #fff; padding: 10px 0 0px 20px; min-height: 100px"
   >
     <el-col :offset="1" :span="22">
       <h1>Мои заказы</h1>
