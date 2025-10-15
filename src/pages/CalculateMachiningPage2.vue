@@ -49,9 +49,9 @@ let quantity = ref(1);
 let material_id = ref("alum_D16");
 let material_form = ref("rod");
 
-let id_tolerance = ref("4");
-let id_finish = ref("3");
-let id_cover = ref<string[]>(['1']);
+let tolerance_id = ref("4");
+let finish_id = ref("3");
+let cover_id = ref<string[]>(['1']);
 let n_dimensions = ref(55);
 
 let k_otk = ref("1");
@@ -70,9 +70,9 @@ const payload = reactive({
   height: width,
   material_id,
   material_form,
-  id_tolerance,
-  id_finish,
-  id_cover,
+  tolerance_id,
+  finish_id,
+  cover_id,
   n_dimensions,
   k_otk,
   k_cert,
@@ -203,9 +203,9 @@ async function getOrder(id: number) {
     if (data.quantity) quantity.value = data.quantity;
     if (data.material_id) material_id.value = data.material_id;
     if (data.material_form) material_form.value = data.material_form;
-    if (data.id_tolerance) id_tolerance.value = data.id_tolerance;
-    if (data.id_finish) id_finish.value = data.id_finish;
-    if (data.id_cover) id_cover.value = Array.isArray(data.id_cover) ? data.id_cover : [data.id_cover];
+    if (data.tolerance_id) tolerance_id.value = data.tolerance_id;
+    if (data.finish_id) finish_id.value = data.finish_id;
+    if (data.cover_id) cover_id.value = Array.isArray(data.cover_id) ? data.cover_id : [data.cover_id];
     if (data.n_dimensions) n_dimensions.value = data.n_dimensions;
     if (data.k_otk) k_otk.value = data.k_otk;
     if (data.k_cert) k_cert.value = data.k_cert;
@@ -225,9 +225,9 @@ async function getOrder(id: number) {
       height: width.value,
       material_id: material_id.value,
       material_form: material_form.value,
-      id_tolerance: id_tolerance.value,
-      id_finish: id_finish.value,
-      id_cover: id_cover.value,
+      tolerance_id: tolerance_id.value,
+      finish_id: finish_id.value,
+      cover_id: cover_id.value,
       n_dimensions: n_dimensions.value,
       k_otk: k_otk.value,
       k_cert: k_cert.value,
@@ -361,10 +361,10 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5">
         <el-col :offset="2" :span="5">
-          <CoefficientFinish v-model="id_finish" />
+          <CoefficientFinish v-model="finish_id" />
         </el-col>
         <el-col :offset="1" :span="5">
-          <CoefficientTolerance v-model="id_tolerance" />
+          <CoefficientTolerance v-model="tolerance_id" />
         </el-col>
         <el-col :offset="1" :span="5">
           <CoefficientSize v-model="n_dimensions" />
@@ -381,7 +381,7 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5" class="row-spacing-top">
         <el-col :offset="2" :span="20">
-          <CoefficientCover v-model="id_cover" />
+          <CoefficientCover v-model="cover_id" />
         </el-col>
       </el-row>
 

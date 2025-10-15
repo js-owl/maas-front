@@ -7,12 +7,14 @@ export const API_BASE = "http://mdgkd-vlabal.int.kronshtadt.ru:8000";
 // export const API_BASE = "https://lk-api.maas.int.kronshtadt.ru";
 
 // Helper function to convert object to URL-encoded string
+// @deprecated - Use JSON format for v3.0.0 API
 const toUrlEncoded = (o: any): string => {
   return Object.keys(o)
     .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(o[key])}`)
     .join("&");
 };
 
+// @deprecated - Use req_json for v3.0.0 API
 export async function req_urlencoded(
   endpoint: string,
   method: string = "POST",
@@ -50,6 +52,7 @@ export async function req_urlencoded(
   }
 }
 
+// @deprecated - Use req_json_auth for v3.0.0 API
 export async function req_urlencoded_auth(
   endpoint: string,
   method: string = "POST",

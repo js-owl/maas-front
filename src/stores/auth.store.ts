@@ -36,20 +36,12 @@ export const useAuthStore = defineStore("auth", () => {
 
   async function login(formData: any) {
     const headers = new Headers();
-    headers.append("Content-Type", "application/x-www-form-urlencoded");
-
-    const toUrlEncoded = (o: any) => {
-      return Object.keys(o)
-        .map(
-          (key) => `${encodeURIComponent(key)}=${encodeURIComponent(o[key])}`
-        )
-        .join("&");
-    };
+    headers.append("Content-Type", "application/json");
 
     const res = await fetch(`${API_BASE}/login`, {
       method: "POST",
       headers: headers,
-      body: toUrlEncoded(formData),
+      body: JSON.stringify(formData),
     });
     const data = (await res.json()) as LoginResponse;
     setToken(data.access_token);

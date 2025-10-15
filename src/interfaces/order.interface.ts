@@ -7,9 +7,9 @@ export interface IOrderBase {
   height: number;
   material_id: string;
   material_form: string;
-  id_tolerance?: string;
-  id_finish?: string;
-  id_cover: string[];
+  tolerance_id?: string;
+  finish_id?: string;
+  cover_id: string[];
   n_dimensions?: number;
   k_otk: string;
   k_cert: string[];
@@ -25,7 +25,7 @@ export interface IOrderPostPayload extends IOrderBase {
 }
 
 export interface IOrderResponse extends IOrderBase {
-  id: number;
+  order_id: number;
   user_id: number;
   document_ids: number[];
   composite_rig: string;
