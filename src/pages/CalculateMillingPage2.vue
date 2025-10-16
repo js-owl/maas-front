@@ -253,14 +253,14 @@ async function getOrder(id: number) {
         <div class="price-row">
           <div>Стоимость 1 ед.</div>
           <div>
-            {{ Number(result?.detail_price_one ?? 0).toLocaleString() }} р.
+            {{ Math.round(Number(result?.detail_price_one ?? 0)).toLocaleString() }} р.
           </div>
         </div>
         <div class="price-row">
           <div>Общая стоимость {{ result?.quantity || 0 }} ед.*</div>
           <div>
             <span>
-              {{ Number(result?.total_price ?? 0).toLocaleString() }} р.
+              {{ Math.round(Number(result?.total_price ?? 0)).toLocaleString() }} р.
             </span>
             <span
               v-show="
@@ -268,7 +268,7 @@ async function getOrder(id: number) {
                 Number(result?.detail_price_one ?? 0)
               "
             >
-              ({{ Number(result?.detail_price ?? 0).toLocaleString() }} р. за 1
+              ({{ Math.round(Number(result?.detail_price ?? 0)).toLocaleString() }} р. за 1
               ед.)
             </span>
           </div>
