@@ -1,9 +1,9 @@
-import { ElMessage } from "element-plus";
-import { useAuthStore } from "./stores/auth.store";
-import router from "./router";
+import { ElMessage } from 'element-plus'
+import { useAuthStore } from './stores/auth.store'
+import router from './router'
 
 // API Base URLs
-export const API_BASE = "http://mdgkd-vlabal.int.kronshtadt.ru:8000";
+export const API_BASE = 'http://mdgkd-vlabal.int.kronshtadt.ru:8000'
 // export const API_BASE = "https://lk-api.maas.int.kronshtadt.ru";
 
 // Helper function to convert object to URL-encoded string
@@ -11,43 +11,39 @@ export const API_BASE = "http://mdgkd-vlabal.int.kronshtadt.ru:8000";
 const toUrlEncoded = (o: any): string => {
   return Object.keys(o)
     .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(o[key])}`)
-    .join("&");
-};
+    .join('&')
+}
 
 // @deprecated - Use req_json for v3.0.0 API
 export async function req_urlencoded(
   endpoint: string,
-  method: string = "POST",
+  method: string = 'POST',
   data?: any
 ): Promise<Response | undefined> {
   try {
-    const headers = new Headers();
-    headers.append("Content-Type", "application/x-www-form-urlencoded");
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/x-www-form-urlencoded')
 
-    const body = data ? toUrlEncoded(data) : undefined;
+    const body = data ? toUrlEncoded(data) : undefined
 
     const res = await fetch(`${API_BASE}${endpoint}`, {
       method,
       headers,
       body,
-    });
-    console.log("req_urlencoded", res.status);
+    })
+    console.log('req_urlencoded', res.status)
 
     if (res.status >= 500 && res.status < 600) {
-      ElMessage.error("Ошибка сервера 500");
-      throw new Error("Server error");
+      ElMessage.error('Ошибка сервера 500')
+      throw new Error('Server error')
     }
     if (!res.ok) {
-      throw new Error("http error");
+      throw new Error('http error')
     }
-    return res;
+    return res
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.name === "TypeError" &&
-      error.message.includes("fetch")
-    ) {
-      ElMessage.error(`Ошибка сервера`);
+    if (error instanceof Error && error.name === 'TypeError' && error.message.includes('fetch')) {
+      ElMessage.error(`Ошибка сервера`)
     }
   }
 }
@@ -55,131 +51,119 @@ export async function req_urlencoded(
 // @deprecated - Use req_json_auth for v3.0.0 API
 export async function req_urlencoded_auth(
   endpoint: string,
-  method: string = "POST",
+  method: string = 'POST',
   data?: any
 ): Promise<Response | undefined> {
   try {
-    const authStore = useAuthStore();
-    const headers = new Headers();
-    headers.append("Content-Type", "application/x-www-form-urlencoded");
+    const authStore = useAuthStore()
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/x-www-form-urlencoded')
 
     if (authStore.getToken) {
-      headers.append("Authorization", `Bearer ${authStore.getToken}`);
+      headers.append('Authorization', `Bearer ${authStore.getToken}`)
     }
 
-    const body = data ? toUrlEncoded(data) : undefined;
+    const body = data ? toUrlEncoded(data) : undefined
 
     const res = await fetch(`${API_BASE}${endpoint}`, {
       method,
       headers,
       body,
-    });
-    console.log("req_urlencoded_auth", { res });
+    })
+    console.log('req_urlencoded_auth', { res })
     if (res.status === 401) {
-      authStore.clearToken();
-      router.push("/");
-      throw new Error("Authentification failed");
+      authStore.clearToken()
+      router.push('/')
+      throw new Error('Authentification failed')
     }
     if (res.status >= 500 && res.status < 600) {
-      console.log("req_urlencoded", res.status);
-      ElMessage.error("Ошибка сервера 500");
-      throw new Error("Server error");
+      console.log('req_urlencoded', res.status)
+      ElMessage.error('Ошибка сервера 500')
+      throw new Error('Server error')
     }
     if (!res.ok) {
-      throw new Error("http error");
+      throw new Error('http error')
     }
-    return res;
+    return res
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.name === "TypeError" &&
-      error.message.includes("fetch")
-    ) {
-      ElMessage.error(`Ошибка сервера`);
+    if (error instanceof Error && error.name === 'TypeError' && error.message.includes('fetch')) {
+      ElMessage.error(`Ошибка сервера`)
     }
   }
 }
 
 export async function req_json_auth(
   endpoint: string,
-  method: string = "POST",
+  method: string = 'POST',
   data?: any
 ): Promise<Response | undefined> {
   try {
-    const authStore = useAuthStore();
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
+    const authStore = useAuthStore()
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/json')
 
     if (authStore.getToken) {
-      headers.append("Authorization", `Bearer ${authStore.getToken}`);
+      headers.append('Authorization', `Bearer ${authStore.getToken}`)
     }
 
-    const body = data ? JSON.stringify(data) : undefined;
+    const body = data ? JSON.stringify(data) : undefined
 
     const res = await fetch(`${API_BASE}${endpoint}`, {
       method,
       headers,
       body,
-    });
-    console.log("req_json_auth", { res });
+    })
+    console.log('req_json_auth', { res })
     if (res.status === 401) {
-      authStore.clearToken();
-      router.push("/");
-      throw new Error("Authentification failed");
+      authStore.clearToken()
+      router.push('/')
+      throw new Error('Authentification failed')
     }
     if (res.status >= 500 && res.status < 600) {
-      console.log("req_urlencoded", res.status);
-      ElMessage.error("Ошибка сервера 500");
-      throw new Error("Server error");
+      console.log('req_urlencoded', res.status)
+      ElMessage.error('Ошибка сервера 500')
+      throw new Error('Server error')
     }
     if (!res.ok) {
-      throw new Error("http error");
+      throw new Error('http error')
     }
-    return res;
+    return res
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.name === "TypeError" &&
-      error.message.includes("fetch")
-    ) {
-      ElMessage.error(`Ошибка сервера`);
+    if (error instanceof Error && error.name === 'TypeError' && error.message.includes('fetch')) {
+      ElMessage.error(`Ошибка сервера`)
     }
   }
 }
 
 export async function req_json(
   endpoint: string,
-  method: string = "POST",
+  method: string = 'POST',
   data?: any
 ): Promise<Response | undefined> {
   try {
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/json')
 
-    const body = data ? JSON.stringify(data) : undefined;
+    const body = data ? JSON.stringify(data) : undefined
 
     const res = await fetch(`${API_BASE}${endpoint}`, {
       method,
       headers,
       body,
-    });
-    console.log("req_json", { res });
+    })
+    console.log('req_json', { res })
     if (res.status >= 500 && res.status < 600) {
-      console.log("req_urlencoded", res.status);
-      ElMessage.error("Ошибка сервера 500");
-      throw new Error("Server error");
+      console.log('req_urlencoded', res.status)
+      ElMessage.error('Ошибка сервера 500')
+      throw new Error('Server error')
     }
     if (!res.ok) {
-      throw new Error("http error");
+      throw new Error('http error')
     }
-    return res;
+    return res
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.name === "TypeError" &&
-      error.message.includes("fetch")
-    ) {
-      ElMessage.error(`Ошибка сервера`);
+    if (error instanceof Error && error.name === 'TypeError' && error.message.includes('fetch')) {
+      ElMessage.error(`Ошибка сервера`)
     }
   }
 }
