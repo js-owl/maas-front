@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { ElMessage } from "element-plus";
 import { req_json_auth } from "../api";
 import IconDrawing from "../icons/IconDrawing.vue";
@@ -13,8 +13,6 @@ const { color = "white" } = defineProps({
 const authStore = useAuthStore();
 const isUploading = ref(false);
 const fileInput = ref<HTMLInputElement>();
-
-const isAuthorized = computed(() => Boolean(authStore.getToken));
 
 const isDisabled = () => {
   if (authStore.getToken) {

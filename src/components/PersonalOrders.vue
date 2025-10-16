@@ -50,36 +50,36 @@ const handleEdit = (row: IOrderResponse): void => {
     case "cnc_lathe":
       router.push({
         path: "/machining",
-        query: { orderId: row.id.toString() },
+        query: { orderId: row.order_id.toString() },
       });
       break;
     case "cnc_milling":
       router.push({
         path: "/milling",
-        query: { orderId: row.id.toString() },
+        query: { orderId: row.order_id.toString() },
       });
       break;
     case "printing":
       router.push({
         path: "/printing",
-        query: { orderId: row.id.toString() },
+        query: { orderId: row.order_id.toString() },
       });
       break;
     default:
       router.push({
         path: "/machining",
-        query: { orderId: row.id.toString() },
+        query: { orderId: row.order_id.toString() },
       });
       break;
   }
 };
 
 const handleDelete = async (row: IOrderResponse): Promise<void> => {
-  deleteLoading.value = row.id;
-  const r = await req_json_auth(`/admin/orders/${row.id}`, "DELETE");
+  deleteLoading.value = row.order_id;
+  const r = await req_json_auth(`/admin/orders/${row.order_id}`, "DELETE");
   if (r?.ok) {
     if (orders.value) {
-      orders.value = orders.value.filter((item) => item.id !== row.id);
+      orders.value = orders.value.filter((item) => item.order_id !== row.order_id);
     }
   }
   deleteLoading.value = null;
@@ -103,11 +103,11 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
       <el-table
         stripe
         :data="orders"
-        :default-sort="{ prop: 'id', order: 'descending' }"
+        :default-sort="{ prop: 'order_id', order: 'descending' }"
         style="width: 100%"
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
       >
-        <el-table-column prop="id" label="№ заказа" width="100" />
+        <el-table-column prop="order_id" label="№ заказа" width="100" />
         <el-table-column prop="service_id" label="Тип услуги" width="120">
           <template #default="{ row }">
             {{ getServiceName(row.service_id) }}
@@ -157,7 +157,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
               type="primary"
               size="small"
               @click="handleDelete(scope.row)"
-              :loading="deleteLoading === scope.row.id"
+              :loading="deleteLoading === scope.row.order_id"
             >
               <el-icon color="red" class="no-inherit">
                 <Delete />
