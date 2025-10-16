@@ -1,63 +1,63 @@
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, watch } from "vue";
-import { req_urlencoded_auth, req_json_auth } from "../api";
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { req_json_auth, req_json } from '../api'
 
-import Length from "../components/coefficients/Length.vue";
-import Width from "../components/coefficients/Width.vue";
+import Length from '../components/coefficients/Length.vue'
+import Width from '../components/coefficients/Width.vue'
 
-import CoefficientQuantity from "../components/coefficients/CoefficientQuantity.vue";
+import CoefficientQuantity from '../components/coefficients/CoefficientQuantity.vue'
 
-import MaterialPrinting from "../components/materials/MaterialPrinting.vue";
+import MaterialPrinting from '../components/materials/MaterialPrinting.vue'
 
-import CoefficientOtk from "../components/coefficients/CoefficientOtk.vue";
-import CoefficientCertificate from "../components/coefficients/CoefficientCertificate.vue";
-import CoefficientCover from "../components/coefficients/CoefficientCover.vue";
+import CoefficientOtk from '../components/coefficients/CoefficientOtk.vue'
+import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
+import CoefficientCover from '../components/coefficients/CoefficientCover.vue'
 
-import { useRoute, useRouter } from "vue-router";
-import UploadModel from "../components/cad/UploadModel.vue";
-import UploadDrawings from "../components/UploadDrawings.vue";
+import { useRoute, useRouter } from 'vue-router'
+import UploadModel from '../components/cad/UploadModel.vue'
+import UploadDrawings from '../components/UploadDrawings.vue'
 // @ts-ignore
-import CadShowById from "../components/cad/CadShowById.vue";
-import { useProfileStore, type IProfile } from "../stores/profile.store";
-import { useAuthStore } from "../stores/auth.store";
-import { ElMessage } from "element-plus";
-import DialogInfoPayment from "../components/dialog/DialogInfoPayment.vue";
-import SuitableMachines from "../components/SuitableMachines.vue";
-import Height from "../components/coefficients/Height.vue";
+import CadShowById from '../components/cad/CadShowById.vue'
+import { useProfileStore, type IProfile } from '../stores/profile.store'
+import { useAuthStore } from '../stores/auth.store'
+import { ElMessage } from 'element-plus'
+import DialogInfoPayment from '../components/dialog/DialogInfoPayment.vue'
+import SuitableMachines from '../components/SuitableMachines.vue'
+import Height from '../components/coefficients/Height.vue'
 import type {
   IOrderPayload,
   IOrderPostPayload,
   IOrderResponse,
-} from "../interfaces/order.interface";
+} from '../interfaces/order.interface'
 
-const authStore = useAuthStore();
-const profileStore = useProfileStore();
+const authStore = useAuthStore()
+const profileStore = useProfileStore()
 
-const route = useRoute();
-const router = useRouter();
-const order_id = computed(() => Number(route.query.orderId) || 0);
+const route = useRoute()
+const router = useRouter()
+const order_id = computed(() => Number(route.query.orderId) || 0)
 
-let file_id = ref(1);
-let document_ids = ref<number[]>([]);
+let file_id = ref(1)
+let document_ids = ref<number[]>([])
 
-let length = ref(120);
-let width = ref(30);
-let height = ref(30);
-let quantity = ref(1);
+let length = ref(120)
+let width = ref(30)
+let height = ref(30)
+let quantity = ref(1)
 
-let material_id = ref("PA11");
-let material_form = ref("powder");
+let material_id = ref('PA11')
+let material_form = ref('powder')
 
-let cover_id = ref<string[]>(['1']);
+let cover_id = ref<string[]>(['1'])
 
-let k_otk = ref("1");
-let k_cert = ref(["a", "f"]);
+let k_otk = ref('1')
+let k_cert = ref(['a', 'f'])
 // Длительность изготовления (в днях)
-let manufacturing_cycle = ref<number>(0);
-let special_instructions = ref("");
+let manufacturing_cycle = ref<number>(0)
+let special_instructions = ref('')
 
 const payload = reactive({
-  service_id: "3dprinting",
+  service_id: 'printing',
   file_id,
   document_ids,
   quantity,
@@ -70,7 +70,7 @@ const payload = reactive({
   k_otk,
   k_cert,
   manufacturing_cycle,
-});
+})
 
 let result = ref({
   id: 0,
@@ -81,132 +81,131 @@ let result = ref({
   quantity: 1,
   manufacturing_cycle: 0,
   suitable_machines: [],
-});
+})
 
-let isInfoVisible = ref(false);
-const isLoading = ref<boolean>(true);
+let isInfoVisible = ref(false)
+const isLoading = ref<boolean>(true)
 
 // Отправляем запрос на сервер при любом изменении данных
-watch(payload, sendData, { deep: true });
+watch(payload, sendData, { deep: true })
 
 onMounted(() => {
   if (order_id.value == 0) {
-    sendData(payload);
+    sendData(payload)
   } else {
-    getOrder(order_id.value);
+    getOrder(order_id.value)
   }
-});
+})
 
 // type sendType = typeof payload;
 
 function isProfileComplete(profile?: IProfile): boolean {
-  if (!profile) return false;
+  if (!profile) return false
   const required: Array<keyof IProfile> = [
-    "email",
-    "full_name",
-    "postal",
-    "region",
-    "city_name",
-    "street",
-    "building",
-  ];
+    'email',
+    'full_name',
+    'postal',
+    'region',
+    'city_name',
+    'street',
+    'building',
+  ]
   return required.every((key) => {
-    const v = profile[key] as unknown as string | undefined;
-    return typeof v === "string" && v.trim().length > 0;
-  });
+    const v = profile[key] as unknown as string | undefined
+    return typeof v === 'string' && v.trim().length > 0
+  })
 }
 
 async function ensureProfileLoaded() {
   if (!profileStore.profile) {
     try {
-      await profileStore.getProfile();
+      await profileStore.getProfile()
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
   }
 }
 
 async function sendData(payload: IOrderPayload) {
-  isLoading.value = true;
+  isLoading.value = true
   try {
-    const res = await req_urlencoded_auth("/anonymous-calc", "POST", payload);
-    const data = (await res?.json()) as IOrderResponse;
-    result.value = data;
+    const res = await req_json('/calculate-price', 'POST', payload)
+    const data = (await res?.json()) as IOrderResponse
+    result.value = data
   } catch (error) {
-    console.error({ error });
+    console.error({ error })
   }
-  isLoading.value = false;
+  isLoading.value = false
 }
 
 async function submitOrder(payload: IOrderPayload) {
   if (!authStore.getToken) {
-    ElMessage.warning("Необходимо зарегистрироваться!");
-    return;
+    ElMessage.warning('Необходимо зарегистрироваться!')
+    return
   }
-  isLoading.value = true;
+  isLoading.value = true
   if (order_id.value == 0) {
     try {
       // Для POST запроса преобразуем document_ids в строку
       const postPayload: IOrderPostPayload = {
         ...payload,
         document_ids: JSON.stringify(payload.document_ids),
-      };
-      const res = await req_urlencoded_auth("/orders", "POST", postPayload);
-      const data = (await res?.json()) as IOrderResponse;
-      result.value = data;
+      }
+      const res = await req_json_auth('/orders', 'POST', postPayload)
+      const data = (await res?.json()) as IOrderResponse
+      result.value = data
     } catch (error) {
-      console.error({ error });
+      console.error({ error })
     }
   } else {
-    const id = order_id.value;
+    const id = order_id.value
     try {
-      const res = await req_json_auth(`/orders/${id}`, "PUT", payload);
-      const data = (await res?.json()) as IOrderResponse;
-      result.value = data;
-      console.log("PUT", result.value);
+      const res = await req_json_auth(`/orders/${id}`, 'PUT', payload)
+      const data = (await res?.json()) as IOrderResponse
+      result.value = data
+      console.log('PUT', result.value)
     } catch (error) {
-      console.error({ error });
+      console.error({ error })
     }
   }
-  isLoading.value = false;
+  isLoading.value = false
   // Проверяем профиль перед переходом к списку заказов
-  await ensureProfileLoaded();
+  await ensureProfileLoaded()
   if (!isProfileComplete(profileStore.profile)) {
-    ElMessage.warning("Заполните профиль перед оформлением заказа");
-    router.push({ path: "/personal/profile" });
-    return;
+    ElMessage.warning('Заполните профиль перед оформлением заказа')
+    router.push({ path: '/personal/profile' })
+    return
   }
-  isInfoVisible.value = true;
-  router.push({ path: "/personal/orders" });
+  isInfoVisible.value = true
+  router.push({ path: '/personal/orders' })
 }
 
 async function getOrder(id: number) {
-  isLoading.value = true;
+  isLoading.value = true
   try {
-    const res = await req_json_auth(`/orders/${id}`, "GET");
-    const data = (await res?.json()) as IOrderResponse;
-    result.value = data;
+    const res = await req_json_auth(`/orders/${id}`, 'GET')
+    const data = (await res?.json()) as IOrderResponse
+    result.value = data
 
     // Обновляем все поля из полученного заказа
-    if (data.file_id) file_id.value = data.file_id;
-    if (data.document_ids) document_ids.value = data.document_ids;
-    if (data.length) length.value = data.length;
-    if (data.width) width.value = data.width;
-    if (data.height) height.value = data.height;
-    if (data.quantity) quantity.value = data.quantity;
-    if (data.material_id) material_id.value = data.material_id;
-    if (data.material_form) material_form.value = data.material_form;
-    if (data.cover_id) cover_id.value = Array.isArray(data.cover_id) ? data.cover_id : [data.cover_id];
-    if (data.k_otk) k_otk.value = data.k_otk;
-    if (data.k_cert) k_cert.value = data.k_cert;
-    if (data.manufacturing_cycle)
-      manufacturing_cycle.value = data.manufacturing_cycle;
-    if (data.special_instructions)
-      special_instructions.value = data.special_instructions;
+    if (data.file_id) file_id.value = data.file_id
+    if (data.document_ids) document_ids.value = data.document_ids
+    if (data.length) length.value = data.length
+    if (data.width) width.value = data.width
+    if (data.height) height.value = data.height
+    if (data.quantity) quantity.value = data.quantity
+    if (data.material_id) material_id.value = data.material_id
+    if (data.material_form) material_form.value = data.material_form
+    if (data.cover_id)
+      cover_id.value = Array.isArray(data.cover_id) ? data.cover_id : [data.cover_id]
+    if (data.k_otk) k_otk.value = data.k_otk
+    if (data.k_cert) k_cert.value = data.k_cert
+    if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
+    if (data.special_instructions) special_instructions.value = data.special_instructions
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
-      service_id: "3dprinting",
+      service_id: '3dprinting',
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
@@ -219,11 +218,11 @@ async function getOrder(id: number) {
       k_otk: k_otk.value,
       k_cert: k_cert.value,
       manufacturing_cycle: manufacturing_cycle.value,
-    });
+    })
   } catch (error) {
-    console.error({ error });
+    console.error({ error })
   }
-  isLoading.value = false;
+  isLoading.value = false
 }
 </script>
 
@@ -240,36 +239,28 @@ async function getOrder(id: number) {
     <el-col :offset="3" :span="8" class="left-section">
       <div class="title-text">
         3D ПЕЧАТЬ <br />
-        {{ order_id != 0 ? `(заказ ${order_id})` : "" }}
+        {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
       </div>
 
       <div class="price-section">
         <div class="price-row">
           <div>Стоимость 1 ед.</div>
-          <div>
-            {{ Number(result?.detail_price_one ?? 0).toLocaleString() }} р.
-          </div>
+          <div>{{ Number(result?.detail_price_one ?? 0).toLocaleString() }} р.</div>
         </div>
         <div class="price-row">
           <div>Общая стоимость {{ result?.quantity || 0 }} ед.*</div>
           <div>
-            <span>
-              {{ Number(result?.total_price ?? 0).toLocaleString() }} р.
-            </span>
+            <span> {{ Number(result?.total_price ?? 0).toLocaleString() }} р. </span>
             <span
-              v-show="
-                Number(result?.detail_price ?? 0) !=
-                Number(result?.detail_price_one ?? 0)
-              "
+              v-show="Number(result?.detail_price ?? 0) != Number(result?.detail_price_one ?? 0)"
             >
-              ({{ Number(result?.detail_price ?? 0).toLocaleString() }} р. за 1
-              ед.)
+              ({{ Number(result?.detail_price ?? 0).toLocaleString() }} р. за 1 ед.)
             </span>
           </div>
         </div>
         <div v-if="profileStore.profile?.username == 'admin'" class="price-row">
           <div>Трудоемкость</div>
-          <div>{{ Number(result?.detail_time ?? 0).toFixed(2) || "?" }} ч.</div>
+          <div>{{ Number(result?.detail_time ?? 0).toFixed(2) || '?' }} ч.</div>
         </div>
         <div class="price-row-last">
           <div>Длительность изготовления</div>
@@ -277,8 +268,7 @@ async function getOrder(id: number) {
         </div>
       </div>
       <div class="disclaimer-text">
-        *При увеличении количества единиц в заказе стоимость одного изделия
-        становится выгоднее
+        *При увеличении количества единиц в заказе стоимость одного изделия становится выгоднее
       </div>
       <el-row :gutter="20" class="component-section">
         <el-col :offset="0" :span="24" class="cad-section">
@@ -286,18 +276,14 @@ async function getOrder(id: number) {
         </el-col>
       </el-row>
       <el-row :gutter="5" class="upload-section">
-        <el-col :span="24" class="upload-title">
-          Загрузите файлы для расчета
-        </el-col>
+        <el-col :span="24" class="upload-title"> Загрузите файлы для расчета </el-col>
         <el-col :span="12">
           <UploadModel v-model="file_id" color="#fff" />
         </el-col>
         <el-col :span="12">
           <UploadDrawings v-model="document_ids" color="#fff" />
         </el-col>
-        <el-col :span="24" class="upload-info">
-          Максимальный размер 100Мб
-        </el-col>
+        <el-col :span="24" class="upload-info"> Максимальный размер 100Мб </el-col>
         <el-col :span="24">
           <DocumentShowByIds v-model="document_ids" />
         </el-col>
@@ -326,7 +312,7 @@ async function getOrder(id: number) {
               })
             "
           >
-            {{ order_id != 0 ? "Сохранить заказ" : "Оформить заказ" }}
+            {{ order_id != 0 ? 'Сохранить заказ' : 'Оформить заказ' }}
           </el-button>
         </el-col>
       </el-row>
@@ -361,11 +347,7 @@ async function getOrder(id: number) {
         </el-col>
       </el-row>
 
-      <el-row
-        :gutter="5"
-        class="row-spacing-top"
-        v-if="profileStore.profile?.username === 'admin'"
-      >
+      <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
         <el-col :offset="2" :span="20">
           <SuitableMachines :machines="result.suitable_machines" />
         </el-col>
