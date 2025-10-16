@@ -1,12 +1,12 @@
-import { req_json } from "../../api";
+import { req_json } from '../../api'
 
 /**
  * Интерфейс для элемента коэффициента
  * Используется для унификации структуры данных во всех компонентах
  */
 export interface CoefficientItem {
-  value: string; // ID коэффициента (например, "1", "2", "3")
-  label: string; // Отображаемое название (например, "Ra 0.8", "Ra 1.6")
+  value: string // ID коэффициента (например, "1", "2", "3")
+  label: string // Отображаемое название (например, "Ra 0.8", "Ra 1.6")
 }
 
 /**
@@ -14,18 +14,18 @@ export interface CoefficientItem {
  * Содержит массивы для каждого типа: шероховатость, покрытие, допуски
  */
 export interface CoefficientsData {
-  finish: CoefficientItem[]; // Шероховатость поверхности (Ra)
-  cover: CoefficientItem[]; // Типы покрытий
-  tolerance: CoefficientItem[]; // Квалитеты точности
+  finish: CoefficientItem[] // Шероховатость поверхности (Ra)
+  cover: CoefficientItem[] // Типы покрытий
+  tolerance: CoefficientItem[] // Квалитеты точности
 }
 
 // Кеш для хранения загруженных данных
 // null означает, что данные еще не загружены
-let coefficientsCache: CoefficientsData | null = null;
+let coefficientsCache: CoefficientsData | null = null
 
 // Промис текущего запроса для предотвращения дублирующих запросов
 // null означает, что запрос не выполняется
-let coefficientsPromise: Promise<CoefficientsData> | null = null;
+let coefficientsPromise: Promise<CoefficientsData> | null = null
 
 /**
  * Получает коэффициенты с сервера с использованием кеширования
@@ -37,14 +37,14 @@ export async function getCoefficients(): Promise<CoefficientsData> {
   // Если данные уже закешированы, возвращаем их немедленно
   // Это самый быстрый путь - без сетевых запросов
   if (coefficientsCache) {
-    return coefficientsCache;
+    return coefficientsCache
   }
 
   // Если запрос уже выполняется, возвращаем тот же промис
   // Это предотвращает создание дублирующих запросов при одновременном
   // монтировании нескольких компонентов
   if (coefficientsPromise) {
-    return coefficientsPromise;
+    return coefficientsPromise
   }
 
   // Создаем новый промис для API запроса
@@ -53,8 +53,8 @@ export async function getCoefficients(): Promise<CoefficientsData> {
   coefficientsPromise = (async () => {
     try {
       // Выполняем единственный API запрос к серверу
-      const r = await req_json(`/calculator/coefficients/`, "GET");
-      const data = await r?.json();
+      const r = await req_json(`/coefficients/`, 'GET')
+      const data = await r?.json()
 
       // Трансформируем данные сервера в унифицированный формат
       // Сервер возвращает объекты с полями id и value
@@ -63,40 +63,40 @@ export async function getCoefficients(): Promise<CoefficientsData> {
         // Шероховатость поверхности - массив вариантов Ra
         finish: data.finish.map((item: any) => ({
           value: item.id, // ID для отправки на сервер
-          label: item.value, // Название для отображения пользователю
+          label: item.label, // Название для отображения пользователю
         })),
 
         // Типы покрытий - массив вариантов покрытий
         cover: data.cover.map((item: any) => ({
           value: item.id, // ID для отправки на сервер
-          label: item.value, // Название для отображения пользователю
+          label: item.label, // Название для отображения пользователю
         })),
 
         // Квалитеты точности - массив вариантов допусков
         tolerance: data.tolerance.map((item: any) => ({
           value: item.id, // ID для отправки на сервер
-          label: item.value, // Название для отображения пользователю
+          label: item.label, // Название для отображения пользователю
         })),
-      };
+      }
 
       // Возвращаем закешированные данные
-      return coefficientsCache;
+      return coefficientsCache
     } catch (error) {
       // Логируем ошибку для отладки
-      console.error("Failed to load coefficients:", error);
+      console.error('Failed to load coefficients:', error)
 
       // Очищаем промис при ошибке, чтобы можно было повторить запрос
       // Без этого при ошибке все последующие вызовы будут получать
       // отклоненный промис вместо попытки нового запроса
-      coefficientsPromise = null;
+      coefficientsPromise = null
 
       // Пробрасываем ошибку дальше для обработки в компонентах
-      throw error;
+      throw error
     }
-  })();
+  })()
 
   // Возвращаем промис (либо новый, либо существующий)
-  return coefficientsPromise;
+  return coefficientsPromise
 }
 
 /**
@@ -110,8 +110,8 @@ export async function getCoefficients(): Promise<CoefficientsData> {
  */
 export function clearCoefficientsCache() {
   // Очищаем кеш данных
-  coefficientsCache = null;
+  coefficientsCache = null
 
   // Очищаем промис, чтобы следующий вызов создал новый запрос
-  coefficientsPromise = null;
+  coefficientsPromise = null
 }
