@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { req_urlencoded_auth, req_json_auth, req_json } from '../api'
+import { req_json_auth, req_json } from '../api'
 
 import Length from '../components/coefficients/Length.vue'
 import Diameter from '../components/coefficients/Diameter.vue'
@@ -151,7 +151,7 @@ async function submitOrder(payload: IOrderPayload) {
         ...payload,
         document_ids: JSON.stringify(document_ids.value ?? []),
       }
-      const res = await req_urlencoded_auth('/orders', 'POST', postPayload)
+      const res = await req_json_auth('/orders', 'POST', postPayload)
       const data = (await res?.json()) as IOrderResponse
       result.value = data
     } catch (error) {

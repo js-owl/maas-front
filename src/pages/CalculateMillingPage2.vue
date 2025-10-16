@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import { req_urlencoded_auth, req_json_auth } from "../api";
+import { req_json, req_json_auth } from "../api";
 
 import Length from "../components/coefficients/Length.vue";
 import Width from "../components/coefficients/Width.vue";
@@ -63,7 +63,7 @@ let manufacturing_cycle = ref<number>(0);
 let special_instructions = ref("");
 
 const payload = reactive({
-  service_id: "cnc_milling",
+  service_id: "cnc-milling",
   file_id,
   document_ids,
   quantity,
@@ -81,16 +81,7 @@ const payload = reactive({
   manufacturing_cycle,
 });
 
-let result = ref({
-  id: 0,
-  detail_time: 0,
-  detail_price: 0,
-  detail_price_one: 0,
-  total_price: 0,
-  quantity: 1,
-  manufacturing_cycle: 0,
-  suitable_machines: [],
-});
+const result = ref<IOrderResponse | null>(null);
 
 let isInfoVisible = ref(false);
 const isLoading = ref<boolean>(true);
@@ -138,7 +129,7 @@ async function ensureProfileLoaded() {
 async function sendData(payload: IOrderPayload) {
   isLoading.value = true;
   try {
-    const res = await req_urlencoded_auth("/anonymous-calc2", "POST", payload);
+    const res = await req_json("/calculate-price", "POST", payload);
     const data = (await res?.json()) as IOrderResponse;
     result.value = data;
   } catch (error) {
@@ -160,7 +151,7 @@ async function submitOrder(payload: IOrderPayload) {
         ...payload,
         document_ids: JSON.stringify(payload.document_ids),
       };
-      const res = await req_urlencoded_auth("/orders", "POST", postPayload);
+      const res = await req_json_auth("/orders", "POST", postPayload);
       const data = (await res?.json()) as IOrderResponse;
       result.value = data;
     } catch (error) {
@@ -218,7 +209,7 @@ async function getOrder(id: number) {
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
-      service_id: "cnc_milling",
+      service_id: "cnc-milling",
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
@@ -382,6 +373,7 @@ async function getOrder(id: number) {
         </el-col>
       </el-row>
 
+
       <el-row :gutter="5" class="row-spacing-top">
         <el-col :offset="2" :span="20">
           <CoefficientCover v-model="cover_id" />
@@ -390,7 +382,7 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
         <el-col :offset="2" :span="20">
-          <SuitableMachines :machines="result.suitable_machines" />
+          <SuitableMachines :machines="result?.suitable_machines || []" />
         </el-col>
       </el-row>
 
