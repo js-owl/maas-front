@@ -58,9 +58,12 @@ const handleFileUpload = async (file: File) => {
   
   try {
     const base64Data = await fileToBase64(file)
+    const ext = file.name.split('.').pop()?.toLowerCase()
+    const fileType = ext === 'stl' || ext === 'stp' || ext === 'step' ? ext : undefined
     
     const response = await req_json_auth('/files', 'POST', {
       file_name: file.name,
+      file_type: fileType,
       file_data: base64Data,
       description: '3D Model'
     })
@@ -118,7 +121,7 @@ const handleDragOver = (event: DragEvent) => {
           </div>
           <input
             type="file"
-            accept=".stp,.step"
+            accept=".stp,.step,.stl"
             @change="handleFileChange"
             style="display: none"
             ref="fileInput"
