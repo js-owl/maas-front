@@ -80,16 +80,7 @@ const payload = reactive({
   manufacturing_cycle,
 })
 
-let result = ref({
-  id: 0,
-  detail_time: 0,
-  detail_price: 0,
-  detail_price_one: 0,
-  total_price: 0,
-  quantity: 1,
-  manufacturing_cycle: 0,
-  suitable_machines: [],
-})
+const result = ref<IOrderResponse | null>(null)
 
 let isInfoVisible = ref(false)
 const isLoading = ref<boolean>(true)
@@ -373,7 +364,7 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
         <el-col :offset="2" :span="20">
-          <SuitableMachines :machines="result.suitable_machines" />
+          <SuitableMachines :machines="result?.suitable_machines || []" />
         </el-col>
       </el-row>
 
