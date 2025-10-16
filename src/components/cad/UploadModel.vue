@@ -55,23 +55,22 @@ const handleFileUpload = async (file: File) => {
   }
 
   isUploading.value = true
-  
+
   try {
     const base64Data = await fileToBase64(file)
     const ext = file.name.split('.').pop()?.toLowerCase()
     const fileType = ext === 'stl' || ext === 'stp' || ext === 'step' ? ext : undefined
-    
+
     const response = await req_json_auth('/files', 'POST', {
       file_name: file.name,
       file_type: fileType,
       file_data: base64Data,
-      description: '3D Model'
     })
 
     if (response) {
       const data = await response.json()
       console.log({ response: data })
-      file_id.value = data.file_id
+      file_id.value = data.id
       ElMessage.success('Файл успешно загружен')
     }
   } catch (error) {

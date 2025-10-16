@@ -126,6 +126,7 @@ async function ensureProfileLoaded() {
 }
 
 async function sendData(payload: IOrderPayload) {
+  console.log('|- sendData', { payload })
   isLoading.value = true
   try {
     const res = await req_json('/calculate-price', 'POST', payload)
