@@ -19,7 +19,10 @@ const isMobile = computed(() => width.value < 768);
     <SectionAbout />
     <SectionAdvantages />
   </div>
-  <SectionModel />
+  <template v-else>
+    <SectionModel />
+    <!-- <SectionAbility /> -->
+  </template>
 </template>
 <style scoped>
 </style>
