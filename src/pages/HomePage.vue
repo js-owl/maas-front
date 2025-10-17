@@ -14,14 +14,22 @@ const isMobile = computed(() => width.value < 768);
 <template>
   <div v-if="!isMobile">
     <SectionModel />
-    <SectionAbility />
+    <el-row :gutter="20">
+      <el-col :offset="3" :span="18">
+        <SectionAbility />
+      </el-col>
+    </el-row>
     <SectionMilestones />
     <SectionAbout />
     <SectionAdvantages />
   </div>
   <template v-else>
     <SectionModel />
-    <!-- <SectionAbility /> -->
+    <el-row :gutter="20">
+      <el-col :offset="1" :span="22">
+        <SectionAbility />
+      </el-col>
+    </el-row>
   </template>
 </template>
 <style scoped>

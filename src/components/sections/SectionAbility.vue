@@ -67,79 +67,37 @@ const abilities = ref([
 
 <template>
   <section class="ability-section">
-    <el-row :gutter="20">
-      <el-col :offset="3" :span="18">
-        <div class="ability-title">НАШИ ВОЗМОЖНОСТИ</div>
-      </el-col>
-    </el-row>
+      <div class="ability-title">НАШИ ВОЗМОЖНОСТИ</div>
 
-    <!-- Первый ряд -->
-    <el-row :gutter="20">
-      <el-col
-        v-for="ability in abilities.slice(0, 3)"
-        :key="ability.id"
-        :offset="ability.offset"
-        :span="ability.span"
-        :xs="24"
-      >
-        <div class="item">
-          <component
-            :is="ability.link ? 'RouterLink' : 'div'"
-            :to="ability.link"
-          >
-            <el-image
-              :src="ability.image"
-              :fit="ability.fit"
-              :class="{ 'item-img': ability.id === 6 }"
-            />
+      <div class="items">
+        <div class="item"
+          v-for="ability in abilities"
+          :key="ability.id"
+        >
+          <div class="item-wrap">
+            <component
+              :is="ability.link ? 'RouterLink' : 'div'"
+              :to="ability.link"
+            >
+              <el-image
+                :src="ability.image"
+                :fit="ability.fit"
+                :class="{ 'item-img': ability.id === 6 }"
+              />
 
-            <div v-if="ability.isDevelopment" class="overlay-development">
-              <div class="development-text">
-                <p class="main-text">Раздел в разработке</p>
+              <div v-if="ability.isDevelopment" class="overlay-development">
+                <div class="development-text">
+                  <p class="main-text">Раздел в разработке</p>
+                </div>
               </div>
-            </div>
 
-            <div class="overlay">
-              <p class="item-text">{{ ability.title }}</p>
-            </div>
-          </component>
-        </div>
-      </el-col>
-    </el-row>
-
-    <!-- Второй ряд -->
-    <el-row :gutter="20" class="row-gap">
-      <el-col
-        v-for="ability in abilities.slice(3, 6)"
-        :key="ability.id"
-        :offset="ability.offset"
-        :span="ability.span"
-        :xs="24"
-      >
-        <div class="item">
-          <component
-            :is="ability.link ? 'RouterLink' : 'div'"
-            :to="ability.link"
-          >
-            <el-image
-              :src="ability.image"
-              :fit="ability.fit"
-              :class="{ 'item-img': ability.id === 6 }"
-            />
-
-            <div v-if="ability.isDevelopment" class="overlay-development">
-              <div class="development-text">
-                <p class="main-text">Раздел в разработке</p>
+              <div class="overlay">
+                <p class="item-text">{{ ability.title }}</p>
               </div>
-            </div>
-
-            <div class="overlay">
-              <p class="item-text">{{ ability.title }}</p>
-            </div>
-          </component>
+            </component>
+          </div>
         </div>
-      </el-col>
-    </el-row>
+      </div>
   </section>
 </template>
 
@@ -157,11 +115,17 @@ const abilities = ref([
   padding: 40px 0;
 }
 
-.row-gap {
-  margin-top: 15px;
+.items {
+  display: flex;
+  gap: 1%;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
-
 .item {
+  width: 32%;
+  padding-bottom: 20px;
+}
+.item-wrap {
   position: relative;
   width: 100%;
 }
@@ -223,21 +187,13 @@ const abilities = ref([
     font-size: 28px;
     padding: 16px 0;
   }
-
-  .row-gap {
-    margin-top: 8px;
+  .item {
+    width: 100%;
+    padding-bottom: 10px;
   }
-
-  .overlay {
-    height: auto;
-    padding: 8px 12px;
-  }
-
   .item-text {
-    font-size: 16px;
-    margin: 0;
+    font-size: 20px;
   }
-
   .main-text {
     font-size: 18px;
   }
