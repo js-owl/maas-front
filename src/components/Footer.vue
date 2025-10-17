@@ -15,17 +15,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-row
-    :gutter="0"
-    style="
-      display: flex;
-      align-items: center;
-      background-color: var(--upper-menu-bg);
-      min-height: 160px;
-      padding: 20px 0;
-    "
-  >
-    <el-col :offset="3" :span="18">
+  <el-row :gutter="0" class="footer-row">
+    <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
       <div class="footer-container">
         <div class="left-section">
           <el-menu
@@ -74,6 +65,14 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.footer-row {
+  display: flex;
+  align-items: center;
+  background-color: var(--upper-menu-bg);
+  min-height: 160px;
+  padding: 20px 0;
+}
+
 .footer-container {
   display: flex;
   justify-content: space-between;
@@ -177,6 +176,41 @@ onMounted(() => {
 
   .vertical-link {
     text-align: left;
+  }
+}
+
+@media (max-width: 767px) {
+  .footer-row {
+    min-height: auto;
+    padding: 12px 0;
+  }
+
+  .footer-container {
+    gap: 16px;
+  }
+
+  .left-section {
+    gap: 12px;
+  }
+
+  /* hide top footer menu on mobile */
+  .el-menu.el-menu--horizontal {
+    display: none;
+  }
+
+  .vertical-links,
+  .calculator-links {
+    gap: 8px;
+  }
+
+  .vertical-link {
+    font-size: 14px;
+    padding: 6px 8px;
+  }
+
+  .first-element {
+    font-size: 22px;
+    margin-right: 0 !important;
   }
 }
 </style>
