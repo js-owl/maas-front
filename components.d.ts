@@ -75,6 +75,7 @@ declare module 'vue' {
     SectionAbility: typeof import('./src/components/sections/SectionAbility.vue')['default']
     SectionAbout: typeof import('./src/components/sections/SectionAbout.vue')['default']
     SectionAdvantages: typeof import('./src/components/sections/SectionAdvantages.vue')['default']
+    SectionMilestones: typeof import('./src/components/sections/SectionMilestones.vue')['default']
     SectionModel: typeof import('./src/components/sections/SectionModel.vue')['default']
     STLViewer: typeof import('./src/components/cad/STLViewer.vue')['default']
     STPViewer: typeof import('./src/components/cad/STPViewer.vue')['default']
