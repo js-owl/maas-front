@@ -66,21 +66,10 @@ const abilities = ref([
 </script>
 
 <template>
-  <section
-    style="background-color: #fff; padding-bottom: 40px; min-height: 600px"
-  >
+  <section class="ability-section">
     <el-row :gutter="20">
       <el-col :offset="3" :span="18">
-        <div
-          style="
-            text-align: center;
-            font-size: 60px;
-            color: #283d5b;
-            padding: 40px 0;
-          "
-        >
-          НАШИ ВОЗМОЖНОСТИ
-        </div>
+        <div class="ability-title">НАШИ ВОЗМОЖНОСТИ</div>
       </el-col>
     </el-row>
 
@@ -91,6 +80,7 @@ const abilities = ref([
         :key="ability.id"
         :offset="ability.offset"
         :span="ability.span"
+        :xs="24"
       >
         <div class="item">
           <component
@@ -118,12 +108,13 @@ const abilities = ref([
     </el-row>
 
     <!-- Второй ряд -->
-    <el-row :gutter="20" style="margin-top: 15px">
+    <el-row :gutter="20" class="row-gap">
       <el-col
         v-for="ability in abilities.slice(3, 6)"
         :key="ability.id"
         :offset="ability.offset"
         :span="ability.span"
+        :xs="24"
       >
         <div class="item">
           <component
@@ -153,6 +144,23 @@ const abilities = ref([
 </template>
 
 <style scoped>
+.ability-section {
+  background-color: #fff;
+  padding-bottom: 40px;
+  min-height: 600px;
+}
+
+.ability-title {
+  text-align: center;
+  font-size: 60px;
+  color: #283d5b;
+  padding: 40px 0;
+}
+
+.row-gap {
+  margin-top: 15px;
+}
+
 .item {
   position: relative;
   width: 100%;
@@ -203,5 +211,35 @@ const abilities = ref([
   margin: 0 0 20px 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   opacity: 0.9;
+}
+
+@media (max-width: 767px) {
+  .ability-section {
+    min-height: auto;
+    padding-bottom: 24px;
+  }
+
+  .ability-title {
+    font-size: 28px;
+    padding: 16px 0;
+  }
+
+  .row-gap {
+    margin-top: 8px;
+  }
+
+  .overlay {
+    height: auto;
+    padding: 8px 12px;
+  }
+
+  .item-text {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .main-text {
+    font-size: 18px;
+  }
 }
 </style>
