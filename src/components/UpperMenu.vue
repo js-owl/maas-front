@@ -282,11 +282,25 @@ function scrollToAbout() {
   padding-left: 0px;
   font-weight: normal;
 }
+.call-btn:hover,
+.call-btn:focus,
+.call-btn:active {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: white !important;
+}
 .auth-btn {
   background-color: var(--upper-menu-bg);
   color: white;
   border: none;
   font-size: 20px;
+}
+.auth-btn:hover,
+.auth-btn:focus,
+.auth-btn:active {
+  background-color: var(--upper-menu-bg) !important;
+  border-color: transparent !important;
+  color: white !important;
 }
 .username {
   color: white;
