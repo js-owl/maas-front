@@ -1,15 +1,11 @@
 <script lang="ts" setup>
-const selected = defineModel<string[]>();
+const selected = defineModel<string[]>()
 
 const certificates = [
-  { value: "a", label: "Регистрация ITAR/EAR" },
-  { value: "b", label: "Сертифицировано AS9100" },
-  { value: "c", label: "Сертифицировано по ISO 9001" },
-  { value: "d", label: "Сертификация оборудования" },
-  { value: "e", label: "Сертификат соответствия" },
-  { value: "f", label: "Сертифицировано JCP/eJCP" },
-  { value: "g", label: "Сертификация материалов" },
-];
+  { value: 'g', label: 'Сертификация материалов' },
+  { value: 'e', label: 'Сертификат соответствия' },
+  { value: 'd', label: 'Сертификация оборудования' },
+]
 </script>
 
 <template>
@@ -46,5 +42,10 @@ const certificates = [
   color: #283d5b;
   font-size: 24px;
   font-weight: 700;
+}
+@media (max-width: 767px) {
+  .label {
+    font-size: 20px;
+  }
 }
 </style>

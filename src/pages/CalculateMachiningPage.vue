@@ -2,18 +2,13 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { req_json_auth, req_json } from '../api'
 
-import Length from '../components/coefficients/Length.vue'
-import Diameter from '../components/coefficients/Diameter.vue'
-import CoefficientQuantity from '../components/coefficients/CoefficientQuantity.vue'
-
 import MaterialMachining from '../components/materials/MaterialMachining.vue'
-
+import CoefficientQuantity from '../components/coefficients/CoefficientQuantity.vue'
 import CoefficientOtk from '../components/coefficients/CoefficientOtk.vue'
 import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
 import CoefficientTolerance from '../components/coefficients/CoefficientTolerance.vue'
 import CoefficientFinish from '../components/coefficients/CoefficientFinish.vue'
 import CoefficientCover from '../components/coefficients/CoefficientCover.vue'
-import CoefficientSize from '../components/coefficients/CoefficientSize.vue'
 
 import { useRoute, useRouter } from 'vue-router'
 // @ts-ignore
@@ -242,7 +237,7 @@ async function getOrder(id: number) {
     element-loading-custom-class="loading-top"
   >
     <!-- 1. Левая часть -->
-    <el-col :offset="3" :span="8" class="left-section">
+    <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
       <div class="title-text">
         ТОКАРНАЯ ОБРАБОТКА <br />
         {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
@@ -325,33 +320,21 @@ async function getOrder(id: number) {
     </el-col>
 
     <!-- 2. Правая часть -->
-    <el-col :span="13" class="right-section">
+    <el-col :span="13" :xs="{ span: 24, offset: 0 }" class="right-section">
       <el-row :gutter="5">
-        <el-col :offset="2" :span="5">
-          <Length v-model="length" />
+        <el-col :offset="2" :span="5" :xs="{ span: 22, offset: 1 }">
+          <CoefficientFinish v-model="finish_id" />
         </el-col>
-        <el-col :offset="1" :span="5">
-          <Diameter v-model="width" />
+        <el-col :offset="1" :span="5" :xs="{ span: 22, offset: 1 }">
+          <CoefficientTolerance v-model="tolerance_id" />
         </el-col>
-        <el-col :offset="1" :span="5">
+        <el-col :offset="1" :span="5" :xs="{ span: 22, offset: 1 }">
           <CoefficientQuantity v-model="quantity" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5">
-        <el-col :offset="2" :span="5">
-          <CoefficientFinish v-model="finish_id" />
-        </el-col>
-        <el-col :offset="1" :span="5">
-          <CoefficientTolerance v-model="tolerance_id" />
-        </el-col>
-        <el-col :offset="1" :span="5">
-          <CoefficientSize v-model="n_dimensions" />
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="5">
-        <el-col :offset="2" :span="11">
+        <el-col :offset="2" :span="11" :xs="{ span: 22, offset: 1 }">
           <MaterialMachining v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="5"> </el-col>
