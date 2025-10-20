@@ -20,7 +20,11 @@ const isMobile = computed(() => width.value < 768)
       </el-col>
     </el-row>
     <SectionMilestones />
-    <SectionAbout />
+    <el-row>
+      <el-col :offset="3" :span="18">
+        <SectionAbout />
+      </el-col>
+    </el-row>
     <SectionAdvantages />
   </div>
   <template v-else>
@@ -28,6 +32,7 @@ const isMobile = computed(() => width.value < 768)
     <el-row>
       <el-col :offset="0" :span="24">
         <SectionAbility />
+        <SectionAbout />
       </el-col>
     </el-row>
   </template>

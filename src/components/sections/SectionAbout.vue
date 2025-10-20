@@ -1,54 +1,53 @@
 <template>
-  <el-row id="about" :gutter="20" class="about-row">
-    <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }">
-      <div class="about-title">О НАС</div>
-      <p class="about-text">
-        ЦКП - это комплекс предприятий полного цикла, идеально подходящие для
-        выполнения заказов в области механообработки, изготовления изделий из
-        полимерных материалов и много другого:
-      </p>
-      <p class="about-text">
-        <el-icon color="var(--upper-menu-bg)" class="no-inherit">
-          <Select />
-        </el-icon>
-        Изготовление прототипов и серийных изделий
-      </p>
-      <p class="about-text">
-        <el-icon color="var(--upper-menu-bg)" class="no-inherit">
-          <Select />
-        </el-icon>
-        Лакокрасочные покрытия и гальваника
-      </p>
-      <p class="about-text">
-        <el-icon color="var(--upper-menu-bg)" class="no-inherit">
-          <Select />
-        </el-icon>
-        3D-печать
-      </p>
-      <p class="about-text">
-        <el-icon color="var(--upper-menu-bg)" class="no-inherit">
-          <Select />
-        </el-icon>
-        Лабораточные исследования
-      </p>
-      <p class="about-text">
-        <el-icon color="var(--upper-menu-bg)" class="no-inherit">
-          <Select />
-        </el-icon>
-        Изготовление оснастки
-      </p>
-    </el-col>
-    <el-col :offset="1" :span="9" :xs="{ span: 24, offset: 0 }">
-      <el-image src="homePage/about.webp" class="item-img" />
-    </el-col>
-  </el-row>
+  <div class="section-about">
+    <div class="about-title">О НАС</div>
+    <p class="about-text">
+      ЦКП - это комплекс предприятий полного цикла, идеально подходящие для выполнения заказов в
+      области механообработки, изготовления изделий из полимерных материалов и много другого:
+    </p>
+    <p class="about-text">
+      <el-icon color="var(--upper-menu-bg)" class="no-inherit">
+        <Select />
+      </el-icon>
+      Изготовление прототипов и серийных изделий
+    </p>
+    <p class="about-text">
+      <el-icon color="var(--upper-menu-bg)" class="no-inherit">
+        <Select />
+      </el-icon>
+      Лакокрасочные покрытия и гальваника
+    </p>
+    <p class="about-text">
+      <el-icon color="var(--upper-menu-bg)" class="no-inherit">
+        <Select />
+      </el-icon>
+      3D-печать
+    </p>
+    <p class="about-text">
+      <el-icon color="var(--upper-menu-bg)" class="no-inherit">
+        <Select />
+      </el-icon>
+      Лабораточные исследования
+    </p>
+    <p class="about-text">
+      <el-icon color="var(--upper-menu-bg)" class="no-inherit">
+        <Select />
+      </el-icon>
+      Изготовление оснастки
+    </p>
+
+    <el-image src="homePage/about.webp" class="item-img" />
+  </div>
 </template>
 
 <style scoped>
-.about-row {
+.section-about {
   background-color: #fff;
-  padding-top: 30px;
-  min-height: 500px;
+  margin: 10px;
+  padding: 20px 20px 40px;
+  min-height: 600px;
+  /* border: 1px solid red;
+  border-radius: 10px; */
 }
 
 .about-title {
@@ -64,9 +63,9 @@
 }
 
 @media (max-width: 767px) {
-  .about-row {
+  .section-about {
     min-height: auto;
-    padding-top: 16px;
+    padding-top: 0px;
   }
 
   .about-title {
