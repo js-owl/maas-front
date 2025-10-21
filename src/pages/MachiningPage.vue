@@ -59,6 +59,65 @@ import IconDrawing from "../icons/IconDrawing.vue";
           </div>
         </div>
       </el-col>
+      <el-col :offset="3" :span="18"> 
+        <div class="content-wrapper">
+          
+          <!-- Фрезерная обработка -->
+          <div class="main-title">ФРЕЗЕРНАЯ ОБРАБОТКА</div>
+          
+          <!-- Описание и калькулятор фрезерной обработки -->
+          <div class="description-section">
+            <div class="description-text">
+              Фрезерная обработка представляет собой технологический процесс, при котором специальный режущий инструмент (фреза) вращается и удаляет материал, создавая изделия заданной конфигурации. Методика эффективна как для изготовления плоских элементов, так и для формирования трёхмерных объектов. Она обеспечивает прецизионную точность и широко применяется при работе с различными материалами: металлами, полимерами, древесиной.
+            </div>
+            
+            <div class="calculator-card">
+              <div
+                class="calculator-text"
+                @click="$router.push('/milling')"
+              >
+                Калькулятор стоимости фрезерной обработки
+              </div>
+              <IconDrawing
+                color="black"
+                class="calculator-icon"
+              />
+            </div>
+          </div>
+          
+          <!-- Технические требования фрезерной обработки -->
+          <div class="technical-requirements">
+            <div class="requirements-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
+            
+            <div class="requirements-grid">
+              <div class="requirement-column">
+                <div class="requirement-title">Оборудование</div>
+                <div class="requirement-item">Универсальные станки</div>
+                <div class="requirement-item">Станки ЧПУ, 5-осевой</div>
+                <div class="requirement-item">Станки ЧПУ, 3-осевой</div>
+                <div class="requirement-item">Фрезерно-гравировальный станок</div>
+              </div>
+              
+              <div class="requirement-column">
+                <div class="requirement-title">Максимальный размер</div>
+                <div class="requirement-item">до 1400 мм (Д х Ш х В)</div>
+                <div class="requirement-item">max: 13 866 × 1571 × 1150 мм (дерево)</div>
+                <div class="requirement-item">max: 4 200 x 3200 х 1250 мм (металл)</div>
+                <div class="requirement-item">max: 4 200 x 3200 х 1250 мм (металл)</div>
+                <div class="requirement-item">max: 2 200 x 1610 мм (металл)</div>
+                <div class="requirement-item">max: 4 000 × 2070 мм (дерево)</div>
+              </div>
+              
+              <div class="requirement-column">
+                <div class="requirement-title">Материалы</div>
+                <div class="requirement-item">Алюминиевые сплавы</div>
+                <div class="requirement-item">Сталь</div>
+                <div class="requirement-item">Дерево</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -72,11 +131,10 @@ import IconDrawing from "../icons/IconDrawing.vue";
 }
 
 .content-wrapper {
-  /* max-width: 1200px;
-  margin: 0 auto; */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
   padding: 60px 80px;
 }
 
@@ -135,6 +193,14 @@ import IconDrawing from "../icons/IconDrawing.vue";
   font-weight: 500;
   color: #000;
   line-height: 1.4;
+}
+
+/* Разделитель между секциями */
+.section-divider {
+  height: 2px;
+  background-color: #e0e0e0;
+  margin: 60px 0;
+  border-radius: 1px;
 }
 
 /* Технические требования */
