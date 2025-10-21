@@ -5,56 +5,61 @@ import IconDrawing from "../icons/IconDrawing.vue";
 <template>
   <div class="main-container">
     <!-- Основной контент -->
-    <div class="content-wrapper">
-      <!-- Заголовок -->
-      <div class="main-title">ТОКАРНАЯ ОБРАБОТКА</div>
-      
-      <!-- Описание и калькулятор -->
-      <div class="description-section">
-        <div class="description-text">
-          Токарная обработка представляет собой механическую операцию, при которой вращающаяся деталь обрабатывается режущим инструментом, последовательно снимающим слои материала. Технология позволяет создавать цилиндрические, конические и сложные профилированные поверхности с высокой степенью точности. Применяется в производстве металлических, пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
-        </div>
-        
-        <div class="calculator-card">
-          <IconDrawing
-            color="black"
-            class="calculator-icon"
-          />
-          <div
-            class="calculator-text"
-            @click="$router.push('/machining')"
-          >
-            Калькулятор стоимости токарной обработки
-          </div>
-        </div>
-      </div>
-      
-      <!-- Технические требования -->
-      <div class="technical-requirements">
-        <div class="requirements-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
-        
-        <div class="requirements-grid">
-          <div class="requirement-column">
-            <div class="requirement-title">Оборудование</div>
-            <div class="requirement-item">Токарно-винторезные станки</div>
-            <div class="requirement-item">Станок с ЧПУ</div>
+    <el-row>
+      <el-col :offset="3" :span="18">
+        <div class="content-wrapper">
+          <!-- Заголовок -->
+          <div class="main-title">ТОКАРНАЯ ОБРАБОТКА</div>
+          
+          <!-- Описание и калькулятор -->
+          <div class="description-section">
+            <div class="description-text">
+              Токарная обработка представляет собой механическую операцию, при которой вращающаяся деталь обрабатывается режущим инструментом, последовательно снимающим слои материала. Технология позволяет создавать цилиндрические, конические и сложные профилированные поверхности с высокой степенью точности. Применяется в производстве металлических, пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
+            </div>
+            
+            <div class="calculator-card">
+
+              <div
+                class="calculator-text"
+                @click="$router.push('/machining')"
+              >
+                Калькулятор стоимости токарной обработки
+              </div>
+              <IconDrawing
+                color="black"
+                class="calculator-icon"
+              />
+            </div>
           </div>
           
-          <div class="requirement-column">
-            <div class="requirement-title">Максимальный размер</div>
-            <div class="requirement-item">Длина до 1000 мм</div>
-            <div class="requirement-item">Диаметр до 600 мм</div>
-          </div>
-          
-          <div class="requirement-column">
-            <div class="requirement-title">Материалы</div>
-            <div class="requirement-item">Нержавеющие, легированные стали</div>
-            <div class="requirement-item">Полиамиды, фторопласт</div>
-            <div class="requirement-item">Алюминиевые, бронзовые, медные сплавы</div>
+          <!-- Технические требования -->
+          <div class="technical-requirements">
+            <div class="requirements-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
+            
+            <div class="requirements-grid">
+              <div class="requirement-column">
+                <div class="requirement-title">Оборудование</div>
+                <div class="requirement-item">Токарно-винторезные станки</div>
+                <div class="requirement-item">Станок с ЧПУ</div>
+              </div>
+              
+              <div class="requirement-column">
+                <div class="requirement-title">Максимальный размер</div>
+                <div class="requirement-item">Длина до 1000 мм</div>
+                <div class="requirement-item">Диаметр до 600 мм</div>
+              </div>
+              
+              <div class="requirement-column">
+                <div class="requirement-title">Материалы</div>
+                <div class="requirement-item">Нержавеющие, легированные стали</div>
+                <div class="requirement-item">Полиамиды, фторопласт</div>
+                <div class="requirement-item">Алюминиевые, бронзовые, медные сплавы</div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -67,8 +72,8 @@ import IconDrawing from "../icons/IconDrawing.vue";
 }
 
 .content-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
+  /* max-width: 1200px;
+  margin: 0 auto; */
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -88,14 +93,14 @@ import IconDrawing from "../icons/IconDrawing.vue";
 /* Секция описания */
 .description-section {
   display: flex;
-  gap: 40px;
+  gap: 120px;
   margin-bottom: 60px;
   align-items: flex-start;
 }
 
 .description-text {
   flex: 1;
-  font-size: 18px;
+  font-size: 22px;
   line-height: 1.6;
   color: #000;
   text-align: justify;
@@ -105,11 +110,11 @@ import IconDrawing from "../icons/IconDrawing.vue";
 .calculator-card {
   display: flex;
   align-items: center;
-  background-color: #fff;
+  background-color: var(--whity);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  min-width: 300px;
+  padding: 30px;
+  width: 400px;
   cursor: pointer;
   transition: box-shadow 0.3s ease;
 }
@@ -126,7 +131,7 @@ import IconDrawing from "../icons/IconDrawing.vue";
 }
 
 .calculator-text {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 500;
   color: #000;
   line-height: 1.4;
