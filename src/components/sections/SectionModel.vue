@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { ref } from "vue";
-let file_id = ref(4);
+import { ref } from 'vue'
+let file_id = ref(4)
 </script>
 
 <template>
   <el-row :gutter="0" class="model-row">
-    <el-col :offset="3" :span="7" :xs="{ span: 24, offset: 0 }">
-      <div class="model-title">ЦЕНТР КОЛЛЕКТИВНОГО ПРОИЗВОДСТВА</div>
-      <p class="model-subtitle">
-        Получите доступ к огромному выбору производственных процессов,
-        материалов и отделки.
-      </p>
+    <el-col :span="10" :xs="{ span: 24, offset: 0 }">
+      <div style="padding-top: 10px">
+        <div class="model-title">ЦЕНТР КОЛЛЕКТИВНОГО ПРОИЗВОДСТВА</div>
+        <p class="model-subtitle">
+          Получите доступ к огромному выбору производственных процессов, материалов и отделки.
+        </p>
+      </div>
     </el-col>
-    <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="model-right">
+    <el-col :offset="2" :span="12" :xs="{ span: 24, offset: 0 }" class="model-right">
       <el-row :gutter="20">
         <el-col :span="24">
           <CadShowById v-model="file_id" />
@@ -30,19 +31,21 @@ let file_id = ref(4);
 <style scoped>
 .model-row {
   min-height: 600px;
-  background-color: var(--left-section-bg);
-  padding: 100px 0 50px 20px;
+  background-color: white;
+  margin: 30px 0 30px;
+  padding: 20px 20px 20px 20px;
+  border-radius: 20px;
 }
 
 .model-title {
   text-align: left;
   font-size: 60px;
-  color: white;
+  color: black;
 }
 
 .model-subtitle {
   font-size: 30px;
-  color: white;
+  color: black;
 }
 
 .model-right {

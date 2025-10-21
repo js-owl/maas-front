@@ -16,7 +16,10 @@ function transformMaterials(prop: any): Array<{ value: string; label: string }> 
 // Загружаем материалы с бекенда
 async function loadMaterials() {
   try {
-    const response = await req_json_auth('/materials?process=cnc-milling', 'GET')
+    const response = await req_json_auth(
+      "/materials?process=cnc-milling",
+      "GET"
+    );
     if (response?.ok) {
       const backendMaterials = await response.json()
       materials.value = transformMaterials(backendMaterials)

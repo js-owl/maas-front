@@ -1,4 +1,10 @@
-# Vue 3 + TypeScript + Vite
+# Manufacturing Frontend (m-front)
+
+**Version:** 3.0.0  
+**API Compatibility:** v3.0.0  
+**Status:** Production Ready
+
+A Vue 3 + TypeScript + Vite application for manufacturing services with API v3.0.0 compatibility.
 
 ```mermaid
 sequenceDiagram

@@ -11,7 +11,7 @@ const orders = ref<IOrderResponse[]>();
 const deleteLoading = ref<number | null>(null);
 
 onMounted(async () => {
-  const r = await req_json_auth(`/orders/`, "GET");
+  const r = await req_json_auth(`/orders`, "GET");
   orders.value = (await r?.json()) as IOrderResponse[];
 });
 
@@ -20,9 +20,9 @@ const formatDate = (_row: any, _column: any, cellValue: string) => {
 };
 
 const serviceNames: any = {
-  cnc_lathe: "токарная",
-  cnc_milling: "фрезерная",
-  printing: "3D печать",
+  "cnc-lathe": "токарная",
+  "cnc-milling": "фрезерная",
+  "printing": "3D печать",
 };
 const getServiceName = (service_id: number): string => {
   return serviceNames[service_id] || service_id;
@@ -47,13 +47,13 @@ const getStatusText = (status: string): string => {
 
 const handleEdit = (row: IOrderResponse): void => {
   switch (row.service_id) {
-    case "cnc_lathe":
+    case "cnc-lathe":
       router.push({
         path: "/machining",
         query: { orderId: row.order_id.toString() },
       });
       break;
-    case "cnc_milling":
+    case "cnc-milling":
       router.push({
         path: "/milling",
         query: { orderId: row.order_id.toString() },

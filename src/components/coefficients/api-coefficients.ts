@@ -53,8 +53,8 @@ export async function getCoefficients(): Promise<CoefficientsData> {
   coefficientsPromise = (async () => {
     try {
       // Выполняем единственный API запрос к серверу
-      const r = await req_json(`/coefficients/`, 'GET')
-      const data = await r?.json()
+      const r = await req_json(`/coefficients`, "GET");
+      const data = await r?.json();
 
       // Трансформируем данные сервера в унифицированный формат
       // Сервер возвращает объекты с полями id и value

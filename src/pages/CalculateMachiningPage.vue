@@ -145,7 +145,7 @@ async function submitOrder(payload: IOrderPayload) {
       // Для POST запроса преобразуем document_ids в строку
       const postPayload: IOrderPostPayload = {
         ...payload,
-        document_ids: JSON.stringify(document_ids.value ?? []),
+        document_ids: document_ids.value ?? [],
       }
       const res = await req_json_auth('/orders', 'POST', postPayload)
       const data = (await res?.json()) as IOrderResponse
@@ -322,14 +322,26 @@ async function getOrder(id: number) {
     <!-- 2. Правая часть -->
     <el-col :span="13" :xs="{ span: 24, offset: 0 }" class="right-section">
       <el-row :gutter="5">
-        <el-col :offset="2" :span="5" :xs="{ span: 22, offset: 1 }">
+        <el-col :offset="2" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
+          <Length v-model="length" />
+        </el-col>
+        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
+          <Diameter v-model="width" />
+        </el-col>
+        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }">
+          <CoefficientQuantity v-model="quantity" />
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="5">
+        <el-col :offset="2" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
           <CoefficientFinish v-model="finish_id" />
         </el-col>
-        <el-col :offset="1" :span="5" :xs="{ span: 22, offset: 1 }">
+        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
           <CoefficientTolerance v-model="tolerance_id" />
         </el-col>
-        <el-col :offset="1" :span="5" :xs="{ span: 22, offset: 1 }">
-          <CoefficientQuantity v-model="quantity" />
+        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
+          <CoefficientSize v-model="n_dimensions" />
         </el-col>
       </el-row>
 
@@ -511,5 +523,80 @@ async function getOrder(id: number) {
   color: #283d5b;
   font-size: 24px;
   font-weight: 700;
+}
+
+.disabled-block {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .main-container {
+    min-height: auto;
+  }
+
+  .left-section {
+    padding: 16px 12px 24px 12px;
+  }
+
+  .right-section {
+    padding-top: 16px;
+  }
+
+  .title-text {
+    font-size: 24px;
+    text-align: center;
+    padding-bottom: 16px;
+  }
+
+  .price-section {
+    margin-bottom: 16px;
+  }
+
+  .price-row {
+    font-size: 16px;
+    padding: 8px 0;
+  }
+
+  .price-row-last {
+    font-size: 16px;
+    padding: 8px 0;
+  }
+
+  .disclaimer-text {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .upload-section {
+    margin-bottom: 16px;
+  }
+
+  .upload-title {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .upload-info {
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .submit {
+    font-size: 16px;
+    padding: 16px 0;
+    margin-bottom: 8px;
+  }
+
+  .component-section {
+    margin-bottom: 16px;
+  }
+
+  .label {
+    font-size: 18px;
+    padding-bottom: 8px;
+  }
 }
 </style>

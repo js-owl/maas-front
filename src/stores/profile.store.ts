@@ -104,7 +104,7 @@ export const useProfileStore = defineStore("user", () => {
   }
 
   async function getProfile() {
-    const r = await req_json_auth(`/profile/`, "GET");
+    const r = await req_json_auth(`/profile`, "GET");
     if (r) {
       const profileData = (await r.json()) as IProfile;
 
@@ -121,7 +121,7 @@ export const useProfileStore = defineStore("user", () => {
   }
 
   async function updateProfile(updated: IProfile) {
-    const r = await req_json_auth(`/profile/`, "PUT", updated);
+    const r = await req_json_auth(`/profile`, "PUT", updated);
     if (r) {
       const profileData = (await r.json()) as IProfile;
 

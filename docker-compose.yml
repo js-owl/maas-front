@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  maas-front:
+    image:  vortex.kronshtadt.ru:8443/maas-hosted/maas-front:v1
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile
+    container_name: maas_prod_front
+    #ports:
+    # - "80:80"
+    environment:
+      - CORS_ORIGINS=["*"]
+      - CORS_ALLOW_CREDENTIALS=true
+      - CORS_ALLOW_METHODS=["*"]
+      - CORS_ALLOW_HEADERS=["*"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - traefik-global-proxy
+      - backend
+    labels:
+      # Enable Traefik
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-global-proxy"
+
+      # Router configuration (update domain as needed)
+      - "traefik.http.routers.maas-front.rule=Host(`maas.aeromax-group.ru`)" # || Host(`maas.kronshtadt.ru`)" # && PathPrefix(`/backend-stl`)"
+      - "traefik.http.routers.maas-front.entrypoints=https"
+      - "traefik.http.routers.maas-front.tls=true"
+
+      # Service configuration
+      - "traefik.http.services.maas-front.loadbalancer.server.port=80"
+      #- "traefik.http.services.maas-front.loadbalancer.healthcheck.path=/calculate/health"
+      #- "traefik.http.services.maas-front.loadbalancer.healthcheck.interval=30s"
+
+      # Security headers middleware
+      - "traefik.http.middlewares.maas-front-headers.headers.customresponseheaders.X-Frame-Options=DENY"
+      - "traefik.http.middlewares.maas-front-headers.headers.customresponseheaders.X-Content-Type-Options=nosniff"
+      - "traefik.http.middlewares.maas-front-headers.headers.customresponseheaders.X-XSS-Protection=1; mode=block"
+      - "traefik.http.middlewares.maas-front-headers.headers.customresponseheaders.Strict-Transport-Security=max-age=31536000; includeSubDomains"
+
+      # Apply middleware
+      - "traefik.http.routers.maas-front.middlewares=maas-front-headers"
+
+networks:
+  traefik-global-proxy:
+    external: true
+  backend:
+    external: true

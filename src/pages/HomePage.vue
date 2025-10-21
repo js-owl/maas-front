@@ -12,29 +12,31 @@ const isMobile = computed(() => width.value < 768)
 </script>
 
 <template>
-  <div v-if="!isMobile">
-    <SectionModel />
-    <el-row>
-      <el-col :offset="3" :span="18">
-        <SectionAbility />
-      </el-col>
-    </el-row>
-    <SectionMilestones />
-    <el-row>
-      <el-col :offset="3" :span="18">
-        <SectionAbout />
-      </el-col>
-    </el-row>
-    <SectionAdvantages />
+  <div style="background-color: #e1e4e6">
+    <div v-if="!isMobile">
+      <el-row>
+        <el-col :offset="3" :span="18">
+          <SectionModel />
+          <SectionAbility />
+        </el-col>
+      </el-row>
+      <SectionMilestones />
+      <el-row>
+        <el-col :offset="3" :span="18">
+          <SectionAbout />
+        </el-col>
+      </el-row>
+      <SectionAdvantages />
+    </div>
+    <template v-else>
+      <SectionModel />
+      <el-row>
+        <el-col :offset="0" :span="24">
+          <SectionAbility />
+          <SectionAbout />
+        </el-col>
+      </el-row>
+    </template>
   </div>
-  <template v-else>
-    <SectionModel />
-    <el-row>
-      <el-col :offset="0" :span="24">
-        <SectionAbility />
-        <SectionAbout />
-      </el-col>
-    </el-row>
-  </template>
 </template>
 <style scoped></style>

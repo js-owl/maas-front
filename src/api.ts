@@ -3,8 +3,8 @@ import { useAuthStore } from './stores/auth.store'
 import router from './router'
 
 // API Base URLs
-export const API_BASE = 'http://mdgkd-vlabal.int.kronshtadt.ru:8000'
-// export const API_BASE = "https://lk-api.maas.int.kronshtadt.ru";
+// Auto-detect based on environment
+export const API_BASE = import.meta.env.VITE_API_BASE || '/api/v3';
 
 // Helper function to convert object to URL-encoded string
 // @deprecated - Use JSON format for v3.0.0 API
@@ -166,4 +166,43 @@ export async function req_json(
       ElMessage.error(`Ошибка сервера`)
     }
   }
+}
+
+// File upload with base64
+export async function uploadFile3D(
+  fileName: string,
+  fileData: string,
+  fileType: string
+): Promise<Response | undefined> {
+  return await req_json_auth('/files', 'POST', {
+    file_name: fileName,
+    file_data: fileData,
+    file_type: fileType
+  });
+}
+
+// Document upload with base64
+export async function uploadDocument(
+  documentName: string,
+  documentData: string,
+  category?: string
+): Promise<Response | undefined> {
+  return await req_json_auth('/documents', 'POST', {
+    document_name: documentName,
+    document_data: documentData,
+    document_category: category
+  });
+}
+
+// File to base64 converter
+export function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = (reader.result as string).split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }

@@ -25,6 +25,8 @@ async function detectFileType(id) {
   
   try {
     const headers = new Headers();
+    
+    // Add auth header only if user is authenticated
     if (authStore.getToken) {
       headers.append("Authorization", `Bearer ${authStore.getToken}`);
     }

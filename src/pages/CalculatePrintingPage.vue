@@ -16,6 +16,7 @@ import CoefficientCover from '../components/coefficients/CoefficientCover.vue'
 import { useRoute, useRouter } from 'vue-router'
 import UploadModel from '../components/cad/UploadModel.vue'
 import UploadDrawings from '../components/UploadDrawings.vue'
+import DocumentShowByIds from '../components/DocumentShowByIds.vue'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
 import { useProfileStore, type IProfile } from '../stores/profile.store'
@@ -48,7 +49,7 @@ let quantity = ref(1)
 let material_id = ref('PA11')
 let material_form = ref('powder')
 
-let cover_id = ref<string[]>(['1'])
+let cover_id = ref<string[]>(['1']);
 
 let k_otk = ref('1')
 let k_cert = ref(['a', 'f'])
@@ -57,7 +58,7 @@ let manufacturing_cycle = ref<number>(0)
 let special_instructions = ref('')
 
 const payload = reactive({
-  service_id: 'printing',
+  service_id: "printing",
   file_id,
   document_ids,
   quantity,
@@ -120,9 +121,9 @@ async function ensureProfileLoaded() {
 async function sendData(payload: IOrderPayload) {
   isLoading.value = true
   try {
-    const res = await req_json('/calculate-price', 'POST', payload)
-    const data = (await res?.json()) as IOrderResponse
-    result.value = data
+    const res = await req_json("/calculate-price", "POST", payload);
+    const data = (await res?.json()) as IOrderResponse;
+    result.value = data;
   } catch (error) {
     console.error({ error })
   }
@@ -140,7 +141,7 @@ async function submitOrder(payload: IOrderPayload) {
       // Для POST запроса преобразуем document_ids в строку
       const postPayload: IOrderPostPayload = {
         ...payload,
-        document_ids: JSON.stringify(payload.document_ids),
+        document_ids: payload.document_ids,
       }
       const res = await req_json_auth('/orders', 'POST', postPayload)
       const data = (await res?.json()) as IOrderResponse
@@ -196,7 +197,7 @@ async function getOrder(id: number) {
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
-      service_id: '3dprinting',
+      service_id: "printing",
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
@@ -227,7 +228,7 @@ async function getOrder(id: number) {
     element-loading-custom-class="loading-top"
   >
     <!-- 1. Левая часть -->
-    <el-col :offset="3" :span="8" class="left-section">
+    <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
       <div class="title-text">
         3D ПЕЧАТЬ <br />
         {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
@@ -310,21 +311,21 @@ async function getOrder(id: number) {
     </el-col>
 
     <!-- 2. Правая часть -->
-    <el-col :span="13" class="right-section">
-      <el-row :gutter="5">
+    <el-col :span="13" :xs="{ span: 24, offset: 0 }" class="right-section">
+      <el-row :gutter="5" class="disabled-block">
         <el-col :offset="2" :span="5">
           <Length v-model="length" />
         </el-col>
-        <el-col :offset="1" :span="5">
+        <el-col :offset="1" :span="5" class="disabled-block">
           <Width v-model="width" />
         </el-col>
-        <el-col :offset="1" :span="5">
+        <el-col :offset="1" :span="5" class="disabled-block">
           <Height v-model="height" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5">
-        <el-col :offset="2" :span="11">
+        <el-col :offset="2" :span="11" class="enabled-block">
           <MaterialPrinting v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="5">
@@ -333,30 +334,30 @@ async function getOrder(id: number) {
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="2" :span="20" class="disabled-block">
           <CoefficientCover v-model="cover_id" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="2" :span="20" class="disabled-block">
           <SuitableMachines :machines="result?.suitable_machines || []" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="2" :span="20" class="disabled-block">
           <CoefficientOtk v-model="k_otk" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-both">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="2" :span="20" class="disabled-block">
           <CoefficientCertificate v-model="k_cert" />
         </el-col>
       </el-row>
       <el-row :gutter="5" class="row-spacing-bottom">
-        <el-col :offset="2" :span="17">
+        <el-col :offset="2" :span="17" class="disabled-block">
           <div class="label">Комментарий</div>
           <el-input
             v-model="special_instructions"
@@ -503,5 +504,85 @@ async function getOrder(id: number) {
   color: #283d5b;
   font-size: 24px;
   font-weight: 700;
+}
+
+.disabled-block {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.enabled-block {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+@media (max-width: 767px) {
+  .main-container {
+    min-height: auto;
+  }
+
+  .left-section {
+    padding: 16px 12px 24px 12px;
+  }
+
+  .right-section {
+    padding-top: 16px;
+  }
+
+  .title-text {
+    font-size: 24px;
+    text-align: center;
+    padding-bottom: 16px;
+  }
+
+  .price-section {
+    margin-bottom: 16px;
+  }
+
+  .price-row {
+    font-size: 16px;
+    padding: 8px 0;
+  }
+
+  .price-row-last {
+    font-size: 16px;
+    padding: 8px 0;
+  }
+
+  .disclaimer-text {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .upload-section {
+    margin-bottom: 16px;
+  }
+
+  .upload-title {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .upload-info {
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .submit {
+    font-size: 16px;
+    padding: 16px 0;
+    margin-bottom: 8px;
+  }
+
+  .component-section {
+    margin-bottom: 16px;
+  }
+
+  .label {
+    font-size: 18px;
+    padding-bottom: 8px;
+  }
 }
 </style>

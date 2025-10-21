@@ -15,7 +15,7 @@ const items = ref([
 <template>
   <el-row :gutter="0" class="main-container">
     <!-- 1. Левая часть -->
-    <el-col :offset="3" :span="8" class="left-section">
+    <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
       <div class="title-text">ПРИМЕНЕНИЕ</div>
       <div v-for="item in items" :key="item.id" class="items">
         <!-- <el-icon class="check-icon"><Check /></el-icon> -->
@@ -24,36 +24,22 @@ const items = ref([
         </div>
         <div>{{ item.text }}</div>
       </div>
-      <div
-        style="
-          display: flex;
-          margin-top: 50px;
-          padding: 15px;
-          background-color: white;
-          width: 350px;
-          margin-bottom: 30px;
-        "
-      >
+      <div class="calculator-card">
         <div>
           <IconDrawing
             color="black"
-            style="
-              display: block;
-              width: 100px;
-              height: 100px;
-              padding-right: 20px;
-            "
+            class="calculator-icon"
           />
         </div>
         <div
-          style="font-size: 22px; cursor: pointer"
+          class="calculator-text"
           @click="$router.push('/machining')"
         >
           Калькулятор стоимости токарной обработки
         </div>
       </div>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="12" :xs="24">
           <el-button
             type="primary"
             plain
@@ -67,19 +53,21 @@ const items = ref([
     </el-col>
 
     <!-- 2. Правая часть -->
-    <el-col :span="13" class="right-section">
+    <el-col :span="13" :xs="{ span: 24, offset: 0 }" class="right-section">
       <el-row>
         <el-col
           :offset="2"
           :span="17"
-          style="font-size: 38px; font-weight: 600; padding-bottom: 30px"
+          :xs="{ span: 24, offset: 0 }"
+          class="section-title"
         >
           <div>ТОКАРНАЯ ОБРАБОТКА</div>
         </el-col>
         <el-col
           :offset="2"
           :span="17"
-          style="padding-bottom: 40px; font-size: 24px"
+          :xs="{ span: 24, offset: 0 }"
+          class="section-description"
         >
           Токарная обработка представляет собой механическую операцию, при
           которой вращающаяся деталь обрабатывается режущим инструментом,
@@ -94,31 +82,32 @@ const items = ref([
         <el-col
           :offset="2"
           :span="17"
-          style="font-size: 38px; font-weight: 600; padding-bottom: 30px"
+          :xs="{ span: 24, offset: 0 }"
+          class="section-title"
         >
           <div>ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
         </el-col>
       </el-row>
-      <el-row style="padding-bottom: 30px">
-        <el-col :offset="2" :span="8">
+      <el-row class="requirements-row">
+        <el-col :offset="2" :span="8" :xs="{ span: 24, offset: 0 }">
           <div class="mark">Оборудование</div>
           <div class="mark-text">Токарно-винторезные станки</div>
           <div class="mark-text">Станок с ЧПУ</div>
         </el-col>
-        <el-col :offset="1" :span="8">
+        <el-col :offset="1" :span="8" :xs="{ span: 24, offset: 0 }">
           <div class="mark">Размеры детали/ заготовки</div>
           <div class="mark-text">Длина до 1000 мм</div>
           <div class="mark-text">Диаметр до 600 мм</div>
         </el-col>
       </el-row>
-      <el-row style="padding-bottom: 30px">
-        <el-col :offset="2" :span="8">
+      <el-row class="requirements-row">
+        <el-col :offset="2" :span="8" :xs="{ span: 24, offset: 0 }">
           <div class="mark">Материалы</div>
           <div class="mark-text">Нержавеющие, легированные стали</div>
           <div class="mark-text">Полиамиды, фторопласт</div>
           <div class="mark-text">Алюминиевые, бронзовые, медные сплавы</div>
         </el-col>
-        <el-col :offset="1" :span="8"> </el-col>
+        <el-col :offset="1" :span="8" :xs="{ span: 24, offset: 0 }"> </el-col>
       </el-row>
     </el-col>
   </el-row>
@@ -180,5 +169,121 @@ const items = ref([
   font-size: 26px;
   padding: 30px 0;
   width: 100%;
+}
+
+.calculator-card {
+  display: flex;
+  margin-top: 50px;
+  padding: 15px;
+  background-color: white;
+  width: 350px;
+  margin-bottom: 30px;
+}
+
+.calculator-icon {
+  display: block;
+  width: 100px;
+  height: 100px;
+  padding-right: 20px;
+}
+
+.calculator-text {
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.section-title {
+  font-size: 38px;
+  font-weight: 600;
+  padding-bottom: 30px;
+}
+
+.section-description {
+  padding-bottom: 40px;
+  font-size: 24px;
+}
+
+.requirements-row {
+  padding-bottom: 30px;
+}
+
+@media (max-width: 767px) {
+  .main-container {
+    min-height: auto;
+  }
+
+  .left-section {
+    padding: 16px 12px 24px 12px;
+  }
+
+  .right-section {
+    padding-top: 16px;
+  }
+
+  .title-text {
+    font-size: 28px;
+    text-align: center;
+    padding-bottom: 16px;
+  }
+
+  .items {
+    font-size: 18px;
+    padding-bottom: 16px;
+  }
+
+  .check-img {
+    width: 28px;
+    height: 28px;
+    margin-right: 16px;
+  }
+
+  .calculator-card {
+    width: 100%;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    padding: 12px;
+  }
+
+  .calculator-icon {
+    width: 60px;
+    height: 60px;
+    padding-right: 12px;
+  }
+
+  .calculator-text {
+    font-size: 16px;
+  }
+
+  .submit {
+    font-size: 18px;
+    padding: 16px 0;
+  }
+
+  .section-title {
+    font-size: 24px;
+    padding-bottom: 16px;
+    text-align: center;
+  }
+
+  .section-description {
+    font-size: 16px;
+    padding-bottom: 24px;
+    text-align: center;
+  }
+
+  .requirements-row {
+    padding-bottom: 16px;
+  }
+
+  .mark {
+    font-size: 14px;
+    padding: 8px;
+    margin-bottom: 12px;
+  }
+
+  .mark-text {
+    font-size: 14px;
+    padding-bottom: 6px;
+  }
 }
 </style>

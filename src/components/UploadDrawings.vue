@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { ElMessage } from "element-plus";
-import { req_json_auth } from "../api";
+import { uploadDocument, fileToBase64 } from "../api";
 import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from "../stores/auth.store";
+import { ElMessage } from "element-plus";
 
 const document_ids = defineModel<number[]>({ default: [] });
 const { color = "white" } = defineProps({
@@ -12,7 +12,6 @@ const { color = "white" } = defineProps({
 
 const authStore = useAuthStore();
 const isUploading = ref(false);
-const fileInput = ref<HTMLInputElement>();
 
 const isDisabled = () => {
   if (authStore.getToken) {
@@ -21,97 +20,73 @@ const isDisabled = () => {
   return true;
 };
 
-const fileToBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result as string;
-      // Remove data:type;base64, prefix
-      const base64Data = base64.split(',')[1];
-      resolve(base64Data);
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-};
-
-const handleFileUpload = async (file: File) => {
+const handleFileChange = async (file: File) => {
   if (!authStore.getToken) {
-    return;
+    return false;
   }
 
   isUploading.value = true;
   
   try {
+    // Convert file to base64
     const base64Data = await fileToBase64(file);
     
-    const response = await req_json_auth('/documents', 'POST', {
-      file_name: file.name,
-      file_data: base64Data,
-      description: 'Document'
-    });
-
-    if (response) {
+    // Upload document using new API
+    const response = await uploadDocument(file.name, base64Data, 'technical_spec');
+    
+    if (response?.ok) {
       const data = await response.json();
-      console.log("loadDoc", data);
-      const id = Number(data?.document_id);
+      console.log('Document upload response:', data);
       
+      // Update document_ids with the new response format
+      const id = Number(data.document_id);
       if (!Array.isArray(document_ids.value)) {
         document_ids.value = [];
       }
       if (Number.isFinite(id) && !document_ids.value.includes(id)) {
         document_ids.value.push(id);
-        ElMessage.success('Документ успешно загружен');
+        
+        // Save document info to localStorage for persistence
+        const documentInfo = {
+          id: id,
+          original_filename: file.name
+        };
+        
+        try {
+          const stored = localStorage.getItem('uploaded_documents');
+          const documents = stored ? JSON.parse(stored) : [];
+          if (!documents.find((d: any) => d.id === id)) {
+            documents.push(documentInfo);
+            localStorage.setItem('uploaded_documents', JSON.stringify(documents));
+          }
+        } catch (e) {
+          console.error('Error saving document to storage:', e);
+        }
       }
+      
+      ElMessage.success('Документ успешно загружен!');
+    } else {
+      throw new Error('Upload failed');
     }
   } catch (error) {
-    console.error('Upload error:', error);
-    ElMessage.error('Ошибка при загрузке документа');
+    console.error('Document upload error:', error);
+    ElMessage.error('Ошибка загрузки документа');
   } finally {
     isUploading.value = false;
   }
+  
+  return false; // Prevent default upload behavior
 };
 
-const handleFileChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  const files = target.files;
-  if (files) {
-    Array.from(files).forEach(file => {
-      handleFileUpload(file);
-    });
-  }
-};
-
-const handleUploadClick = () => {
-  if (!authStore.getToken) {
-    return;
-  }
-  fileInput.value?.click();
-};
-
-const handleDrop = (event: DragEvent) => {
-  event.preventDefault();
-  const files = event.dataTransfer?.files;
-  if (files) {
-    Array.from(files).forEach(file => {
-      handleFileUpload(file);
-    });
-  }
-};
-
-const handleDragOver = (event: DragEvent) => {
-  event.preventDefault();
-};
 </script>
 
 <template>
-  <div
+  <el-upload
     class="upload"
     :style="{ '--border-color': color }"
-    :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
-    @dragover="handleDragOver"
-    @drop="handleDrop"
-    @click="handleUploadClick"
+    drag
+    :before-upload="handleFileChange"
+    :disabled="isDisabled() || isUploading"
   >
     <div class="custom">
       <IconDrawing
@@ -121,47 +96,25 @@ const handleDragOver = (event: DragEvent) => {
       <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
         {{ isUploading ? 'Загрузка...' : 'Чертежи, документация' }}
       </div>
-      <input
-        type="file"
-        accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png"
-        multiple
-        @change="handleFileChange"
-        style="display: none"
-        ref="fileInput"
-      />
     </div>
-  </div>
+  </el-upload>
 </template>
 
 <style scoped>
-.upload {
+:deep(.el-upload-dragger) {
   padding: 10px;
   border: 1px solid var(--border-color);
   background-color: var(--left-section-bg) !important;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s;
 }
-
-.upload:hover:not(.is-disabled) {
-  border-color: #409eff;
+:deep(.el-upload.is-disabled .el-upload-dragger) {
+  background-color: var(--left-section-bg) !important;
+  padding: 10px;
+  border: 1px solid var(--border-color);
 }
-
-.upload.is-disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.upload.is-uploading {
-  opacity: 0.8;
-  cursor: wait;
-}
-
 .custom {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 120px;
 }
 </style>

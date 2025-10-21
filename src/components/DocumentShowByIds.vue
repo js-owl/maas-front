@@ -3,6 +3,7 @@ import { onMounted, ref, watch, computed } from "vue";
 import { req_json_auth } from "../api";
 import { useProfileStore } from "../stores/profile.store";
 import { ElMessage } from "element-plus";
+import { Download } from "@element-plus/icons-vue";
 
 type DocumentInfo = {
   id: number;
@@ -42,9 +43,31 @@ async function loadUserDocuments() {
       ? data.map((d) => ({ id: d.id, original_filename: d.original_filename }))
       : [];
   } catch (e) {
-    console.error(e);
+    console.error('Error loading user documents:', e);
+    // If API fails, try to load from localStorage as fallback
+    loadDocumentsFromStorage();
   }
   isLoading.value = false;
+}
+
+function loadDocumentsFromStorage() {
+  try {
+    const stored = localStorage.getItem('uploaded_documents');
+    if (stored) {
+      const documents = JSON.parse(stored);
+      allDocuments.value = documents;
+    }
+  } catch (e) {
+    console.error('Error loading documents from storage:', e);
+  }
+}
+
+function saveDocumentsToStorage() {
+  try {
+    localStorage.setItem('uploaded_documents', JSON.stringify(allDocuments.value));
+  } catch (e) {
+    console.error('Error saving documents to storage:', e);
+  }
 }
 
 async function downloadDoc(id: number) {
@@ -89,12 +112,24 @@ async function downloadDoc(id: number) {
 function removeDocument(id: number) {
   if (!Array.isArray(document_ids.value)) return;
   const idx = document_ids.value.indexOf(id);
-  if (idx >= 0) document_ids.value.splice(idx, 1);
+  if (idx >= 0) {
+    document_ids.value.splice(idx, 1);
+    
+    // Also remove from allDocuments and save to localStorage
+    const docIdx = allDocuments.value.findIndex(d => d.id === id);
+    if (docIdx >= 0) {
+      allDocuments.value.splice(docIdx, 1);
+      saveDocumentsToStorage();
+    }
+  }
 }
 
 onMounted(() => {
   if (Array.isArray(document_ids.value) && document_ids.value.length > 0) {
     loadUserDocuments();
+  } else {
+    // Try to load from localStorage as fallback
+    loadDocumentsFromStorage();
   }
 });
 watch(
@@ -110,6 +145,7 @@ watch(
     if (!ids || ids.length === 0) {
       // если список очистили — очистим отображение
       allDocuments.value = [];
+      saveDocumentsToStorage();
     }
   }
 );

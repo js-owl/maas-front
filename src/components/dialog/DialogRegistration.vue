@@ -11,6 +11,9 @@ interface FormData {
   password: string;
   confirmPassword: string;
   user_type: string;
+  email?: string;
+  full_name?: string;
+  phone_number?: string;
 }
 
 const formRef = ref<FormInstance>();
@@ -19,6 +22,9 @@ const form = ref<FormData>({
   password: "",
   confirmPassword: "",
   user_type: "individual",
+  email: "",
+  full_name: "",
+  phone_number: "",
 });
 
 const usernameError = ref("");
@@ -85,6 +91,9 @@ const closeDialog = () => {
     password: "",
     confirmPassword: "",
     user_type: "individual",
+    email: "",
+    full_name: "",
+    phone_number: "",
   };
   usernameError.value = "";
   // Clear validation errors
@@ -156,6 +165,28 @@ const submitForm = async () => {
           v-model="form.username"
           placeholder="Введите username"
           @input="usernameError = ''"
+        />
+      </el-form-item>
+
+      <el-form-item label="Email" prop="email">
+        <el-input
+          v-model="form.email"
+          placeholder="Введите email (необязательно)"
+          type="email"
+        />
+      </el-form-item>
+
+      <el-form-item label="Полное имя" prop="full_name">
+        <el-input
+          v-model="form.full_name"
+          placeholder="Введите полное имя (необязательно)"
+        />
+      </el-form-item>
+
+      <el-form-item label="Телефон" prop="phone_number">
+        <el-input
+          v-model="form.phone_number"
+          placeholder="Введите телефон (необязательно)"
         />
       </el-form-item>
 

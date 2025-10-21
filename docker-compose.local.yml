@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  # Frontend service - build locally
+  maas-front:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    container_name: maas_front_local
+    ports:
+      - "80:80"
+    environment:
+      - CORS_ORIGINS=["*"]
+      - CORS_ALLOW_CREDENTIALS=true
+      - CORS_ALLOW_METHODS=["*"]
+      - CORS_ALLOW_HEADERS=["*"]
+    restart: unless-stopped
+    networks:
+      - maas-shared
+
+networks:
+  maas-shared:
+    external: true

@@ -25,6 +25,8 @@ async function generatePreview() {
   try {
     const headers = new Headers();
     headers.append("Content-Type", "application/octet-stream");
+    
+    // Add auth header only if user is authenticated
     if (authStore.getToken) {
       headers.append("Authorization", `Bearer ${authStore.getToken}`);
     }

@@ -63,7 +63,7 @@ async function loadOCCTLibrary() {
       occt = await occtimportjs({
         locateFile: (path) => {
           if (path.endsWith('.wasm')) {
-            return '/site-dev/occt-import-js.wasm' // `${import.meta.env.VITE_BASE_PATH || '/'}occt-import-js.wasm`
+            return `${import.meta.env.VITE_BASE_PATH || '/'}occt-import-js.wasm`
           }
           return path
         },
@@ -340,6 +340,8 @@ async function loadFileFromServer(id) {
     loadingProgress.value = 10
 
     const headers = new Headers()
+    
+    // Add auth header only if user is authenticated
     if (authStore.getToken) {
       headers.append('Authorization', `Bearer ${authStore.getToken}`)
     }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
+import VersionInfo from "./VersionInfo.vue";
 
 // const store = useUserStore();
 
@@ -58,6 +59,10 @@ onMounted(() => {
               Калькулятор стоимости фрезерной обработки
             </router-link>
           </div>
+          
+          <div class="version-section">
+            <VersionInfo />
+          </div>
         </div>
       </div>
     </el-col>
@@ -91,7 +96,8 @@ onMounted(() => {
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  gap: 20px;
 }
 
 .vertical-links {
@@ -156,6 +162,11 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.version-section {
+  display: flex;
+  align-items: center;
 }
 
 @media (max-width: 1200px) {

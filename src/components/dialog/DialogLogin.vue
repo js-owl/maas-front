@@ -7,8 +7,8 @@ let dialogFormVisible = defineModel<boolean>();
 const formLabelWidth = "140px";
 
 const formData = reactive({
-  username: "admin",
-  password: "admin123",
+  username: "",
+  password: "",
 });
 
 const isRegistrationVisible = ref(false);

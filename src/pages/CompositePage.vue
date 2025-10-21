@@ -28,22 +28,16 @@ const productionData = ref([
 <template>
   <el-row
     :gutter="20"
-    style="
-      background-image: url('banner_composite.jpg');
-      background-repeat: no-repeat;
-      background-color: #fff;
-      padding: 30px 0 300px 0;
-      min-height: 500px;
-    "
+    class="composite-container"
   >
-    <el-col :offset="2" :span="20">
-      <h1 style="font-size: 70px; color: white">{{ h.toUpperCase() }}</h1>
+    <el-col :offset="2" :span="20" :xs="{ span: 24, offset: 0 }">
+      <h1 class="composite-title">{{ h.toUpperCase() }}</h1>
     </el-col>
-    <el-col :offset="2" :span="20">
+    <el-col :offset="2" :span="20" :xs="{ span: 24, offset: 0 }">
       <el-table
         stripe
         :data="productionData"
-        style="width: 100%"
+        class="composite-table"
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
       >
         <el-table-column
@@ -67,11 +61,75 @@ const productionData = ref([
 </template>
 
 <style scoped>
-.el-table {
+.composite-container {
+  background-image: url('banner_composite.jpg');
+  background-repeat: no-repeat;
+  background-color: #fff;
+  padding: 30px 0 300px 0;
+  min-height: 500px;
+}
+
+.composite-title {
+  font-size: 70px;
+  color: white;
+}
+
+.composite-table {
+  width: 100%;
   margin-top: 20px;
 }
 
-.el-table :deep(.cell) {
+.composite-table :deep(.cell) {
   white-space: pre-line;
+}
+
+@media (max-width: 767px) {
+  .composite-container {
+    padding: 16px 0 200px 0;
+    min-height: auto;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .composite-title {
+    font-size: 32px;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .composite-table {
+    margin-top: 12px;
+  }
+
+  .composite-table :deep(.el-table__header) {
+    display: none;
+  }
+
+  .composite-table :deep(.el-table__body) {
+    display: block;
+  }
+
+  .composite-table :deep(.el-table__row) {
+    display: block;
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    background: white;
+  }
+
+  .composite-table :deep(.el-table__cell) {
+    display: block;
+    border: none;
+    padding: 4px 0;
+  }
+
+  .composite-table :deep(.el-table__cell:before) {
+    content: attr(data-label) ": ";
+    font-weight: bold;
+    display: inline-block;
+    min-width: 120px;
+  }
 }
 </style>

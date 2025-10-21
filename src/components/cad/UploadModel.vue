@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../../api'
 import Icon3D from '../../icons/Icon3D.vue'
 import { useAuthStore } from '../../stores/auth.store'
 import DialogLogin from '../dialog/DialogLogin.vue'
+import { ElMessage } from 'element-plus'
 
 const file_id = defineModel<number>()
 const { color = 'white' } = defineProps({
@@ -82,6 +82,10 @@ const handleFileUpload = async (file: File) => {
 }
 
 const handleFileChange = (event: Event) => {
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true
+    return
+  }
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]
   if (file) {
@@ -91,6 +95,10 @@ const handleFileChange = (event: Event) => {
 
 const handleDrop = (event: DragEvent) => {
   event.preventDefault()
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true
+    return
+  }
   const file = event.dataTransfer?.files[0]
   if (file) {
     handleFileUpload(file)
@@ -100,6 +108,7 @@ const handleDrop = (event: DragEvent) => {
 const handleDragOver = (event: DragEvent) => {
   event.preventDefault()
 }
+
 </script>
 
 <template>
@@ -109,9 +118,9 @@ const handleDragOver = (event: DragEvent) => {
         class="upload"
         :style="{ '--border-color': color }"
         :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
-        @dragover="handleDragOver"
-        @drop="handleDrop"
         @click="handleUploadClick"
+        @drop="handleDrop"
+        @dragover="handleDragOver"
       >
         <div class="custom">
           <Icon3D :color="color" style="display: block; width: 100px; height: 100px" />
