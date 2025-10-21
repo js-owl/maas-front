@@ -63,7 +63,7 @@ const abilities = ref([
             <h3 class="card-title">{{ ability.title }}</h3>
             
             <div v-if="ability.isDevelopment" class="development-notice">
-              <span class="development-text">(Раздел в разработке)</span>
+              <span class="development-text">[Раздел в разработке]</span>
             </div>
             
             <div v-if="ability.imagePath" class="card-icon">
@@ -141,13 +141,21 @@ const abilities = ref([
 }
 
 .development-notice {
-  margin-top: auto;
+  position: absolute;
+  bottom: 45px;
+  left: 20px;
+  margin-top: 0;
 }
 
 .development-text {
-  font-size: 14px;
-  color: #666;
+  font-size: 18px;
+  color: #999;
+  /* 
   font-style: italic;
+  background-color: rgba(153, 153, 153, 0.15);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(153, 153, 153, 0.3); */
 }
 
 .card-icon {
@@ -178,31 +186,15 @@ const abilities = ref([
     font-size: 16px;
   }
   
-  .card-icon {
-    /* width: 50px;
-    height: 50px; */
-  }
+   .development-text  {
+    font-size: 14px;
+   }
+   
+   .card-icon {
+     bottom: 15px;
+     right: 15px;
+     height: 120px;
+   }
 }
 
-@media (max-width: 480px) {
-  .section-basic {
-    padding: 20px 15px;
-  }
-  
-  .ability-title {
-    font-size: 24px;
-  }
-  
-  .card-content {
-    padding: 15px;
-  }
-  
-  .card-title {
-    font-size: 14px;
-  }
-  
-  .development-text {
-    font-size: 12px;
-  }
-}
 </style>

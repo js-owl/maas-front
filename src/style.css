@@ -14,7 +14,7 @@ body {
 
 /* Общие стили для секций */
 .section-basic {
-  min-height: 600px;
+  min-height: 500px;
   background-color: white;
   margin: 30px 0 30px;
   padding: 20px 20px 20px 20px;
