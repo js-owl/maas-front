@@ -1,3 +1,52 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const advantages = ref([
+  {
+    id: 1,
+    title: 'СРОКИ РАБОТЫ',
+    text: 'Мы работаем максимально быстро и качественно, вы получаете результаты точно в назначенные сроки',
+    span: 6,
+    offset: 3,
+  },
+  {
+    id: 2,
+    title: 'ДОСТАВКА И УПАКОВКА',
+    text: 'Вам больше не нужно беспокоиться о логистике – мы сами надежно упакуем и доставим вам готовую продукцию',
+    span: 6,
+    offset: 0,
+  },
+  {
+    id: 3,
+    title: 'ПРОВЕРЕННЫЕ МАТЕРИАЛЫ И ОБОРУДОВАНИЕ',
+    text: 'Мы гарантируем качество и работаем только с надежными поставщиками материалов и оборудования',
+    span: 6,
+    offset: 0,
+  },
+  {
+    id: 4,
+    title: 'ДОГОВОР И ГАРАНТИЯ КАЧЕСТВА',
+    text: 'Работаем по договору и предоставляем гарантию на всю продукцию. А также подготовим для вас всю необходимую сертификацию',
+    span: 6,
+    offset: 3,
+  },
+  {
+    id: 5,
+    title: 'ГИБКОСТЬ',
+    text: 'Наши специалисты помогут найти все необходимые решения, учтут ваши пожелания и нюансы заказов.',
+    span: 6,
+    offset: 0,
+  },
+  {
+    id: 6,
+    title: 'СОТРУДНИЧЕСТВО',
+    text: 'Мы постоянно в поиске новых решений и развития, и готовы рассмотреть ваши предложения по совместному производству',
+    span: 6,
+    offset: 0,
+  },
+])
+</script>
+
 <template>
   <section class="advantages-section">
     <el-row :gutter="20">
@@ -5,61 +54,33 @@
         <div class="advantages-title">НАШИ ПРЕИМУЩЕСТВА</div>
       </el-col>
     </el-row>
+    
     <el-row :gutter="60" class="row-wrap">
-      <el-col :offset="3" :span="6" :xs="24">
+      <el-col 
+        v-for="advantage in advantages.slice(0, 3)" 
+        :key="advantage.id"
+        :offset="advantage.offset" 
+        :span="advantage.span" 
+        :xs="24"
+      >
         <div class="item">
-          <div class="item-title">СРОКИ РАБОТЫ</div>
-          <p class="item-text">
-            Мы работаем максимально быстро и качественно, вы получаете
-            результаты точно в назначенные сроки
-          </p>
-        </div>
-      </el-col>
-      <el-col :offset="0" :span="6" :xs="24">
-        <div class="item">
-          <div class="item-title">ДОСТАВКА И УПАКОВКА</div>
-          <p class="item-text">
-            Вам больше не нужно беспокоиться о логистике – мы сами надежно
-            упакуем и доставим вам готовую продукцию
-          </p>
-        </div>
-      </el-col>
-      <el-col :offset="0" :span="6" :xs="24">
-        <div class="item">
-          <div class="item-title">ПРОВЕРЕННЫЕ МАТЕРИАЛЫ И ОБОРУДОВАНИЕ</div>
-          <p class="item-text">
-            Мы гарантируем качество и работаем только с надежными поставщиками
-            материалов и оборудования
-          </p>
+          <div class="item-title">{{ advantage.title }}</div>
+          <p class="item-text">{{ advantage.text }}</p>
         </div>
       </el-col>
     </el-row>
+    
     <el-row :gutter="60" class="row-wrap row-gap">
-      <el-col :offset="3" :span="6" :xs="24">
+      <el-col 
+        v-for="advantage in advantages.slice(3, 6)" 
+        :key="advantage.id"
+        :offset="advantage.offset" 
+        :span="advantage.span" 
+        :xs="24"
+      >
         <div class="item">
-          <div class="item-title">ДОГОВОР И ГАРАНТИЯ КАЧЕСТВА</div>
-          <p class="item-text">
-            Работаем по договору и предоставляем гарантию на всю продукцию. А
-            также подготовим для вас всю необходимую сертификацию
-          </p>
-        </div>
-      </el-col>
-      <el-col :offset="0" :span="6" :xs="24">
-        <div class="item">
-          <div class="item-title">ГИБКОСТЬ</div>
-          <p class="item-text">
-            Наши специалисты помогут найти все необходимые решения, учтут ваши
-            пожелания и нюансы заказов.
-          </p>
-        </div>
-      </el-col>
-      <el-col :offset="0" :span="6" :xs="24">
-        <div class="item">
-          <div class="item-title">СОТРУДНИЧЕСТВО</div>
-          <p class="item-text">
-            Мы постоянно в поиске новых решений и развития, и готовы рассмотреть
-            ваши предложения по совместному производству
-          </p>
+          <div class="item-title">{{ advantage.title }}</div>
+          <p class="item-text">{{ advantage.text }}</p>
         </div>
       </el-col>
     </el-row>
