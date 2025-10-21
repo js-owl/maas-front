@@ -1,289 +1,289 @@
 <script lang="ts" setup>
-import { ref } from "vue";
 import IconDrawing from "../icons/IconDrawing.vue";
-
-const items = ref([
-  { id: 1, text: "Точение цилиндрических и конусных поверхностей" },
-  { id: 2, text: "Нарезание резьбы (метрической, дюймовой, трапецеидальной)" },
-  { id: 3, text: "Снятие фасок, канавок и пазов" },
-  { id: 4, text: "Наружное и внутреннее точение, резьба" },
-  { id: 5, text: "Высокоточное сверление и обработка отверстий, расточка" },
-  { id: 6, text: "Фасонная обработка торцевых и сложных поверхностей" },
-]);
 </script>
 
 <template>
-  <el-row :gutter="0" class="main-container">
-    <!-- 1. Левая часть -->
-    <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
-      <div class="title-text">ПРИМЕНЕНИЕ</div>
-      <div v-for="item in items" :key="item.id" class="items">
-        <!-- <el-icon class="check-icon"><Check /></el-icon> -->
-        <div style="padding-top: 5px">
-          <el-image src="arrow.webp" fit="cover" class="check-img" />
+  <div class="main-container">
+    <!-- Основной контент -->
+    <div class="content-wrapper">
+      <!-- Заголовок -->
+      <div class="main-title">ТОКАРНАЯ ОБРАБОТКА</div>
+      
+      <!-- Описание и калькулятор -->
+      <div class="description-section">
+        <div class="description-text">
+          Токарная обработка представляет собой механическую операцию, при которой вращающаяся деталь обрабатывается режущим инструментом, последовательно снимающим слои материала. Технология позволяет создавать цилиндрические, конические и сложные профилированные поверхности с высокой степенью точности. Применяется в производстве металлических, пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
         </div>
-        <div>{{ item.text }}</div>
-      </div>
-      <div class="calculator-card">
-        <div>
+        
+        <div class="calculator-card">
           <IconDrawing
             color="black"
             class="calculator-icon"
           />
-        </div>
-        <div
-          class="calculator-text"
-          @click="$router.push('/machining')"
-        >
-          Калькулятор стоимости токарной обработки
+          <div
+            class="calculator-text"
+            @click="$router.push('/machining')"
+          >
+            Калькулятор стоимости токарной обработки
+          </div>
         </div>
       </div>
-      <el-row>
-        <el-col :span="12" :xs="24">
-          <el-button
-            type="primary"
-            plain
-            class="submit"
-            @click="$router.push({ path: '/personal/orders' })"
-          >
-            < В меню
-          </el-button>
-        </el-col>
-      </el-row>
-    </el-col>
-
-    <!-- 2. Правая часть -->
-    <el-col :span="13" :xs="{ span: 24, offset: 0 }" class="right-section">
-      <el-row>
-        <el-col
-          :offset="2"
-          :span="17"
-          :xs="{ span: 24, offset: 0 }"
-          class="section-title"
-        >
-          <div>ТОКАРНАЯ ОБРАБОТКА</div>
-        </el-col>
-        <el-col
-          :offset="2"
-          :span="17"
-          :xs="{ span: 24, offset: 0 }"
-          class="section-description"
-        >
-          Токарная обработка представляет собой механическую операцию, при
-          которой вращающаяся деталь обрабатывается режущим инструментом,
-          последовательно снимающим слои материала. Технология позволяет
-          создавать цилиндрические, конические и сложные профилированные
-          поверхности с высокой степенью точности. Применяется в производстве
-          металлических, пластиковых и других изделий, обеспечивая превосходное
-          качество финишной обработки.
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col
-          :offset="2"
-          :span="17"
-          :xs="{ span: 24, offset: 0 }"
-          class="section-title"
-        >
-          <div>ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
-        </el-col>
-      </el-row>
-      <el-row class="requirements-row">
-        <el-col :offset="2" :span="8" :xs="{ span: 24, offset: 0 }">
-          <div class="mark">Оборудование</div>
-          <div class="mark-text">Токарно-винторезные станки</div>
-          <div class="mark-text">Станок с ЧПУ</div>
-        </el-col>
-        <el-col :offset="1" :span="8" :xs="{ span: 24, offset: 0 }">
-          <div class="mark">Размеры детали/ заготовки</div>
-          <div class="mark-text">Длина до 1000 мм</div>
-          <div class="mark-text">Диаметр до 600 мм</div>
-        </el-col>
-      </el-row>
-      <el-row class="requirements-row">
-        <el-col :offset="2" :span="8" :xs="{ span: 24, offset: 0 }">
-          <div class="mark">Материалы</div>
-          <div class="mark-text">Нержавеющие, легированные стали</div>
-          <div class="mark-text">Полиамиды, фторопласт</div>
-          <div class="mark-text">Алюминиевые, бронзовые, медные сплавы</div>
-        </el-col>
-        <el-col :offset="1" :span="8" :xs="{ span: 24, offset: 0 }"> </el-col>
-      </el-row>
-    </el-col>
-  </el-row>
+      
+      <!-- Технические требования -->
+      <div class="technical-requirements">
+        <div class="requirements-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
+        
+        <div class="requirements-grid">
+          <div class="requirement-column">
+            <div class="requirement-title">Оборудование</div>
+            <div class="requirement-item">Токарно-винторезные станки</div>
+            <div class="requirement-item">Станок с ЧПУ</div>
+          </div>
+          
+          <div class="requirement-column">
+            <div class="requirement-title">Максимальный размер</div>
+            <div class="requirement-item">Длина до 1000 мм</div>
+            <div class="requirement-item">Диаметр до 600 мм</div>
+          </div>
+          
+          <div class="requirement-column">
+            <div class="requirement-title">Материалы</div>
+            <div class="requirement-item">Нержавеющие, легированные стали</div>
+            <div class="requirement-item">Полиамиды, фторопласт</div>
+            <div class="requirement-item">Алюминиевые, бронзовые, медные сплавы</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-/* Основные цвета и фоны */
+/* Основной контейнер */
 .main-container {
-  min-height: 500px;
-  background-color: var(--left-section-bg);
+  min-height: 100vh;
+  background-color: #f8f8f8;
+  padding: 40px 0;
 }
 
-.left-section {
-  padding: 30px 50px 40px 20px;
-}
-
-.right-section {
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
   background-color: #fff;
-  padding-top: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 60px 80px;
 }
 
-/* Текстовые стили */
-.title-text {
-  color: var(--left-section-color);
-  font-size: 38px;
-  font-weight: 600;
-  padding-bottom: 30px;
+/* Заголовок */
+.main-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  text-align: left;
 }
 
-.items {
+/* Секция описания */
+.description-section {
   display: flex;
-  color: var(--left-section-color);
-  padding-bottom: 30px;
-  font-size: 24px;
+  gap: 40px;
+  margin-bottom: 60px;
+  align-items: flex-start;
 }
-.check-img {
-  width: 38px;
-  height: 38px;
-  margin-right: 25px;
-}
-.mark {
-  background-color: #d1e5ff;
-  padding: 10px;
-  width: fit-content;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  border-radius: 5px;
-}
-.mark-text {
-  padding-bottom: 10px;
+
+.description-text {
+  flex: 1;
   font-size: 18px;
+  line-height: 1.6;
+  color: #000;
+  text-align: justify;
 }
 
-.submit {
-  background-color: var(--upper-menu-bg);
-  border: 1px solid white;
-  color: white;
-  font-size: 26px;
-  padding: 30px 0;
-  width: 100%;
-}
-
+/* Калькулятор */
 .calculator-card {
   display: flex;
-  margin-top: 50px;
-  padding: 15px;
-  background-color: white;
-  width: 350px;
-  margin-bottom: 30px;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  min-width: 300px;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.calculator-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .calculator-icon {
-  display: block;
-  width: 100px;
-  height: 100px;
-  padding-right: 20px;
+  width: 80px;
+  height: 80px;
+  margin-right: 20px;
+  flex-shrink: 0;
 }
 
 .calculator-text {
-  font-size: 22px;
-  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  color: #000;
+  line-height: 1.4;
 }
 
-.section-title {
-  font-size: 38px;
+/* Технические требования */
+.technical-requirements {
+  margin-top: 40px;
+}
+
+.requirements-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.requirements-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.requirement-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.requirement-title {
+  font-size: 18px;
   font-weight: 600;
-  padding-bottom: 30px;
+  color: #000;
+  margin-bottom: 20px;
+  background-color: #d1e5ff;
+  padding: 12px 16px;
+  border-radius: 6px;
+  width: fit-content;
 }
 
-.section-description {
-  padding-bottom: 40px;
-  font-size: 24px;
+.requirement-item {
+  font-size: 16px;
+  color: #000;
+  margin-bottom: 12px;
+  line-height: 1.4;
 }
 
-.requirements-row {
-  padding-bottom: 30px;
+/* Адаптивность */
+@media (max-width: 1024px) {
+  .content-wrapper {
+    padding: 40px 60px;
+  }
+  
+  .main-title {
+    font-size: 40px;
+  }
+  
+  .requirements-title {
+    font-size: 32px;
+  }
+  
+  .requirements-grid {
+    gap: 30px;
+  }
 }
 
-@media (max-width: 767px) {
-  .main-container {
-    min-height: auto;
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 30px 40px;
+    margin: 0 20px;
   }
-
-  .left-section {
-    padding: 16px 12px 24px 12px;
-  }
-
-  .right-section {
-    padding-top: 16px;
-  }
-
-  .title-text {
-    font-size: 28px;
+  
+  .main-title {
+    font-size: 32px;
     text-align: center;
-    padding-bottom: 16px;
+    margin-bottom: 30px;
   }
-
-  .items {
-    font-size: 18px;
-    padding-bottom: 16px;
+  
+  .description-section {
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 40px;
   }
-
-  .check-img {
-    width: 28px;
-    height: 28px;
-    margin-right: 16px;
+  
+  .description-text {
+    font-size: 16px;
+    text-align: left;
   }
-
+  
   .calculator-card {
+    min-width: auto;
     width: 100%;
-    margin-top: 24px;
-    margin-bottom: 16px;
-    padding: 12px;
+    padding: 16px;
   }
-
+  
   .calculator-icon {
     width: 60px;
     height: 60px;
-    padding-right: 12px;
+    margin-right: 16px;
   }
-
+  
   .calculator-text {
     font-size: 16px;
   }
-
-  .submit {
-    font-size: 18px;
-    padding: 16px 0;
-  }
-
-  .section-title {
-    font-size: 24px;
-    padding-bottom: 16px;
+  
+  .requirements-title {
+    font-size: 28px;
     text-align: center;
+    margin-bottom: 30px;
   }
-
-  .section-description {
+  
+  .requirements-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .requirement-title {
     font-size: 16px;
-    padding-bottom: 24px;
-    text-align: center;
+    padding: 10px 14px;
+    margin-bottom: 16px;
   }
-
-  .requirements-row {
-    padding-bottom: 16px;
+  
+  .requirement-item {
+    font-size: 15px;
+    margin-bottom: 10px;
   }
+}
 
-  .mark {
+@media (max-width: 480px) {
+  .content-wrapper {
+    padding: 20px 24px;
+    margin: 0 16px;
+  }
+  
+  .main-title {
+    font-size: 28px;
+  }
+  
+  .requirements-title {
+    font-size: 24px;
+  }
+  
+  .description-text {
+    font-size: 15px;
+  }
+  
+  .calculator-text {
+    font-size: 15px;
+  }
+  
+  .requirement-title {
+    font-size: 15px;
+  }
+  
+  .requirement-item {
     font-size: 14px;
-    padding: 8px;
-    margin-bottom: 12px;
-  }
-
-  .mark-text {
-    font-size: 14px;
-    padding-bottom: 6px;
   }
 }
 </style>
