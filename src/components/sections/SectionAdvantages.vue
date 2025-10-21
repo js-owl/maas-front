@@ -6,25 +6,25 @@ const advantages = ref([
     id: 1,
     title: 'Скорость',
     text: 'Мы работаем максимально быстро и качественно, вы получаете результаты точно в назначенные сроки',
-    image: 'homePage/ability_mechanical.webp',
+    image: 'homePage/adv_spark.png',
   },
   {
     id: 2,
     title: 'Доставка',
     text: 'Вам больше не нужно беспокоиться о логистике – мы сами надежно упакуем и доставим вам готовую продукцию',
-    image: 'homePage/ability_composite.webp',
+    image: 'homePage/adv_car.png',
   },
   {
     id: 3,
     title: 'Проверенные материалы и оборудование',
     text: 'Мы гарантируем качество и работаем только с надежными поставщиками материалов и оборудования',
-    image: 'homePage/ability_painting.webp',
+    image: 'homePage/adv_box.png',
   },
   {
     id: 4,
     title: 'Гибкость',
     text: 'Наши специалисты помогут найти все необходимые решения, учтут ваши пожелания и нюансы заказов.',
-    image: 'homePage/ability_assembly.webp',
+    image: 'homePage/adv_puzzle.png',
   }
 ])
 </script>
@@ -94,7 +94,7 @@ const advantages = ref([
 }
 
 .item-image-container {
-  width: 35%;
+  width: 40%;
   height: 100%;
   display: flex;
   align-items: center;
@@ -102,8 +102,8 @@ const advantages = ref([
 }
 
 .item-img {
-  width: 100%;
-  height: 100%;
+  /* width: 100%; */
+  height: 70%;
   object-fit: cover;
 }
 
