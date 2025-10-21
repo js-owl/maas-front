@@ -66,7 +66,7 @@ const abilities = ref([
 </script>
 
 <template>
-  <section class="ability-section">
+  <section class="section-basic">
     <div class="ability-title">УСЛУГИ</div>
 
     <div class="items">
@@ -96,14 +96,6 @@ const abilities = ref([
 </template>
 
 <style scoped>
-.ability-section {
-  min-height: 600px;
-  background-color: white;
-  margin: 30px 0 30px;
-  padding: 20px 30px 20px 30px;
-  border-radius: 20px;
-}
-
 .ability-title {
   /* text-align: center; */
   font-size: 50px;
@@ -174,9 +166,8 @@ const abilities = ref([
 }
 
 @media (max-width: 767px) {
-  .ability-section {
-    min-height: auto;
-    padding-bottom: 24px;
+  .section-basic {
+    padding: 20px 30px 24px 30px;
   }
 
   .ability-title {

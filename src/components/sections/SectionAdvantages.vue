@@ -28,7 +28,7 @@ const advantages = ref([
 </script>
 
 <template>
-  <section class="advantages-section">
+  <section class="section-basic">
     <div class="advantages-title">НАШИ ПРЕИМУЩЕСТВА</div>
 
     <div class="items">
@@ -41,14 +41,6 @@ const advantages = ref([
 </template>
 
 <style scoped>
-.advantages-section {
-  min-height: 600px;
-  background-color: white;
-  margin: 30px 0 30px;
-  padding: 20px 20px 20px 20px;
-  border-radius: 20px;
-}
-
 .advantages-title {
   text-align: center;
   font-size: 60px;
@@ -83,8 +75,7 @@ const advantages = ref([
 }
 
 @media (max-width: 767px) {
-  .advantages-section {
-    min-height: auto;
+  .section-basic {
     padding-bottom: 24px;
   }
 

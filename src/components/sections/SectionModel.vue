@@ -4,7 +4,7 @@ let file_id = ref(4)
 </script>
 
 <template>
-  <el-row :gutter="0" class="model-row">
+  <el-row :gutter="0" class="section-basic">
     <el-col :span="10" :xs="{ span: 24, offset: 0 }">
       <div style="padding-top: 10px">
         <div class="model-title">ЦЕНТР КОЛЛЕКТИВНОГО ПРОИЗВОДСТВА</div>
@@ -29,14 +29,6 @@ let file_id = ref(4)
 </template>
 
 <style scoped>
-.model-row {
-  min-height: 600px;
-  background-color: white;
-  margin: 30px 0 30px;
-  padding: 20px 20px 20px 20px;
-  border-radius: 20px;
-}
-
 .model-title {
   text-align: left;
   font-size: 60px;
@@ -61,8 +53,7 @@ let file_id = ref(4)
 }
 
 @media (max-width: 767px) {
-  .model-row {
-    min-height: auto;
+  .section-basic {
     padding: 24px 12px 24px 12px;
   }
 

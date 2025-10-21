@@ -1,5 +1,5 @@
 <template>
-  <div class="section-about">
+  <div class="section-basic">
     <div class="about-title">О НАС</div>
     <p class="about-text">
       ЦКП - это комплекс предприятий полного цикла, идеально подходящие для выполнения заказов в
@@ -10,14 +10,6 @@
 </template>
 
 <style scoped>
-.section-about {
-  min-height: 600px;
-  background-color: white;
-  margin: 30px 0 30px;
-  padding: 20px 20px 20px 20px;
-  border-radius: 20px;
-}
-
 .about-title {
   text-align: left;
   font-size: 60px;
@@ -31,8 +23,7 @@
 }
 
 @media (max-width: 767px) {
-  .section-about {
-    min-height: auto;
+  .section-basic {
     padding-top: 0px;
   }
 
