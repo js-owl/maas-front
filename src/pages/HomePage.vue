@@ -5,7 +5,7 @@ import SectionModel from '../components/sections/SectionModel.vue'
 import SectionAbility from '../components/sections/SectionAbility.vue'
 import SectionAbout from '../components/sections/SectionAbout.vue'
 import SectionAdvantages from '../components/sections/SectionAdvantages.vue'
-import SectionMilestones from '../components/sections/SectionMilestones.vue'
+// import SectionMilestones from '../components/sections/SectionMilestones.vue'
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
@@ -18,13 +18,12 @@ const isMobile = computed(() => width.value < 768)
         <el-col :offset="3" :span="18">
           <SectionModel />
           <SectionAbility />
-        </el-col>
-      </el-row>
-      <SectionMilestones />
-      <el-row>
-        <el-col :offset="3" :span="18">
           <SectionAbout />
         </el-col>
+      </el-row>
+      <!-- <SectionMilestones /> -->
+      <el-row>
+        <el-col :offset="3" :span="18"> </el-col>
       </el-row>
       <SectionAdvantages />
     </div>
