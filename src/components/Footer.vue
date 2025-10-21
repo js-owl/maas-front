@@ -11,7 +11,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
 let color = ref("");
 onMounted(() => {
   const rootStyles = getComputedStyle(document.documentElement);
-  color.value = rootStyles.getPropertyValue("--upper-menu-bg").trim();
+  color.value = rootStyles.getPropertyValue("--gray-footer").trim();
 });
 </script>
 
@@ -73,7 +73,7 @@ onMounted(() => {
 .footer-row {
   display: flex;
   align-items: center;
-  background-color: var(--upper-menu-bg);
+  background-color: var(--gray-footer);
   min-height: 160px;
   padding: 20px 0;
 }
