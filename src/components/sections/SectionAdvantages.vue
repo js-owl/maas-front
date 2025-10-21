@@ -123,33 +123,33 @@ const advantages = ref([
 
 @media (max-width: 767px) {
   .section-basic {
-    padding-bottom: 24px;
+    padding: 10px;
   }
 
   .advantages-title {
     font-size: 28px;
-    padding: 16px 0;
+    padding: 5px 0;
   }
 
   .item {
     width: 100%;
     margin: 5px 0;
-    height: auto;
+    height: 175px;
   }
 
   .item-wrap {
-    flex-direction: column;
+    /* flex-direction: column; */
   }
 
   .item-text-content {
-    padding: 15px;
-    order: 2;
+    padding: 10px;
+    /* order: 2; */
   }
 
   .item-image-container {
-    width: 100%;
-    height: 200px;
-    order: 1;
+    /* width: 100%; */
+    /* height: 150px; */
+    /* order: 1; */
   }
 
   .item-title {
