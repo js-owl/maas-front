@@ -20,7 +20,7 @@ const advantages = ref([
   },
   {
     id: 4,
-    title: 'ГИБКОСТЬ',
+    title: 'Гибкость',
     text: 'Наши специалисты помогут найти все необходимые решения, учтут ваши пожелания и нюансы заказов.',
   }
 
@@ -70,18 +70,12 @@ const advantages = ref([
   margin: 5px;
   border-radius: 5px;
   height: 300px;
-  /* 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  color: #283d5b;
-
-  border-radius: 10px;
-  height: 300px; */
 }
 
 .item-title {
   font-size: 26px;
+  color: red;
+  font-weight: bold;
 }
 
 .item-text {

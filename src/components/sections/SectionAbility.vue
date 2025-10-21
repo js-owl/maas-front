@@ -67,7 +67,7 @@ const abilities = ref([
 
 <template>
   <section class="ability-section">
-    <div class="ability-title">НАШИ ВОЗМОЖНОСТИ</div>
+    <div class="ability-title">УСЛУГИ</div>
 
     <div class="items">
       <div class="item" v-for="ability in abilities" :key="ability.id">
@@ -97,16 +97,18 @@ const abilities = ref([
 
 <style scoped>
 .ability-section {
-  background-color: #fff;
-  padding: 0px 10px 40px;
   min-height: 600px;
+  background-color: white;
+  margin: 30px 0 30px;
+  padding: 20px 30px 20px 30px;
+  border-radius: 20px;
 }
 
 .ability-title {
-  text-align: center;
-  font-size: 60px;
+  /* text-align: center; */
+  font-size: 50px;
   color: #283d5b;
-  padding: 40px 0;
+  padding: 10px 0 20px 0px;
 }
 
 .items {

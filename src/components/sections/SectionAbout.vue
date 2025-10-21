@@ -3,51 +3,19 @@
     <div class="about-title">О НАС</div>
     <p class="about-text">
       ЦКП - это комплекс предприятий полного цикла, идеально подходящие для выполнения заказов в
-      области механообработки, изготовления изделий из полимерных материалов и много другого:
+      области механообработки, изготовления изделий из полимерных материалов и много другого
     </p>
-    <p class="about-text">
-      <el-icon color="var(--upper-menu-bg)" class="no-inherit">
-        <Select />
-      </el-icon>
-      Изготовление прототипов и серийных изделий
-    </p>
-    <p class="about-text">
-      <el-icon color="var(--upper-menu-bg)" class="no-inherit">
-        <Select />
-      </el-icon>
-      Лакокрасочные покрытия и гальваника
-    </p>
-    <p class="about-text">
-      <el-icon color="var(--upper-menu-bg)" class="no-inherit">
-        <Select />
-      </el-icon>
-      3D-печать
-    </p>
-    <p class="about-text">
-      <el-icon color="var(--upper-menu-bg)" class="no-inherit">
-        <Select />
-      </el-icon>
-      Лабораточные исследования
-    </p>
-    <p class="about-text">
-      <el-icon color="var(--upper-menu-bg)" class="no-inherit">
-        <Select />
-      </el-icon>
-      Изготовление оснастки
-    </p>
-
     <el-image src="homePage/about.webp" class="item-img" />
   </div>
 </template>
 
 <style scoped>
 .section-about {
-  background-color: #fff;
-  margin: 10px;
-  padding: 20px 20px 40px;
   min-height: 600px;
-  /* border: 1px solid red;
-  border-radius: 10px; */
+  background-color: white;
+  margin: 30px 0 30px;
+  padding: 20px 20px 20px 20px;
+  border-radius: 20px;
 }
 
 .about-title {
