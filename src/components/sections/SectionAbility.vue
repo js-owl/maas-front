@@ -4,63 +4,45 @@ import { ref } from 'vue'
 const abilities = ref([
   {
     id: 1,
-    image: 'homePage/ability_mechanical.webp',
-    title: 'Механообрабатывающее производство',
+    title: 'Механическая обработка',
     link: '/mechanical',
-    fit: 'cover',
     isDevelopment: false,
-    span: 6,
-    offset: 3,
+    imagePath: '/homePage/ability_mechanical.png',
   },
   {
     id: 2,
-    image: 'homePage/ability_composite.webp',
-    title: 'Производство изделий из композитных материалов',
-    link: null,
-    fit: 'contain',
-    isDevelopment: true,
-    span: 6,
-    offset: 0,
+    title: '3d-печать',
+    link: '/printing',
+    isDevelopment: false,
+    imagePath: '/plastic.png',
   },
   {
     id: 3,
-    image: 'homePage/ability_painting.webp',
-    title: 'Нанесение лакокрасочных покрытий',
+    title: 'Нанесение покрытий',
     link: null,
-    fit: 'cover',
     isDevelopment: true,
-    span: 6,
-    offset: 0,
+    imagePath: null,
   },
   {
     id: 4,
-    image: 'homePage/ability_assembly.webp',
-    title: 'Сборочное производство',
+    title: 'Производство из композитных материалов',
     link: null,
-    fit: 'cover',
     isDevelopment: true,
-    span: 6,
-    offset: 3,
+    imagePath: null,
   },
   {
     id: 5,
-    image: 'homePage/ability_thermo.webp',
-    title: 'Лабораторные исследования',
+    title: 'Сварочное производство',
     link: null,
-    fit: 'cover',
     isDevelopment: true,
-    span: 6,
-    offset: 0,
+    imagePath: null,
   },
   {
     id: 6,
-    image: 'homePage/ability_welding.webp',
-    title: 'Сварочное производство',
+    title: 'Лабораторные исследования',
     link: null,
-    fit: 'cover',
     isDevelopment: true,
-    span: 6,
-    offset: 0,
+    imagePath: null,
   },
 ])
 </script>
@@ -69,27 +51,30 @@ const abilities = ref([
   <section class="section-basic">
     <div class="ability-title">УСЛУГИ</div>
 
-    <div class="items">
-      <div class="item" v-for="ability in abilities" :key="ability.id">
-        <div class="item-wrap">
-          <component :is="ability.link ? 'RouterLink' : 'div'" :to="ability.link">
-            <el-image
-              :src="ability.image"
-              :fit="ability.fit"
-              :class="{ 'item-img': ability.id === 6 }"
-            />
-
-            <div v-if="ability.isDevelopment" class="overlay-development">
-              <div class="development-text">
-                <p class="main-text">Раздел в разработке</p>
-              </div>
+    <div class="services-grid">
+      <div 
+        class="service-card" 
+        v-for="ability in abilities" 
+        :key="ability.id"
+        :class="{ 'card-development': ability.isDevelopment }"
+      >
+        <component :is="ability.link ? 'RouterLink' : 'div'" :to="ability.link" class="card-link">
+          <div class="card-content">
+            <h3 class="card-title">{{ ability.title }}</h3>
+            
+            <div v-if="ability.isDevelopment" class="development-notice">
+              <span class="development-text">(Раздел в разработке)</span>
             </div>
-
-            <div class="overlay">
-              <p class="item-text">{{ ability.title }}</p>
+            
+            <div v-if="ability.imagePath" class="card-icon">
+              <el-image
+                :src="ability.imagePath"
+                fit="contain"
+                class="icon-image"
+              />
             </div>
-          </component>
-        </div>
+          </div>
+        </component>
       </div>
     </div>
   </section>
@@ -97,92 +82,127 @@ const abilities = ref([
 
 <style scoped>
 .ability-title {
-  /* text-align: center; */
   font-size: 50px;
-  color: #283d5b;
-  padding: 10px 0 20px 0px;
+  color: #000;
+  font-weight: bold;
+  padding: 10px 0 20px 0;
+  margin: 0;
 }
 
-.items {
-  display: flex;
-  gap: 1%;
-  justify-content: space-between;
-  flex-wrap: wrap;
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.item {
-  width: 32%;
-  padding-bottom: 20px;
-}
-.item-wrap {
+
+.service-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 200px;
   position: relative;
-  width: 100%;
-}
-.item-img {
-  width: 100%;
-}
-.overlay {
-  position: absolute;
-  bottom: 3px;
-  left: 0px;
-  right: 0px;
-  background-color: rgba(190, 42, 68, 0.8);
-  height: 90px;
-  padding: 0 12px 0px 12px;
-}
-.item-text {
-  margin-top: 8px;
-  font-size: 28px;
-  text-decoration: none;
-  color: white;
-}
-.item-text:hover {
-  color: #aaa;
+  overflow: hidden;
 }
 
-.overlay-development {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(40, 61, 91, 0.8);
+.service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-development {
+  background: #f5f5f5;
+}
+
+.card-link {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-content {
+  padding: 20px;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  flex-direction: column;
+  position: relative;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.development-notice {
+  margin-top: auto;
 }
 
 .development-text {
-  text-align: center;
-  color: white;
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
 }
 
-.main-text {
-  font-size: 34px;
-  font-weight: bold;
-  margin: 0 0 20px 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  opacity: 0.9;
+.card-icon {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  /* width: 60px; */
+  height: 150px;
 }
 
-@media (max-width: 767px) {
-  .section-basic {
-    padding: 20px 30px 24px 30px;
+.icon-image {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 1fr);
+    gap: 15px;
   }
-
+  
   .ability-title {
     font-size: 28px;
-    padding: 16px 0;
   }
-  .item {
-    width: 100%;
-    padding-bottom: 10px;
+  
+  .card-title {
+    font-size: 16px;
   }
-  .item-text {
-    font-size: 20px;
+  
+  .card-icon {
+    width: 50px;
+    height: 50px;
   }
-  .main-text {
-    font-size: 18px;
+}
+
+@media (max-width: 480px) {
+  .section-basic {
+    padding: 20px 15px;
+  }
+  
+  .ability-title {
+    font-size: 24px;
+  }
+  
+  .card-content {
+    padding: 15px;
+  }
+  
+  .card-title {
+    font-size: 14px;
+  }
+  
+  .development-text {
+    font-size: 12px;
   }
 }
 </style>
