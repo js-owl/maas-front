@@ -62,7 +62,7 @@ import IconDrawing from "../icons/IconDrawing.vue";
 /* Основной контейнер */
 .main-container {
   min-height: 100vh;
-  background-color: #f8f8f8;
+  background-color: var(--bgcolor);
   padding: 40px 0;
 }
 

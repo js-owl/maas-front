@@ -12,7 +12,7 @@ const isMobile = computed(() => width.value < 768)
 </script>
 
 <template>
-  <div style="background-color: #e1e4e6">
+  <div style="background-color: var(--bgcolor)">
     <div v-if="!isMobile">
       <el-row>
         <el-col :offset="3" :span="18">

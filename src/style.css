@@ -5,6 +5,8 @@
 
   --left-section-bg: #283d5b; /* 283d5b - dee2eb*/
   --left-section-color: #fff; /* fff - 5f646c*/
+  
+  --bgcolor: #e1e4e6;
 }
 
 body {
