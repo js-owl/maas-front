@@ -24,5 +24,6 @@ body {
 @media (max-width: 767px) {
   .section-basic {
     min-height: auto;
+    border-radius: 0;
   }
 }

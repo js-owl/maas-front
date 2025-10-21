@@ -84,8 +84,8 @@ const abilities = ref([
 .ability-title {
   font-size: 50px;
   color: #000;
-  font-weight: bold;
-  padding: 10px 0 20px 0;
+  /* font-weight: bold; */
+  padding: 10px 0 20px 20px;
   margin: 0;
 }
 
@@ -94,12 +94,12 @@ const abilities = ref([
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
   gap: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  /* max-width: 1200px;
+  margin: 0 auto; */
 }
 
 .service-card {
-  background: #fff;
+  background: #f4f6f8;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -114,7 +114,7 @@ const abilities = ref([
 }
 
 .card-development {
-  background: #f5f5f5;
+  background: #e1e4e6;
 }
 
 .card-link {
@@ -179,8 +179,8 @@ const abilities = ref([
   }
   
   .card-icon {
-    width: 50px;
-    height: 50px;
+    /* width: 50px;
+    height: 50px; */
   }
 }
 
