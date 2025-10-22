@@ -359,31 +359,31 @@ async function getOrder(id: number) {
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="0" :span="23">
           <SuitableMachines :machines="result?.suitable_machines || []" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="0" :span="23">
           <CoefficientOtk v-model="k_otk" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-both">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="0" :span="23">
           <CoefficientCertificate v-model="k_cert" />
         </el-col>
       </el-row>
       <el-row :gutter="5" class="row-spacing-bottom">
-        <el-col :offset="2" :span="17">
-          <div class="label">Комментарий</div>
+        <el-col :offset="0" :span="23">
+          <div class="coefficient-label">Комментарий</div>
           <el-input
             v-model="special_instructions"
             type="textarea"
-            :rows="3"
+            :rows="5"
             placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
-            :input-style="{ backgroundColor: '#ebf3ff', color: '#000' }"
+            :input-style="{ backgroundColor: 'var(--whity)', color: 'black' }"
           />
         </el-col>
       </el-row>
@@ -435,7 +435,7 @@ async function getOrder(id: number) {
 
 .right-section {
   margin-bottom: 40px;
-  padding-top: 30px;
+  padding: 30px 30px 40px 40px;
   background-color: white;
   border-radius: 0 20px 20px 0;
 }
@@ -528,14 +528,6 @@ async function getOrder(id: number) {
   padding: 30px 0;
 }
 
-/* Стили для комментариев */
-.label {
-  padding-bottom: 12px;
-  color: #283d5b;
-  font-size: 24px;
-  font-weight: 700;
-}
-
 .disabled-block {
   opacity: 0.5;
   pointer-events: none;
@@ -603,11 +595,6 @@ async function getOrder(id: number) {
 
   .component-section {
     margin-bottom: 16px;
-  }
-
-  .label {
-    font-size: 18px;
-    padding-bottom: 8px;
   }
 }
 </style>

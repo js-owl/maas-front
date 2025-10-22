@@ -159,7 +159,7 @@ watch(
           v-if="filteredDocuments.length === 0"
           style="color: #577aad; font-size: 14px"
         >
-          Документы не выбраны
+          
         </div>
         <div v-else>
           <div v-for="doc in filteredDocuments" :key="doc.id" class="doc-row">

@@ -10,7 +10,7 @@ const otks = [
 
 <template>
   <div style="max-width: 1000px">
-    <div class="label">Вид контроля</div>
+    <div class="coefficient-label">Вид контроля</div>
     <el-radio-group v-model="selected">
       <el-radio class="radio-item" v-for="option in otks" :key="option.label" :value="option.value">
         <div style="font-size: 18px">{{ option.label }}</div>
@@ -21,7 +21,7 @@ const otks = [
 
 <style scoped>
 .radio-item {
-  width: 300px;
+  width: 290px;
 }
 
 .el-radio {
@@ -30,17 +30,5 @@ const otks = [
 
 :deep(.line) {
   border-color: #333;
-}
-
-.label {
-  padding-bottom: 12px;
-  color: #283d5b;
-  font-size: 24px;
-  font-weight: 700;
-}
-@media (max-width: 767px) {
-  .label {
-    font-size: 20px;
-  }
 }
 </style>

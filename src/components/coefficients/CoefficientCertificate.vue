@@ -10,7 +10,7 @@ const certificates = [
 
 <template>
   <div style="max-width: 1000px">
-    <div class="label">Сертификаты и квалификации поставщиков</div>
+    <div class="coefficient-label">Сертификаты и квалификации поставщиков</div>
     <el-checkbox-group v-model="selected">
       <el-checkbox
         v-for="option in certificates"
@@ -27,7 +27,7 @@ const certificates = [
 
 <style scoped>
 .checkbox-item {
-  width: 300px;
+  width: 290px;
 }
 
 .el-checkbox {
@@ -37,15 +37,5 @@ const certificates = [
   border-color: #333;
 }
 
-.label {
-  padding-bottom: 12px;
-  color: #283d5b;
-  font-size: 24px;
-  font-weight: 700;
-}
-@media (max-width: 767px) {
-  .label {
-    font-size: 20px;
-  }
-}
+
 </style>
