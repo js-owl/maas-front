@@ -8,11 +8,11 @@
       
       <!-- ТЕРМИНЫ И ОПРЕДЕЛЕНИЯ -->
       <section class="offer-section">
-        <h2 class="section-title">ТЕРМИНЫ И ОПРЕДЕЛЕНИЯ</h2>
+        <h2 class="section-title">1. ТЕРМИНЫ И ОПРЕДЕЛЕНИЯ</h2>
         
         <div class="terms-list">
           <div class="term-item">
-            <h3 class="term-name">Оферта</h3>
+            <h3 class="term-name">1.1. Оферта</h3>
             <p class="term-definition">
               настоящий документ, размещенный в сети интернет по адресу: https://maas.aeromax-group.ru/ и другие условия (количество штук в заказе, габаритные и другие чертежные размеры продукции, квалитет точности, шероховатость, тип покрытие, наличие гальванической обработки, вид контроля), на которых Заказчик предлагает изготовление Продукции (далее – Существенные условия), размещенные в сети интернет по адресу: https://maas.aeromax-group.ru/.
             </p>
@@ -92,7 +92,7 @@
 
       <!-- ПРЕДМЕТ ДОГОВОРА -->
       <section class="offer-section">
-        <h2 class="section-title">ПРЕДМЕТ ДОГОВОРА</h2>
+        <h2 class="section-title">2. ПРЕДМЕТ ДОГОВОРА</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -123,7 +123,7 @@
 
       <!-- ПРАВИЛА ОФОРМЛЕНИЯ И СОГЛАСОВАНИЯ ЗАКАЗА -->
       <section class="offer-section">
-        <h2 class="section-title">ПРАВИЛА ОФОРМЛЕНИЯ И СОГЛАСОВАНИЯ ЗАКАЗА</h2>
+        <h2 class="section-title">3. ПРАВИЛА ОФОРМЛЕНИЯ И СОГЛАСОВАНИЯ ЗАКАЗА</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -149,7 +149,7 @@
           <div class="content-item">
             <p>Заказ может быть отменен Исполнителем в одностороннем порядке с уведомлением Заказчика через Личный кабинет в следующих случаях:</p>
             <ul class="nested-list">
-              <li>Заказчик не оплатил Заказ в течение срока, указанного в п. 3.4 Договора;</li>
+              <li>Заказчик не оплатил Заказ в течение срока, указанного в п. 4.4 Договора;</li>
               <li>Заказ невозможно выполнить Исполнителем согласно требованиям Заказчика. При этом возврат средств со стороны Исполнителя осуществляется на счет Заказчика в течении 10 (десяти) рабочих дней с даты поступления средств на счет Исполнителя.</li>
             </ul>
           </div>
@@ -162,7 +162,7 @@
 
       <!-- ОПЛАТА ЗАКАЗА -->
       <section class="offer-section">
-        <h2 class="section-title">ОПЛАТА ЗАКАЗА</h2>
+        <h2 class="section-title">4. ОПЛАТА ЗАКАЗА</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -178,7 +178,7 @@
           </p>
           
           <p class="content-item">
-            Моментом исполнения обязательства Заказчика по оплате Счета является зачисление 100% (Сто процентов) от стоимости Заказа на расчетный счет Исполнителя в течение срока, указанно в п. 3.4 Договора.
+            Моментом исполнения обязательства Заказчика по оплате Счета является зачисление 100% (Сто процентов) от стоимости Заказа на расчетный счет Исполнителя в течение срока, указанно в п. 4.4 Договора.
           </p>
           
           <p class="content-item">
@@ -193,7 +193,7 @@
 
       <!-- КАЧЕСТВО РАБОТ И ГАРАНТИЙНЫЕ ОБЯЗАТЕЛЬСТВА -->
       <section class="offer-section">
-        <h2 class="section-title">КАЧЕСТВО РАБОТ И ГАРАНТИЙНЫЕ ОБЯЗАТЕЛЬСТВА</h2>
+        <h2 class="section-title">5. КАЧЕСТВО РАБОТ И ГАРАНТИЙНЫЕ ОБЯЗАТЕЛЬСТВА</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -231,7 +231,7 @@
 
       <!-- ДОСТАВКА ПРОДУКЦИИ -->
       <section class="offer-section">
-        <h2 class="section-title">ДОСТАВКА ПРОДУКЦИИ</h2>
+        <h2 class="section-title">6. ДОСТАВКА ПРОДУКЦИИ</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -270,7 +270,7 @@
 
       <!-- РЕКЛАМАЦИИ -->
       <section class="offer-section">
-        <h2 class="section-title">РЕКЛАМАЦИИ</h2>
+        <h2 class="section-title">7. РЕКЛАМАЦИИ</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -337,7 +337,7 @@
 
       <!-- УСЛОВИЯ О КОНФИДЕНЦИАЛЬНОСТИ -->
       <section class="offer-section">
-        <h2 class="section-title">УСЛОВИЯ О КОНФИДЕНЦИАЛЬНОСТИ</h2>
+        <h2 class="section-title">8. УСЛОВИЯ О КОНФИДЕНЦИАЛЬНОСТИ</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -348,7 +348,7 @@
 
       <!-- ОТВЕТСТВЕННОСТЬ СТОРОН -->
       <section class="offer-section">
-        <h2 class="section-title">ОТВЕТСТВЕННОСТЬ СТОРОН</h2>
+        <h2 class="section-title">9. ОТВЕТСТВЕННОСТЬ СТОРОН</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -375,7 +375,7 @@
 
       <!-- ПОРЯДОК УРЕГУЛИРОВАНИЯ СПОРОВ -->
       <section class="offer-section">
-        <h2 class="section-title">ПОРЯДОК УРЕГУЛИРОВАНИЯ СПОРОВ</h2>
+        <h2 class="section-title">10. ПОРЯДОК УРЕГУЛИРОВАНИЯ СПОРОВ</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -390,7 +390,7 @@
 
       <!-- АНТИКОРРУПЦИОННАЯ ОГОВОРКА -->
       <section class="offer-section">
-        <h2 class="section-title">АНТИКОРРУПЦИОННАЯ ОГОВОРКА</h2>
+        <h2 class="section-title">11. АНТИКОРРУПЦИОННАЯ ОГОВОРКА</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -413,7 +413,7 @@
 
       <!-- ОБРАБОТКА ПЕРСОНАЛЬНЫХ ДАННЫХ -->
       <section class="offer-section">
-        <h2 class="section-title">ОБРАБОТКА ПЕРСОНАЛЬНЫХ ДАННЫХ</h2>
+        <h2 class="section-title">12. ОБРАБОТКА ПЕРСОНАЛЬНЫХ ДАННЫХ</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -428,7 +428,7 @@
 
       <!-- ПРОЧИЕ ПОЛОЖЕНИЯ -->
       <section class="offer-section">
-        <h2 class="section-title">ПРОЧИЕ ПОЛОЖЕНИЯ</h2>
+        <h2 class="section-title">13. ПРОЧИЕ ПОЛОЖЕНИЯ</h2>
         
         <div class="content-list">
           <p class="content-item">
@@ -488,7 +488,7 @@
 
       <!-- РЕКВИЗИТЫ ИСПОЛНИТЕЛЯ -->
       <section class="offer-section">
-        <h2 class="section-title">РЕКВИЗИТЫ ИСПОЛНИТЕЛЯ</h2>
+        <h2 class="section-title">14. РЕКВИЗИТЫ ИСПОЛНИТЕЛЯ</h2>
         
         <div class="executor-details">
           <div class="detail-item">
