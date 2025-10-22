@@ -340,71 +340,69 @@ async function getOrder(id: number) {
     </el-col>
 
     <!-- 2. Правая часть -->
-    <el-col :span="13" :xs="{ span: 24, offset: 0 }" class="right-section">
+    <el-col :span="10" :xs="{ span: 24, offset: 0 }" class="right-section">
       <el-row :gutter="5">
-        <el-col :offset="2" :span="5" class="disabled-block">
-          <Length v-model="length" />
-        </el-col>
-        <el-col :offset="1" :span="5" class="disabled-block">
-          <Width v-model="width" />
-        </el-col>
-        <el-col :offset="1" :span="5" class="disabled-block">
-          <Height v-model="height" />
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="5">
-        <el-col :offset="2" :span="5" class="disabled-block">
+        <el-col :offset="0" :span="7" :xs="{ span: 24, offset: 0 }">
           <CoefficientFinish v-model="finish_id" />
         </el-col>
-        <el-col :offset="1" :span="5" class="disabled-block">
+        <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
           <CoefficientTolerance v-model="tolerance_id" />
         </el-col>
-        <el-col :offset="1" :span="5" class="disabled-block">
-          <CoefficientSize v-model="n_dimensions" />
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="5">
-        <el-col :offset="2" :span="11">
-          <MaterialMilling v-model="material_id" />
-        </el-col>
-        <el-col :offset="1" :span="5">
+        <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
           <CoefficientQuantity v-model="quantity" />
         </el-col>
       </el-row>
 
+      <!-- <el-row :gutter="5">
+        <el-col :offset="2" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
+          <CoefficientFinish v-model="finish_id" />
+        </el-col>
+        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
+          <CoefficientTolerance v-model="tolerance_id" />
+        </el-col>
+        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
+          <CoefficientSize v-model="n_dimensions" />
+        </el-col>
+      </el-row> -->
+
+      <el-row :gutter="5">
+        <el-col :offset="0" :span="15" :xs="{ span: 24, offset: 0 }">
+          <MaterialMachining v-model="material_id" />
+        </el-col>
+        <el-col :offset="1" :span="5"> </el-col>
+      </el-row>
+
 
       <el-row :gutter="5" class="row-spacing-top">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="0" :span="23">
           <CoefficientCover v-model="cover_id" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="0" :span="23">
           <SuitableMachines :machines="result?.suitable_machines || []" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="0" :span="23">
           <CoefficientOtk v-model="k_otk" />
         </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-both">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="0" :span="23">
           <CoefficientCertificate v-model="k_cert" />
         </el-col>
       </el-row>
       <el-row :gutter="5" class="row-spacing-bottom">
-        <el-col :offset="2" :span="17">
+        <el-col :offset="0" :span="23">
           <div class="coefficient-label">Комментарий</div>
           <el-input
             v-model="special_instructions"
             type="textarea"
-            :rows="3"
+            :rows="5"
             placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
             :input-style="{ backgroundColor: 'var(--whity)', color: 'black' }"
           />
@@ -569,7 +567,7 @@ async function getOrder(id: number) {
   }
 
   .right-section {
-    padding-top: 16px;
+    padding: 16px 12px 24px 12px;
   }
 
   .title-text {

@@ -346,7 +346,7 @@ async function getOrder(id: number) {
       </el-row> -->
 
       <el-row :gutter="5">
-        <el-col :offset="0" :span="15" :xs="{ span: 22, offset: 1 }">
+        <el-col :offset="0" :span="15" :xs="{ span: 24, offset: 0 }">
           <MaterialMachining v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="5"> </el-col>
@@ -543,7 +543,7 @@ async function getOrder(id: number) {
   }
 
   .right-section {
-    padding-top: 16px;
+    padding: 16px 12px 24px 12px;
   }
 
   .title-text {
