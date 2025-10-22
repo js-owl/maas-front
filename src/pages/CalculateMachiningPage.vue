@@ -279,10 +279,10 @@ async function getOrder(id: number) {
       <el-row :gutter="5" class="upload-section">
         <el-col :span="24" class="upload-title"> Загрузите файлы для расчета </el-col>
         <el-col :span="12">
-          <UploadModel v-model="file_id" color="#fff" />
+          <UploadModel v-model="file_id" color="#000" />
         </el-col>
         <el-col :span="12">
-          <UploadDrawings v-model="document_ids" color="#fff" />
+          <UploadDrawings v-model="document_ids" color="#000" />
         </el-col>
         <el-col :span="24" class="upload-info"> Максимальный размер 100Мб </el-col>
         <el-col :span="24">
@@ -313,27 +313,27 @@ async function getOrder(id: number) {
               })
             "
           >
-            {{ order_id != 0 ? 'Сохранить заказ' : 'Оформить заказ' }}
+            {{ order_id != 0 ? 'Сохранить заказ' : 'Перейти к оформлению' }}
           </el-button>
         </el-col>
       </el-row>
     </el-col>
 
     <!-- 2. Правая часть -->
-    <el-col :span="13" :xs="{ span: 24, offset: 0 }" class="right-section">
+    <el-col :span="10" :xs="{ span: 24, offset: 0 }" class="right-section">
       <el-row :gutter="5">
-        <el-col :offset="2" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
-          <Length v-model="length" />
+        <el-col :offset="0" :span="7" :xs="{ span: 24, offset: 0 }">
+          <CoefficientFinish v-model="finish_id" />
         </el-col>
-        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
-          <Diameter v-model="width" />
+        <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
+          <CoefficientTolerance v-model="tolerance_id" />
         </el-col>
-        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }">
+        <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
           <CoefficientQuantity v-model="quantity" />
         </el-col>
       </el-row>
 
-      <el-row :gutter="5">
+      <!-- <el-row :gutter="5">
         <el-col :offset="2" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
           <CoefficientFinish v-model="finish_id" />
         </el-col>
@@ -343,17 +343,17 @@ async function getOrder(id: number) {
         <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
           <CoefficientSize v-model="n_dimensions" />
         </el-col>
-      </el-row>
+      </el-row> -->
 
       <el-row :gutter="5">
-        <el-col :offset="2" :span="11" :xs="{ span: 22, offset: 1 }">
+        <el-col :offset="0" :span="15" :xs="{ span: 22, offset: 1 }">
           <MaterialMachining v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="5"> </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top">
-        <el-col :offset="2" :span="20">
+        <el-col :offset="0" :span="23">
           <CoefficientCover v-model="cover_id" />
         </el-col>
       </el-row>
@@ -412,10 +412,10 @@ async function getOrder(id: number) {
 }
 
 .submit {
-  background-color: #bc2b55;
-  border: 1px solid white;
-  color: white;
-  font-size: 26px;
+  background-color: var(--bgcolor);
+  border: 1px solid var(--bgcolor);
+  color: black;
+  font-size: 20px;
   padding: 30px 0;
   width: 100%;
 }
@@ -427,45 +427,55 @@ async function getOrder(id: number) {
 }
 
 .left-section {
-  padding: 30px 50px 40px 20px;
+  margin-bottom: 40px;
+  padding: 30px 30px 40px 40px;
+  background-color: white;
+  border-radius: 20px 0 0 20px;
 }
 
 .right-section {
-  background-color: #fff;
+  margin-bottom: 40px;
   padding-top: 30px;
+  background-color: white;
+  border-radius: 0 20px 20px 0;
 }
 
 /* Текстовые стили */
 .title-text {
-  color: var(--left-section-color);
+  color: black;
   font-size: 38px;
   font-weight: 600;
   padding-bottom: 30px;
 }
 
 .price-section {
-  border-top: 1px solid #577aad;
-  border-bottom: 1px solid #577aad;
+  /* border-top: 1px solid #577aad; */
+  /* border-bottom: 1px solid #577aad; */
   font-size: 24px;
 }
 
 .price-row {
   display: flex;
   justify-content: space-between;
-  color: var(--left-section-color);
-  padding: 14px 0;
-  border-bottom: 1px solid #577aad;
+  background-color: var(--whity);
+  color: black;
+  margin-bottom: 10px;
+  padding: 14px 10px;
+  border-radius: 3px;
+  /* border-bottom: 1px solid #577aad; */
 }
 
 .price-row-last {
   display: flex;
   justify-content: space-between;
-  color: var(--left-section-color);
-  padding: 14px 0;
+  background-color: var(--whity);
+  color: black;
+  padding: 14px 10px;
+  border-radius: 3px;
 }
 
 .disclaimer-text {
-  color: #577aad;
+  color: black;
   font-size: 16px;
   padding-top: 10px;
   padding-bottom: 30px;
@@ -473,29 +483,30 @@ async function getOrder(id: number) {
 
 /* Секции с компонентами */
 .component-section {
-  background-color: var(--left-section-bg);
+  background-color: white;
   padding-bottom: 30px;
 }
 
 .upload-section {
-  background-color: var(--left-section-bg);
+  background-color: white;
   padding-bottom: 30px;
 }
 
 .upload-title {
   padding-bottom: 10px;
   font-size: 30px;
-  color: var(--left-section-color);
+  color: black;
+  font-weight: 700;
   /* color: #577aad; */
 }
 
 .upload-info {
   font-size: 20px;
-  color: #577aad;
+  color: black;
 }
 
 .cad-section {
-  color: #577aad;
+  color: var(--whity);
 }
 
 /* Кнопки и центрирование */

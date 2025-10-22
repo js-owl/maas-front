@@ -21,7 +21,7 @@ onMounted(async () => {
 
 <template>
   <div style="max-width: 1000px">
-    <div class="label">Финишная обработка изделия</div>
+    <div class="coefficient-label">Финишная обработка изделия</div>
     <el-checkbox-group v-model="selected">
       <el-checkbox
         v-for="item in coveres"
@@ -47,15 +47,5 @@ onMounted(async () => {
   border-color: #333;
 }
 
-.label {
-  padding-bottom: 12px;
-  color: #283d5b;
-  font-size: 24px;
-  font-weight: 700;
-}
-@media (max-width: 767px) {
-  .label {
-    font-size: 20px;
-  }
-}
+
 </style>

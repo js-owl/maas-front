@@ -17,7 +17,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <p style="color: #577aad; font-weight: 500">Шероховатость, Ra</p>
+    <p class="coefficient-title">Шероховатость, Ra</p>
     <el-select
       v-model="selected"
       placeholder="Выбрать"
@@ -40,7 +40,7 @@ onMounted(async () => {
 }
 
 .full :deep(.el-select__wrapper) {
-  border: 1px solid #577aad;
+  border: 1px solid black;
   border-radius: 5px;
 }
 </style>

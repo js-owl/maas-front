@@ -166,7 +166,7 @@ watch(
             <span class="doc-name">{{ doc.original_filename }}</span>
             <span class="doc-actions">
               <el-button size="small" link @click="downloadDoc(doc.id)">
-                <el-icon color="white">
+                <el-icon color="black">
                   <Download />
                 </el-icon>
               </el-button>
@@ -187,7 +187,7 @@ watch(
 }
 
 .doc-name {
-  color: white;
+  color: black;
   font-size: 14px;
   padding-right: 10px;
 }

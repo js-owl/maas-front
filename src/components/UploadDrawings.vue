@@ -103,13 +103,13 @@ const handleFileChange = async (file: File) => {
 <style scoped>
 :deep(.el-upload-dragger) {
   padding: 10px;
-  border: 1px solid var(--border-color);
-  background-color: var(--left-section-bg) !important;
+  border: 1px solid var(--bgcolor);
+  background-color: var(--bgcolor) !important;
 }
 :deep(.el-upload.is-disabled .el-upload-dragger) {
-  background-color: var(--left-section-bg) !important;
+  background-color: var(--bgcolor) !important;
   padding: 10px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--bgcolor);
 }
 .custom {
   display: flex;

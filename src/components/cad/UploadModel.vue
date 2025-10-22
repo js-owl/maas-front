@@ -145,8 +145,8 @@ const handleDragOver = (event: DragEvent) => {
 <style scoped>
 .upload {
   padding: 10px;
-  border: 1px solid var(--border-color);
-  background-color: var(--left-section-bg) !important;
+  border: 1px solid var(--bgcolor);
+  background-color: var(--bgcolor) !important;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;

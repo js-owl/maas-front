@@ -141,8 +141,8 @@ watch(
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-  border: 2px solid var(--left-section-bg);
+  /* background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); */
+  border: 2px solid var(--gray-footer);
   border-radius: 8px;
   color: rgba(255, 255, 255, 0.7);
   font-size: 16px;
