@@ -11,6 +11,11 @@ let file_id = ref(4)
         <p class="model-subtitle">
           Загрузите 3D-модель и получите быстрый расчет стоимости.
         </p>
+        <div style="display: flex; justify-content: space-between;">
+          <div class="model-icon">металл</div>
+          <div class="model-icon">пластики</div> 
+          <div class="model-icon">дерево</div>
+        </div>
       </div>
     </el-col>
     <el-col :offset="2" :span="12" :xs="{ span: 24, offset: 0 }" class="model-right">
@@ -31,13 +36,16 @@ let file_id = ref(4)
 <style scoped>
 .model-title {
   text-align: left;
-  font-size: 60px;
+  font-size:44px;
+  font-weight: bold;
   color: black;
 }
 
 .model-subtitle {
-  font-size: 30px;
-  color: black;
+  padding-top: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--gray-footer);
 }
 
 .model-right {
@@ -50,6 +58,20 @@ let file_id = ref(4)
   color: white;
   font-size: 24px;
   padding: 24px;
+}
+
+.model-icon {
+  width: 123px;
+  height: 44px;
+  text-align: center;
+  line-height: 44px;
+  font-size: 20x;
+  font-weight: normal;
+  color: var(--gray-footer);
+  background-color: var(--whity);
+  border-radius: 10px;
+  margin-top: 100px;
+  /* padding: 10px; */
 }
 
 @media (max-width: 767px) {
