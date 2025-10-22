@@ -15,36 +15,37 @@ const abilities = ref([
     link: '/printing',
     isDevelopment: false,
     imagePath: '/plastic.png',
-  },
-  {
-    id: 3,
-    title: 'Нанесение покрытий',
-    link: null,
-    isDevelopment: true,
-    imagePath: null,
-  },
-  {
-    id: 4,
-    title: 'Производство из композитных материалов',
-    link: null,
-    isDevelopment: true,
-    imagePath: null,
-  },
-  {
-    id: 5,
-    title: 'Сварочное производство',
-    link: null,
-    isDevelopment: true,
-    imagePath: null,
-  },
-  {
-    id: 6,
-    title: 'Лабораторные исследования',
-    link: null,
-    isDevelopment: true,
-    imagePath: null,
-  },
-])
+  }
+  ])
+  // {
+  //   id: 3,
+  //   title: 'Нанесение покрытий',
+  //   link: null,
+  //   isDevelopment: true,
+  //   imagePath: null,
+  // },
+  // {
+  //   id: 4,
+  //   title: 'Производство из композитных материалов',
+  //   link: null,
+  //   isDevelopment: true,
+  //   imagePath: null,
+  // },
+  // {
+  //   id: 5,
+  //   title: 'Сварочное производство',
+  //   link: null,
+  //   isDevelopment: true,
+  //   imagePath: null,
+  // },
+  // {
+  //   id: 6,
+  //   title: 'Лабораторные исследования',
+  //   link: null,
+  //   isDevelopment: true,
+  //   imagePath: null,
+  // },
+
 </script>
 
 <template>
@@ -92,7 +93,7 @@ const abilities = ref([
 .services-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(1, 1fr);
   gap: 20px;
   /* max-width: 1200px;
   margin: 0 auto; */
@@ -174,7 +175,7 @@ const abilities = ref([
 @media (max-width: 768px) {
   .services-grid {
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: 15px;
   }
   

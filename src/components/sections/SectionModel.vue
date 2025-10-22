@@ -7,7 +7,7 @@ let file_id = ref(4)
   <el-row :gutter="0" class="section-basic">
     <el-col :span="10" :xs="{ span: 24, offset: 0 }">
       <div style="padding-top: 10px">
-        <div class="model-title">ЦЕНТР КОЛЛЕКТИВНОГО ПРОИЗВОДСТВА</div>
+        <div class="model-title">ЦЕНТР КОЛЛЕКТИВНОГО ПРОИЗВОДСТВА АЭРОМАКС</div>
         <p class="model-subtitle">
           Загрузите 3D-модель и получите быстрый расчет стоимости.
         </p>

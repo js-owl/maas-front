@@ -101,7 +101,7 @@ function scrollToAbout() {
               class="logo-btn"
               @click="router.push({ path: '/' })"
             >
-              ЦКП
+              Аэромакс
             </el-button>
 
             <!-- Меню с выпадающим списком -->
@@ -134,38 +134,38 @@ function scrollToAbout() {
                   <el-menu-item index="/milling" :route="{ path: '/milling' }">
                     Фрезерные работы
                   </el-menu-item>
-                  <el-menu-item index="1-1-5" disabled>
+                  <!-- <el-menu-item index="1-1-5" disabled>
                     Раскрой металла / заготовительный участок
-                  </el-menu-item>
-                  <el-menu-item index="1-1-1" disabled>
+                  </el-menu-item> -->
+                  <!-- <el-menu-item index="1-1-1" disabled>
                     Сверлильные работы
-                  </el-menu-item>
-                  <el-menu-item index="1-1-2" disabled>Шлифовка</el-menu-item>
+                  </el-menu-item> -->
+                  <!-- <el-menu-item index="1-1-2" disabled>Шлифовка</el-menu-item> -->
                 </el-sub-menu>
-                <el-menu-item
+                <!-- <el-menu-item
                   index="/plastic"
                   :route="{ path: '/plastic' }"
                   disabled
                 >
                   Производство из композитных материалов
-                </el-menu-item>
-                <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
+                </el-menu-item> -->
+                <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
                   Нанесение лакокрасочных покрытий
-                </el-menu-item>
+                </el-menu-item> -->
                 <el-menu-item index="/printing" :route="{ path: '/printing' }">
                   3D печать
                 </el-menu-item>
-                <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
+                <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
                   Лабораторные исследования
-                </el-menu-item>
-                <el-sub-menu index="1-2" disabled>
+                </el-menu-item> -->
+                <!-- <el-sub-menu index="1-2" disabled>
                   <template #title>Сварочное производство</template>
                   <el-menu-item index="1-2-1">Аргонодуговая сварка</el-menu-item>
                   <el-menu-item index="1-2-2">
                     Сварка в углекислом газе
                   </el-menu-item>
                   <el-menu-item index="1-2-3">Контактная сварка</el-menu-item>
-                </el-sub-menu>
+                </el-sub-menu>  -->
               </el-sub-menu>
             </el-menu>
           </div>
@@ -225,14 +225,14 @@ function scrollToAbout() {
             <template #title>Механообрабатывающее производство</template>
             <el-menu-item index="/machining" :route="{ path: '/machining' }">Токарные работы</el-menu-item>
             <el-menu-item index="/milling" :route="{ path: '/milling' }">Фрезерные работы</el-menu-item>
-            <el-menu-item index="m1-1-5" disabled>Раскрой металла / заготовительный участок</el-menu-item>
-            <el-menu-item index="m1-1-1" disabled>Сверлильные работы</el-menu-item>
-            <el-menu-item index="m1-1-2" disabled>Шлифовка</el-menu-item>
+            <!-- <el-menu-item index="m1-1-5" disabled>Раскрой металла / заготовительный участок</el-menu-item> -->
+            <!-- <el-menu-item index="m1-1-1" disabled>Сверлильные работы</el-menu-item> -->
+            <!-- <el-menu-item index="m1-1-2" disabled>Шлифовка</el-menu-item> -->
           </el-sub-menu>
-          <el-menu-item index="/plastic" :route="{ path: '/plastic' }" disabled>Производство из композитных материалов</el-menu-item>
-          <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Нанесение лакокрасочных покрытий</el-menu-item>
+          <!-- <el-menu-item index="/plastic" :route="{ path: '/plastic' }" disabled>Производство из композитных материалов</el-menu-item> -->
+          <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Нанесение лакокрасочных покрытий</el-menu-item> -->
           <el-menu-item index="/printing" :route="{ path: '/printing' }">3D печать</el-menu-item>
-          <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Лабораторные исследования</el-menu-item>
+          <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Лабораторные исследования</el-menu-item> -->
           <el-sub-menu index="m1-2" disabled>
             <template #title>Сварочное производство</template>
             <el-menu-item index="m1-2-1">Аргонодуговая сварка</el-menu-item>
