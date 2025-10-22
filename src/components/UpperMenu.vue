@@ -7,6 +7,7 @@ import { useAuthStore } from "../stores/auth.store";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { useProfileStore } from "../stores/profile.store";
+import { ArrowDown, Menu, User } from "@element-plus/icons-vue";
 
 const activeIndex = ref("1");
 const handleSelect = (key: string, keyPath: string[]) => {
@@ -94,84 +95,85 @@ function scrollToAbout() {
             </el-icon>
           </el-button>
 
-          <el-menu
-            v-if="!isMobile"
-            :default-active="activeIndex"
-            class="el-menu-demo"
-            mode="horizontal"
-            :ellipsis="false"
-            :background-color="color"
-            text-color="#fff"
-            active-text-color="#fff"
-            :router="true"
-            @select="handleSelect"
-          >
-            <el-menu-item
-              index="/"
-              :route="{ path: '/' }"
-              class="first-element"
+          <div v-if="!isMobile" class="menu-container">
+            <!-- Красная кнопка ЦКП -->
+            <el-button
+              class="logo-btn"
+              @click="router.push({ path: '/' })"
             >
               ЦКП
-            </el-menu-item>
-            <el-sub-menu index="1">
-              <template #title>Услуги</template>
-              <el-sub-menu index="1-1">
-                <template #title>Механообрабатывающее производство</template>
+            </el-button>
+
+            <!-- Меню с выпадающим списком -->
+            <el-menu
+              :default-active="activeIndex"
+              class="main-menu"
+              mode="horizontal"
+              :ellipsis="false"
+              background-color="transparent"
+              text-color="#333"
+              active-text-color="#333"
+              :router="true"
+              @select="handleSelect"
+            >
+              <el-sub-menu index="1" class="services-menu">
+                <template #title>
+                  <span class="services-title">Услуги</span>
+                  <el-icon class="dropdown-icon">
+                    <ArrowDown />
+                  </el-icon>
+                </template>
+                <el-sub-menu index="1-1">
+                  <template #title>Механообрабатывающее производство</template>
+                  <el-menu-item
+                    index="/machining"
+                    :route="{ path: '/machining' }"
+                  >
+                    Токарные работы
+                  </el-menu-item>
+                  <el-menu-item index="/milling" :route="{ path: '/milling' }">
+                    Фрезерные работы
+                  </el-menu-item>
+                  <el-menu-item index="1-1-5" disabled>
+                    Раскрой металла / заготовительный участок
+                  </el-menu-item>
+                  <el-menu-item index="1-1-1" disabled>
+                    Сверлильные работы
+                  </el-menu-item>
+                  <el-menu-item index="1-1-2" disabled>Шлифовка</el-menu-item>
+                </el-sub-menu>
                 <el-menu-item
-                  index="/machining"
-                  :route="{ path: '/machining' }"
+                  index="/plastic"
+                  :route="{ path: '/plastic' }"
+                  disabled
                 >
-                  Токарные работы
+                  Производство из композитных материалов
                 </el-menu-item>
-                <el-menu-item index="/milling" :route="{ path: '/milling' }">
-                  Фрезерные работы
+                <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
+                  Нанесение лакокрасочных покрытий
                 </el-menu-item>
-
-                <el-menu-item index="1-1-5" disabled>
-                  Раскрой металла / заготовительный участок
+                <el-menu-item index="/printing" :route="{ path: '/printing' }">
+                  3D печать
                 </el-menu-item>
-                <el-menu-item index="1-1-1" disabled>
-                  Сверлильные работы
+                <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
+                  Лабораторные исследования
                 </el-menu-item>
-                <el-menu-item index="1-1-2" disabled>Шлифовка</el-menu-item>
+                <el-sub-menu index="1-2" disabled>
+                  <template #title>Сварочное производство</template>
+                  <el-menu-item index="1-2-1">Аргонодуговая сварка</el-menu-item>
+                  <el-menu-item index="1-2-2">
+                    Сварка в углекислом газе
+                  </el-menu-item>
+                  <el-menu-item index="1-2-3">Контактная сварка</el-menu-item>
+                </el-sub-menu>
               </el-sub-menu>
-              <el-menu-item
-                index="/plastic"
-                :route="{ path: '/plastic' }"
-                disabled
-              >
-                Производство из композитных материалов
-              </el-menu-item>
-              <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
-                Нанесение лакокрасочных покрытий
-              </el-menu-item>
-              <el-menu-item index="/printing" :route="{ path: '/printing' }">
-                3D печать
-              </el-menu-item>
-              <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
-                Лабораторные исследования
-              </el-menu-item>
-              <el-sub-menu index="1-2" disabled>
-                <template #title>Сварочное производство</template>
-                <el-menu-item index="1-2-1">Аргонодуговая сварка</el-menu-item>
-                <el-menu-item index="1-2-2">
-                  Сварка в углекислом газе
-                </el-menu-item>
-                <el-menu-item index="1-2-3">Контактная сварка</el-menu-item>
-              </el-sub-menu>
-            </el-sub-menu>
-            <el-menu-item v-show="false" index="/#about" @click="scrollToAbout">
-              О нас
-            </el-menu-item>
-
-          </el-menu>
+            </el-menu>
+          </div>
         </div>
-        <div class="center-spacer" />
+        
         <div class="right-wrap">
           <el-button
             class="call-btn"
-            type="primary"
-            plain
             @click="onCallRequest"
           >
             Заказать звонок
@@ -179,11 +181,9 @@ function scrollToAbout() {
           <template v-if="!authStore.getToken">
             <el-button
               class="auth-btn"
-              type="primary"
-              plain
               @click="isLoginVisible = true"
             >
-              Войти/ Регистрация
+              Войти / Регистрация
             </el-button>
           </template>
           <template v-else>
@@ -195,8 +195,6 @@ function scrollToAbout() {
             </el-icon>
             <el-button
               class="auth-btn"
-              type="primary"
-              plain
               @click="onLogout"
             >
               Выйти
@@ -255,8 +253,10 @@ function scrollToAbout() {
 .uppermenu-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   height: 100px;
   margin-right: -40px;
+  padding: 0 20px;
 }
 .left-wrap {
   display: flex;
@@ -265,79 +265,125 @@ function scrollToAbout() {
 .right-wrap {
   display: flex;
   align-items: center;
+  gap: 20px;
 }
-.center-spacer {
-  flex: 1;
+.menu-container {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.logo-btn {
+  background-color: #d61e3c;
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 4px;
+  height: auto;
+}
+.logo-btn:hover,
+.logo-btn:focus,
+.logo-btn:active {
+  background-color: #c01a35 !important;
+  border-color: #c01a35 !important;
+  color: white !important;
+}
+.main-menu {
+  border: none !important;
+}
+.services-menu {
+  display: flex;
+  align-items: center;
+}
+.services-title {
+  font-size: 18px;
+  color: #333;
+  font-weight: 500;
+}
+.dropdown-icon {
+  color: #d61e3c;
+  margin-left: 8px;
+  font-size: 12px;
 }
 .burger-btn {
-  color: #fff;
+  color: #333;
 }
 .call-btn {
   background-color: transparent;
-  color: black;
+  color: #333;
   border: none;
-  margin-left: 20px;
-  font-size: 20px;
-  height: 80px;
-  padding-left: 0px;
-  font-weight: normal;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 8px 16px;
+  height: auto;
 }
 .call-btn:hover,
 .call-btn:focus,
 .call-btn:active {
   background-color: transparent !important;
   border-color: transparent !important;
-  color: white !important;
+  color: #333 !important;
 }
 .auth-btn {
-  background-color: var(--bgcolor);
-  color: black;
+  background-color: transparent;
+  color: #333;
   border: none;
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 8px 16px;
+  height: auto;
 }
 .auth-btn:hover,
 .auth-btn:focus,
 .auth-btn:active {
-  background-color: var(--bgcolor) !important;
+  background-color: transparent !important;
   border-color: transparent !important;
-  color: black !important;
+  color: #333 !important;
 }
 .username {
-  color: white;
+  color: #333;
   padding-right: 5px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: 500;
 }
 .user-icon {
   margin-right: 10px;
-  color: white;
+  color: #333;
   cursor: pointer;
 }
 .el-menu.el-menu--horizontal {
   border-bottom: none;
 }
 .el-menu-item {
-  font-size: 20px;
+  font-size: 18px;
 }
 :deep(.el-header) {
   padding-left: 0px;
 }
 :deep(.el-sub-menu__title) {
-  font-size: 20px;
+  font-size: 18px;
+  color: #333 !important;
+  padding: 0 20px;
+  height: 60px;
+  line-height: 60px;
 }
 :deep(.el-sub-menu) {
-  font-size: 20px;
+  font-size: 18px;
 }
-.first-element {
-  font-size: 30px;
-  color: white !important;
-  text-decoration: none;
-  font-weight: 700;
-  margin-right: 100px !important;
+:deep(.el-sub-menu__title:hover) {
+  color: #333 !important;
+  background-color: transparent !important;
 }
-.first-element.is-active {
-  color: white !important;
+:deep(.el-menu--horizontal .el-sub-menu .el-sub-menu__title) {
   border-bottom: none !important;
+}
+:deep(.el-menu--horizontal .el-sub-menu .el-sub-menu__title:hover) {
+  border-bottom: none !important;
+}
+:deep(.el-sub-menu__title .el-sub-menu__icon-arrow) {
+  display: none !important;
 }
 
 @media (max-width: 767px) {
@@ -359,9 +405,15 @@ function scrollToAbout() {
   .user-icon {
     margin-right: 4px;
   }
-  .first-element {
-    margin-right: 0 !important;
-    font-size: 22px;
+  .logo-btn {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+  .menu-container {
+    gap: 15px;
+  }
+  .services-title {
+    font-size: 16px;
   }
 }
 
