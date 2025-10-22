@@ -423,7 +423,7 @@ async function getOrder(id: number) {
 /* Основные цвета и фоны */
 .main-container {
   min-height: 500px;
-  background-color: var(--left-section-bg);
+  background-color: var(--bgcolor);
 }
 
 .left-section {
