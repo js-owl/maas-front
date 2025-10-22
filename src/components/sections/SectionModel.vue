@@ -95,5 +95,9 @@ let file_id = ref(4)
     padding: 12px 16px;
     width: 100%;
   }
+
+  .model-icon {
+    display: none;
+  }
 }
 </style>
