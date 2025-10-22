@@ -28,7 +28,7 @@ const isDrawerOpen = ref(false);
 // Check token on component mount
 onMounted(() => {
   const rootStyles = getComputedStyle(document.documentElement);
-  color.value = rootStyles.getPropertyValue("--upper-menu-bg").trim();
+  color.value = rootStyles.getPropertyValue("--bgcolor").trim();
 
   checkTokenValidity();
   const tokenCheckInterval = setInterval(checkTokenValidity, 5 * 60 * 1000);
@@ -250,7 +250,7 @@ function scrollToAbout() {
 
 <style scoped>
 .uppermenu-row {
-  background-color: var(--upper-menu-bg);
+  background-color: var(--bgcolor);
 }
 .uppermenu-header {
   display: flex;
@@ -274,7 +274,7 @@ function scrollToAbout() {
 }
 .call-btn {
   background-color: transparent;
-  color: white;
+  color: black;
   border: none;
   margin-left: 20px;
   font-size: 20px;
@@ -290,17 +290,17 @@ function scrollToAbout() {
   color: white !important;
 }
 .auth-btn {
-  background-color: var(--upper-menu-bg);
-  color: white;
+  background-color: var(--bgcolor);
+  color: black;
   border: none;
   font-size: 20px;
 }
 .auth-btn:hover,
 .auth-btn:focus,
 .auth-btn:active {
-  background-color: var(--upper-menu-bg) !important;
+  background-color: var(--bgcolor) !important;
   border-color: transparent !important;
-  color: white !important;
+  color: black !important;
 }
 .username {
   color: white;
