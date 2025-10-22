@@ -297,10 +297,10 @@ async function getOrder(id: number) {
           Загрузите файлы для расчета
         </el-col>
         <el-col :span="12">
-          <UploadModel v-model="file_id" color="#fff" />
+          <UploadModel v-model="file_id" color="#000" />
         </el-col>
         <el-col :span="12">
-          <UploadDrawings v-model="document_ids" color="#fff" />
+          <UploadDrawings v-model="document_ids" color="#000" />
         </el-col>
         <el-col :span="24" class="upload-info">
           Максимальный размер 100Мб
@@ -400,13 +400,13 @@ async function getOrder(id: number) {
       </el-row>
       <el-row :gutter="5" class="row-spacing-bottom">
         <el-col :offset="2" :span="17">
-          <div class="label">Комментарий</div>
+          <div class="coefficient-label">Комментарий</div>
           <el-input
             v-model="special_instructions"
             type="textarea"
             :rows="3"
             placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
-            :input-style="{ backgroundColor: '#ebf3ff', color: '#000' }"
+            :input-style="{ backgroundColor: 'var(--whity)', color: 'black' }"
           />
         </el-col>
       </el-row>
@@ -435,10 +435,10 @@ async function getOrder(id: number) {
 }
 
 .submit {
-  background-color: #bc2b55;
-  border: 1px solid white;
-  color: white;
-  font-size: 26px;
+  background-color: var(--bgcolor);
+  border: 1px solid var(--bgcolor);
+  color: black;
+  font-size: 20px;
   padding: 30px 0;
   width: 100%;
 }
@@ -446,49 +446,59 @@ async function getOrder(id: number) {
 /* Основные цвета и фоны */
 .main-container {
   min-height: 500px;
-  background-color: var(--left-section-bg);
+  background-color: var(--bgcolor);
 }
 
 .left-section {
-  padding: 30px 50px 40px 20px;
+  margin-bottom: 40px;
+  padding: 30px 30px 40px 40px;
+  background-color: white;
+  border-radius: 20px 0 0 20px;
 }
 
 .right-section {
-  background-color: #fff;
-  padding-top: 30px;
+  margin-bottom: 40px;
+  padding: 30px 30px 40px 40px;
+  background-color: white;
+  border-radius: 0 20px 20px 0;
 }
 
 /* Текстовые стили */
 .title-text {
-  color: var(--left-section-color);
+  color: black;
   font-size: 38px;
   font-weight: 600;
   padding-bottom: 30px;
 }
 
 .price-section {
-  border-top: 1px solid #577aad;
-  border-bottom: 1px solid #577aad;
+  /* border-top: 1px solid #577aad; */
+  /* border-bottom: 1px solid #577aad; */
   font-size: 24px;
 }
 
 .price-row {
   display: flex;
   justify-content: space-between;
-  color: var(--left-section-color);
-  padding: 14px 0;
-  border-bottom: 1px solid #577aad;
+  background-color: var(--whity);
+  color: black;
+  margin-bottom: 10px;
+  padding: 14px 10px;
+  border-radius: 3px;
+  /* border-bottom: 1px solid #577aad; */
 }
 
 .price-row-last {
   display: flex;
   justify-content: space-between;
-  color: var(--left-section-color);
-  padding: 14px 0;
+  background-color: var(--whity);
+  color: black;
+  padding: 14px 10px;
+  border-radius: 3px;
 }
 
 .disclaimer-text {
-  color: #577aad;
+  color: black;
   font-size: 16px;
   padding-top: 10px;
   padding-bottom: 30px;
@@ -496,29 +506,30 @@ async function getOrder(id: number) {
 
 /* Секции с компонентами */
 .component-section {
-  background-color: var(--left-section-bg);
+  background-color: white;
   padding-bottom: 30px;
 }
 
 .upload-section {
-  background-color: var(--left-section-bg);
+  background-color: white;
   padding-bottom: 30px;
 }
 
 .upload-title {
   padding-bottom: 10px;
   font-size: 30px;
-  color: var(--left-section-color);
+  color: black;
+  font-weight: 700;
   /* color: #577aad; */
 }
 
 .upload-info {
   font-size: 20px;
-  color: #577aad;
+  color: black;
 }
 
 .cad-section {
-  color: #577aad;
+  color: var(--whity);
 }
 
 /* Кнопки и центрирование */
@@ -541,12 +552,7 @@ async function getOrder(id: number) {
 }
 
 /* Стили для комментариев */
-.label {
-  padding-bottom: 12px;
-  color: #283d5b;
-  font-size: 24px;
-  font-weight: 700;
-}
+
 
 .disabled-block {
   opacity: 0.5;
@@ -617,7 +623,7 @@ async function getOrder(id: number) {
     margin-bottom: 16px;
   }
 
-  .label {
+  .coefficient-label {
     font-size: 18px;
     padding-bottom: 8px;
   }
