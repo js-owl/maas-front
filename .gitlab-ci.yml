@@ -1,0 +1,125 @@
+# GitLab CI/CD Pipeline for MAAS Frontend
+# Triggers on Git tags (e.g., v1.0.0, v1.2.3) for production releases
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  # Enable BuildKit for faster builds and caching
+  DOCKER_BUILDKIT: 1
+  BUILDKIT_PROGRESS: plain
+  # Image registry - separate repos for pulling base images vs pushing built images
+  IMAGE_NAME: maas-front
+  IMAGE_TAG: ${CI_COMMIT_TAG}
+  # NEXUS_BUILD_REGISTRY - for pulling base images during build (e.g., vortex.kronshtadt.ru:8443)
+  # NEXUS_PUSH_REGISTRY - for pushing final built images (e.g., nexus.maas.int.kronshtadt.ru:8443)
+  NEXUS_PUSH_IMAGE: ${NEXUS_PUSH_REGISTRY}/maas-hosted/${IMAGE_NAME}
+
+stages:
+  - build
+  - deploy
+
+# Build Docker image and push to Nexus registry
+build:
+  stage: build
+  image: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:latest
+  services:
+    - name: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:dind
+  cache:
+    key: 
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull-push
+  before_script:
+    # Login to Nexus build registry (for pulling base images)
+    - echo $NEXUS_BUILD_PASSWORD | docker login -u $NEXUS_BUILD_USER --password-stdin $NEXUS_BUILD_REGISTRY
+    # Login to Nexus push registry (for pushing built images)
+    - echo $NEXUS_PUSH_PASSWORD | docker login -u $NEXUS_PUSH_USER --password-stdin $NEXUS_PUSH_REGISTRY
+    # Try to pull previous image for cache (ignore if not found)
+    - docker pull $NEXUS_PUSH_IMAGE:latest || true
+  script:
+    # Build image with private registry credentials and cache
+    - |
+      docker build -f Dockerfile.prod \
+        --build-arg NPM_REGISTRY=$NPM_REGISTRY \
+        --build-arg NPM_AUTH=$NPM_AUTH \
+        --build-arg NODE_IMAGE=$NODE_IMAGE \
+        --build-arg NGINX_IMAGE=$NGINX_IMAGE \
+        --build-arg APT_PROXY=$APT_PROXY \
+        --build-arg BUILDKIT_INLINE_CACHE=1 \
+        --build-arg GIT_TAG=$CI_COMMIT_TAG \
+        --build-arg GIT_HASH=$CI_COMMIT_SHA \
+        --build-arg GIT_BRANCH=$CI_COMMIT_REF_NAME \
+        --cache-from $NEXUS_PUSH_IMAGE:latest \
+        -t $NEXUS_PUSH_IMAGE:$IMAGE_TAG \
+        -t $NEXUS_PUSH_IMAGE:latest .
+    # Push both tags to Nexus push registry
+    - docker push $NEXUS_PUSH_IMAGE:$IMAGE_TAG
+    - docker push $NEXUS_PUSH_IMAGE:latest
+    # Clean up local images
+    - docker rmi $NEXUS_PUSH_IMAGE:$IMAGE_TAG $NEXUS_PUSH_IMAGE:latest || true
+  only:
+    - tags
+  tags:
+    - docker
+
+# Deploy to remote production server
+deploy:
+  stage: deploy
+  image: ${NEXUS_PUSH_REGISTRY}/maas-hosted/maas-deploy-tools:latest
+  before_script:
+    # Setup SSH key (tools already pre-installed in custom image)
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    # Deploy to remote server
+    - |
+      ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
+        set -e
+        
+        # Navigate to project directory
+        cd $REMOTE_PROJECT_PATH
+        
+        # Create/update .env.production
+        cat > .env.production << 'ENVEOF'
+        VITE_API_BASE=$VITE_API_BASE
+        VITE_BASE_PATH=$VITE_BASE_PATH
+        ENVEOF
+        
+        # Login to Nexus push registry
+        echo $NEXUS_PUSH_PASSWORD | docker login -u $NEXUS_PUSH_USER --password-stdin $NEXUS_PUSH_REGISTRY
+        
+        # Update docker-compose.yml image tag
+        sed -i "s|image:.*maas-front:.*|image: $NEXUS_PUSH_IMAGE:$IMAGE_TAG|g" docker-compose.yml
+        
+        # Pull new image
+        docker-compose pull
+        
+        # Stop and remove old container
+        docker-compose down || true
+        
+        # Start new container
+        docker-compose up -d
+        
+        # Verify deployment
+        sleep 10
+        if docker-compose ps | grep -q "Up"; then
+          echo "✅ Deployment successful - container is running"
+        else
+          echo "❌ Deployment failed - container is not running"
+          docker-compose logs
+          exit 1
+        fi
+      EOF
+  only:
+    - tags
+  dependencies:
+    - build
+  tags:
+    - docker

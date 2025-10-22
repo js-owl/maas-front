@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Development files
+.cursor/
+.vscode/
+.idea/
+*.log
+*.local
+
+# Duplicate subdirectory
+m-front/
+
+# Auto-generated TypeScript files (regenerated during build)
+auto-imports.d.ts
+components.d.ts
+
+# Documentation files
+*.md
+CHANGELOG.md
+README.md
+DOCKER_INFRASTRUCTURE.md
+
+# Environment files (using runtime config instead)
+.env.development
+.env.production
+
+# Git
+.git/
+.gitignore
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

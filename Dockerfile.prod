@@ -1,0 +1,79 @@
+# Build arguments for flexible registry configuration
+ARG NODE_IMAGE=""
+ARG NGINX_IMAGE=""
+
+#---- Stage 1: Build the Vue application ----
+FROM ${NODE_IMAGE} AS builder
+
+
+ARG NPM_REGISTRY=""
+ARG NPM_AUTH=
+ARG NGINX_IMAGE=""
+ARG APT_PROXY=""
+ARG GIT_TAG=""
+ARG GIT_HASH=""
+ARG GIT_BRANCH=""
+
+# Set the working directory
+WORKDIR /app
+
+# Configure apt proxy for private registry (if provided)
+RUN if [ -n "$APT_PROXY" ]; then \
+        echo "Acquire::http::Proxy \"$APT_PROXY\";" > /etc/apt/apt.conf.d/99proxy && \
+        echo "Acquire::https::Proxy \"$APT_PROXY\";" >> /etc/apt/apt.conf.d/99proxy; \
+    fi
+
+# Install git for build info and other tools
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Configure npm registry and authentication
+RUN if [ -n "${NPM_REGISTRY}" ]; then npm config set registry ${NPM_REGISTRY}; fi
+RUN if [ -n "${NPM_AUTH}" ]; then npm config set //${NPM_REGISTRY#https://}:_auth=${NPM_AUTH}; fi
+RUN if [ "${NPM_REGISTRY}" != "https://registry.npmjs.org/" ]; then npm config set strict-ssl false; fi
+
+# Copy package files and install dependencies
+COPY package*.json ./
+
+# Install dependencies with BuildKit cache mount for faster builds
+# disabled cahing before docker update to last version with buildkit
+#RUN --mount=type=cache,target=/root/.npm \
+#    --mount=type=cache,target=/app/node_modules \
+#    npm ci --include=dev
+
+RUN  npm ci --include=dev
+
+# Copy the entire project source code
+COPY . .
+
+# Set Git information environment variables for build info
+ENV GIT_TAG=${GIT_TAG}
+ENV GIT_HASH=${GIT_HASH}
+ENV GIT_BRANCH=${GIT_BRANCH}
+
+# Build the application for production
+RUN npm run build -- --mode production
+
+#---- Stage 2: Serve the application with Nginx ----
+FROM ${NGINX_IMAGE}
+
+# Copy the custom Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Set the working directory to Nginx's web root
+WORKDIR /usr/share/nginx/html
+
+# Remove default Nginx welcome page
+RUN rm -rf ./*
+
+# Copy the built assets from the 'builder' stage
+COPY --from=builder /app/dist .
+
+# Copy the entrypoint script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Expose port 80 to the outside world
+EXPOSE 80
+
+# Use entrypoint for runtime configuration
+ENTRYPOINT ["/docker-entrypoint.sh"]

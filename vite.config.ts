@@ -14,6 +14,8 @@ export default defineConfig(({ mode }) => {
   let gitHash = 'unknown'
   let gitBranch = 'unknown'
   try {
+    // Check if we're in a git repository before trying to execute git commands
+    execSync('git rev-parse --is-inside-work-tree', { encoding: 'utf8', stdio: 'pipe' })
     gitHash = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim()
     gitBranch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim()
   } catch (error) {
@@ -32,7 +34,20 @@ export default defineConfig(({ mode }) => {
       global: 'globalThis',
     },
     build: {
+      // Increase chunk size warning threshold (current main bundle is ~1MB)
+      chunkSizeWarningLimit: 1000,
+      // Suppress module externalization warnings (expected behavior)
+      logLevel: 'warn',
       rollupOptions: {
+        external: ['/config.js'], // Mark config.js as external to prevent bundling
+        output: {
+          // Manual chunking for better caching and loading performance
+          manualChunks: {
+            'vue-vendor': ['vue', 'vue-router', 'pinia'],
+            'element-plus': ['element-plus', '@element-plus/icons-vue'],
+            'three': ['three', 'occt-import-js', 'three-stl-loader']
+          }
+        },
         plugins: [
           {
             name: 'node-polyfills',
@@ -40,6 +55,13 @@ export default defineConfig(({ mode }) => {
               if (['path', 'fs', 'crypto', 'util', 'os', 'stream'].includes(id)) {
                 return { id: `node:${id}`, external: true }
               }
+            }
+          },
+          {
+            name: 'suppress-config-js-warning',
+            generateBundle() {
+              // This plugin exists to document that config.js warnings are expected
+              // The actual warning suppression is handled by Vite's built-in mechanisms
             }
           }
         ]

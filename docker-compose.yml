@@ -6,7 +6,7 @@ services:
     #build:
     #  context: .
     #  dockerfile: Dockerfile
-    container_name: maas_prod_front
+    container_name: maas-front
     #ports:
     # - "80:80"
     environment:
@@ -23,7 +23,7 @@ services:
       start_period: 40s
     networks:
       - traefik-global-proxy
-      - backend
+    #  - backend
     labels:
       # Enable Traefik
       - "traefik.enable=true"
@@ -51,5 +51,5 @@ services:
 networks:
   traefik-global-proxy:
     external: true
-  backend:
-    external: true
+#  backend:
+#    external: true
