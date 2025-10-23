@@ -184,9 +184,9 @@ function renderModel() {
 .stl-container {
   width: 100%;
   height: 400px;
-  border: 2px solid var(--left-section-bg);
+  /* border: 2px dashed red; */
   border-radius: 8px;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
