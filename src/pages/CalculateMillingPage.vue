@@ -2,8 +2,8 @@
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { req_json, req_json_auth } from "../api";
 
-import Length from "../components/coefficients/Length.vue";
-import Width from "../components/coefficients/Width.vue";
+// import Length from "../components/coefficients/Length.vue";
+// import Width from "../components/coefficients/Width.vue";
 
 import CoefficientQuantity from "../components/coefficients/CoefficientQuantity.vue";
 
@@ -14,7 +14,7 @@ import CoefficientCertificate from "../components/coefficients/CoefficientCertif
 import CoefficientTolerance from "../components/coefficients/CoefficientTolerance.vue";
 import CoefficientFinish from "../components/coefficients/CoefficientFinish.vue";
 import CoefficientCover from "../components/coefficients/CoefficientCover.vue";
-import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
+// import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
 import { useRoute, useRouter } from "vue-router";
 import UploadModel from "../components/cad/UploadModel.vue";
@@ -27,7 +27,7 @@ import { useAuthStore } from "../stores/auth.store";
 import { ElMessage } from "element-plus";
 import DialogInfoPayment from "../components/dialog/DialogInfoPayment.vue";
 import SuitableMachines from "../components/SuitableMachines.vue";
-import Height from "../components/coefficients/Height.vue";
+// import Height from "../components/coefficients/Height.vue";
 import type {
   IOrderPayload,
   IOrderPostPayload,
@@ -367,7 +367,7 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5">
         <el-col :offset="0" :span="15" :xs="{ span: 24, offset: 0 }">
-          <MaterialMachining v-model="material_id" />
+          <MaterialMilling v-model="material_id" />
         </el-col>
         <el-col :offset="1" :span="5"> </el-col>
       </el-row>

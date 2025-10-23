@@ -1,0 +1,603 @@
+<script lang="ts" setup>
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { req_json_auth, req_json } from '../api'
+
+// import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
+import CoefficientOtk from './coefficients/CoefficientOtk.vue'
+import CoefficientCertificate from './coefficients/CoefficientCertificate.vue'
+// import CoefficientTolerance from './coefficients/CoefficientTolerance.vue'
+// import CoefficientFinish from './coefficients/CoefficientFinish.vue'
+import CoefficientCover from './coefficients/CoefficientCover.vue'
+
+import { useRoute, useRouter } from 'vue-router'
+import UploadModel from './cad/UploadModel.vue'
+import UploadDrawings from './UploadDrawings.vue'
+import DocumentShowByIds from './DocumentShowByIds.vue'
+// @ts-ignore
+import CadShowById from './cad/CadShowById.vue'
+import { useProfileStore, type IProfile } from '../stores/profile.store'
+import { useAuthStore } from '../stores/auth.store'
+import { ElMessage } from 'element-plus'
+import DialogInfoPayment from './dialog/DialogInfoPayment.vue'
+import SuitableMachines from './SuitableMachines.vue'
+import type {
+  IOrderPayload,
+  IOrderPostPayload,
+  IOrderResponse,
+} from '../interfaces/order.interface'
+
+interface Props {
+  serviceId: 'cnc-lathe' | 'cnc-milling' | 'printing'
+  title: string
+  defaultFileId: number
+  submitButtonText?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  submitButtonText: 'Оформить заказ',
+})
+
+const authStore = useAuthStore()
+const profileStore = useProfileStore()
+
+const route = useRoute()
+const router = useRouter()
+const order_id = computed(() => Number(route.query.orderId) || 0)
+
+let file_id = ref(props.defaultFileId)
+let document_ids = ref<number[]>([])
+
+let quantity = ref(1)
+let tolerance_id = ref('4')
+let finish_id = ref('3')
+let cover_id = ref<string[]>(['1'])
+let n_dimensions = ref(55)
+let length = ref(0)
+let width = ref(0)
+let height = ref(0)
+let material_id = ref('')
+let material_form = ref('')
+
+let k_otk = ref('1')
+let k_cert = ref(['a', 'f'])
+let manufacturing_cycle = ref<number>(0)
+let special_instructions = ref('')
+
+const payload = reactive<IOrderPayload>({
+  service_id: props.serviceId,
+  file_id,
+  document_ids,
+  quantity,
+  tolerance_id,
+  finish_id,
+  cover_id,
+  n_dimensions,
+  k_otk,
+  k_cert,
+  manufacturing_cycle,
+  length,
+  width,
+  height,
+  material_id,
+  material_form,
+} as unknown as IOrderPayload)
+
+const result = ref<IOrderResponse | null>(null)
+
+let isInfoVisible = ref(false)
+const isLoading = ref<boolean>(true)
+
+watch(payload, sendData, { deep: true })
+
+onMounted(() => {
+  if (order_id.value == 0) {
+    sendData(payload)
+  } else {
+    getOrder(order_id.value)
+  }
+})
+
+function isProfileComplete(profile?: IProfile): boolean {
+  if (!profile) return false
+  const required: Array<keyof IProfile> = [
+    'email',
+    'full_name',
+    'postal',
+    'region',
+    'city_name',
+    'street',
+    'building',
+  ]
+  return required.every((key) => {
+    const v = profile[key] as unknown as string | undefined
+    return typeof v === 'string' && v.trim().length > 0
+  })
+}
+
+async function ensureProfileLoaded() {
+  if (!profileStore.profile) {
+    try {
+      await profileStore.getProfile()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+}
+
+async function sendData(payload: IOrderPayload) {
+  isLoading.value = true
+  try {
+    const res = await req_json('/calculate-price', 'POST', payload)
+    const data = (await res?.json()) as IOrderResponse
+    result.value = data
+  } catch (error) {
+    console.error({ error })
+  }
+  isLoading.value = false
+}
+
+async function submitOrder(payloadData: IOrderPayload) {
+  if (!authStore.getToken) {
+    ElMessage.warning('Необходимо зарегистрироваться!')
+    return
+  }
+  isLoading.value = true
+  if (order_id.value == 0) {
+    try {
+      const postPayload: IOrderPostPayload = {
+        ...payloadData,
+        document_ids: document_ids.value ?? [],
+      }
+      const res = await req_json_auth('/orders', 'POST', postPayload)
+      const data = (await res?.json()) as IOrderResponse
+      result.value = data
+    } catch (error) {
+      console.error({ error })
+    }
+  } else {
+    const id = order_id.value
+    try {
+      const res = await req_json_auth(`/orders/${id}`, 'PUT', payloadData)
+      const data = (await res?.json()) as IOrderResponse
+      result.value = data
+      console.log('PUT', result.value)
+    } catch (error) {
+      console.error({ error })
+    }
+  }
+  isLoading.value = false
+  await ensureProfileLoaded()
+  if (!isProfileComplete(profileStore.profile)) {
+    ElMessage.warning('Заполните профиль перед оформлением заказа')
+    router.push({ path: '/personal/profile' })
+    return
+  }
+  isInfoVisible.value = true
+  router.push({ path: '/personal/orders' })
+}
+
+async function getOrder(id: number) {
+  isLoading.value = true
+  try {
+    const res = await req_json_auth(`/orders/${id}`, 'GET')
+    const data = (await res?.json()) as IOrderResponse
+    result.value = data
+
+    if (data.file_id) file_id.value = data.file_id
+    if (data.document_ids) document_ids.value = data.document_ids
+    if (data.quantity) quantity.value = data.quantity
+    if (data.tolerance_id) tolerance_id.value = data.tolerance_id
+    if (data.finish_id) finish_id.value = data.finish_id
+    if (data.cover_id)
+      cover_id.value = Array.isArray(data.cover_id) ? data.cover_id : [data.cover_id]
+    if (data.n_dimensions) n_dimensions.value = data.n_dimensions
+    if (data.k_otk) k_otk.value = data.k_otk
+    if (data.k_cert) k_cert.value = data.k_cert
+    if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
+    if (data.special_instructions) special_instructions.value = data.special_instructions
+    if (data.length) length.value = data.length
+    if (data.width) width.value = data.width
+    if (data.height) height.value = data.height
+    if (data.material_id) material_id.value = data.material_id
+    if (data.material_form) material_form.value = data.material_form
+
+    Object.assign(payload, {
+      service_id: props.serviceId,
+      file_id: file_id.value,
+      document_ids: document_ids.value,
+      quantity: quantity.value,
+      tolerance_id: tolerance_id.value,
+      finish_id: finish_id.value,
+      cover_id: cover_id.value,
+      n_dimensions: n_dimensions.value,
+      k_otk: k_otk.value,
+      k_cert: k_cert.value,
+      manufacturing_cycle: manufacturing_cycle.value,
+      length: length.value,
+      width: width.value,
+      height: height.value,
+      material_id: material_id.value,
+      material_form: material_form.value,
+    })
+  } catch (error) {
+    console.error({ error })
+  }
+  isLoading.value = false
+}
+
+const exposedData = {
+  file_id,
+  document_ids,
+  quantity,
+  tolerance_id,
+  finish_id,
+  cover_id,
+  n_dimensions,
+  k_otk,
+  k_cert,
+  manufacturing_cycle,
+  special_instructions,
+  payload,
+  result,
+  submitOrder,
+}
+
+defineExpose(exposedData)
+</script>
+
+<template>
+  <el-row
+    :gutter="0"
+    class="main-container"
+    v-loading="isLoading"
+    element-loading-background="rgba(0, 42, 68, 0.8)"
+    element-loading-text="Расчет цены..."
+    element-loading-custom-class="loading-top"
+  >
+    <!-- 1. Левая часть -->
+    <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
+      <div class="title-text">
+        {{ title }} <br />
+        {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
+      </div>
+
+      <div class="price-section">
+        <div class="price-row">
+          <div>Стоимость 1 ед.</div>
+          <div>{{ Math.round(Number(result?.detail_price_one ?? 0)).toLocaleString() }} р.</div>
+        </div>
+        <div class="price-row">
+          <div>Общая стоимость {{ result?.quantity || 0 }} ед.*</div>
+          <div>
+            <span> {{ Math.round(Number(result?.total_price ?? 0)).toLocaleString() }} р. </span>
+            <span
+              v-show="Number(result?.detail_price ?? 0) != Number(result?.detail_price_one ?? 0)"
+            >
+              ({{ Math.round(Number(result?.detail_price ?? 0)).toLocaleString() }} р. за 1 ед.)
+            </span>
+          </div>
+        </div>
+        <div v-if="profileStore.profile?.username == 'admin'" class="price-row">
+          <div>Трудоемкость</div>
+          <div>{{ Number(result?.detail_time ?? 0).toFixed(2) || '?' }} ч.</div>
+        </div>
+        <div class="price-row-last">
+          <div>Длительность изготовления</div>
+          <div>{{ result?.manufacturing_cycle }} дн.</div>
+        </div>
+      </div>
+      <div class="disclaimer-text">
+        *При увеличении количества единиц в заказе стоимость одного изделия становится выгоднее
+      </div>
+      <el-row :gutter="20" class="component-section">
+        <el-col :offset="0" :span="24" class="cad-section">
+          <CadShowById v-model="file_id" />
+        </el-col>
+      </el-row>
+      <el-row :gutter="5" class="upload-section">
+        <el-col :span="24" class="upload-title"> Загрузите файлы для расчета </el-col>
+        <el-col :span="12">
+          <UploadModel v-model="file_id" color="#000" />
+        </el-col>
+        <el-col :span="12">
+          <UploadDrawings v-model="document_ids" color="#000" />
+        </el-col>
+        <el-col :span="24" class="upload-info"> Максимальный размер 100Мб </el-col>
+        <el-col :span="24">
+          <DocumentShowByIds v-model="document_ids" />
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="5" class="upload-section">
+        <el-col :span="12">
+          <el-button
+            type="primary"
+            plain
+            class="submit"
+            @click="router.push({ path: '/personal/orders' })"
+          >
+            Отменить
+          </el-button>
+        </el-col>
+        <el-col :span="12">
+          <el-button
+            type="primary"
+            plain
+            class="submit"
+            @click="
+              submitOrder({
+                ...payload,
+                special_instructions: special_instructions,
+              })
+            "
+          >
+            {{ order_id != 0 ? 'Сохранить заказ' : submitButtonText }}
+          </el-button>
+        </el-col>
+      </el-row>
+    </el-col>
+
+    <!-- 2. Правая часть -->
+    <el-col :span="10" :xs="{ span: 24, offset: 0 }" class="right-section">
+      <!-- Слот для специфичных элементов (материалы, размеры) -->
+      <slot name="rightSection" />
+
+      <el-row :gutter="5" class="row-spacing-top">
+        <el-col :offset="0" :span="23">
+          <CoefficientCover v-model="cover_id" />
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
+        <el-col :offset="0" :span="23">
+          <SuitableMachines :machines="result?.suitable_machines || []" />
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="5" class="row-spacing-top">
+        <el-col :offset="0" :span="23">
+          <CoefficientOtk v-model="k_otk" />
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="5" class="row-spacing-both">
+        <el-col :offset="0" :span="23">
+          <CoefficientCertificate v-model="k_cert" />
+        </el-col>
+      </el-row>
+      <el-row :gutter="5" class="row-spacing-bottom">
+        <el-col :offset="0" :span="23">
+          <div class="coefficient-label">Комментарий</div>
+          <el-input
+            v-model="special_instructions"
+            type="textarea"
+            :rows="5"
+            placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
+            :input-style="{ backgroundColor: 'var(--whity)', color: 'black' }"
+          />
+        </el-col>
+      </el-row>
+    </el-col>
+    <DialogInfoPayment v-model="isInfoVisible" />
+  </el-row>
+</template>
+
+<style scoped>
+:deep(.el-upload-dragger) {
+  padding: 10px;
+  background-color: #283d5b;
+}
+:deep(.loading-top .el-loading-spinner) {
+  top: 40px;
+  margin-top: 0;
+  transform: scale(1.5);
+  transform-origin: top center;
+}
+
+.custom {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.submit {
+  background-color: var(--bgcolor);
+  border: 1px solid var(--bgcolor);
+  color: black;
+  font-size: 20px;
+  padding: 30px 0;
+  width: 100%;
+}
+
+/* Основные цвета и фоны */
+.main-container {
+  min-height: 500px;
+  background-color: var(--bgcolor);
+}
+
+.left-section {
+  margin-bottom: 40px;
+  padding: 30px 30px 40px 40px;
+  background-color: white;
+  border-radius: 20px 0 0 20px;
+}
+
+.right-section {
+  margin-bottom: 40px;
+  padding: 30px 30px 40px 40px;
+  background-color: white;
+  border-radius: 0 20px 20px 0;
+}
+
+/* Текстовые стили */
+.title-text {
+  color: black;
+  font-size: 38px;
+  font-weight: 600;
+  padding-bottom: 30px;
+}
+
+.price-section {
+  /* border-top: 1px solid #577aad; */
+  /* border-bottom: 1px solid #577aad; */
+  font-size: 24px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--whity);
+  color: black;
+  margin-bottom: 10px;
+  padding: 14px 10px;
+  border-radius: 3px;
+  /* border-bottom: 1px solid #577aad; */
+}
+
+.price-row-last {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--whity);
+  color: black;
+  padding: 14px 10px;
+  border-radius: 3px;
+}
+
+.disclaimer-text {
+  color: black;
+  font-size: 16px;
+  padding-top: 10px;
+  padding-bottom: 30px;
+}
+
+/* Секции с компонентами */
+.component-section {
+  background-color: white;
+  padding-bottom: 30px;
+}
+
+.upload-section {
+  background-color: white;
+  padding-bottom: 30px;
+}
+
+.upload-title {
+  padding-bottom: 10px;
+  font-size: 30px;
+  color: black;
+  font-weight: 700;
+  /* color: #577aad; */
+}
+
+.upload-info {
+  font-size: 20px;
+  color: black;
+}
+
+.cad-section {
+  color: var(--whity);
+}
+
+/* Кнопки и центрирование */
+.center-button {
+  display: flex;
+  justify-content: center;
+}
+
+/* Отступы для строк */
+.row-spacing-top {
+  padding-top: 30px;
+}
+
+.row-spacing-bottom {
+  padding: 0 0 30px 0;
+}
+
+.row-spacing-both {
+  padding: 30px 0;
+}
+
+/* Стили для комментариев */
+.coefficient-label {
+  padding-bottom: 12px;
+  color: #283d5b;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.disabled-block {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .main-container {
+    min-height: auto;
+  }
+
+  .left-section {
+    padding: 16px 12px 24px 12px;
+  }
+
+  .right-section {
+    padding: 16px 12px 24px 12px;
+  }
+
+  .title-text {
+    font-size: 24px;
+    text-align: center;
+    padding-bottom: 16px;
+  }
+
+  .price-section {
+    margin-bottom: 16px;
+  }
+
+  .price-row {
+    font-size: 16px;
+    padding: 8px 0;
+  }
+
+  .price-row-last {
+    font-size: 16px;
+    padding: 8px 0;
+  }
+
+  .disclaimer-text {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .upload-section {
+    margin-bottom: 16px;
+  }
+
+  .upload-title {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .upload-info {
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .submit {
+    font-size: 16px;
+    padding: 16px 0;
+    margin-bottom: 8px;
+  }
+
+  .component-section {
+    margin-bottom: 16px;
+  }
+
+  .coefficient-label {
+    font-size: 18px;
+    padding-bottom: 8px;
+  }
+}
+</style>

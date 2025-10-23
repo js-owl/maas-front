@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     CadPreview: typeof import('./src/components/cad/CadPreview.vue')['default']
     CadShowById: typeof import('./src/components/cad/CadShowById.vue')['default']
+    CalculateBasePage: typeof import('./src/components/CalculateBasePage.vue')['default']
     CoefficientCertificate: typeof import('./src/components/coefficients/CoefficientCertificate.vue')['default']
     CoefficientCover: typeof import('./src/components/coefficients/CoefficientCover.vue')['default']
     CoefficientFinish: typeof import('./src/components/coefficients/CoefficientFinish.vue')['default']
