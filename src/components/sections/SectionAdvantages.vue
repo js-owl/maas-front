@@ -137,19 +137,9 @@ const advantages = ref([
     height: 175px;
   }
 
-  .item-wrap {
-    /* flex-direction: column; */
-  }
-
   .item-text-content {
     padding: 10px;
     /* order: 2; */
-  }
-
-  .item-image-container {
-    /* width: 100%; */
-    /* height: 150px; */
-    /* order: 1; */
   }
 
   .item-title {
