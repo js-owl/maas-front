@@ -63,7 +63,7 @@ let file_id = ref(4)
 }
 
 .model-icon {
-  width: 123px;
+  width: 20%;
   height: 44px;
   text-align: center;
   line-height: 44px;
