@@ -21,7 +21,7 @@ let file_id = ref(4)
     <el-col :offset="2" :span="12" :xs="{ span: 24, offset: 0 }" class="model-right">
       <el-row :gutter="20">
         <el-col :span="24">
-          <div style="border: 2px dashed red; border-radius: 8px;">
+          <div style="border: 3px dashed red; border-radius: 8px;">
             <CadShowById v-model="file_id" />
           </div>
         </el-col>

@@ -14,7 +14,7 @@
   text-align: left;
   font-size: 60px;
   color: #283d5b;
-  padding: 0 0 10px;
+  padding-bottom: 10px;
 }
 
 .about-text {
@@ -29,16 +29,15 @@
 }
 
 @media (max-width: 767px) {
-  .section-basic {
-    padding-top: 0px;
-  }
-
   .about-title {
     font-size: 28px;
-    text-align: center;
+    color: black;
+    padding-bottom: 10px;
   }
 
   .about-text {
+    margin: 0;
+    padding-bottom: 10px;
     font-size: 16px;
   }
 }

@@ -122,13 +122,11 @@ const advantages = ref([
 }
 
 @media (max-width: 767px) {
-  .section-basic {
-    padding: 10px;
-  }
-
   .advantages-title {
     font-size: 28px;
     padding: 5px 0;
+    color: black;
+    text-align: left;
   }
 
   .item {

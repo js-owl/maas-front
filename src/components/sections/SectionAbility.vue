@@ -86,7 +86,7 @@ const abilities = ref([
   font-size: 50px;
   color: #000;
   /* font-weight: bold; */
-  padding: 10px 0 20px 20px;
+  padding-bottom: 20px;
   margin: 0;
 }
 
@@ -102,7 +102,7 @@ const abilities = ref([
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-height: 200px;
+  height: 200px;
   width: 30%;
   position: relative;
   overflow: hidden;
@@ -173,28 +173,37 @@ const abilities = ref([
 
 @media (max-width: 768px) {
   .services-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(2, 1fr);
-    gap: 15px;
+    flex-direction: column;
+    gap: 16px;
+    /* padding: 0 10px; */
+  }
+  
+  .service-card {
+    width: 100%;
+    height: 130px;
   }
   
   .ability-title {
     font-size: 28px;
+    padding-bottom: 10px;
   }
   
   .card-title {
     font-size: 16px;
   }
   
-   .development-text  {
+  .development-text {
     font-size: 14px;
-   }
-   
-   .card-icon {
-     bottom: 15px;
-     right: 15px;
-     height: 120px;
-   }
+  }
+  
+  .card-icon {
+    bottom: 15px;
+    right: 15px;
+    height: 100px;
+  }
+  
+  .card-content {
+    padding: 16px;
+  }
 }
-
 </style>

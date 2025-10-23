@@ -30,6 +30,7 @@ body {
   .section-basic {
     min-height: auto;
     border-radius: 0;
+    padding: 20px 20px;
   }
 }
 
