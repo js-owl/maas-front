@@ -7,14 +7,14 @@ const abilities = ref([
     title: 'Механическая обработка',
     link: '/mechanical',
     isDevelopment: false,
-    imagePath: '/homePage/ability_mechanical.png',
+    imagePath: '/homePage/uslugi_machining.webp',
   },
   {
     id: 2,
     title: '3d-печать',
     link: '/printing',
     isDevelopment: false,
-    imagePath: '/plastic.png',
+    imagePath: '/homePage/uslugi_printing.webp',
   }
   ])
   // {
