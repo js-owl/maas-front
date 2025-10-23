@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Montserrat-Black';
+  src: url('/fonts/Montserrat-Black.ttf') format('truetype');
+  /* font-weight: 900; */
+  font-display: swap;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 
@@ -50,4 +57,10 @@ body {
   .coefficient-label {
     font-size: 20px;
   }
+}
+
+.montserrat-black {
+  font-family: 'Montserrat-Black', sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }

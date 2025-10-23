@@ -50,7 +50,7 @@ const abilities = ref([
 
 <template>
   <section class="section-basic">
-    <div class="ability-title">УСЛУГИ</div>
+    <div class="ability-title montserrat-black">УСЛУГИ</div>
 
     <div class="services-grid">
       <div 
@@ -83,11 +83,14 @@ const abilities = ref([
 
 <style scoped>
 .ability-title {
-  font-size: 50px;
+  font-size: 28px;
+  font-weight: 700;
   color: #000;
-  /* font-weight: bold; */
   padding-bottom: 20px;
   margin: 0;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: -1px;
 }
 
 .services-grid {
