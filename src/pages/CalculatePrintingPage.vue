@@ -282,10 +282,10 @@ async function getOrder(id: number) {
           Загрузите файлы для расчета
         </el-col>
         <el-col :span="12">
-          <UploadModel v-model="file_id" color="#fff" />
+          <UploadModel v-model="file_id" color="#000" />
         </el-col>
         <el-col :span="12">
-          <UploadDrawings v-model="document_ids" color="#fff" />
+          <UploadDrawings v-model="document_ids" color="#000" />
         </el-col>
         <el-col :span="24" class="upload-info">
           Максимальный размер 100Мб
@@ -354,7 +354,7 @@ async function getOrder(id: number) {
         <el-col :offset="0" :span="15" :xs="{ span: 24, offset: 0 }">
           <MaterialPrinting v-model="material_id" />
         </el-col>
-        <el-col :offset="1" :span="5">
+        <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
           <CoefficientQuantity v-model="quantity" />
         </el-col>
       </el-row>

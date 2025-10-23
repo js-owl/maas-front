@@ -47,7 +47,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <p style="color: #577aad; font-weight: 500">Материал</p>
+    <p class="coefficient-title">Материал</p>
     <el-select
       v-model="selectedMaterial"
       value-key="label"
@@ -71,7 +71,7 @@ onMounted(() => {
 }
 
 .full :deep(.el-select__wrapper) {
-  border: 1px solid #577aad;
+  border: 1px solid black;
   border-radius: 5px;
 }
 </style>
