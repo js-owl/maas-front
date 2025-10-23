@@ -6,7 +6,7 @@ import IconDrawing from "../icons/IconDrawing.vue";
   <div class="main-container">
     <!-- Основной контент -->
     <el-row>
-      <el-col :offset="3" :span="18">
+      <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
         <div class="content-wrapper">
           <!-- Заголовок -->
           <div class="main-title">ТОКАРНАЯ ОБРАБОТКА</div>
@@ -59,7 +59,7 @@ import IconDrawing from "../icons/IconDrawing.vue";
           </div>
         </div>
       </el-col>
-      <el-col :offset="3" :span="18"> 
+      <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
         <div class="content-wrapper">
           
           <!-- Фрезерная обработка -->
@@ -125,9 +125,9 @@ import IconDrawing from "../icons/IconDrawing.vue";
 <style scoped>
 /* Основной контейнер */
 .main-container {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   background-color: var(--bgcolor);
-  padding: 40px 0;
+  /* padding: 40px 0; */
 }
 
 .content-wrapper {
@@ -246,33 +246,14 @@ import IconDrawing from "../icons/IconDrawing.vue";
   line-height: 1.4;
 }
 
-/* Адаптивность */
-@media (max-width: 1024px) {
-  .content-wrapper {
-    padding: 40px 60px;
-  }
-  
-  .main-title {
-    font-size: 40px;
-  }
-  
-  .requirements-title {
-    font-size: 32px;
-  }
-  
-  .requirements-grid {
-    gap: 30px;
-  }
-}
-
 @media (max-width: 768px) {
   .content-wrapper {
     padding: 30px 40px;
-    margin: 0 20px;
+    margin: 0 0 40px 0;
   }
   
   .main-title {
-    font-size: 32px;
+    font-size: 28px;
     text-align: center;
     margin-bottom: 30px;
   }
@@ -305,7 +286,7 @@ import IconDrawing from "../icons/IconDrawing.vue";
   }
   
   .requirements-title {
-    font-size: 28px;
+    font-size: 22px;
     text-align: center;
     margin-bottom: 30px;
   }
@@ -324,37 +305,6 @@ import IconDrawing from "../icons/IconDrawing.vue";
   .requirement-item {
     font-size: 15px;
     margin-bottom: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .content-wrapper {
-    padding: 20px 24px;
-    margin: 0 16px;
-  }
-  
-  .main-title {
-    font-size: 28px;
-  }
-  
-  .requirements-title {
-    font-size: 24px;
-  }
-  
-  .description-text {
-    font-size: 15px;
-  }
-  
-  .calculator-text {
-    font-size: 15px;
-  }
-  
-  .requirement-title {
-    font-size: 15px;
-  }
-  
-  .requirement-item {
-    font-size: 14px;
   }
 }
 </style>
