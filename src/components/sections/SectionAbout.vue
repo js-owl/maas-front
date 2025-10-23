@@ -22,6 +22,12 @@
   color: #283d5b;
 }
 
+.item-img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
 @media (max-width: 767px) {
   .section-basic {
     padding-top: 0px;
