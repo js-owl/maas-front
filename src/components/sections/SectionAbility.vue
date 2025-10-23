@@ -91,12 +91,10 @@ const abilities = ref([
 }
 
 .services-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(1, 1fr);
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
   gap: 20px;
-  /* max-width: 1200px;
-  margin: 0 auto; */
 }
 
 .service-card {
@@ -105,6 +103,7 @@ const abilities = ref([
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   min-height: 200px;
+  width: 30%;
   position: relative;
   overflow: hidden;
 }
