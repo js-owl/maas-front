@@ -1,6 +1,6 @@
 # Build arguments for flexible registry configuration
-ARG NODE_IMAGE=""
-ARG NGINX_IMAGE=""
+ARG NODE_IMAGE="vortex.kronshtadt.ru:8443/maas-proxy/node:20.19.5-slim"
+ARG NGINX_IMAGE="vortex.kronshtadt.ru:8443/maas-proxy/nginx:stable"
 
 #---- Stage 1: Build the Vue application ----
 FROM ${NODE_IMAGE} AS builder

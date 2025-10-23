@@ -21,9 +21,10 @@ stages:
 # Build Docker image and push to Nexus registry
 build:
   stage: build
-  image: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:latest
+  image: ${NEXUS_BUILD_REGISTRY}/maas-proxy/${DOCKER_IMAGE}
   services:
-    - name: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:dind
+    - name: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:28.4.0-dind # Enable Docker-in-Docker
+      command: ["--insecure-registry=$NEXUS_BUILD_REGISTRY"]
   cache:
     key: 
       files:
@@ -63,7 +64,7 @@ build:
   only:
     - tags
   tags:
-    - docker
+    - maas
 
 # Deploy to remote production server
 deploy:
@@ -78,48 +79,111 @@ deploy:
     - ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
+    - scp -P $SSH_PORT docker-compose.yml $SSH_USER@$SSH_HOST:$REMOTE_PROJECT_PATH/
     # Deploy to remote server
     - |
-      ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
+      ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << EOF
         set -e
         
+        echo "🚀 Starting deployment process..."
+        echo "Current directory: $(pwd)"
+        echo "Target directory: ${REMOTE_PROJECT_PATH}"
+        
+        # Check if project directory exists, create if not
+        if [ ! -d "${REMOTE_PROJECT_PATH}" ]; then
+          echo "📁 Project directory does not exist, creating it..."
+          sudo mkdir -p ${REMOTE_PROJECT_PATH}
+          sudo chown ${SSH_USER}:${SSH_USER} "${REMOTE_PROJECT_PATH}"
+          echo "✅ Created project directory and chowned: ${REMOTE_PROJECT_PATH}"
+        else
+          echo "✅ Project directory exists: ${REMOTE_PROJECT_PATH}"
+        fi
+        
         # Navigate to project directory
-        cd $REMOTE_PROJECT_PATH
+        cd ${REMOTE_PROJECT_PATH}
+        echo "✅ Changed to project directory: ${REMOTE_PROJECT_PATH}"
         
         # Create/update .env.production
-        cat > .env.production << 'ENVEOF'
-        VITE_API_BASE=$VITE_API_BASE
-        VITE_BASE_PATH=$VITE_BASE_PATH
-        ENVEOF
+        echo "📝 Creating .env.production file..."
+        echo "VITE_API_BASE=${VITE_API_BASE}" > .env.production
+        echo "VITE_BASE_PATH=${VITE_BASE_PATH}" >> .env.production
+        echo "✅ .env.production created with content:"
+        cat .env.production
         
         # Login to Nexus push registry
-        echo $NEXUS_PUSH_PASSWORD | docker login -u $NEXUS_PUSH_USER --password-stdin $NEXUS_PUSH_REGISTRY
+        echo "🔐 Logging into Nexus registry..."
+        echo ${NEXUS_PUSH_PASSWORD} | docker login -u ${NEXUS_PUSH_USER} --password-stdin ${NEXUS_PUSH_REGISTRY}
+        echo "✅ Successfully logged into Nexus registry"
         
         # Update docker-compose.yml image tag
-        sed -i "s|image:.*maas-front:.*|image: $NEXUS_PUSH_IMAGE:$IMAGE_TAG|g" docker-compose.yml
+        echo "🔄 Updating docker-compose.yml with new image tag..."
+        sed -i "s|image:.*maas-front:.*|image: ${NEXUS_PUSH_IMAGE}:${IMAGE_TAG}|g" docker-compose.yml
+        echo "✅ Updated docker-compose.yml"
+        echo "New image: ${NEXUS_PUSH_IMAGE}:${IMAGE_TAG}"
         
         # Pull new image
-        docker-compose pull
+        echo "📥 Pulling new Docker image..."
+        sudo docker compose pull
+        echo "✅ Image pulled successfully"
         
         # Stop and remove old container
-        docker-compose down || true
+        echo "🛑 Stopping old container..."
+        sudo docker compose down || true
+        echo "✅ Old container stopped"
         
         # Start new container
-        docker-compose up -d
+        echo "🚀 Starting new container..."
+        sudo docker compose up -d
+        echo "✅ New container started"
         
         # Verify deployment
         sleep 10
-        if docker-compose ps | grep -q "Up"; then
-          echo "✅ Deployment successful - container is running"
+        
+        # Check container status
+        if docker compose ps | grep -q "Up"; then
+          echo "✅ Container is running"
         else
-          echo "❌ Deployment failed - container is not running"
-          docker-compose logs
+          echo "❌ Container is not running"
+          sudo docker compose logs
           exit 1
         fi
+        
+        # Check if application is responding
+        CONTAINER_NAME=$(sudo docker compose ps -q)
+        if [ -n "$CONTAINER_NAME" ]; then
+          # Wait for application to be ready
+          for i in {1..30}; do
+            if sudo docker exec $CONTAINER_NAME curl -f http://localhost:80/health 2>/dev/null; then
+              echo "✅ Application health check passed"
+              break
+            elif [ $i -eq 30 ]; then
+              echo "❌ Application health check failed after 30 attempts"
+              sudo docker compose logs
+              exit 1
+            else
+              echo "Waiting for application to be ready... ($i/30)"
+              sleep 2
+            fi
+          done
+        fi
+        
+        # Log deployment info
+        echo "✅ Deployment successful"
+        echo "Image: ${NEXUS_PUSH_IMAGE}:${IMAGE_TAG}"
+        echo "Container status:"
+        sudo docker compose ps
+        echo "Container logs (last 20 lines):"
+        sudo docker compose logs --tail=20
+        
+        # Create deployment marker file
+        echo "Deployment completed at $(date)" > deployment.log
+        echo "Image: ${NEXUS_PUSH_IMAGE}:${IMAGE_TAG}" >> deployment.log
+        echo "Git tag: ${IMAGE_TAG}" >> deployment.log
+        echo "Git commit: ${CI_COMMIT_SHA}" >> deployment.log
       EOF
   only:
     - tags
   dependencies:
     - build
   tags:
-    - docker
+    - maas
