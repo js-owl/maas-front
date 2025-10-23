@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import IconDrawing from "../icons/IconDrawing.vue";
 </script>
 
 <template>
@@ -25,8 +24,9 @@ import IconDrawing from "../icons/IconDrawing.vue";
               >
                 Калькулятор стоимости токарной обработки
               </div>
-              <IconDrawing
-                color="black"
+              <img 
+                src="/calc.webp" 
+                alt="calculator icon" 
                 class="calculator-icon"
               />
             </div>
@@ -78,8 +78,9 @@ import IconDrawing from "../icons/IconDrawing.vue";
               >
                 Калькулятор стоимости фрезерной обработки
               </div>
-              <IconDrawing
-                color="black"
+              <img 
+                src="/calc.webp" 
+                alt="calculator icon" 
                 class="calculator-icon"
               />
             </div>
