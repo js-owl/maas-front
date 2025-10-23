@@ -32,12 +32,22 @@ body {
   padding: 30px 50px;
   border-radius: 20px;
 }
+.section-title {
+  text-align: left;
+  font-size: 40px;
+  color: #000;
+  padding-bottom: 20px;
+}
 
 @media (max-width: 767px) {
   .section-basic {
     min-height: auto;
     border-radius: 0;
     padding: 20px 20px;
+  }
+  .section-title {
+    font-size: 24px;
+    padding-bottom: 10px;
   }
 }
 

@@ -31,7 +31,7 @@ const advantages = ref([
 
 <template>
   <section class="section-basic">
-    <div class="advantages-title">НАШИ ПРЕИМУЩЕСТВА</div>
+    <div class="section-title">НАШИ ПРЕИМУЩЕСТВА</div>
 
     <div class="items">
       <div class="item" v-for="advantage in advantages" :key="advantage.id">
@@ -54,13 +54,6 @@ const advantages = ref([
 </template>
 
 <style scoped>
-.advantages-title {
-  text-align: center;
-  font-size: 60px;
-  color: #283d5b;
-  padding: 40px 0;
-}
-
 .items {
   display: flex;
   /* gap: 1%; */
@@ -122,13 +115,6 @@ const advantages = ref([
 }
 
 @media (max-width: 767px) {
-  .advantages-title {
-    font-size: 28px;
-    padding: 5px 0;
-    color: black;
-    text-align: left;
-  }
-
   .item {
     width: 100%;
     margin: 5px 0;

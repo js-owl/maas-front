@@ -49,7 +49,7 @@ const abilities = ref([
 
 <template>
   <section class="section-basic">
-    <div class="ability-title">УСЛУГИ</div>
+    <div class="section-title">УСЛУГИ</div>
 
     <div class="services-grid">
       <div
@@ -175,11 +175,6 @@ const abilities = ref([
   .service-card {
     width: 100%;
     height: 130px;
-  }
-
-  .ability-title {
-    font-size: 28px;
-    padding-bottom: 10px;
   }
 
   .card-title {
