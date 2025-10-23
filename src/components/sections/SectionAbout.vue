@@ -13,7 +13,7 @@
 .about-title {
   text-align: left;
   font-size: 60px;
-  color: #283d5b;
+  color: #000;
   padding-bottom: 10px;
 }
 
