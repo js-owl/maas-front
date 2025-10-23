@@ -36,10 +36,14 @@ onMounted(() => {
     <template #rightSection>
       <el-row :gutter="5">
         <el-col :offset="0" :span="7" :xs="{ span: 24, offset: 0 }">
-          <CoefficientFinish v-if="finish_id" v-model="finish_id" />
+          <div class="disabled-block">
+            <CoefficientFinish v-if="finish_id" v-model="finish_id" />
+          </div>
         </el-col>
         <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
-          <CoefficientTolerance v-if="tolerance_id" v-model="tolerance_id" />
+          <div class="disabled-block">
+            <CoefficientTolerance v-if="tolerance_id" v-model="tolerance_id" />
+          </div>
         </el-col>
         <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
           <CoefficientQuantity v-if="quantity" v-model="quantity" />
