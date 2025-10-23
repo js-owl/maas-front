@@ -2,8 +2,8 @@
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { req_json, req_json_auth } from "../api";
 
-import Length from "../components/coefficients/Length.vue";
-import Width from "../components/coefficients/Width.vue";
+// import Length from "../components/coefficients/Length.vue";
+// import Width from "../components/coefficients/Width.vue";
 
 import CoefficientQuantity from "../components/coefficients/CoefficientQuantity.vue";
 
@@ -25,7 +25,7 @@ import { useAuthStore } from "../stores/auth.store";
 import { ElMessage } from "element-plus";
 import DialogInfoPayment from "../components/dialog/DialogInfoPayment.vue";
 import SuitableMachines from "../components/SuitableMachines.vue";
-import Height from "../components/coefficients/Height.vue";
+// import Height from "../components/coefficients/Height.vue";
 import type {
   IOrderPayload,
   IOrderPostPayload,
