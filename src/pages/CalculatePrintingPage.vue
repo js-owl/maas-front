@@ -362,7 +362,7 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5" class="row-spacing-top">
         <el-col :offset="0" :span="23">
-          <CoefficientCover v-model="cover_id" />
+          <CoefficientCover v-model="cover_id" :exclude-labels="['Гальваника']" />
         </el-col>
       </el-row>
 

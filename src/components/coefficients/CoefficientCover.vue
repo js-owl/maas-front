@@ -1,17 +1,27 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { getCoefficients } from './api-coefficients'
 
 const selected = defineModel<string[]>()
 const coveres = ref()
 
+interface Props {
+  excludeLabels?: string[]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  excludeLabels: () => [],
+})
+
+const filteredCoveres = computed(() =>
+  coveres.value?.filter((item: any) =>
+    !props.excludeLabels?.includes(item.label)
+  ) ?? []
+)
+
 onMounted(async () => {
   try {
     const coefficients = await getCoefficients()
-    //   const coefficients  = [
-    //   { value: "1", label: "Покраска" },
-    //   { value: "2", label: "Гальваника" }
-    // ];
     coveres.value = coefficients.cover
   } catch (error) {
     console.error('Failed to load covers:', error)
@@ -24,7 +34,7 @@ onMounted(async () => {
     <div class="coefficient-label">Финишная обработка изделия</div>
     <el-checkbox-group v-model="selected">
       <el-checkbox
-        v-for="item in coveres"
+        v-for="item in filteredCoveres"
         :key="item.value"
         :value="item.value"
         class="checkbox-item"
@@ -46,6 +56,4 @@ onMounted(async () => {
 :deep(.line) {
   border-color: #333;
 }
-
-
 </style>
