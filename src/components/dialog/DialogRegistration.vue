@@ -70,7 +70,10 @@ const validateConfirmPassword = (_rule: any, value: string, callback: (error?: E
 
 const rules = ref<FormRules<FormData>>({
   user_type: [{ required: true, message: 'Выберите тип пользователя', trigger: 'change' }],
-  username: [{ validator: validateLogin, trigger: 'blur' }],
+  username: [
+    { required: true, message: 'Пожалуйста, введите логин', trigger: 'blur' },
+    { validator: validateLogin, trigger: 'blur' },
+  ],
   email: [
     { required: true, message: 'Пожалуйста, введите email', trigger: 'blur' },
     { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
@@ -157,15 +160,15 @@ const submitForm = async () => {
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="Логин*" prop="username" :error="usernameError">
+      <el-form-item label="Логин" prop="username" :error="usernameError">
         <el-input
           v-model="form.username"
-          placeholder="Введите username"
+          placeholder="Введите логин"
           @input="usernameError = ''"
         />
       </el-form-item>
 
-      <el-form-item label="Email*" prop="email">
+      <el-form-item label="Email" prop="email">
         <el-input v-model="form.email" placeholder="Введите email" type="email" />
       </el-form-item>
 
