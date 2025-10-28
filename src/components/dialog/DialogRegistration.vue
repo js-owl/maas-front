@@ -12,7 +12,7 @@ interface FormData {
   password: string
   confirmPassword: string
   user_type: string
-  email?: string
+  email: string
   full_name?: string
   phone_number?: string
   inn?: string
@@ -71,6 +71,10 @@ const validateConfirmPassword = (_rule: any, value: string, callback: (error?: E
 const rules = ref<FormRules<FormData>>({
   user_type: [{ required: true, message: 'Выберите тип пользователя', trigger: 'change' }],
   username: [{ validator: validateLogin, trigger: 'blur' }],
+  email: [
+    { required: true, message: 'Пожалуйста, введите email', trigger: 'blur' },
+    { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
+  ],
   password: [{ validator: validatePassword, trigger: 'blur' }],
   confirmPassword: [{ validator: validateConfirmPassword, trigger: 'blur' }],
 })
@@ -161,8 +165,8 @@ const submitForm = async () => {
         />
       </el-form-item>
 
-      <el-form-item label="Email" prop="email">
-        <el-input v-model="form.email" placeholder="Введите email (необязательно)" type="email" />
+      <el-form-item label="Email*" prop="email">
+        <el-input v-model="form.email" placeholder="Введите email" type="email" />
       </el-form-item>
 
       <el-form-item label="Полное имя" prop="full_name">
