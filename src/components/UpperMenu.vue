@@ -180,10 +180,22 @@ function scrollToAbout() {
           </el-button>
           <template v-if="!authStore.getToken">
             <el-button
+              v-if="!isMobile"
               class="auth-btn"
               @click="isLoginVisible = true"
             >
               Войти / Регистрация
+            </el-button>
+            <el-button
+              v-else
+              class="auth-btn"
+              @click="isLoginVisible = true"
+              circle
+              :aria-label="'Войти или зарегистрироваться'"
+            >
+              <el-icon :size="22">
+                <User />
+              </el-icon>
             </el-button>
           </template>
           <template v-else>
