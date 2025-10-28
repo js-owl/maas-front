@@ -68,6 +68,23 @@ const validateConfirmPassword = (_rule: any, value: string, callback: (error?: E
   }
 }
 
+const validatePhoneNumber = (_rule: any, value: string, callback: (error?: Error) => void) => {
+  if (!/^\d+$/.test(value)) {
+    callback(new Error('Телефон должен содержать только цифры'))
+    return
+  }
+  const length = value.length
+  if (length < 10 || length > 15) {
+    callback(new Error('Введите корректный номер телефона (10–15 цифр)'))
+    return
+  }
+  callback()
+}
+
+const onPhoneInput = (val: string) => {
+  form.value.phone_number = (val || '').replace(/\D/g, '')
+}
+
 const rules = ref<FormRules<FormData>>({
   user_type: [{ required: true, message: 'Выберите тип пользователя', trigger: 'change' }],
   username: [
@@ -78,7 +95,10 @@ const rules = ref<FormRules<FormData>>({
     { required: true, message: 'Пожалуйста, введите email', trigger: 'blur' },
     { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
   ],
-  phone_number: [{ required: true, message: 'Пожалуйста, введите телефон', trigger: 'blur' }],
+  phone_number: [
+    { required: true, message: 'Пожалуйста, введите телефон', trigger: 'blur' },
+    { validator: validatePhoneNumber, trigger: ['blur', 'change'] },
+  ],
   password: [{ validator: validatePassword, trigger: 'blur' }],
   confirmPassword: [{ validator: validateConfirmPassword, trigger: 'blur' }],
 })
@@ -178,7 +198,13 @@ const submitForm = async () => {
       </el-form-item>
 
       <el-form-item label="Телефон" prop="phone_number">
-        <el-input v-model="form.phone_number" placeholder="Введите телефон" />
+        <el-input
+          v-model="form.phone_number"
+          placeholder="Введите телефон"
+          type="tel"
+          inputmode="numeric"
+          @input="onPhoneInput"
+        />
       </el-form-item>
 
       <el-form-item v-if="form.user_type === 'legal'" label="ИНН" prop="inn">
