@@ -38,11 +38,15 @@ const loading = ref(false)
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
 
+const containsCyrillic = (value: string) => /[\u0400-\u04FF]/.test(value)
+
 const validateLogin = (_rule: any, value: string, callback: (error?: Error) => void) => {
   if (!value) {
     callback(new Error('Пожалуйста, введите логин'))
   } else if (value.length < 4) {
     callback(new Error('Логин должен содержать минимум 4 символа'))
+  } else if (containsCyrillic(value)) {
+    callback(new Error('Логин не должен содержать кириллицу'))
   } else {
     callback()
   }
@@ -53,6 +57,8 @@ const validatePassword = (_rule: any, value: string, callback: (error?: Error) =
     callback(new Error('Пожалуйста, введите пароль'))
   } else if (value.length < 6) {
     callback(new Error('Пароль должен содержать минимум 6 символов'))
+  } else if (containsCyrillic(value)) {
+    callback(new Error('Пароль не должен содержать кириллицу'))
   } else {
     callback()
   }
@@ -61,8 +67,18 @@ const validatePassword = (_rule: any, value: string, callback: (error?: Error) =
 const validateConfirmPassword = (_rule: any, value: string, callback: (error?: Error) => void) => {
   if (!value) {
     callback(new Error('Пожалуйста, подтвердите пароль'))
+  } else if (containsCyrillic(value)) {
+    callback(new Error('Пароль не должен содержать кириллицу'))
   } else if (value !== form.value.password) {
     callback(new Error('Пароли не совпадают'))
+  } else {
+    callback()
+  }
+}
+
+const validateEmailNoCyrillic = (_rule: any, value: string, callback: (error?: Error) => void) => {
+  if (containsCyrillic(value)) {
+    callback(new Error('Email не должен содержать кириллицу'))
   } else {
     callback()
   }
@@ -94,6 +110,7 @@ const rules = ref<FormRules<FormData>>({
   email: [
     { required: true, message: 'Пожалуйста, введите email', trigger: 'blur' },
     { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
+    { validator: validateEmailNoCyrillic, trigger: ['blur', 'change'] },
   ],
   phone_number: [
     { required: true, message: 'Пожалуйста, введите телефон', trigger: 'blur' },
@@ -236,7 +253,7 @@ const submitForm = async () => {
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" native-type="submit" style="width: 100%" :loading="loading">
+        <el-button type="primary" native-type="submit" style="width: 100%; margin-top: 10px;" :loading="loading">
           {{ loading ? 'Регистрация...' : 'Регистрация' }}
         </el-button>
       </el-form-item>
