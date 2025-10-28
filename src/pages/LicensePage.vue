@@ -9,7 +9,7 @@
       min-height: calc(100vh - 240px);
     "
   >
-    <el-col :offset="3" :span="18">
+    <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
       <div class="offer-container">
         <h1 class="offer-title">Договор публичной оферты на выполнение работ по изготовлению продукции</h1>
 
@@ -612,7 +612,7 @@
   }
 
   .offer-title {
-    font-size: 32px;
+    font-size: 24px;
   }
 
   .offer-subtitle {
