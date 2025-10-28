@@ -78,6 +78,7 @@ const rules = ref<FormRules<FormData>>({
     { required: true, message: 'Пожалуйста, введите email', trigger: 'blur' },
     { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
   ],
+  phone_number: [{ required: true, message: 'Пожалуйста, введите телефон', trigger: 'blur' }],
   password: [{ validator: validatePassword, trigger: 'blur' }],
   confirmPassword: [{ validator: validateConfirmPassword, trigger: 'blur' }],
 })
@@ -173,11 +174,11 @@ const submitForm = async () => {
       </el-form-item>
 
       <el-form-item label="Полное имя" prop="full_name">
-        <el-input v-model="form.full_name" placeholder="Введите полное имя (необязательно)" />
+        <el-input v-model="form.full_name" placeholder="Введите полное имя" />
       </el-form-item>
 
       <el-form-item label="Телефон" prop="phone_number">
-        <el-input v-model="form.phone_number" placeholder="Введите телефон (необязательно)" />
+        <el-input v-model="form.phone_number" placeholder="Введите телефон" />
       </el-form-item>
 
       <el-form-item v-if="form.user_type === 'legal'" label="ИНН" prop="inn">
