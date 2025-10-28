@@ -99,8 +99,14 @@ const rules = ref<FormRules<FormData>>({
     { required: true, message: 'Пожалуйста, введите телефон', trigger: 'blur' },
     { validator: validatePhoneNumber, trigger: ['blur', 'change'] },
   ],
-  password: [{ validator: validatePassword, trigger: 'blur' }],
-  confirmPassword: [{ validator: validateConfirmPassword, trigger: 'blur' }],
+  password: [
+    { required: true, message: 'Пожалуйста, введите пароль', trigger: 'blur' },
+    { validator: validatePassword, trigger: 'blur' },
+  ],
+  confirmPassword: [
+    { required: true, message: 'Пожалуйста, подтвердите пароль', trigger: 'blur' },
+    { validator: validateConfirmPassword, trigger: 'blur' },
+  ],
 })
 
 const closeDialog = () => {
@@ -211,7 +217,7 @@ const submitForm = async () => {
         <el-input v-model="form.inn" placeholder="Введите ИНН" />
       </el-form-item>
 
-      <el-form-item label="Пароль*" prop="password">
+      <el-form-item label="Пароль" prop="password">
         <el-input
           v-model="form.password"
           placeholder="Введите пароль"
@@ -220,7 +226,7 @@ const submitForm = async () => {
         />
       </el-form-item>
 
-      <el-form-item label="Подтвердите пароль*" prop="confirmPassword">
+      <el-form-item label="Подтвердите пароль" prop="confirmPassword">
         <el-input
           v-model="form.confirmPassword"
           placeholder="Подтвердите пароль"
