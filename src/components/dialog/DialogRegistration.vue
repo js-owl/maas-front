@@ -15,6 +15,7 @@ interface FormData {
   email?: string
   full_name?: string
   phone_number?: string
+  inn?: string
 }
 
 const formRef = ref<FormInstance>()
@@ -26,6 +27,7 @@ const form = ref<FormData>({
   email: '',
   full_name: '',
   phone_number: '',
+  inn: '',
 })
 
 const usernameError = ref('')
@@ -84,6 +86,7 @@ const closeDialog = () => {
     email: '',
     full_name: '',
     phone_number: '',
+    inn: '',
   }
   usernameError.value = ''
   // Clear validation errors
@@ -150,7 +153,7 @@ const submitForm = async () => {
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="Username*" prop="username" :error="usernameError">
+      <el-form-item label="Логин*" prop="username" :error="usernameError">
         <el-input
           v-model="form.username"
           placeholder="Введите username"
@@ -168,6 +171,10 @@ const submitForm = async () => {
 
       <el-form-item label="Телефон" prop="phone_number">
         <el-input v-model="form.phone_number" placeholder="Введите телефон (необязательно)" />
+      </el-form-item>
+
+      <el-form-item v-if="form.user_type === 'legal'" label="ИНН" prop="inn">
+        <el-input v-model="form.inn" placeholder="Введите ИНН" />
       </el-form-item>
 
       <el-form-item label="Пароль*" prop="password">
