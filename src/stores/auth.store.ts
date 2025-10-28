@@ -43,6 +43,23 @@ export const useAuthStore = defineStore("auth", () => {
       headers: headers,
       body: JSON.stringify(formData),
     });
+    if (!res.ok) {
+      let message = `Login failed: ${res.status} ${res.statusText}`;
+      try {
+        const errorData = await res.json();
+        const detail = (errorData && (errorData.detail || errorData.message)) || "";
+        const detailStr = typeof detail === "string" ? detail : JSON.stringify(detail);
+        // Наиболее частый кейс — неправильные логин/пароль
+        if (res.status === 401 || /invalid|unauthorized|неверн/i.test(detailStr)) {
+          throw new Error("Неверное имя пользователя или пароль");
+        }
+        if (detailStr) message = detailStr;
+      } catch (_) {
+        // ignore parse error and keep default message
+      }
+      throw new Error(message);
+    }
+
     const data = (await res.json()) as LoginResponse;
     setToken(data.access_token);
 

@@ -3,6 +3,7 @@ import { reactive, ref, computed } from 'vue'
 import { useAuthStore } from '../../stores/auth.store'
 import DialogRegistration from './DialogRegistration.vue'
 import { useWindowSize } from '@vueuse/core'
+import { ElMessage } from 'element-plus'
 
 let dialogFormVisible = defineModel<boolean>()
 const formLabelWidth = '140px'
@@ -22,12 +23,17 @@ const isMobile = computed(() => width.value < 768)
 const onSubmit = async () => {
   console.log('onSubmit', { formData })
   if (!formData.username || !formData.password) return
-  await authStore.login(formData)
-  console.log('Dialog-login: token', authStore.getToken)
+  try {
+    await authStore.login(formData)
+    console.log('Dialog-login: token', authStore.getToken)
 
-  formData.username = ''
-  formData.password = ''
-  dialogFormVisible.value = false
+    formData.username = ''
+    formData.password = ''
+    dialogFormVisible.value = false
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Ошибка входа'
+    ElMessage.error(message)
+  }
 }
 
 const onRegistration = async () => {
