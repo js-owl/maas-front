@@ -5,7 +5,7 @@
   <el-row
     :gutter="0"
     style="
-      padding: 60px 0;
+      padding: 30px 0;
       min-height: calc(100vh - 240px);
     "
   >

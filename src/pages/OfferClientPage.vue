@@ -5,11 +5,11 @@
   <el-row
     :gutter="0"
     style="
-      padding: 60px 0;
+      padding: 30px 0;
       min-height: calc(100vh - 240px);
     "
   >
-    <el-col :offset="3" :span="18">
+    <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
       <div class="offer-container">
         <h1 class="offer-title">ПУБЛИЧНАЯ ОФЕРТА</h1>
         <h2 class="offer-subtitle">На заключение договора об использовании инженерно-производственной платформы ООО «Аэромакс»</h2>
@@ -375,7 +375,7 @@
   }
 
   .offer-title {
-    font-size: 32px;
+    font-size: 24px;
   }
 
   .offer-subtitle {
