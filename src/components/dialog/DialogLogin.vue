@@ -1,40 +1,44 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import { useAuthStore } from "../../stores/auth.store";
-import DialogRegistration from "./DialogRegistration.vue";
+import { reactive, ref, computed } from 'vue'
+import { useAuthStore } from '../../stores/auth.store'
+import DialogRegistration from './DialogRegistration.vue'
+import { useWindowSize } from '@vueuse/core'
 
-let dialogFormVisible = defineModel<boolean>();
-const formLabelWidth = "140px";
+let dialogFormVisible = defineModel<boolean>()
+const formLabelWidth = '140px'
 
 const formData = reactive({
-  username: "",
-  password: "",
-});
+  username: '',
+  password: '',
+})
 
-const isRegistrationVisible = ref(false);
+const isRegistrationVisible = ref(false)
 
-const authStore = useAuthStore();
+const authStore = useAuthStore()
+
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
 
 const onSubmit = async () => {
-  console.log("onSubmit", { formData });
-  if (!formData.username || !formData.password) return;
-  await authStore.login(formData);
-  console.log("Dialog-login: token", authStore.getToken);
+  console.log('onSubmit', { formData })
+  if (!formData.username || !formData.password) return
+  await authStore.login(formData)
+  console.log('Dialog-login: token', authStore.getToken)
 
-  formData.username = "";
-  formData.password = "";
-  dialogFormVisible.value = false;
-};
+  formData.username = ''
+  formData.password = ''
+  dialogFormVisible.value = false
+}
 
 const onRegistration = async () => {
-  console.log("onRegistration");
-  dialogFormVisible.value = false;
-  isRegistrationVisible.value = true;
-};
+  console.log('onRegistration')
+  dialogFormVisible.value = false
+  isRegistrationVisible.value = true
+}
 </script>
 
 <template>
-  <el-dialog v-model="dialogFormVisible" title="Войти" width="500">
+  <el-dialog v-model="dialogFormVisible" title="Войти" width="500" :fullscreen="isMobile">
     <el-form :model="formData">
       <el-form-item label="Имя" :label-width="formLabelWidth">
         <el-input v-model="formData.username" autocomplete="off" />

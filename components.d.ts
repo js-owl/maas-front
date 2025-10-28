@@ -61,6 +61,7 @@ declare module 'vue' {
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Footer: typeof import('./src/components/Footer.vue')['default']
     Height: typeof import('./src/components/coefficients/Height.vue')['default']
+    HomeUslugi: typeof import('./src/components/sections/HomeUslugi.vue')['default']
     Length: typeof import('./src/components/coefficients/Length.vue')['default']
     MaterialMachining: typeof import('./src/components/materials/MaterialMachining.vue')['default']
     MaterialMilling: typeof import('./src/components/materials/MaterialMilling.vue')['default']

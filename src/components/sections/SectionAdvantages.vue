@@ -25,7 +25,7 @@ const advantages = ref([
     title: 'Гибкость',
     text: 'Наши специалисты помогут найти все необходимые решения, учтут ваши пожелания и нюансы заказов.',
     image: 'homePage/adv_puzzle.png',
-  }
+  },
 ])
 </script>
 
@@ -41,11 +41,7 @@ const advantages = ref([
             <p class="item-text">{{ advantage.text }}</p>
           </div>
           <div class="item-image-container">
-            <el-image
-              :src="advantage.image"
-              fit="cover"
-              class="item-img"
-            />
+            <el-image :src="advantage.image" fit="cover" class="item-img" />
           </div>
         </div>
       </div>
@@ -96,8 +92,8 @@ const advantages = ref([
 
 .item-img {
   /* width: 100%; */
-  height: 70%;
-  object-fit: cover;
+  height: 60%;
+  /* object-fit: cover; */
 }
 
 .item-title {

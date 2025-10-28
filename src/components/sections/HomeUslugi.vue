@@ -7,14 +7,14 @@ const abilities = ref([
     title: 'Механическая обработка',
     link: '/mechanical',
     isDevelopment: false,
-    imagePath: '/homePage/uslugi_machining.webp',
+    imagePath: '/homePage/uslugi_machining.png',
   },
   {
     id: 2,
     title: '3d-печать',
     link: '/printing',
     isDevelopment: false,
-    imagePath: '/homePage/uslugi_printing.webp',
+    imagePath: '/homePage/uslugi_printing.png',
   },
 ])
 // {
@@ -92,12 +92,12 @@ const abilities = ref([
 }
 
 .service-card {
-  background: var(--whity);
+  background: var(--gray-footer);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  height: 200px;
-  width: 30%;
+  height: 240px;
+  width: 49%; /* 30% */
   position: relative;
   overflow: hidden;
 }
@@ -127,9 +127,9 @@ const abilities = ref([
 }
 
 .card-title {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: #fff;
   margin: 0 0 10px 0;
   line-height: 1.4;
 }
@@ -154,8 +154,8 @@ const abilities = ref([
 
 .card-icon {
   position: absolute;
-  bottom: 20px;
-  right: 20px;
+  bottom: 40px;
+  right: 40px;
   /* width: 60px; */
   height: 150px;
 }

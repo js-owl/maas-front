@@ -1,139 +1,128 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import { useRegStore } from "../../stores/reg.store";
-import type { FormInstance, FormRules } from "element-plus";
-import { ElMessage } from "element-plus";
+import { computed, ref } from 'vue'
+import { useRegStore } from '../../stores/reg.store'
+import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { useWindowSize } from '@vueuse/core'
 
-const dialogFormVisible = defineModel<boolean>();
+const dialogFormVisible = defineModel<boolean>()
 
 interface FormData {
-  username: string;
-  password: string;
-  confirmPassword: string;
-  user_type: string;
-  email?: string;
-  full_name?: string;
-  phone_number?: string;
+  username: string
+  password: string
+  confirmPassword: string
+  user_type: string
+  email?: string
+  full_name?: string
+  phone_number?: string
 }
 
-const formRef = ref<FormInstance>();
+const formRef = ref<FormInstance>()
 const form = ref<FormData>({
-  username: "",
-  password: "",
-  confirmPassword: "",
-  user_type: "individual",
-  email: "",
-  full_name: "",
-  phone_number: "",
-});
+  username: '',
+  password: '',
+  confirmPassword: '',
+  user_type: 'individual',
+  email: '',
+  full_name: '',
+  phone_number: '',
+})
 
-const usernameError = ref("");
+const usernameError = ref('')
 
-const regStore = useRegStore();
-const loading = ref(false);
+const regStore = useRegStore()
+const loading = ref(false)
 
-const validateLogin = (
-  _rule: any,
-  value: string,
-  callback: (error?: Error) => void
-) => {
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
+
+const validateLogin = (_rule: any, value: string, callback: (error?: Error) => void) => {
   if (!value) {
-    callback(new Error("Пожалуйста, введите логин"));
+    callback(new Error('Пожалуйста, введите логин'))
   } else if (value.length < 4) {
-    callback(new Error("Логин должен содержать минимум 4 символа"));
+    callback(new Error('Логин должен содержать минимум 4 символа'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 
-const validatePassword = (
-  _rule: any,
-  value: string,
-  callback: (error?: Error) => void
-) => {
+const validatePassword = (_rule: any, value: string, callback: (error?: Error) => void) => {
   if (!value) {
-    callback(new Error("Пожалуйста, введите пароль"));
+    callback(new Error('Пожалуйста, введите пароль'))
   } else if (value.length < 6) {
-    callback(new Error("Пароль должен содержать минимум 6 символов"));
+    callback(new Error('Пароль должен содержать минимум 6 символов'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 
-const validateConfirmPassword = (
-  _rule: any,
-  value: string,
-  callback: (error?: Error) => void
-) => {
+const validateConfirmPassword = (_rule: any, value: string, callback: (error?: Error) => void) => {
   if (!value) {
-    callback(new Error("Пожалуйста, подтвердите пароль"));
+    callback(new Error('Пожалуйста, подтвердите пароль'))
   } else if (value !== form.value.password) {
-    callback(new Error("Пароли не совпадают"));
+    callback(new Error('Пароли не совпадают'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 
 const rules = ref<FormRules<FormData>>({
-  user_type: [
-    { required: true, message: "Выберите тип пользователя", trigger: "change" },
-  ],
-  username: [{ validator: validateLogin, trigger: "blur" }],
-  password: [{ validator: validatePassword, trigger: "blur" }],
-  confirmPassword: [{ validator: validateConfirmPassword, trigger: "blur" }],
-});
+  user_type: [{ required: true, message: 'Выберите тип пользователя', trigger: 'change' }],
+  username: [{ validator: validateLogin, trigger: 'blur' }],
+  password: [{ validator: validatePassword, trigger: 'blur' }],
+  confirmPassword: [{ validator: validateConfirmPassword, trigger: 'blur' }],
+})
 
 const closeDialog = () => {
-  dialogFormVisible.value = false;
+  dialogFormVisible.value = false
   // Reset form when closing
   form.value = {
-    username: "",
-    password: "",
-    confirmPassword: "",
-    user_type: "individual",
-    email: "",
-    full_name: "",
-    phone_number: "",
-  };
-  usernameError.value = "";
+    username: '',
+    password: '',
+    confirmPassword: '',
+    user_type: 'individual',
+    email: '',
+    full_name: '',
+    phone_number: '',
+  }
+  usernameError.value = ''
   // Clear validation errors
   if (formRef.value) {
-    formRef.value.clearValidate();
+    formRef.value.clearValidate()
   }
-};
+}
 
 const submitForm = async () => {
-  if (!formRef.value) return;
+  if (!formRef.value) return
 
   try {
-    await formRef.value.validate();
-    loading.value = true;
+    await formRef.value.validate()
+    loading.value = true
 
-    console.log("Form submitted:", form.value);
-    await regStore.register(form);
+    console.log('Form submitted:', form.value)
+    await regStore.register(form)
 
     ElMessage({
-      type: "success",
-      message: "Регистрация успешно завершена!",
-    });
+      type: 'success',
+      message: 'Регистрация успешно завершена!',
+    })
 
     // Close dialog and reset form
-    closeDialog();
+    closeDialog()
   } catch (error) {
-    console.error("Form validation/submit failed:", { error });
+    console.error('Form validation/submit failed:', { error })
     if (error instanceof Error && /400 Bad Request/i.test(error.message)) {
-      usernameError.value = "Такой пользователь уже существует";
-      return;
+      usernameError.value = 'Такой пользователь уже существует'
+      return
     }
     ElMessage({
-      type: "error",
-      message:
-        error instanceof Error ? error.message : "Ошибка при регистрации",
-    });
+      type: 'error',
+      message: error instanceof Error ? error.message : 'Ошибка при регистрации',
+    })
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>
 
 <template>
@@ -143,6 +132,7 @@ const submitForm = async () => {
     width="500"
     :close-on-click-modal="false"
     :close-on-press-escape="true"
+    :fullscreen="isMobile"
     @close="closeDialog"
   >
     <el-form
@@ -169,25 +159,15 @@ const submitForm = async () => {
       </el-form-item>
 
       <el-form-item label="Email" prop="email">
-        <el-input
-          v-model="form.email"
-          placeholder="Введите email (необязательно)"
-          type="email"
-        />
+        <el-input v-model="form.email" placeholder="Введите email (необязательно)" type="email" />
       </el-form-item>
 
       <el-form-item label="Полное имя" prop="full_name">
-        <el-input
-          v-model="form.full_name"
-          placeholder="Введите полное имя (необязательно)"
-        />
+        <el-input v-model="form.full_name" placeholder="Введите полное имя (необязательно)" />
       </el-form-item>
 
       <el-form-item label="Телефон" prop="phone_number">
-        <el-input
-          v-model="form.phone_number"
-          placeholder="Введите телефон (необязательно)"
-        />
+        <el-input v-model="form.phone_number" placeholder="Введите телефон (необязательно)" />
       </el-form-item>
 
       <el-form-item label="Пароль*" prop="password">
@@ -209,13 +189,8 @@ const submitForm = async () => {
       </el-form-item>
 
       <el-form-item>
-        <el-button
-          type="primary"
-          native-type="submit"
-          style="width: 100%"
-          :loading="loading"
-        >
-          {{ loading ? "Регистрация..." : "Регистрация" }}
+        <el-button type="primary" native-type="submit" style="width: 100%" :loading="loading">
+          {{ loading ? 'Регистрация...' : 'Регистрация' }}
         </el-button>
       </el-form-item>
     </el-form>
