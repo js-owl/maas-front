@@ -124,7 +124,7 @@ function scrollToAbout() {
                   </el-icon>
                 </template>
                 <el-sub-menu index="1-1">
-                  <template #title>Механообрабатывающее производство</template>
+                  <template #title>Механообрабатывающее производство ></template>
                   <el-menu-item
                     index="/machining"
                     :route="{ path: '/machining' }"
@@ -234,7 +234,7 @@ function scrollToAbout() {
         <el-sub-menu index="m1">
           <template #title>Услуги</template>
           <el-sub-menu index="m1-1">
-            <template #title>Механообрабатывающее производство</template>
+            <template #title>Мех. производство ></template>
             <el-menu-item index="/machining" :route="{ path: '/machining' }">Токарные работы</el-menu-item>
             <el-menu-item index="/milling" :route="{ path: '/milling' }">Фрезерные работы</el-menu-item>
             <!-- <el-menu-item index="m1-1-5" disabled>Раскрой металла / заготовительный участок</el-menu-item> -->
@@ -252,7 +252,7 @@ function scrollToAbout() {
             <el-menu-item index="m1-2-3">Контактная сварка</el-menu-item>
           </el-sub-menu>
         </el-sub-menu>
-        <el-menu-item index="/#about" @click="() => { scrollToAbout(); }">О нас</el-menu-item>
+        <!-- <el-menu-item index="/#about" @click="() => { scrollToAbout(); }">О нас</el-menu-item> -->
       </el-menu>
     </div>
   </el-drawer>
@@ -344,6 +344,7 @@ function scrollToAbout() {
   font-size: 18px;
   font-weight: 500;
   padding: 8px 16px;
+  margin-right: 8px;
   height: auto;
 }
 .auth-btn:hover,
@@ -352,6 +353,7 @@ function scrollToAbout() {
   background-color: transparent !important;
   border-color: transparent !important;
   color: #333 !important;
+  margin-right: 8px !important;
 }
 .username {
   color: #333;
