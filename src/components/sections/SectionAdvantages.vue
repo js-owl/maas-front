@@ -130,5 +130,11 @@ const advantages = ref([
   .item-text {
     font-size: 14px;
   }
+
+  .item-img {
+  /* width: 100%; */
+  height: 40%;
+  /* object-fit: cover; */
+}
 }
 </style>

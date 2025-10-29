@@ -245,12 +245,12 @@ function scrollToAbout() {
           <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Нанесение лакокрасочных покрытий</el-menu-item> -->
           <el-menu-item index="/printing" :route="{ path: '/printing' }">3D печать</el-menu-item>
           <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Лабораторные исследования</el-menu-item> -->
-          <el-sub-menu index="m1-2" disabled>
+          <!-- <el-sub-menu index="m1-2" disabled>
             <template #title>Сварочное производство</template>
             <el-menu-item index="m1-2-1">Аргонодуговая сварка</el-menu-item>
             <el-menu-item index="m1-2-2">Сварка в углекислом газе</el-menu-item>
             <el-menu-item index="m1-2-3">Контактная сварка</el-menu-item>
-          </el-sub-menu>
+          </el-sub-menu> -->
         </el-sub-menu>
         <!-- <el-menu-item index="/#about" @click="() => { scrollToAbout(); }">О нас</el-menu-item> -->
       </el-menu>
