@@ -77,7 +77,6 @@ declare module 'vue' {
     PlasticPreparation: typeof import('./src/components/coefficients/PlasticPreparation.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SectionAbility: typeof import('./src/components/sections/SectionAbility.vue')['default']
     SectionAbout: typeof import('./src/components/sections/SectionAbout.vue')['default']
     SectionAdvantages: typeof import('./src/components/sections/SectionAdvantages.vue')['default']
     SectionMilestones: typeof import('./src/components/sections/SectionMilestones.vue')['default']
