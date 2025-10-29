@@ -27,6 +27,7 @@ import { useAuthStore } from '../stores/auth.store'
 import { ElMessage } from 'element-plus'
 import DialogInfoPayment from '../components/dialog/DialogInfoPayment.vue'
 import SuitableMachines from '../components/SuitableMachines.vue'
+import CalculateResults from '../components/sections/CalculateResults.vue'
 // import Height from "../components/coefficients/Height.vue";
 import type {
   IOrderPayload,
@@ -249,34 +250,9 @@ async function getOrder(id: number) {
         {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
       </div>
 
-      <div class="price-section">
-        <div class="price-row">
-          <div>Стоимость 1 ед.</div>
-          <div>{{ Math.round(Number(result?.detail_price_one ?? 0)).toLocaleString() }} р.</div>
-        </div>
-        <div class="price-row">
-          <div>Общая стоимость {{ result?.quantity || 0 }} ед.*</div>
-          <div>
-            <span> {{ Math.round(Number(result?.total_price ?? 0)).toLocaleString() }} р. </span>
-            <span
-              v-show="Number(result?.detail_price ?? 0) != Number(result?.detail_price_one ?? 0)"
-            >
-              ({{ Math.round(Number(result?.detail_price ?? 0)).toLocaleString() }} р. за 1 ед.)
-            </span>
-          </div>
-        </div>
-        <div v-if="profileStore.profile?.username == 'admin'" class="price-row">
-          <div>Трудоемкость</div>
-          <div>{{ Number(result?.detail_time ?? 0).toFixed(2) || '?' }} ч.</div>
-        </div>
-        <div class="price-row-last">
-          <div>Длительность изготовления</div>
-          <div>{{ result?.manufacturing_cycle }} дн.</div>
-        </div>
-      </div>
-      <div class="disclaimer-text">
-        *При увеличении количества единиц в заказе стоимость одного изделия становится выгоднее
-      </div>
+
+      <CalculateResults :result="result" />
+
       <el-row :gutter="20" class="component-section">
         <el-col :offset="0" :span="24" class="cad-section">
           <CadShowById v-model="file_id" />
