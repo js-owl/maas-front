@@ -250,7 +250,6 @@ async function getOrder(id: number) {
         {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
       </div>
 
-
       <CalculateResults :result="result" />
 
       <el-row :gutter="20" class="component-section">
