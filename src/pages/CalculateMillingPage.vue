@@ -251,7 +251,7 @@ async function getOrder(id: number) {
       </div>
 
       <CalculateResults :result="result" />
-      
+
       <el-row :gutter="20" class="component-section">
         <el-col :offset="0" :span="24" class="cad-section">
           <CadShowById v-model="file_id" />

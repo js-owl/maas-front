@@ -1,5 +1,4 @@
-<script lang="ts" setup>
-</script>
+<script lang="ts" setup></script>
 
 <template>
   <div class="main-container">
@@ -9,42 +8,40 @@
         <div class="content-wrapper">
           <!-- Заголовок -->
           <div class="main-title">ТОКАРНАЯ ОБРАБОТКА</div>
-          
+
           <!-- Описание и калькулятор -->
           <div class="description-section">
             <div class="description-text">
-              Токарная обработка представляет собой механическую операцию, при которой вращающаяся деталь обрабатывается режущим инструментом, последовательно снимающим слои материала. Технология позволяет создавать цилиндрические, конические и сложные профилированные поверхности с высокой степенью точности. Применяется в производстве металлических, пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
+              Токарная обработка представляет собой механическую операцию, при которой вращающаяся
+              деталь обрабатывается режущим инструментом, последовательно снимающим слои материала.
+              Технология позволяет создавать цилиндрические, конические и сложные профилированные
+              поверхности с высокой степенью точности. Применяется в производстве металлических,
+              пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
             </div>
-            
+
             <div class="calculator-card" @click="$router.push('/machining')">
-              <div  class="calculator-text">
-                Калькулятор стоимости токарной обработки
-              </div>
-              <img 
-                src="/calc.webp" 
-                alt="calculator icon" 
-                class="calculator-icon"
-              />
+              <div class="calculator-text">Калькулятор стоимости токарной обработки</div>
+              <img src="/calc.webp" alt="calculator icon" class="calculator-icon" />
             </div>
           </div>
-          
+
           <!-- Технические требования -->
           <div class="technical-requirements">
             <div class="requirements-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
-            
+
             <div class="requirements-grid">
               <div class="requirement-column">
                 <div class="requirement-title">Оборудование</div>
                 <div class="requirement-item">Токарно-винторезные станки</div>
                 <div class="requirement-item">Станок с ЧПУ</div>
               </div>
-              
+
               <div class="requirement-column">
                 <div class="requirement-title">Максимальный размер</div>
                 <div class="requirement-item">Длина до 1000 мм</div>
                 <div class="requirement-item">Диаметр до 600 мм</div>
               </div>
-              
+
               <div class="requirement-column">
                 <div class="requirement-title">Материалы</div>
                 <div class="requirement-item">Нержавеющие, легированные стали</div>
@@ -57,32 +54,30 @@
       </el-col>
       <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
         <div class="content-wrapper">
-          
           <!-- Фрезерная обработка -->
           <div class="main-title">ФРЕЗЕРНАЯ ОБРАБОТКА</div>
-          
+
           <!-- Описание и калькулятор фрезерной обработки -->
           <div class="description-section">
             <div class="description-text">
-              Фрезерная обработка представляет собой технологический процесс, при котором специальный режущий инструмент (фреза) вращается и удаляет материал, создавая изделия заданной конфигурации. Методика эффективна как для изготовления плоских элементов, так и для формирования трёхмерных объектов. Она обеспечивает прецизионную точность и широко применяется при работе с различными материалами: металлами, полимерами, древесиной.
+              Фрезерная обработка представляет собой технологический процесс, при котором
+              специальный режущий инструмент (фреза) вращается и удаляет материал, создавая изделия
+              заданной конфигурации. Методика эффективна как для изготовления плоских элементов, так
+              и для формирования трёхмерных объектов. Она обеспечивает прецизионную точность и
+              широко применяется при работе с различными материалами: металлами, полимерами,
+              древесиной.
             </div>
-            
+
             <div class="calculator-card" @click="$router.push('/milling')">
-              <div class="calculator-text">
-                Калькулятор стоимости фрезерной обработки
-              </div>
-              <img 
-                src="/calc.webp" 
-                alt="calculator icon" 
-                class="calculator-icon"
-              />
+              <div class="calculator-text">Калькулятор стоимости фрезерной обработки</div>
+              <img src="/calc.webp" alt="calculator icon" class="calculator-icon" />
             </div>
           </div>
-          
+
           <!-- Технические требования фрезерной обработки -->
           <div class="technical-requirements">
             <div class="requirements-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
-            
+
             <div class="requirements-grid">
               <div class="requirement-column">
                 <div class="requirement-title">Оборудование</div>
@@ -91,7 +86,7 @@
                 <div class="requirement-item">Станки ЧПУ, 3-осевой</div>
                 <div class="requirement-item">Фрезерно-гравировальный станок</div>
               </div>
-              
+
               <div class="requirement-column">
                 <div class="requirement-title">Максимальный размер</div>
                 <div class="requirement-item">до 1400 мм (Д х Ш х В)</div>
@@ -101,7 +96,7 @@
                 <div class="requirement-item">max: 2 200 x 1610 мм (металл)</div>
                 <div class="requirement-item">max: 4 000 × 2070 мм (дерево)</div>
               </div>
-              
+
               <div class="requirement-column">
                 <div class="requirement-title">Материалы</div>
                 <div class="requirement-item">Алюминиевые сплавы</div>
@@ -245,57 +240,57 @@
     padding: 30px 40px;
     margin: 0 0 40px 0;
   }
-  
+
   .main-title {
     font-size: 28px;
     text-align: center;
     margin-bottom: 30px;
   }
-  
+
   .description-section {
     flex-direction: column;
     gap: 30px;
     margin-bottom: 40px;
   }
-  
+
   .description-text {
     font-size: 16px;
     text-align: left;
   }
-  
+
   .calculator-card {
     min-width: auto;
     width: 100%;
     padding: 16px;
   }
-  
+
   .calculator-icon {
     width: 60px;
     height: 60px;
     margin-right: 16px;
   }
-  
+
   .calculator-text {
     font-size: 16px;
   }
-  
+
   .requirements-title {
     font-size: 22px;
     text-align: center;
     margin-bottom: 30px;
   }
-  
+
   .requirements-grid {
     grid-template-columns: 1fr;
     gap: 30px;
   }
-  
+
   .requirement-title {
     font-size: 16px;
     padding: 10px 14px;
     margin-bottom: 16px;
   }
-  
+
   .requirement-item {
     font-size: 15px;
     margin-bottom: 10px;
