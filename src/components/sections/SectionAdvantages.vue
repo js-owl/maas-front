@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 
 const advantages = ref([
   {
@@ -27,6 +28,9 @@ const advantages = ref([
     image: 'homePage/adv_puzzle.png',
   },
 ])
+
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value <= 767)
 </script>
 
 <template>
@@ -41,7 +45,7 @@ const advantages = ref([
             <p class="item-text">{{ advantage.text }}</p>
           </div>
           <div class="item-image-container">
-            <el-image :src="advantage.image" fit="cover" class="item-img" />
+            <el-image :src="advantage.image" :fit="isMobile ? 'contain' : 'cover'" class="item-img" />
           </div>
         </div>
       </div>
