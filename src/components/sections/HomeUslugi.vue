@@ -12,7 +12,7 @@ const abilities = ref([
   {
     id: 2,
     title: '3d-печать',
-    link: '/printing',
+    link: '/print',
     isDevelopment: false,
     imagePath: '/homePage/uslugi_printing.png',
   },

@@ -11,18 +11,18 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/MachiningPage.vue'),
   },
   {
-    path: '/composite',
-    component: () => import('./pages/CompositePage.vue'),
+    path: '/print',
+    component: () => import('./pages/PrintingPage.vue'),
   },
   {
     path: '/painting',
     component: () => import('./pages/PaintingPage.vue'),
   },
-  {
-    path: '/mach',
-    component: () => import('./pages/MachiningPage.vue'),
-    name: 'mach',
-  },
+  // {
+  //   path: '/mach',
+  //   component: () => import('./pages/MachiningPage.vue'),
+  //   name: 'mach',
+  // },
   {
     path: '/machining',
     component: () => import('./pages/CalculateMachiningPage.vue'),
@@ -38,11 +38,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/CalculateMillingPage.vue'),
     name: 'milling',
   },
-  {
-    path: '/milling2',
-    component: () => import('./pages/CalculateMillingPage.vue'),
-    name: 'milling2',
-  },
+  // {
+  //   path: '/milling2',
+  //   component: () => import('./pages/CalculateMillingPage.vue'),
+  //   name: 'milling2',
+  // },
   {
     path: '/printing',
     component: () => import('./pages/CalculatePrintingPage.vue'),
