@@ -30,7 +30,7 @@ services:
       - "traefik.docker.network=traefik-global-proxy"
 
       # Router configuration (update domain as needed)
-      - "traefik.http.routers.maas-front.rule=Host(`10.33.42.18`)"
+      - "traefik.http.routers.maas-front.rule=Host(`${PUBLIC_HOST}`)"
       #- "traefik.http.routers.maas-front.rule=Host(`maas.aeromax-group.ru`)" # || Host(`maas.kronshtadt.ru`)" # && PathPrefix(`/backend-stl`)"
       - "traefik.http.routers.maas-front.entrypoints=https"
       - "traefik.http.routers.maas-front.tls=true"

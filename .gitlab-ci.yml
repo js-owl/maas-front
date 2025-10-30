@@ -1,5 +1,7 @@
 # GitLab CI/CD Pipeline for MAAS Frontend
-# Triggers on Git tags (e.g., v1.0.0, v1.2.3) for production releases
+# Dual pipelines via tags:
+#  - Production: vX.Y.Z (e.g., v1.2.3)
+#  - Development: dev-vX.Y.Z (e.g., dev-v1.2.3)
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -13,20 +15,23 @@ variables:
   # NEXUS_BUILD_REGISTRY - for pulling base images during build (e.g., vortex.kronshtadt.ru:8443)
   # NEXUS_PUSH_REGISTRY - for pushing final built images (e.g., nexus.maas.int.kronshtadt.ru:8443)
   NEXUS_PUSH_IMAGE: ${NEXUS_PUSH_REGISTRY}/maas-hosted/${IMAGE_NAME}
+# Optional dedicated cache image in BUILD registry (no final artifacts here)
+  NEXUS_BUILD_CACHE_IMAGE: ${NEXUS_BUILD_REGISTRY}/maas-hosted/${IMAGE_NAME}
+  NEXUS_BUILD_IMAGE: ${NEXUS_BUILD_REGISTRY}/maas-hosted/${IMAGE_NAME}
 
 stages:
   - build
   - deploy
 
-# Build Docker image and push to Nexus registry
-build:
+# Build Docker image for production (vX.Y.Z) and push to PUSH registry
+build:production:
   stage: build
   image: ${NEXUS_BUILD_REGISTRY}/maas-proxy/${DOCKER_IMAGE}
   services:
-    - name: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:28.4.0-dind # Enable Docker-in-Docker
+    - name: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:28.4.0-dind
       command: ["--insecure-registry=$NEXUS_BUILD_REGISTRY"]
   cache:
-    key: 
+    key:
       files:
         - package-lock.json
     paths:
@@ -34,60 +39,126 @@ build:
       - .npm/
     policy: pull-push
   before_script:
-    # Login to Nexus build registry (for pulling base images)
     - echo $NEXUS_BUILD_PASSWORD | docker login -u $NEXUS_BUILD_USER --password-stdin $NEXUS_BUILD_REGISTRY
-    # Login to Nexus push registry (for pushing built images)
-    - echo $NEXUS_PUSH_PASSWORD | docker login -u $NEXUS_PUSH_USER --password-stdin $NEXUS_PUSH_REGISTRY
-    # Try to pull previous image for cache (ignore if not found)
-    - docker pull $NEXUS_PUSH_IMAGE:latest || true
+    # Pull build cache layers from BUILD cache repo if present
+    - docker pull $NEXUS_BUILD_CACHE_IMAGE:builder-latest || true
+    - docker pull $NEXUS_BUILD_CACHE_IMAGE:buildcache || true
   script:
-    # Build image with private registry credentials and cache
     - |
+      # Build and push builder cache image into BUILD registry (for caching only)
       docker build -f Dockerfile.prod \
+        --target builder \
+        --build-arg NODE_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NODE_IMAGE} \
+        --build-arg NGINX_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NGINX_IMAGE} \
         --build-arg NPM_REGISTRY=$NPM_REGISTRY \
         --build-arg NPM_AUTH=$NPM_AUTH \
-        --build-arg NODE_IMAGE=$NODE_IMAGE \
-        --build-arg NGINX_IMAGE=$NGINX_IMAGE \
         --build-arg APT_PROXY=$APT_PROXY \
         --build-arg BUILDKIT_INLINE_CACHE=1 \
+        --cache-from $NEXUS_BUILD_CACHE_IMAGE:builder-latest \
+        -t $NEXUS_BUILD_CACHE_IMAGE:builder-latest .
+    - docker push $NEXUS_BUILD_CACHE_IMAGE:builder-latest || true
+    - |
+      # Build final app image using BUILD registry for bases and caches, tag with commit tag and latest
+      docker build -f Dockerfile.prod \
+        --build-arg NODE_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NODE_IMAGE} \
+        --build-arg NGINX_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NGINX_IMAGE} \
+        --build-arg NPM_REGISTRY=$NPM_REGISTRY \
+        --build-arg NPM_AUTH=$NPM_AUTH \
+        --build-arg APT_PROXY=$APT_PROXY \
         --build-arg GIT_TAG=$CI_COMMIT_TAG \
         --build-arg GIT_HASH=$CI_COMMIT_SHA \
         --build-arg GIT_BRANCH=$CI_COMMIT_REF_NAME \
-        --cache-from $NEXUS_PUSH_IMAGE:latest \
+        --build-arg BUILDKIT_INLINE_CACHE=1 \
+        --cache-from $NEXUS_BUILD_CACHE_IMAGE:builder-latest \
+        --cache-from $NEXUS_BUILD_CACHE_IMAGE:buildcache \
         -t $NEXUS_PUSH_IMAGE:$IMAGE_TAG \
         -t $NEXUS_PUSH_IMAGE:latest .
-    # Push both tags to Nexus push registry
     - docker push $NEXUS_PUSH_IMAGE:$IMAGE_TAG
     - docker push $NEXUS_PUSH_IMAGE:latest
-    # Clean up local images
     - docker rmi $NEXUS_PUSH_IMAGE:$IMAGE_TAG $NEXUS_PUSH_IMAGE:latest || true
   only:
-    - tags
+    - /^v[0-9]+\.[0-9]+\.[0-9]+$/
   tags:
     - maas
 
-# Deploy to remote production server
-deploy:
+# Build Docker image for development (dev-vX.Y.Z) and push to PUSH registry
+build:development:
+  stage: build
+  image: ${NEXUS_BUILD_REGISTRY}/maas-proxy/${DOCKER_IMAGE}
+  services:
+    - name: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:28.4.0-dind
+      command: ["--insecure-registry=$NEXUS_BUILD_REGISTRY"]
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull-push
+  before_script:
+    - echo $NEXUS_BUILD_PASSWORD | docker login -u $NEXUS_BUILD_USER --password-stdin $NEXUS_BUILD_REGISTRY
+    - echo $NEXUS_PUSH_PASSWORD | docker login -u $NEXUS_PUSH_USER --password-stdin $NEXUS_PUSH_REGISTRY
+    - docker pull $NEXUS_BUILD_CACHE_IMAGE:dev-builder-latest || true
+    - docker pull $NEXUS_BUILD_CACHE_IMAGE:dev-buildcache || true
+  script:
+    - |
+      docker build -f Dockerfile.prod \
+        --target builder \
+        --build-arg NODE_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NODE_IMAGE} \
+        --build-arg NGINX_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NGINX_IMAGE} \
+        --build-arg NPM_REGISTRY=$NPM_REGISTRY \
+        --build-arg NPM_AUTH=$NPM_AUTH \
+        --build-arg APT_PROXY=$APT_PROXY \
+        --build-arg BUILDKIT_INLINE_CACHE=1 \
+        --cache-from $NEXUS_BUILD_CACHE_IMAGE:dev-builder-latest \
+        -t $NEXUS_BUILD_CACHE_IMAGE:dev-builder-latest .
+    - docker push $NEXUS_BUILD_CACHE_IMAGE:dev-builder-latest || true
+    - |
+      docker build -f Dockerfile.prod \
+        --build-arg NODE_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NODE_IMAGE} \
+        --build-arg NGINX_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NGINX_IMAGE} \
+        --build-arg NPM_REGISTRY=$NPM_REGISTRY \
+        --build-arg NPM_AUTH=$NPM_AUTH \
+        --build-arg APT_PROXY=$APT_PROXY \
+        --build-arg GIT_TAG=$CI_COMMIT_TAG \
+        --build-arg GIT_HASH=$CI_COMMIT_SHA \
+        --build-arg GIT_BRANCH=$CI_COMMIT_REF_NAME \
+        --build-arg BUILDKIT_INLINE_CACHE=1 \
+        --cache-from $NEXUS_BUILD_CACHE_IMAGE:dev-builder-latest \
+        --cache-from $NEXUS_BUILD_CACHE_IMAGE:dev-buildcache \
+        -t $NEXUS_BUILD_IMAGE:$IMAGE_TAG \
+        -t $NEXUS_BUILD_IMAGE:dev-latest .
+    - docker push $NEXUS_BUILD_IMAGE:$IMAGE_TAG
+    - docker push $NEXUS_BUILD_IMAGE:dev-latest
+    - docker rmi $NEXUS_BUILD_IMAGE:$IMAGE_TAG $NEXUS_BUILD_IMAGE:dev-latest || true
+  only:
+    - /^dev-v[0-9]+\.[0-9]+\.[0-9]+$/
+  tags:
+    - maas
+
+deploy:production:
   stage: deploy
   image: ${NEXUS_PUSH_REGISTRY}/maas-hosted/maas-deploy-tools:latest
+  environment: prod
   before_script:
-    # Setup SSH key (tools already pre-installed in custom image)
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts
+    - export SSH_PORT="${SSH_PORT:-22}"
+    - 'test -n "$SSH_HOST" || { echo "SSH_HOST is not set"; exit 1; }'
+    - ssh-keyscan -T 5 -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
     - chmod 644 ~/.ssh/known_hosts
   script:
     - scp -P $SSH_PORT docker-compose.yml $SSH_USER@$SSH_HOST:$REMOTE_PROJECT_PATH/
-    # Deploy to remote server
     - |
       ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << EOF
         set -e
         
-        echo "🚀 Starting deployment process..."
+        echo "🚀 PROD: Starting deployment process..."
         echo "Current directory: $(pwd)"
-        echo "Target directory: ${REMOTE_PROJECT_PATH}"
+        echo "🌐 PROD: Target directory: ${REMOTE_PROJECT_PATH}"
         
         # Check if project directory exists, create if not
         if [ ! -d "${REMOTE_PROJECT_PATH}" ]; then
@@ -103,47 +174,51 @@ deploy:
         cd ${REMOTE_PROJECT_PATH}
         echo "✅ Changed to project directory: ${REMOTE_PROJECT_PATH}"
         
-        # Create/update .env.production
-        echo "📝 Creating .env.production file..."
+        # Create/update .env.production (frontend runtime API)
+        echo "📝 PROD: Creating .env.production file..."
         echo "VITE_API_BASE=${VITE_API_BASE}" > .env.production
         echo "VITE_BASE_PATH=${VITE_BASE_PATH}" >> .env.production
-        echo "✅ .env.production created with content:"
+        echo "✅ PROD: .env.production created with content:"
         cat .env.production
+
+        # Create/update .env (for docker-compose variable interpolation like PUBLIC_HOST)
+        echo "PUBLIC_HOST=${PROD_PUBLIC_HOST}" > .env
+        echo "✅ PROD: .env created for compose interpolation"
         
         # Login to Nexus push registry
-        echo "🔐 Logging into Nexus registry..."
+        echo "🔐 PROD: Logging into PUSH registry..."
         echo ${NEXUS_PUSH_PASSWORD} | docker login -u ${NEXUS_PUSH_USER} --password-stdin ${NEXUS_PUSH_REGISTRY}
-        echo "✅ Successfully logged into Nexus registry"
+        echo "✅ PROD: Logged into PUSH registry"
         
         # Update docker-compose.yml image tag
-        echo "🔄 Updating docker-compose.yml with new image tag..."
+        echo "🔄 PROD: Updating docker-compose.yml with new image tag..."
         sed -i "s|image:.*maas-front:.*|image: ${NEXUS_PUSH_IMAGE}:${IMAGE_TAG}|g" docker-compose.yml
-        echo "✅ Updated docker-compose.yml"
-        echo "New image: ${NEXUS_PUSH_IMAGE}:${IMAGE_TAG}"
+        echo "✅ PROD: Updated docker-compose.yml"
+        echo "🖼️ PROD: Image -> ${NEXUS_PUSH_IMAGE}:${IMAGE_TAG}"
         
         # Pull new image
-        echo "📥 Pulling new Docker image..."
+        echo "📥 PROD: Pulling new Docker image..."
         sudo docker compose pull
-        echo "✅ Image pulled successfully"
+        echo "✅ PROD: Image pulled successfully"
         
         # Stop and remove old container
-        echo "🛑 Stopping old container..."
+        echo "🛑 PROD: Stopping old container..."
         sudo docker compose down || true
-        echo "✅ Old container stopped"
+        echo "✅ PROD: Old container stopped"
         
         # Start new container
-        echo "🚀 Starting new container..."
+        echo "🚀 PROD: Starting new container..."
         sudo docker compose up -d
-        echo "✅ New container started"
+        echo "✅ PROD: New container started"
         
         # Verify deployment
         sleep 10
         
         # Check container status
         if docker compose ps | grep -q "Up"; then
-          echo "✅ Container is running"
+          echo "✅ PROD: Container is running"
         else
-          echo "❌ Container is not running"
+          echo "❌ PROD: Container is not running"
           sudo docker compose logs
           exit 1
         fi
@@ -154,25 +229,25 @@ deploy:
           # Wait for application to be ready
           for i in {1..30}; do
             if sudo docker exec $CONTAINER_NAME curl -f http://localhost:80/health 2>/dev/null; then
-              echo "✅ Application health check passed"
+              echo "✅ PROD: Application health check passed"
               break
             elif [ $i -eq 30 ]; then
-              echo "❌ Application health check failed after 30 attempts"
+              echo "❌ PROD: Application health check failed after 30 attempts"
               sudo docker compose logs
               exit 1
             else
-              echo "Waiting for application to be ready... ($i/30)"
+              echo "⏳ PROD: Waiting for application to be ready... ($i/30)"
               sleep 2
             fi
           done
         fi
         
         # Log deployment info
-        echo "✅ Deployment successful"
-        echo "Image: ${NEXUS_PUSH_IMAGE}:${IMAGE_TAG}"
-        echo "Container status:"
+        echo "✅ PROD: Deployment successful"
+        echo "🖼️ PROD: Image: ${NEXUS_PUSH_IMAGE}:${IMAGE_TAG}"
+        echo "📊 PROD: Container status:"
         sudo docker compose ps
-        echo "Container logs (last 20 lines):"
+        echo "🧾 PROD: Container logs (last 20 lines):"
         sudo docker compose logs --tail=20
         
         # Create deployment marker file
@@ -182,8 +257,55 @@ deploy:
         echo "Git commit: ${CI_COMMIT_SHA}" >> deployment.log
       EOF
   only:
-    - tags
+    - /^v[0-9]+\.[0-9]+\.[0-9]+$/
   dependencies:
-    - build
+    - build:production
+  tags:
+    - maas
+
+# Deploy to remote development server
+deploy:development:
+  stage: deploy
+  image: ${NEXUS_PUSH_REGISTRY}/maas-hosted/maas-deploy-tools:latest
+  environment: dev
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$DEV_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - export DEV_SSH_PORT="${DEV_SSH_PORT:-22}"
+    - 'test -n "$DEV_SSH_HOST" || { echo "DEV_SSH_HOST is not set"; exit 1; }'
+    - ssh-keyscan -T 5 -p "$DEV_SSH_PORT" "$DEV_SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - scp -P $DEV_SSH_PORT docker-compose.yml $DEV_SSH_USER@$DEV_SSH_HOST:$DEV_REMOTE_PROJECT_PATH/
+    - |
+      ssh -p $DEV_SSH_PORT $DEV_SSH_USER@$DEV_SSH_HOST << EOF
+        set -e
+        echo "🚀 DEV: Starting development deployment..."
+        if [ ! -d "${DEV_REMOTE_PROJECT_PATH}" ]; then
+          sudo mkdir -p ${DEV_REMOTE_PROJECT_PATH}
+          sudo chown ${DEV_SSH_USER}:${DEV_SSH_USER} "${DEV_REMOTE_PROJECT_PATH}"
+        fi
+        cd ${DEV_REMOTE_PROJECT_PATH}
+        echo "📝 DEV: Creating .env.production file..."
+        echo "VITE_API_BASE=${VITE_API_BASE_DEV}" > .env.production
+        echo "VITE_BASE_PATH=${VITE_BASE_PATH_DEV}" >> .env.production
+        echo "PUBLIC_HOST=${DEV_PUBLIC_HOST}" > .env
+        echo "🔐 DEV: Logging into BUILD registry..."
+        echo ${NEXUS_BUILD_PASSWORD} | docker login -u ${NEXUS_BUILD_USER} --password-stdin ${NEXUS_BUILD_REGISTRY}
+        sed -i "s|image:.*maas-front:.*|image: ${NEXUS_BUILD_IMAGE}:${IMAGE_TAG}|g" docker-compose.yml
+        echo "📥 DEV: Pulling image from BUILD..."
+        sudo docker compose pull
+        echo "🛑 DEV: Restarting container..."
+        sudo docker compose down || true
+        sudo docker compose up -d
+        sleep 10
+        if docker compose ps | grep -q "Up"; then echo "✅ DEV: Container is running"; else sudo docker compose logs; exit 1; fi
+      EOF
+  only:
+    - /^dev-v[0-9]+\.[0-9]+\.[0-9]+$/
+  dependencies:
+    - build:development
   tags:
     - maas

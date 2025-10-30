@@ -310,7 +310,7 @@ build:staging:
 ## GitLab CI/CD Pipeline
 
 ### Pipeline Overview
-The GitLab CI/CD pipeline automatically builds and deploys the frontend application when Git tags are created. The pipeline consists of two stages:
+The GitLab CI/CD pipeline automatically builds and deploys the frontend application when Git tags are created. The pipeline consists of two stages and supports separate dev/prod flows via tag patterns:
 
 1. **Build Stage**: Builds Docker image using Dockerfile.prod with private registry credentials, pulls base images from build registry, pushes final image to push registry
 2. **Deploy Stage**: Deploys to remote production server via SSH using Ubuntu-based image with APT proxy support
@@ -322,9 +322,10 @@ The GitLab CI/CD pipeline automatically builds and deploys the frontend applicat
 - **APT Proxy Support**: Configures APT proxy for package downloads in deploy stage (same as Dockerfile)
 
 ### Pipeline Triggers
-- **Trigger**: Git tags (e.g., `v1.0.0`, `v1.2.3`)
+- **Production**: tags `vX.Y.Z` (e.g., `v1.0.0`, `v1.2.3`)
+- **Development**: tags `dev-vX.Y.Z` (e.g., `dev-v1.0.0`)
 - **Automatic**: No manual approval required
-- **Registry**: Images pushed to Nexus registry (`nexus.maas.int.kronshtadt.ru:8443`)
+- **Registry**: Base/caches from BUILD registry, final images to PUSH registry
 
 ### Required GitLab CI/CD Variables
 Configure these variables in GitLab CI/CD Settings → Variables:
@@ -345,25 +346,39 @@ Configure these variables in GitLab CI/CD Settings → Variables:
 | `NODE_IMAGE` | `vortex.kronshtadt.ru:8443/maas-proxy/node:20.19.5-slim` | ✅ | ❌ | Custom Node.js image |
 | `NGINX_IMAGE` | `vortex.kronshtadt.ru:8443/maas-proxy/nginx:stable` | ✅ | ❌ | Custom Nginx image |
 | `APT_PROXY` | `http://dcksv-linux-repo.int.kronshtadt.ru:3142/` | ✅ | ❌ | APT proxy for package downloads |
-| **SSH Deployment** |
+| **SSH Deployment (Production)** |
 | `SSH_PRIVATE_KEY` | `-----BEGIN OPENSSH PRIVATE KEY-----...` | ✅ | ✅ | SSH private key (file type) |
 | `SSH_USER` | `deploy` | ✅ | ❌ | SSH username for remote server |
-| `SSH_HOST` | `your-production-server.com` | ✅ | ❌ | Remote server hostname/IP |
+| `SSH_HOST` | `10.33.42.18` | ✅ | ❌ | Remote server hostname/IP |
 | `SSH_PORT` | `22` | ✅ | ❌ | SSH port (default: 22) |
 | `REMOTE_PROJECT_PATH` | `/opt/maas-prod-front` | ✅ | ❌ | Project directory on remote server |
-| **Environment Variables** |
+| **Environment Variables (Production)** |
 | `VITE_API_BASE` | `https://maas.aeromax-group.ru/api/v3` | ✅ | ❌ | API base URL |
 | `VITE_BASE_PATH` | `/` | ✅ | ❌ | Application base path |
+| `PROD_PUBLIC_HOST` | `10.33.42.18` | ✅ | ❌ | Public host/IP for Traefik rule |
+
+| **SSH Deployment (Development)** |
+| `DEV_SSH_PRIVATE_KEY` | `-----BEGIN OPENSSH PRIVATE KEY-----...` | ✅ | ✅ | SSH private key (file type) |
+| `DEV_SSH_USER` | `deploy` | ✅ | ❌ | SSH username for remote dev server |
+| `DEV_SSH_HOST` | `dksv-maas.int.kronshtadt.ru` | ✅ | ❌ | Dev server DNS |
+| `DEV_SSH_PORT` | `22` | ✅ | ❌ | SSH port (default: 22) |
+| `DEV_REMOTE_PROJECT_PATH` | `/opt/maas-front-dev` | ✅ | ❌ | Project directory on dev server |
+| **Environment Variables (Development)** |
+| `VITE_API_BASE_DEV` | `https://dev.api.example.com/v3` | ✅ | ❌ | Dev API base URL |
+| `VITE_BASE_PATH_DEV` | `/` | ✅ | ❌ | Dev application base path |
+| `DEV_PUBLIC_HOST` | `dksv-maas.int.kronshtadt.ru` | ✅ | ❌ | Public host for Traefik rule |
 
 ### Creating Releases
 
 #### 1. Create Git Tag
 ```bash
 # Create annotated tag
-git tag -a v1.0.0 -m "Release v1.0.0"
+git tag -a v1.0.0 -m "Release v1.0.0"      # production
+git tag -a dev-v1.0.0 -m "Dev v1.0.0"      # development
 
 # Push tag to trigger pipeline
 git push origin v1.0.0
+git push origin dev-v1.0.0
 ```
 
 #### 2. Version Information in Build
