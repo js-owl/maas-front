@@ -1,48 +1,23 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { req_json_auth } from '../../api'
+import { onMounted } from 'vue'
+import { useMaterialStore } from '../../stores/material.store'
 
-const selectedMaterial = defineModel()
-const materials = ref<Array<{ value: string; label: string }>>([])
+const selectedMaterial = defineModel<string | null>()
+const materialStore = useMaterialStore()
 
-// Функция для преобразования данных с бекенда в нужный формат
-function transformMaterials(prop: any): Array<{ value: string; label: string }> {
-  return prop.materials.map((x: any) => ({
-    value: x.id,
-    label: x.label,
-  }))
-}
-
-// Загружаем материалы с бекенда
-async function loadMaterials() {
-  try {
-    const response = await req_json_auth(
-      "/materials?process=cnc-lathe",
-      "GET"
-    );
-    if (response?.ok) {
-      const backendMaterials = await response.json()
-      materials.value = transformMaterials(backendMaterials)
-    }
-  } catch (error) {
-    console.error('Error loading materials:', error)
-    // Fallback к статичным данным при ошибке
-    materials.value = [
-      {
-        value: 'alum_D16T',
-        label: 'Алюминий Д16Т',
-      },
-      {
-        value: 'steel_12X18H10T',
-        label: 'Сталь 12Х18Н10Т',
-      },
-    ]
+onMounted(async () => {
+  await materialStore.loadMaterials('cnc-lathe')
+  if (selectedMaterial.value) {
+    materialStore.setSelectedMaterialId(selectedMaterial.value)
+  } else if (materialStore.materials.length > 0) {
+    selectedMaterial.value = materialStore.materials[0].value
+    materialStore.setSelectedMaterialId(materialStore.materials[0].value)
   }
-}
-
-onMounted(() => {
-  loadMaterials()
 })
+
+const onChange = (val: string) => {
+  materialStore.setSelectedMaterialId(val)
+}
 </script>
 
 <template>
@@ -54,9 +29,10 @@ onMounted(() => {
       placeholder="Выбрать"
       size="large"
       class="full"
+      @change="onChange"
     >
       <el-option
-        v-for="item in materials"
+        v-for="item in materialStore.materials"
         :key="item.value"
         :label="item.label"
         :value="item.value"
