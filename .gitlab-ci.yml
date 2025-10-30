@@ -40,6 +40,7 @@ build:production:
     policy: pull-push
   before_script:
     - echo $NEXUS_BUILD_PASSWORD | docker login -u $NEXUS_BUILD_USER --password-stdin $NEXUS_BUILD_REGISTRY
+    - echo $NEXUS_PUSH_PASSWORD | docker login -u $NEXUS_PUSH_USER --password-stdin $NEXUS_PUSH_REGISTRY
     # Pull build cache layers from BUILD cache repo if present
     - docker pull $NEXUS_BUILD_CACHE_IMAGE:builder-latest || true
     - docker pull $NEXUS_BUILD_CACHE_IMAGE:buildcache || true
