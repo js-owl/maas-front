@@ -6,7 +6,7 @@ import { useAuthStore } from "../stores/auth.store";
 import { ElMessage } from "element-plus";
 
 const document_ids = defineModel<number[]>({ default: [] });
-const { color = "white", bgColor = "var(--bgcolor)" } = defineProps({
+const { color = "white" } = defineProps({
   color: String,
 });
 
