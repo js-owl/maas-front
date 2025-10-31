@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { useStorage } from '@vueuse/core'
 import { req_json_auth } from '../api'
 
 type MaterialOption = {
@@ -9,7 +10,7 @@ type MaterialOption = {
 
 export const useMaterialStore = defineStore('material', () => {
   const materials = ref<MaterialOption[]>([])
-  const selectedMaterialId = ref<string | null>(null)
+  const selectedMaterialId = useStorage<string | null>('material:selectedId', null)
   const isLoading = ref(false)
   const hasError = ref(false)
 
