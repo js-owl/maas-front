@@ -208,6 +208,7 @@
     margin-bottom: 30px;
   }
   .main-subtitle {
+    font-size: 20px;
   }
 
   .description-section {
@@ -220,7 +221,12 @@
     font-size: 16px;
     text-align: left;
   }
-
+  .requirement-li {
+    font-size: 16px;
+  }
+  .requirement-item {
+    font-size: 16px;
+  }
   .calculator-card {
     min-width: auto;
     width: 100%;
@@ -238,8 +244,8 @@
   }
 
   .requirements-title {
-    font-size: 22px;
-    text-align: center;
+    font-size: 20px;
+    /* text-align: center; */
     margin-bottom: 30px;
   }
 
