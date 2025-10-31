@@ -5,14 +5,19 @@ import { Edit, Delete } from "@element-plus/icons-vue";
 import { req_json_auth } from "../api";
 import type { IOrderResponse } from "../interfaces/order.interface";
 import CadPreview from "./cad/CadPreview.vue";
+import { useMaterialStore } from "../stores/material.store";
 
 const router = useRouter();
 const orders = ref<IOrderResponse[]>();
 const deleteLoading = ref<number | null>(null);
+const materialStore = useMaterialStore();
 
 onMounted(async () => {
-  const r = await req_json_auth(`/orders`, "GET");
-  orders.value = (await r?.json()) as IOrderResponse[];
+  const [ordersResponse] = await Promise.all([
+    req_json_auth(`/orders`, "GET"),
+    materialStore.loadMaterials(),
+  ]);
+  orders.value = (await ordersResponse?.json()) as IOrderResponse[];
 });
 
 const formatDate = (_row: any, _column: any, cellValue: string) => {
@@ -28,13 +33,10 @@ const getServiceName = (service_id: number): string => {
   return serviceNames[service_id] || service_id;
 };
 
-const materialNames: Record<string, string> = {
-  alum_D16T: "Алюминий Д16Т",
-  steel_12X18H10T: "Сталь 12Х18Н10Т",
-};
 const getMaterialName = (materialCode: string): string => {
   if (!materialCode) return "";
-  return materialNames[materialCode] || materialCode;
+  const found = materialStore.materials.find(m => m.value === materialCode);
+  return found?.label ?? materialCode;
 };
 
 const statusTexts: any = {
