@@ -5,6 +5,7 @@ import SectionModel from '../components/sections/SectionModel.vue'
 import HomeUslugi from '../components/sections/HomeUslugi.vue'
 import SectionAbout from '../components/sections/SectionAbout.vue'
 import SectionAdvantages from '../components/sections/SectionAdvantages.vue'
+import HomeCalc from '../components/sections/HomeCalc.vue'
 // import SectionMilestones from '../components/sections/SectionMilestones.vue'
 
 const { width } = useWindowSize()
@@ -20,6 +21,7 @@ const isMobile = computed(() => width.value < 768)
           <HomeUslugi />
           <SectionAbout />
           <SectionAdvantages />
+          <HomeCalc />
         </el-col>
       </el-row>
     </div>
@@ -30,6 +32,7 @@ const isMobile = computed(() => width.value < 768)
           <HomeUslugi />
           <SectionAbout />
           <SectionAdvantages />
+          <HomeCalc />
         </el-col>
       </el-row>
     </template>
