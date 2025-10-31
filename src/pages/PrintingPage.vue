@@ -9,18 +9,17 @@
           <div class="main-subtitle">SLS (Selective Laser Sintering)</div>
           <div class="description-section">
             <div class="description-text">
-              SLS – технология наращивания модели из полимерного материала при помощи лазера
-              (метод селективного лазерного спекания). Идеально подходит для массового
-              производства, изделия обладают механической прочностью, особенно при использовании
-              пластиков инженерного класса.
+              SLS – технология наращивания модели из полимерного материала при помощи лазера (метод
+              селективного лазерного спекания). Идеально подходит для массового производства,
+              изделия обладают механической прочностью, особенно при использовании пластиков
+              инженерного класса.
               <br /><br />
               Удобен для изготовления сложных прототипов, так как в отличие от большинства других
-              методов не требует использования поддерживающих элементов. Это упрощает процесс
-              печати и позволяет реализовать сложную геометрию. 
+              методов не требует использования поддерживающих элементов. Это упрощает процесс печати
+              и позволяет реализовать сложную геометрию.
               <br /><br />
-              Мы используем принтеры с
-              увеличенным объёмом печати и многозонной системой стабилизации температуры, что
-              позволяет добиться высокого качества изделий.
+              Мы используем принтеры с увеличенным объёмом печати и многозонной системой
+              стабилизации температуры, что позволяет добиться высокого качества изделий.
             </div>
 
             <div class="calculator-card" @click="$router.push('/printing')">
@@ -28,36 +27,45 @@
               <img src="/calc.webp" alt="calculator icon" class="calculator-icon" />
             </div>
           </div>
-        <div>
+          <div>
             <div>
-            <div class="main-subtitle">Применение</div>
-                    <li class="requirement-li">Автомобилестроение: корпусные детали, воздуховоды, ложементы и зажимы, вспомогательные инструменты, аксессуары</li>
-                    <li class="requirement-li">Машиностроение: оснастка, формы для литья, крыльчатки шестерни, рамы, рукоятки</li>
-                    <li class="requirement-li">Электроника: корпуса приборов, коннекторы, изделия для робототехники и пр.</li>
-                    <li class="requirement-li">Макеты и модели</li>
+              <div class="main-subtitle">Применение</div>
+              <li class="requirement-li">
+                Автомобилестроение: корпусные детали, воздуховоды, ложементы и зажимы,
+                вспомогательные инструменты, аксессуары
+              </li>
+              <li class="requirement-li">
+                Машиностроение: оснастка, формы для литья, крыльчатки шестерни, рамы, рукоятки
+              </li>
+              <li class="requirement-li">
+                Электроника: корпуса приборов, коннекторы, изделия для робототехники и пр.
+              </li>
+              <li class="requirement-li">Макеты и модели</li>
             </div>
-        </div>
+          </div>
           <div class="technical-requirements">
             <div class="requirements-title">ТЕХНИЧЕСКИЕ ХАРАКТЕРИСТИКИ</div>
 
-              <div class="requirement-column">
-                <div class="requirement-item">Высота слоя: 0.06–0.12 мм</div>
-                <div class="requirement-item">Точность: ±0.2 мм или ±0.3%</div>
-                <div class="requirement-item">Применение: Автомобилестроение, машиностроение, электроника, макеты и модели</div>
+            <div class="requirement-column">
+              <div class="requirement-item">Высота слоя: 0.06–0.12 мм</div>
+              <div class="requirement-item">Точность: ±0.2 мм или ±0.3%</div>
+              <div class="requirement-item">
+                Применение: Автомобилестроение, машиностроение, электроника, макеты и модели
               </div>
+            </div>
           </div>
 
           <div class="technical-requirements">
             <div class="requirements-title">Материалы</div>
-              <div class="requirement-column">
-                <div class="requirement-item">Термопластичный полиуретан (TPU)</div>
-                <div class="requirement-item">Термопластичный эластомер (TPE)</div>
-                <div class="requirement-item">Полиамид (PA 11, PA 12)</div>
-                <div class="requirement-item">Полистирол</div>
-                <div class="requirement-item">Полипропилен</div>
-                <div class="requirement-item">Полиэтилен</div>
-              </div>
+            <div class="requirement-column">
+              <div class="requirement-item">Термопластичный полиуретан (TPU)</div>
+              <div class="requirement-item">Термопластичный эластомер (TPE)</div>
+              <div class="requirement-item">Полиамид (PA 11, PA 12)</div>
+              <div class="requirement-item">Полистирол</div>
+              <div class="requirement-item">Полипропилен</div>
+              <div class="requirement-item">Полиэтилен</div>
             </div>
+          </div>
         </div>
       </el-col>
     </el-row>
@@ -199,6 +207,8 @@
     text-align: center;
     margin-bottom: 30px;
   }
+  .main-subtitle {
+  }
 
   .description-section {
     flex-direction: column;
@@ -250,4 +260,3 @@
   }
 }
 </style>
-
