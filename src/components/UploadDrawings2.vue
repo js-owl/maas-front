@@ -94,7 +94,7 @@ const handleFileChange = async (file: File) => {
         style="display: block; width: 30px; height: 30px"
       />
       <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
-        {{ isUploading ? 'Загрузка...' : 'Чертежи, документация' }}
+        {{ isUploading ? 'Загрузка...' : 'Документы и чертежи' }}
       </div>
     </div>
   </el-upload>
@@ -103,13 +103,13 @@ const handleFileChange = async (file: File) => {
 <style scoped>
 :deep(.el-upload-dragger) {
   padding: 10px;
-  border: 1px solid var(--bgcolor);
-  background-color: var(--bgcolor) !important;
+  border: 1px solid var(--custom-red);
+  background-color: var(--custom-red) !important;
 }
 :deep(.el-upload.is-disabled .el-upload-dragger) {
-  background-color: var(--bgcolor) !important;
+  background-color: var(--custom-red) !important;
   padding: 10px;
-  border: 1px solid var(--bgcolor);
+  border: 1px solid var(--custom-red);
 }
 .custom {
   display: flex;

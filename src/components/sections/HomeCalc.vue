@@ -65,7 +65,7 @@ const submit = () => {
               />
             </label>
           </div> -->
-          <UploadDrawings2 color="#000" />
+          <UploadDrawings2 color="#fff" />
 
           <div class="formats">Форматы: TIF, PDF, JPG</div>
 
