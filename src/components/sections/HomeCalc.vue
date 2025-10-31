@@ -53,19 +53,19 @@ const submit = () => {
             <el-input v-model="formModel.phone" placeholder="+7 (" />
           </el-form-item>
 
-          <div class="upload-row">
+          <!-- <div class="upload-row">
             <label class="upload-btn">
-              <el-icon class="upload-icon"><i class="el-icon-document" /></el-icon>
-              <span>Документы и чертежи</span>
+             <span>Документы и чертежи</span>
               <input
                 class="file-input"
                 type="file"
                 multiple
                 accept=".tif,.tiff,.pdf,.jpg,.jpeg,.png"
-                @change="onFilesChange(($event.target as HTMLInputElement).files)"
+                @change="onFilesChange"
               />
             </label>
-          </div>
+          </div> -->
+          <UploadDrawings2 v-model="document_ids" color="#000" />
 
           <div class="formats">Форматы: TIF, PDF, JPG</div>
 
