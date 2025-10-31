@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import SectionModel from '../components/sections/SectionModel.vue'
 import HomeUslugi from '../components/sections/HomeUslugi.vue'
-import SectionAbout from '../components/sections/SectionAbout.vue'
+import HomeAbout from '../components/sections/HomeAbout.vue'
 import SectionAdvantages from '../components/sections/SectionAdvantages.vue'
 import HomeCalc from '../components/sections/HomeCalc.vue'
 // import SectionMilestones from '../components/sections/SectionMilestones.vue'
@@ -19,7 +19,7 @@ const isMobile = computed(() => width.value < 768)
         <el-col :offset="3" :span="18">
           <SectionModel />
           <HomeUslugi />
-          <SectionAbout />
+          <HomeAbout />
           <SectionAdvantages />
           <HomeCalc />
         </el-col>
@@ -30,7 +30,7 @@ const isMobile = computed(() => width.value < 768)
       <el-row>
         <el-col :offset="0" :span="24">
           <HomeUslugi />
-          <SectionAbout />
+          <HomeAbout />
           <SectionAdvantages />
           <HomeCalc />
         </el-col>

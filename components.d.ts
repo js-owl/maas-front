@@ -62,6 +62,7 @@ declare module 'vue' {
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Footer: typeof import('./src/components/Footer.vue')['default']
     Height: typeof import('./src/components/coefficients/Height.vue')['default']
+    HomeAbout: typeof import('./src/components/sections/HomeAbout.vue')['default']
     HomeCalc: typeof import('./src/components/sections/HomeCalc.vue')['default']
     HomeUslugi: typeof import('./src/components/sections/HomeUslugi.vue')['default']
     Length: typeof import('./src/components/coefficients/Length.vue')['default']
