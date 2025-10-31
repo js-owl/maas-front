@@ -50,6 +50,19 @@ let width = ref(30)
 let height = ref(30)
 let quantity = ref(1)
 
+// Notify user if quantity exceeds recommended threshold
+const hasQuantityWarningShown = ref(false)
+watch(quantity, (newVal) => {
+  console.log('newVal', newVal)
+  const threshold = 999
+  if (newVal > threshold && !hasQuantityWarningShown.value) {
+    ElMessage.warning('Количество превышает 1000. Свяжитесь с нами для оптового заказа.')
+    hasQuantityWarningShown.value = true
+  } else if (newVal <= threshold && hasQuantityWarningShown.value) {
+    hasQuantityWarningShown.value = false
+  }
+})
+
 let material_id = ref('alum_D16')
 let material_form = ref('rod')
 
