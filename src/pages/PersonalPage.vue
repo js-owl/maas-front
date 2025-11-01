@@ -35,9 +35,16 @@ const activeKey = computed(() => {
 })
 
 onMounted(async () => {
-  await materialStore.loadMaterials('cnc-lathe')
-  if (materialStore.materials.length > 0) {
-    materialStore.setAllMaterials(materialStore.materials)
+  // Check localStorage first
+  if (materialStore.allMaterials.length > 0) {
+    // Use materials from localStorage
+    materialStore.setMaterials(materialStore.allMaterials)
+  } else {
+    // Load from API if localStorage is empty
+    await materialStore.loadMaterials('cnc-lathe')
+    if (materialStore.materials.length > 0) {
+      materialStore.setAllMaterials(materialStore.materials)
+    }
   }
 })
 </script>

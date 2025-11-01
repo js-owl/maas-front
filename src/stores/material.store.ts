@@ -23,9 +23,9 @@ export const useMaterialStore = defineStore('material', () => {
     materials.value = list
   }
 
-  const setSelectedMaterialId = (id: string | null) => {
-    selectedMaterialId.value = id
-  }
+  // const setSelectedMaterialId = (id: string | null) => {
+  //   selectedMaterialId.value = id
+  // }
 
   const setAllMaterials = (materialsList: MaterialOption[]) => {
     allMaterials.value = materialsList
@@ -68,7 +68,7 @@ export const useMaterialStore = defineStore('material', () => {
     hasError,
     selectedMaterial,
     setMaterials,
-    setSelectedMaterialId,
+    // setSelectedMaterialId,
     setAllMaterials,
     loadMaterials,
   }
