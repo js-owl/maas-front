@@ -1,25 +1,3 @@
-<template>
-  <el-row :gutter="0" style="padding-top: 30px; min-height: 300px">
-    <el-col :offset="3" :span="18">
-      <div class="personal-layout">
-        <aside class="sidebar">
-          <el-menu :default-active="activeKey" class="menu" router>
-            <el-menu-item index="/personal/profile">
-              <span>Профиль</span>
-            </el-menu-item>
-            <el-menu-item index="/personal/orders">
-              <span>Заказы</span>
-            </el-menu-item>
-          </el-menu>
-        </aside>
-        <main class="content">
-          <RouterView />
-        </main>
-      </div>
-    </el-col>
-  </el-row>
-</template>
-
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -49,12 +27,35 @@ onMounted(async () => {
 })
 </script>
 
+<template>
+  <el-row :gutter="0" style="padding-top: 30px; min-height: 300px">
+    <el-col :offset="3" :span="18">
+      <div class="personal-layout">
+        <aside class="sidebar">
+          <el-menu :default-active="activeKey" class="menu" router>
+            <el-menu-item index="/personal/profile">
+              <span>Профиль</span>
+            </el-menu-item>
+            <el-menu-item index="/personal/orders">
+              <span>Заказы</span>
+            </el-menu-item>
+          </el-menu>
+        </aside>
+        <main class="content">
+          <RouterView />
+        </main>
+      </div>
+    </el-col>
+  </el-row>
+</template>
+
+
 <style scoped>
 .personal-layout {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 180px 1fr;
   gap: 24px;
-  padding: 24px 16px;
+  padding-bottom: 20px;
 }
 
 .sidebar {

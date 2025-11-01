@@ -93,7 +93,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
     :gutter="20"
     style="background-color: #fff; padding: 10px 0 0px 20px; min-height: 100px"
   >
-    <el-col :offset="1" :span="22">
+    <el-col :offset="0" :span="24">
       <h1>Мои заказы</h1>
     </el-col>
   </el-row>
@@ -101,7 +101,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
     :gutter="20"
     style="background-color: #fff; padding-top: 0px; min-height: 500px"
   >
-    <el-col :offset="1" :span="22">
+    <el-col :offset="0" :span="24">
       <el-table
         stripe
         :data="orders"
