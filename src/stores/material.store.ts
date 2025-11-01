@@ -11,6 +11,7 @@ type MaterialOption = {
 export const useMaterialStore = defineStore('material', () => {
   const materials = ref<MaterialOption[]>([])
   const selectedMaterialId = useStorage<string | null>('material:selectedId', null)
+  const allMaterials = useStorage<MaterialOption[]>('material:allMaterials', [])
   const isLoading = ref(false)
   const hasError = ref(false)
 
@@ -24,6 +25,10 @@ export const useMaterialStore = defineStore('material', () => {
 
   const setSelectedMaterialId = (id: string | null) => {
     selectedMaterialId.value = id
+  }
+
+  const setAllMaterials = (materialsList: MaterialOption[]) => {
+    allMaterials.value = materialsList
   }
 
   const transformMaterials = (payload: any): MaterialOption[] => {
@@ -58,11 +63,13 @@ export const useMaterialStore = defineStore('material', () => {
   return {
     materials,
     selectedMaterialId,
+    allMaterials,
     isLoading,
     hasError,
     selectedMaterial,
     setMaterials,
     setSelectedMaterialId,
+    setAllMaterials,
     loadMaterials,
   }
 })

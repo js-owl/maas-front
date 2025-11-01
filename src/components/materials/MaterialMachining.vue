@@ -8,15 +8,15 @@ const materialStore = useMaterialStore()
 onMounted(async () => {
   await materialStore.loadMaterials('cnc-lathe')
   if (selectedMaterial.value) {
-    materialStore.setSelectedMaterialId(selectedMaterial.value)
+    materialStore.setAllMaterials([{ value: selectedMaterial.value, label: selectedMaterial.value }])
   } else if (materialStore.materials.length > 0) {
     selectedMaterial.value = materialStore.materials[0].value
-    materialStore.setSelectedMaterialId(materialStore.materials[0].value)
+    materialStore.setAllMaterials(materialStore.materials)
   }
 })
 
-const onChange = (val: string) => {
-  materialStore.setSelectedMaterialId(val)
+const onChange = () => {
+  materialStore.setAllMaterials(materialStore.materials)
 }
 </script>
 
