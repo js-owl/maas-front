@@ -500,15 +500,15 @@ onBeforeUnmount(() => {
   height: 100%;
   position: relative;
   background: #ffffff;
-  border: 2px solid var(--left-section-bg);
-  border-radius: 8px;
+  /* border: 2px solid var(--left-section-bg);
+  border-radius: 8px; */
   overflow: hidden;
   transition: border-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .canvas-container.drag-over {
-  border-color: #007bff;
+  /* border-color: #007bff; */
   background: #f8f9ff;
 }
 
