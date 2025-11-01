@@ -9,7 +9,7 @@ type UploadFile = {
 
 const formModel = ref({
   name: '',
-  phone: '+7 ('
+  phone: '+7 (',
 })
 
 const isSubmitting = ref(false)
@@ -18,10 +18,10 @@ const selectedFiles = ref<UploadFile[]>([])
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
 
-const onFilesChange = (files: FileList | null) => {
-  if (!files) return
-  selectedFiles.value = Array.from(files).map(f => ({ name: f.name, size: f.size }))
-}
+// const onFilesChange = (files: FileList | null) => {
+//   if (!files) return
+//   selectedFiles.value = Array.from(files).map(f => ({ name: f.name, size: f.size }))
+// }
 
 const submit = () => {
   if (!formModel.value.name || formModel.value.phone.length < 6) return
@@ -39,8 +39,8 @@ const submit = () => {
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
         <p class="lead">
-          Проведем расчет стоимости детали по вашему чертежу в течение 5 рабочих
-          дней, а также вы получите анализ и рекомендации по оптимизации процесса изготовления
+          Проведем расчет стоимости детали по вашему чертежу в течение 5 рабочих дней, а также вы
+          получите анализ и рекомендации по оптимизации процесса изготовления
         </p>
       </div>
 
@@ -69,12 +69,7 @@ const submit = () => {
 
           <div class="formats">Форматы: TIF, PDF, JPG</div>
 
-          <el-button
-            type="primary"
-            class="submit-btn"
-            :loading="isSubmitting"
-            @click="submit"
-          >
+          <el-button type="primary" class="submit-btn" :loading="isSubmitting" @click="submit">
             Отправить
           </el-button>
 
@@ -85,7 +80,6 @@ const submit = () => {
       </div>
     </div>
   </section>
-  
 </template>
 
 <style scoped>
@@ -122,15 +116,15 @@ const submit = () => {
 }
 
 .upload-btn {
-    display: block;
-    background: #ce132f;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #fff;
-    text-align: center;
-    cursor: pointer;
+  display: block;
+  background: #ce132f;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
 }
 
 .file-input {
@@ -167,5 +161,3 @@ const submit = () => {
   }
 }
 </style>
-
-
