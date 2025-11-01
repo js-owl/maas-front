@@ -109,12 +109,26 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
         style="width: 100%"
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
       >
-        <el-table-column prop="order_id" label="№ заказа" width="100" />
-        <el-table-column prop="service_id" label="Тип услуги" width="120">
+        <el-table-column prop="order_id" label="№ зак." width="80" />
+        
+        <!-- 3D модель -->
+        <el-table-column prop="file_id" label="3D модель" width="120">
+          <template #default="{ row }">
+            <div v-if="row.file_id" class="model-preview">
+              <CadPreview :file-id="row.file_id" />
+            </div>
+            <span v-else class="no-model">Нет модели</span>
+          </template>
+        </el-table-column>
+
+        <!-- Тип услуги -->
+        <el-table-column prop="service_id" label="Тип обработки" width="120">
           <template #default="{ row }">
             {{ getServiceName(row.service_id) }}
           </template>
         </el-table-column>
+
+        <!-- Дата создания -->
         <el-table-column
           prop="created_at"
           label="Дата создания"
@@ -127,22 +141,14 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
           </template>
         </el-table-column>
         <el-table-column prop="quantity" label="Кол-во" width="100" />
-        <el-table-column prop="file_id" label="3D модель" width="120">
-          <template #default="{ row }">
-            <div v-if="row.file_id" class="model-preview">
-              <CadPreview :file-id="row.file_id" />
-            </div>
-            <span v-else class="no-model">Нет модели</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="document_ids" label="Документы" width="150" />
+        <!-- <el-table-column prop="document_ids" label="Документы" width="150" /> -->
         <el-table-column prop="status" label="Статус" width="150">
           <template #default="{ row }">
             {{ getStatusText(row.status) }}
           </template>
         </el-table-column>
         <el-table-column prop="total_price" label="Цена" width="100" />
-        <el-table-column fixed="right" label="Операции" min-width="150">
+        <el-table-column fixed="right" label="Операции" min-width="120">
           <template #default="scope">
             <el-button
               link
