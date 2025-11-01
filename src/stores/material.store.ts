@@ -27,8 +27,18 @@ export const useMaterialStore = defineStore('material', () => {
   //   selectedMaterialId.value = id
   // }
 
-  const setAllMaterials = (materialsList: MaterialOption[]) => {
-    allMaterials.value = materialsList
+  const setAllMaterials = async (process: string = 'cnc-lathe') => {
+    // Check localStorage first
+    if (allMaterials.value.length > 0) {
+      // Use materials from localStorage
+      materials.value = allMaterials.value
+    } else {
+      // Load from API if localStorage is empty
+      await loadMaterials(process)
+      if (materials.value.length > 0) {
+        allMaterials.value = materials.value
+      }
+    }
   }
 
   const transformMaterials = (payload: any): MaterialOption[] => {
