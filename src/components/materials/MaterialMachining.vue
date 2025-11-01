@@ -7,17 +7,10 @@ const materialStore = useMaterialStore()
 
 onMounted(async () => {
   await materialStore.loadMaterials('cnc-lathe')
-  if (selectedMaterial.value) {
-    materialStore.setAllMaterials([{ value: selectedMaterial.value, label: selectedMaterial.value }])
-  } else if (materialStore.materials.length > 0) {
+  if (!selectedMaterial.value && materialStore.materials.length > 0) {
     selectedMaterial.value = materialStore.materials[0].value
-    materialStore.setAllMaterials(materialStore.materials)
   }
 })
-
-const onChange = () => {
-  materialStore.setAllMaterials(materialStore.materials)
-}
 </script>
 
 <template>
@@ -29,7 +22,6 @@ const onChange = () => {
       placeholder="Выбрать"
       size="large"
       class="full"
-      @change="onChange"
     >
       <el-option
         v-for="item in materialStore.materials"

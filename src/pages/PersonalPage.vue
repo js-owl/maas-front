@@ -21,14 +21,24 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useMaterialStore } from '../stores/material.store'
 
 const route = useRoute()
+const materialStore = useMaterialStore()
+
 const activeKey = computed(() => {
   // ensure parent path when at /personal
   if (route.path === '/personal') return '/personal/profile'
   return route.path
+})
+
+onMounted(async () => {
+  await materialStore.loadMaterials('cnc-lathe')
+  if (materialStore.materials.length > 0) {
+    materialStore.setAllMaterials(materialStore.materials)
+  }
 })
 </script>
 
