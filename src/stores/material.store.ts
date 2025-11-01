@@ -10,7 +10,7 @@ type MaterialOption = {
 
 export const useMaterialStore = defineStore('material', () => {
   const materials = ref<MaterialOption[]>([])
-  const selectedMaterialId = useStorage<string | null>('material:selectedId', null)
+  const selectedMaterialId = ref<string | null>(null)
   const allMaterials = useStorage<MaterialOption[]>('material:allMaterials', [])
   const isLoading = ref(false)
   const hasError = ref(false)
