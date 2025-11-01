@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { API_BASE } from "../api";
 import { useProfileStore } from "../stores/profile.store";
+import { useMaterialStore } from "../stores/material.store";
 
 interface LoginResponse {
   access_token: string;
@@ -32,6 +33,10 @@ export const useAuthStore = defineStore("auth", () => {
     // Clear profile when logging out
     const profileStore = useProfileStore();
     profileStore.clearProfile();
+
+    // Clear materials from localStorage
+    const materialStore = useMaterialStore();
+    materialStore.setAllMaterials([]);
   }
 
   async function login(formData: any) {
