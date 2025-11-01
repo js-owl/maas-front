@@ -36,8 +36,8 @@ export const useAuthStore = defineStore("auth", () => {
 
     // Clear materials from localStorage
     const materialStore = useMaterialStore();
-    materialStore.allMaterials.value = [];
-    materialStore.materials.value = [];
+    materialStore.allMaterials = [];
+    materialStore.materials = [];
   }
 
   async function login(formData: any) {
