@@ -13,7 +13,7 @@ const activeKey = computed(() => {
 })
 
 onMounted(async () => {
-  await materialStore.setAllMaterials('cnc-lathe')
+  await materialStore.setAllMaterials()
 })
 </script>
 

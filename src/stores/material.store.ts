@@ -27,16 +27,58 @@ export const useMaterialStore = defineStore('material', () => {
   //   selectedMaterialId.value = id
   // }
 
-  const setAllMaterials = async (process: string = 'cnc-lathe') => {
+  const loadMaterialsForProcess = async (process: string): Promise<MaterialOption[]> => {
+    try {
+      const response = await req_json_auth(`/materials?process=${process}`, 'GET')
+      if (response?.ok) {
+        const backendMaterials = await response.json()
+        return transformMaterials(backendMaterials)
+      }
+      return []
+    } catch (err) {
+      // Fallback to static data on error for cnc-lathe
+      if (process === 'cnc-lathe') {
+        return [
+          { value: 'alum_D16T', label: 'Алюминий Д16Т' },
+          { value: 'steel_12X18H10T', label: 'Сталь 12Х18Н10Т' },
+        ]
+      }
+      return []
+    }
+  }
+
+  const setAllMaterials = async () => {
     // Check localStorage first
     if (allMaterials.value.length > 0) {
       // Use materials from localStorage
       materials.value = allMaterials.value
     } else {
       // Load from API if localStorage is empty
-      await loadMaterials(process)
-      if (materials.value.length > 0) {
-        allMaterials.value = materials.value
+      isLoading.value = true
+      hasError.value = false
+      try {
+        // Load materials from both processes
+        const [cncMaterials, printingMaterials] = await Promise.all([
+          loadMaterialsForProcess('cnc-lathe'),
+          loadMaterialsForProcess('printing'),
+        ])
+
+        // Combine and remove duplicates by value
+        const combinedMaterials = [...cncMaterials, ...printingMaterials]
+        const uniqueMaterials = combinedMaterials.filter(
+          (material, index, self) => index === self.findIndex(m => m.value === material.value)
+        )
+
+        if (uniqueMaterials.length > 0) {
+          materials.value = uniqueMaterials
+          allMaterials.value = uniqueMaterials
+        } else {
+          hasError.value = true
+        }
+      } catch (err) {
+        hasError.value = true
+      } finally {
+        isLoading.value = false
       }
     }
   }
