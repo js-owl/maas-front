@@ -21,7 +21,13 @@ onMounted(async () => {
 })
 
 const formatDate = (_row: any, _column: any, cellValue: string) => {
-  return cellValue.split('T')[0]
+  if (!cellValue) return ''
+  const date = new Date(cellValue)
+  if (Number.isNaN(date.getTime())) return cellValue
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = String(date.getFullYear())
+  return `${day}-${month}-${year}`
 }
 
 const serviceNames: any = {
