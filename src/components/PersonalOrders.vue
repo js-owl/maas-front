@@ -98,10 +98,11 @@ const handleEdit = (row: IOrderResponse): void => {
     <el-col :offset="0" :span="24">
       <el-table
         stripe
-        :data="orders"
+        :data="orders || []"
         :default-sort="{ prop: 'order_id', order: 'descending' }"
         style="width: 100%"
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
+        empty-text="Нет данных"
       >
         <el-table-column prop="order_id" label="№ зак." width="80" />
 
