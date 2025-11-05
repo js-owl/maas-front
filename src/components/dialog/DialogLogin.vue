@@ -32,7 +32,8 @@ const onSubmit = async () => {
     dialogFormVisible.value = false
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Ошибка входа'
-    ElMessage.error(message)
+    console.log({ message })
+    ElMessage.error('Неправильное имя пользователя или пароль')
   }
 }
 

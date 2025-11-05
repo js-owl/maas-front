@@ -1,106 +1,100 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import { Edit, Delete } from "@element-plus/icons-vue";
-import { req_json_auth } from "../api";
-import type { IOrderResponse } from "../interfaces/order.interface";
-import CadPreview from "./cad/CadPreview.vue";
-import { useMaterialStore } from "../stores/material.store";
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { Edit } from '@element-plus/icons-vue'
+import { req_json_auth } from '../api'
+import type { IOrderResponse } from '../interfaces/order.interface'
+import CadPreview from './cad/CadPreview.vue'
+import { useMaterialStore } from '../stores/material.store'
 
-const router = useRouter();
-const orders = ref<IOrderResponse[]>();
-const deleteLoading = ref<number | null>(null);
-const materialStore = useMaterialStore();
+const router = useRouter()
+const orders = ref<IOrderResponse[]>()
+// const deleteLoading = ref<number | null>(null)
+const materialStore = useMaterialStore()
 
 onMounted(async () => {
   const [ordersResponse] = await Promise.all([
-    req_json_auth(`/orders`, "GET"),
+    req_json_auth(`/orders`, 'GET'),
     materialStore.loadMaterials(),
-  ]);
-  orders.value = (await ordersResponse?.json()) as IOrderResponse[];
-});
+  ])
+  orders.value = (await ordersResponse?.json()) as IOrderResponse[]
+})
 
 const formatDate = (_row: any, _column: any, cellValue: string) => {
-  return cellValue.split("T")[0];
-};
+  return cellValue.split('T')[0]
+}
 
 const serviceNames: any = {
-  "cnc-lathe": "токарная",
-  "cnc-milling": "фрезерная",
-  "printing": "3D печать",
-};
+  'cnc-lathe': 'токарная',
+  'cnc-milling': 'фрезерная',
+  printing: '3D печать',
+}
 const getServiceName = (service_id: number): string => {
-  return serviceNames[service_id] || service_id;
-};
+  return serviceNames[service_id] || service_id
+}
 
 const getMaterialName = (materialCode: string): string => {
-  if (!materialCode) return "";
-  const found = materialStore.materials.find(m => m.value === materialCode);
-  return found?.label ?? materialCode;
-};
+  if (!materialCode) return ''
+  const found = materialStore.materials.find((m) => m.value === materialCode)
+  return found?.label ?? materialCode
+}
 
 const statusTexts: any = {
-  pending: "ожидание оплаты",
-  processing: "в проиводстве",
-};
+  pending: 'ожидание оплаты',
+  processing: 'в проиводстве',
+}
 const getStatusText = (status: string): string => {
-  return statusTexts[status] || status;
-};
+  return statusTexts[status] || status
+}
 
 const handleEdit = (row: IOrderResponse): void => {
   switch (row.service_id) {
-    case "cnc-lathe":
+    case 'cnc-lathe':
       router.push({
-        path: "/machining",
+        path: '/machining',
         query: { orderId: row.order_id.toString() },
-      });
-      break;
-    case "cnc-milling":
+      })
+      break
+    case 'cnc-milling':
       router.push({
-        path: "/milling",
+        path: '/milling',
         query: { orderId: row.order_id.toString() },
-      });
-      break;
-    case "printing":
+      })
+      break
+    case 'printing':
       router.push({
-        path: "/printing",
+        path: '/printing',
         query: { orderId: row.order_id.toString() },
-      });
-      break;
+      })
+      break
     default:
       router.push({
-        path: "/machining",
+        path: '/machining',
         query: { orderId: row.order_id.toString() },
-      });
-      break;
+      })
+      break
   }
-};
+}
 
-const handleDelete = async (row: IOrderResponse): Promise<void> => {
-  deleteLoading.value = row.order_id;
-  const r = await req_json_auth(`/admin/orders/${row.order_id}`, "DELETE");
-  if (r?.ok) {
-    if (orders.value) {
-      orders.value = orders.value.filter((item) => item.order_id !== row.order_id);
-    }
-  }
-  deleteLoading.value = null;
-};
+// const handleDelete = async (row: IOrderResponse): Promise<void> => {
+//   deleteLoading.value = row.order_id
+//   const r = await req_json_auth(`/admin/orders/${row.order_id}`, 'DELETE')
+//   if (r?.ok) {
+//     if (orders.value) {
+//       orders.value = orders.value.filter((item) => item.order_id !== row.order_id)
+//     }
+//   }
+//   deleteLoading.value = null
+// }
 </script>
 
 <template>
-  <el-row
-    :gutter="20"
-    style="background-color: #fff; padding: 10px 0 0px 20px; min-height: 100px"
-  >
+  <el-row :gutter="20" style="background-color: #fff; padding: 10px 0 0px 20px; min-height: 100px">
     <el-col :offset="0" :span="24">
       <h1>Мои заказы</h1>
     </el-col>
   </el-row>
-  <el-row
-    :gutter="20"
-    style="background-color: #fff; padding-top: 0px; min-height: 500px"
-  >
+  <el-row :gutter="20" style="background-color: #fff; padding-top: 0px; min-height: 500px">
     <el-col :offset="0" :span="24">
       <el-table
         stripe
@@ -110,7 +104,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
       >
         <el-table-column prop="order_id" label="№ зак." width="80" />
-        
+
         <!-- 3D модель -->
         <el-table-column prop="file_id" label="3D модель" width="120">
           <template #default="{ row }">
@@ -150,17 +144,12 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
         <el-table-column prop="total_price" label="Цена" width="100" />
         <el-table-column fixed="right" label="Операции" min-width="120">
           <template #default="scope">
-            <el-button
-              link
-              type="primary"
-              size="small"
-              @click="handleEdit(scope.row)"
-            >
+            <el-button link type="primary" size="small" @click="handleEdit(scope.row)">
               <el-icon color="blue" class="no-inherit">
                 <Edit />
               </el-icon>
             </el-button>
-            <el-button
+            <!-- <el-button
               link
               type="primary"
               size="small"
@@ -170,7 +159,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
               <el-icon color="red" class="no-inherit">
                 <Delete />
               </el-icon>
-            </el-button>
+            </el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -192,5 +181,3 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
   font-size: 12px;
 }
 </style>
-
-
