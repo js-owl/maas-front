@@ -30,6 +30,13 @@ const formatDate = (_row: any, _column: any, cellValue: string) => {
   return `${day}-${month}-${year}`
 }
 
+const formatPrice = (_row: any, _column: any, cellValue: number | string) => {
+  if (cellValue == null || cellValue === '') return ''
+  const value = Number(cellValue)
+  if (Number.isNaN(value)) return String(cellValue)
+  return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(Math.trunc(value))
+}
+
 const serviceNames: any = {
   'cnc-lathe': 'токарная',
   'cnc-milling': 'фрезерная',
@@ -148,7 +155,7 @@ const handleEdit = (row: IOrderResponse): void => {
             {{ getStatusText(row.status) }}
           </template>
         </el-table-column>
-        <el-table-column prop="total_price" label="Цена" width="100" />
+        <el-table-column prop="total_price" label="Цена" width="100" :formatter="formatPrice" />
         <el-table-column fixed="right" label="Операции" min-width="120">
           <template #default="scope">
             <el-button link type="primary" size="small" @click="handleEdit(scope.row)">
