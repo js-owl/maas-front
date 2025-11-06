@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { req_json_auth } from '../../api'
 import Icon3D from '../../icons/Icon3D.vue'
 import { useAuthStore } from '../../stores/auth.store'
@@ -14,8 +14,6 @@ const { color = 'white' } = defineProps({
 const authStore = useAuthStore()
 const isLoginDialogVisible = ref(false)
 const isUploading = ref(false)
-
-const isAuthorized = computed(() => Boolean(authStore.getToken))
 
 const isDisabled = () => {
   if (authStore.getToken) {
@@ -113,30 +111,28 @@ const handleDragOver = (event: DragEvent) => {
 
 <template>
   <div>
-    <el-tooltip content="Необходимо зарегистрироваться" placement="top" :disabled="isAuthorized">
-      <div
-        class="upload"
-        :style="{ '--border-color': color }"
-        :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
-        @click="handleUploadClick"
-        @drop="handleDrop"
-        @dragover="handleDragOver"
-      >
-        <div class="custom">
-          <Icon3D :color="color" style="display: block; width: 100px; height: 100px" />
-          <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
-            {{ isUploading ? 'Загрузка...' : '3D-модель (STEP/STP)' }}
-          </div>
-          <input
-            type="file"
-            accept=".stp,.step,.stl"
-            @change="handleFileChange"
-            style="display: none"
-            ref="fileInput"
-          />
+    <div
+      class="upload"
+      :style="{ '--border-color': color }"
+      :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
+      @click="handleUploadClick"
+      @drop="handleDrop"
+      @dragover="handleDragOver"
+    >
+      <div class="custom">
+        <Icon3D :color="color" style="display: block; width: 100px; height: 100px" />
+        <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
+          {{ isUploading ? 'Загрузка...' : '3D-модель (STEP/STP)' }}
         </div>
+        <input
+          type="file"
+          accept=".stp,.step,.stl"
+          @change="handleFileChange"
+          style="display: none"
+          ref="fileInput"
+        />
       </div>
-    </el-tooltip>
+    </div>
 
     <DialogLogin v-model="isLoginDialogVisible" />
   </div>
@@ -158,7 +154,7 @@ const handleDragOver = (event: DragEvent) => {
 
 .upload.is-disabled {
   opacity: 0.6;
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .upload.is-uploading {
