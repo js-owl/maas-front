@@ -27,6 +27,8 @@ const isNewOrder = computed(() => props.orderId === 0)
 
 const isLoginDialogVisible = ref(false)
 
+const isDisabled = computed(() => !authStore.getToken)
+
 const isProfileComplete = (profile?: IProfile): boolean => {
   if (!profile) return false
   const required: Array<keyof IProfile> = [
@@ -110,7 +112,7 @@ const cancel = () => router.push({ path: '/personal/orders' })
       <el-button type="primary" plain class="submit" @click="cancel"> Отменить </el-button>
     </el-col>
     <el-col :span="12">
-      <el-button type="primary" plain class="submit" @click="submitOrder">
+      <el-button type="primary" plain class="submit" :class="{ 'is-disabled': isDisabled }" @click="submitOrder">
         {{ isNewOrder ? 'Оформить заказ' : 'Сохранить заказ' }}
       </el-button>
     </el-col>
@@ -126,6 +128,12 @@ const cancel = () => router.push({ path: '/personal/orders' })
   font-size: 20px;
   padding: 30px 0;
   width: 100%;
+}
+.submit.is-disabled {
+  background-color: var(--bgcolor) !important;
+  opacity: 0.6;
+  cursor: default;
+  color: black;
 }
 </style>
 
