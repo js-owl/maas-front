@@ -155,10 +155,20 @@ async function sendData(payload: IOrderPayload) {
 }
 
 async function submitOrder(payload: IOrderPayload) {
+  // проверка авторизации
   if (!authStore.getToken) {
     ElMessage.warning('Необходимо зарегистрироваться!')
     return
   }
+
+  // проверка заполнености профиля
+  await ensureProfileLoaded()
+  if (!isProfileComplete(profileStore.profile)) {
+    ElMessage.warning('Заполните профиль перед оформлением заказа')
+    router.push({ path: '/personal/profile' })
+    return
+  }
+
   startLoading()
   if (order_id.value == 0) {
     try {
@@ -185,13 +195,7 @@ async function submitOrder(payload: IOrderPayload) {
     }
   }
   await stopLoading()
-  // Проверяем профиль перед переходом к списку заказов
-  await ensureProfileLoaded()
-  if (!isProfileComplete(profileStore.profile)) {
-    ElMessage.warning('Заполните профиль перед оформлением заказа')
-    router.push({ path: '/personal/profile' })
-    return
-  }
+
   isInfoVisible.value = true
   router.push({ path: '/personal/orders' })
 }
