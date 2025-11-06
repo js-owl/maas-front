@@ -79,6 +79,20 @@ const result = ref<IOrderResponse | null>(null)
 let isInfoVisible = ref(false)
 const isLoading = ref<boolean>(true)
 
+// Ensure minimum loading indicator duration
+const MIN_LOADING_MS = 1000
+let loadingStartedAt = 0
+const startLoading = () => {
+  loadingStartedAt = Date.now()
+  isLoading.value = true
+}
+const stopLoading = async () => {
+  const elapsed = Date.now() - loadingStartedAt
+  const remaining = Math.max(0, MIN_LOADING_MS - elapsed)
+  if (remaining > 0) await new Promise((r) => setTimeout(r, remaining))
+  isLoading.value = false
+}
+
 // Отправляем запрос на сервер при любом изменении данных
 watch(payload, sendData, { deep: true })
 
@@ -120,7 +134,7 @@ async function ensureProfileLoaded() {
 }
 
 async function sendData(payload: IOrderPayload) {
-  isLoading.value = true
+  startLoading()
   try {
     const res = await req_json('/calculate-price', 'POST', payload)
     const data = (await res?.json()) as IOrderResponse
@@ -128,7 +142,7 @@ async function sendData(payload: IOrderPayload) {
   } catch (error) {
     console.error({ error })
   }
-  isLoading.value = false
+  await stopLoading()
 }
 
 async function submitOrder(payload: IOrderPayload) {
@@ -136,7 +150,7 @@ async function submitOrder(payload: IOrderPayload) {
     ElMessage.warning('Необходимо зарегистрироваться!')
     return
   }
-  isLoading.value = true
+  startLoading()
   if (order_id.value == 0) {
     try {
       // Для POST запроса преобразуем document_ids в строку
@@ -161,7 +175,7 @@ async function submitOrder(payload: IOrderPayload) {
       console.error({ error })
     }
   }
-  isLoading.value = false
+  await stopLoading()
   // Проверяем профиль перед переходом к списку заказов
   await ensureProfileLoaded()
   if (!isProfileComplete(profileStore.profile)) {
@@ -174,7 +188,7 @@ async function submitOrder(payload: IOrderPayload) {
 }
 
 async function getOrder(id: number) {
-  isLoading.value = true
+  startLoading()
   try {
     const res = await req_json_auth(`/orders/${id}`, 'GET')
     const data = (await res?.json()) as IOrderResponse
@@ -215,7 +229,7 @@ async function getOrder(id: number) {
   } catch (error) {
     console.error({ error })
   }
-  isLoading.value = false
+  await stopLoading()
 }
 </script>
 
