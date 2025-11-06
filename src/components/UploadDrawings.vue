@@ -83,6 +83,7 @@ const handleFileChange = async (file: File) => {
 <template>
   <el-upload
     class="upload"
+    :class="{ 'is-disabled': isDisabled() }"
     :style="{ '--border-color': color }"
     drag
     :before-upload="handleFileChange"
@@ -117,4 +118,12 @@ const handleFileChange = async (file: File) => {
   justify-content: center;
   align-items: center;
 }
+.upload.is-disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.upload.is-uploading {
+  opacity: 0.8;
+  cursor: wait;
+}	
 </style>
