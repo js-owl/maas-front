@@ -135,6 +135,15 @@ const cancel = () => router.push({ path: '/personal/orders' })
   cursor: default;
   color: black;
 }
+/* keep appearance unchanged on hover/focus/active */
+.submit:hover,
+.submit:focus,
+.submit:active {
+  background-color: var(--bgcolor) !important;
+  border-color: var(--bgcolor) !important;
+  color: black !important;
+  box-shadow: none !important;
+}
 </style>
 
 
