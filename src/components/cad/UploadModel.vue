@@ -14,6 +14,7 @@ const { color = 'white' } = defineProps({
 const authStore = useAuthStore()
 const isLoginDialogVisible = ref(false)
 const isUploading = ref(false)
+const fileInput = ref<HTMLInputElement>()
 
 const isDisabled = () => {
   if (authStore.getToken) {
@@ -22,7 +23,6 @@ const isDisabled = () => {
   return true
 }
 
-const fileInput = ref<HTMLInputElement>()
 
 const handleUploadClick = () => {
   if (!authStore.getToken) {

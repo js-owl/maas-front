@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { uploadDocument, fileToBase64 } from "../api";
 import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from "../stores/auth.store";
+import DialogLogin from "./dialog/DialogLogin.vue";
 import { ElMessage } from "element-plus";
 
 const document_ids = defineModel<number[]>({ default: [] });
@@ -11,7 +12,9 @@ const { color = "white" } = defineProps({
 });
 
 const authStore = useAuthStore();
+const isLoginDialogVisible = ref(false);
 const isUploading = ref(false);
+const fileInput = ref<HTMLInputElement>();
 
 const isDisabled = () => {
   if (authStore.getToken) {
@@ -20,8 +23,9 @@ const isDisabled = () => {
   return true;
 };
 
-const handleFileChange = async (file: File) => {
+const handleFileUpload = async (file: File) => {
   if (!authStore.getToken) {
+    isLoginDialogVisible.value = true;
     return false;
   }
 
@@ -78,52 +82,99 @@ const handleFileChange = async (file: File) => {
   return false; // Prevent default upload behavior
 };
 
+const handleFileChange = (event: Event) => {
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true;
+    return;
+  }
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (file) handleFileUpload(file);
+  if (target) target.value = "";
+};
+
+const handleUploadClick = () => {
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true;
+    return;
+  }
+  fileInput.value?.click();
+};
+
+const handleDrop = (event: DragEvent) => {
+  event.preventDefault();
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true;
+    return;
+  }
+  const file = event.dataTransfer?.files[0];
+  if (file) handleFileUpload(file);
+};
+
+const handleDragOver = (event: DragEvent) => {
+  event.preventDefault();
+};
+
 </script>
 
 <template>
-  <el-upload
-    class="upload"
-    :class="{ 'is-disabled': isDisabled() }"
-    :style="{ '--border-color': color }"
-    drag
-    :before-upload="handleFileChange"
-    :disabled="isDisabled() || isUploading"
-  >
-    <div class="custom">
-      <IconDrawing
-        :color="color"
-        style="display: block; width: 100px; height: 100px"
-      />
-      <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
-        {{ isUploading ? 'Загрузка...' : 'Чертежи, документация' }}
+  <div>
+    <div
+      class="upload"
+      :style="{ '--border-color': color }"
+      :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
+      @click="handleUploadClick"
+      @drop="handleDrop"
+      @dragover="handleDragOver"
+    >
+      <div class="custom">
+        <IconDrawing :color="color" style="display: block; width: 100px; height: 100px" />
+        <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
+          {{ isUploading ? 'Загрузка...' : 'Чертежи, документация' }}
+        </div>
+        <input
+          type="file"
+          @change="handleFileChange"
+          style="display: none"
+          ref="fileInput"
+          :disabled="isDisabled() || isUploading"
+        />
       </div>
     </div>
-  </el-upload>
+
+    <DialogLogin v-model="isLoginDialogVisible" />
+  </div>
 </template>
 
 <style scoped>
-:deep(.el-upload-dragger) {
+.upload {
   padding: 10px;
   border: 1px solid var(--bgcolor);
   background-color: var(--bgcolor) !important;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
 }
-:deep(.el-upload.is-disabled .el-upload-dragger) {
-  background-color: var(--bgcolor) !important;
-  padding: 10px;
-  border: 1px solid var(--bgcolor);
+
+.upload:hover:not(.is-disabled) {
+  border-color: #409eff;
 }
+
+.upload.is-disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.upload.is-uploading {
+  opacity: 0.8;
+  cursor: wait;
+}
+
 .custom {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  min-height: 120px;
 }
-.upload.is-disabled {
-  opacity: 0.6;
-  cursor: default;
-}
-.upload.is-uploading {
-  opacity: 0.8;
-  cursor: wait;
-}	
 </style>
