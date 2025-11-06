@@ -12,6 +12,7 @@ declare module 'vue' {
     CadShowById: typeof import('./src/components/cad/CadShowById.vue')['default']
     CalculateBasePage: typeof import('./src/components/CalculateBasePage.vue')['default']
     CalculateResults: typeof import('./src/components/sections/CalculateResults.vue')['default']
+    CalculateSubmit: typeof import('./src/components/sections/CalculateSubmit.vue')['default']
     CoefficientCertificate: typeof import('./src/components/coefficients/CoefficientCertificate.vue')['default']
     CoefficientCover: typeof import('./src/components/coefficients/CoefficientCover.vue')['default']
     CoefficientFinish: typeof import('./src/components/coefficients/CoefficientFinish.vue')['default']

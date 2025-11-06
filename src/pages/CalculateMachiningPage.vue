@@ -16,30 +16,27 @@ import CoefficientFinish from '../components/coefficients/CoefficientFinish.vue'
 import CoefficientCover from '../components/coefficients/CoefficientCover.vue'
 // import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import UploadModel from '../components/cad/UploadModel.vue'
 import UploadDrawings from '../components/UploadDrawings.vue'
 import DocumentShowByIds from '../components/DocumentShowByIds.vue'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
-import { useProfileStore, type IProfile } from '../stores/profile.store'
-import { useAuthStore } from '../stores/auth.store'
+import { useProfileStore } from '../stores/profile.store'
 import { ElMessage } from 'element-plus'
 import DialogInfoPayment from '../components/dialog/DialogInfoPayment.vue'
 import SuitableMachines from '../components/SuitableMachines.vue'
 import CalculateResults from '../components/sections/CalculateResults.vue'
+import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
 // import Height from "../components/coefficients/Height.vue";
 import type {
   IOrderPayload,
-  IOrderPostPayload,
   IOrderResponse,
 } from '../interfaces/order.interface'
 
-const authStore = useAuthStore()
 const profileStore = useProfileStore()
 
 const route = useRoute()
-const router = useRouter()
 const order_id = computed(() => Number(route.query.orderId) || 0)
 
 let file_id = ref(4)
@@ -128,33 +125,6 @@ onMounted(() => {
 
 // type sendType = typeof payload;
 
-function isProfileComplete(profile?: IProfile): boolean {
-  if (!profile) return false
-  const required: Array<keyof IProfile> = [
-    'email',
-    'full_name',
-    'postal',
-    'region',
-    'city_name',
-    'street',
-    'building',
-  ]
-  return required.every((key) => {
-    const v = profile[key] as unknown as string | undefined
-    return typeof v === 'string' && v.trim().length > 0
-  })
-}
-
-async function ensureProfileLoaded() {
-  if (!profileStore.profile) {
-    try {
-      await profileStore.getProfile()
-    } catch (e) {
-      console.error(e)
-    }
-  }
-}
-
 async function sendData(payload: IOrderPayload) {
   startLoading()
   try {
@@ -167,50 +137,9 @@ async function sendData(payload: IOrderPayload) {
   await stopLoading()
 }
 
-async function submitOrder(payload: IOrderPayload) {
-  // проверка авторизации
-  if (!authStore.getToken) {
-    ElMessage.warning('Необходимо зарегистрироваться!')
-    return
-  }
-
-  // проверка заполнености профиля
-  await ensureProfileLoaded()
-  if (!isProfileComplete(profileStore.profile)) {
-    ElMessage.warning('Заполните профиль перед оформлением заказа')
-    router.push({ path: '/personal/profile' })
-    return
-  }
-
-  startLoading()
-  if (order_id.value == 0) {
-    try {
-      // Для POST запроса преобразуем document_ids в строку
-      const postPayload: IOrderPostPayload = {
-        ...payload,
-        document_ids: payload.document_ids,
-      }
-      const res = await req_json_auth('/orders', 'POST', postPayload)
-      const data = (await res?.json()) as IOrderResponse
-      result.value = data
-    } catch (error) {
-      console.error({ error })
-    }
-  } else {
-    const id = order_id.value
-    try {
-      const res = await req_json_auth(`/orders/${id}`, 'PUT', payload)
-      const data = (await res?.json()) as IOrderResponse
-      result.value = data
-      console.log('PUT', result.value)
-    } catch (error) {
-      console.error({ error })
-    }
-  }
-  await stopLoading()
-
-  isInfoVisible.value = true
-  router.push({ path: '/personal/orders' })
+// submitOrder moved to CalculateSubmit component
+const onUpdateResult = (d: IOrderResponse) => {
+  result.value = d
 }
 
 async function getOrder(id: number) {
@@ -302,33 +231,13 @@ async function getOrder(id: number) {
         </el-col>
       </el-row>
 
-      <el-row :gutter="5" class="upload-section">
-        <el-col :span="12">
-          <el-button
-            type="primary"
-            plain
-            class="submit"
-            @click="router.push({ path: '/personal/orders' })"
-          >
-            Отменить
-          </el-button>
-        </el-col>
-        <el-col :span="12">
-          <el-button
-            type="primary"
-            plain
-            class="submit"
-            @click="
-              submitOrder({
-                ...payload,
-                special_instructions: special_instructions,
-              })
-            "
-          >
-            {{ order_id != 0 ? 'Сохранить заказ' : 'Оформить заказ' }}
-          </el-button>
-        </el-col>
-      </el-row>
+      <CalculateSubmit
+        :order-id="order_id"
+        :payload="{ ...payload } as unknown as IOrderPayload"
+        :special-instructions="special_instructions"
+        @updateResult="onUpdateResult"
+        @showInfo="isInfoVisible = true"
+      />
     </el-col>
 
     <!-- 2. Правая часть -->
