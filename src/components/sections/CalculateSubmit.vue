@@ -103,13 +103,21 @@ const submitOrder = async () => {
   router.push({ path: '/personal/orders' })
 }
 
-const cancel = () => router.push({ path: '/personal/orders' })
+const cancel = () => {
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true
+    return
+  }
+  router.push({ path: '/personal/orders' })
+}
 </script>
 
 <template>
   <el-row :gutter="5" class="upload-section">
     <el-col :span="12">
-      <el-button type="primary" plain class="submit" @click="cancel"> Отменить </el-button>
+      <el-button type="primary" plain class="submit" :class="{ 'is-disabled': isDisabled }" @click="cancel">
+        Отменить
+      </el-button>
     </el-col>
     <el-col :span="12">
       <el-button type="primary" plain class="submit" :class="{ 'is-disabled': isDisabled }" @click="submitOrder">
