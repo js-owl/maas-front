@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useProfileStore, type IProfile } from '../../stores/profile.store'
 import { useAuthStore } from '../../stores/auth.store'
 import { req_json_auth } from '../../api'
 import type { IOrderPayload, IOrderPostPayload, IOrderResponse } from '../../interfaces/order.interface'
+import DialogLogin from '../dialog/DialogLogin.vue'
 
 const props = defineProps<{
   orderId: number
@@ -23,6 +24,8 @@ const profileStore = useProfileStore()
 const router = useRouter()
 
 const isNewOrder = computed(() => props.orderId === 0)
+
+const isLoginDialogVisible = ref(false)
 
 const isProfileComplete = (profile?: IProfile): boolean => {
   if (!profile) return false
@@ -54,7 +57,7 @@ const ensureProfileLoaded = async () => {
 
 const submitOrder = async () => {
   if (!authStore.getToken) {
-    ElMessage.warning('Необходимо зарегистрироваться!')
+    isLoginDialogVisible.value = true
     return
   }
 
@@ -112,6 +115,7 @@ const cancel = () => router.push({ path: '/personal/orders' })
       </el-button>
     </el-col>
   </el-row>
+  <DialogLogin v-model="isLoginDialogVisible" />
 </template>
 
 <style scoped>
