@@ -23,39 +23,21 @@ const isDisabled = () => {
   return true;
 };
 
-const handleFileUpload = async (file: File) => {
-  if (!authStore.getToken) {
-    isLoginDialogVisible.value = true;
-    return false;
-  }
-
-  isUploading.value = true;
-  
+const uploadSingle = async (file: File) => {
+  // Convert file to base64 and upload
   try {
-    // Convert file to base64
     const base64Data = await fileToBase64(file);
-    
-    // Upload document using new API
     const response = await uploadDocument(file.name, base64Data, 'technical_spec');
-    
+
     if (response?.ok) {
       const data = await response.json();
       console.log('Document upload response:', data);
-      
-      // Update document_ids with the new response format
       const id = Number(data.document_id);
-      if (!Array.isArray(document_ids.value)) {
-        document_ids.value = [];
-      }
+      if (!Array.isArray(document_ids.value)) document_ids.value = [];
       if (Number.isFinite(id) && !document_ids.value.includes(id)) {
         document_ids.value.push(id);
-        
-        // Save document info to localStorage for persistence
-        const documentInfo = {
-          id: id,
-          original_filename: file.name
-        };
-        
+
+        const documentInfo = { id, original_filename: file.name };
         try {
           const stored = localStorage.getItem('uploaded_documents');
           const documents = stored ? JSON.parse(stored) : [];
@@ -67,7 +49,7 @@ const handleFileUpload = async (file: File) => {
           console.error('Error saving document to storage:', e);
         }
       }
-      
+
       ElMessage.success('Документ успешно загружен!');
     } else {
       throw new Error('Upload failed');
@@ -75,11 +57,23 @@ const handleFileUpload = async (file: File) => {
   } catch (error) {
     console.error('Document upload error:', error);
     ElMessage.error('Ошибка загрузки документа');
+  }
+};
+
+// single-file handler kept via uploadSingle; batch handler below is used by UI
+
+const handleFilesUpload = async (files: FileList | File[]) => {
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true;
+    return;
+  }
+  isUploading.value = true;
+  try {
+    const list = Array.from(files);
+    for (const file of list) await uploadSingle(file);
   } finally {
     isUploading.value = false;
   }
-  
-  return false; // Prevent default upload behavior
 };
 
 const handleFileChange = (event: Event) => {
@@ -88,8 +82,8 @@ const handleFileChange = (event: Event) => {
     return;
   }
   const target = event.target as HTMLInputElement;
-  const file = target.files?.[0];
-  if (file) handleFileUpload(file);
+  const files = target.files;
+  if (files && files.length) handleFilesUpload(files);
   if (target) target.value = "";
 };
 
@@ -107,8 +101,8 @@ const handleDrop = (event: DragEvent) => {
     isLoginDialogVisible.value = true;
     return;
   }
-  const file = event.dataTransfer?.files[0];
-  if (file) handleFileUpload(file);
+  const files = event.dataTransfer?.files;
+  if (files && files.length) handleFilesUpload(files);
 };
 
 const handleDragOver = (event: DragEvent) => {
@@ -137,6 +131,7 @@ const handleDragOver = (event: DragEvent) => {
           @change="handleFileChange"
           style="display: none"
           ref="fileInput"
+          multiple
           :disabled="isDisabled() || isUploading"
         />
       </div>
