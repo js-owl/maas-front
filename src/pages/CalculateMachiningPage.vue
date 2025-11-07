@@ -219,10 +219,10 @@ async function getOrder(id: number) {
       </el-row>
       <el-row :gutter="5" class="upload-section">
         <el-col :span="24" class="upload-title"> Загрузите файлы для расчета </el-col>
-        <el-col :span="12">
+        <el-col :span="24" class="upload-model">
           <UploadModel v-model="file_id" color="#000" />
         </el-col>
-        <el-col :span="12">
+        <el-col :span="24" class="upload-drawings">
           <UploadDrawings v-model="document_ids" color="#000" />
         </el-col>
         <el-col :span="24" class="upload-info"> Максимальный размер 100Мб </el-col>
@@ -425,6 +425,14 @@ async function getOrder(id: number) {
   color: black;
   font-weight: 700;
   /* color: #577aad; */
+}
+
+.upload-model {
+  padding-bottom: 20px;
+}
+
+.upload-drawings {
+  padding-bottom: 20px;
 }
 
 .upload-info {

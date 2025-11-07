@@ -120,7 +120,7 @@ const handleDragOver = (event: DragEvent) => {
       @dragover="handleDragOver"
     >
       <div class="custom">
-        <Icon3D :color="color" style="display: block; width: 100px; height: 100px" />
+        <Icon3D :color="color" style="display: block; width: 30px; height: 30px" />
         <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
           {{ isUploading ? 'Загрузка...' : '3D-модель (STEP/STP)' }}
         </div>
@@ -164,9 +164,8 @@ const handleDragOver = (event: DragEvent) => {
 
 .custom {
   display: flex;
-  flex-direction: column;
+  gap: 10px;
   justify-content: center;
   align-items: center;
-  min-height: 120px;
 }
 </style>
