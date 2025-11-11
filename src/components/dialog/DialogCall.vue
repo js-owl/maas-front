@@ -176,13 +176,17 @@ const submitForm = async () => {
 <template>
   <el-dialog
     v-model="dialogFormVisible"
-    title="Заказать звонок"
     width="500"
     :close-on-click-modal="false"
     :close-on-press-escape="true"
     :fullscreen="isMobile"
     @close="closeDialog"
   >
+    <template #header="{ titleId }">
+      <div class="dialog-header">
+          <h3 :id="titleId" class="titleClass">Заказать звонок</h3>
+        </div>
+    </template>
     <el-form
       :model="form"
       :rules="rules"
@@ -191,11 +195,11 @@ const submitForm = async () => {
       label-position="top"
       @submit.prevent="submitForm"
     >
-      <el-form-item label="Имя" prop="name">
-        <el-input v-model="form.name" placeholder="Введите имя" />
+      <el-form-item prop="name">
+        <el-input v-model="form.name" placeholder="Имя" />
       </el-form-item>
 
-      <el-form-item label="Телефон" prop="phone">
+      <el-form-item prop="phone">
         <el-input
           v-model="form.phone"
           placeholder="+7 (___) ___-__-__"
@@ -204,7 +208,7 @@ const submitForm = async () => {
         />
       </el-form-item>
 
-      <el-form-item label="Какой продукт вас интересует?" prop="product">
+      <el-form-item prop="product">
         <el-select v-model="form.product" placeholder="Выберите продукт" style="width: 100%">
           <el-option label="Токарные работы" value="machining" />
           <el-option label="Фрезерные работы" value="milling" />
@@ -212,7 +216,7 @@ const submitForm = async () => {
         </el-select>
       </el-form-item>
 
-      <el-form-item label="Когда Вам позвонить?" prop="time">
+      <el-form-item prop="time">
         <el-select v-model="form.time" placeholder="Выберите удобное время" style="width: 100%">
           <el-option label="9:00 - 10:00" value="09:00-10:00" />
           <el-option label="10:00 - 11:00" value="10:00-11:00" />
@@ -227,7 +231,7 @@ const submitForm = async () => {
         </el-select>
       </el-form-item>
 
-      <el-form-item label="Дополнительная информация" prop="additional">
+      <el-form-item prop="additional">
         <el-input
           v-model="form.additional"
           type="textarea"
@@ -245,6 +249,7 @@ const submitForm = async () => {
       <el-form-item>
         <el-button
           type="primary"
+          class="btn" 
           native-type="submit"
           style="width: 100%"
           :loading="loading"
@@ -260,6 +265,55 @@ const submitForm = async () => {
 <style scoped>
 .agreement {
   font-size: 15px;
+}
+:deep(.el-input__wrapper) {
+  padding: 0;
+}
+:deep(.el-textarea__inner) {
+  background-color: var(--bgcolor);
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  color: black;
+  padding: 20px;
+}
+:deep(.el-select__wrapper) {
+  padding: 15px 20px;
+  background-color: var(--bgcolor);
+  font-size: 16px;
+  font-weight: 600;
+  color: black;
+}
+:deep(.el-input__inner) {
+  background-color: var(--bgcolor);
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  color: black;
+  padding: 20px;
+}
+.btn {
+  background-color: var(--gray-footer);
+  border: 1px solid var(--gray-footer);
+  padding: 18px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.btn.is-disabled {
+  background-color: var(--gray2);
+  border: 1px solid var(--gray2);
+  color: gray-footer;
+}
+.dialog-header {
+  text-align: center;
+}
+.titleClass {
+  font-size: 24px;
+  font-weight: 600;
+}
+:deep(.el-form-item__content) { 
+  margin-bottom: 20px;
 }
 @media (max-width: 767px) {
   .agreement {
