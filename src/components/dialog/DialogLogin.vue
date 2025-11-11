@@ -100,6 +100,8 @@ const onRestore = async () => {
   border: 1px solid var(--gray-footer);
   padding: 18px;
   border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
 }
 .dialog-header {
   text-align: center;

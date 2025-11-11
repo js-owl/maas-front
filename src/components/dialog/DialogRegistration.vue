@@ -203,7 +203,7 @@ const submitForm = async () => {
       @submit.prevent="submitForm"
     >
       <el-form-item prop="user_type">
-        <el-radio-group v-model="form.user_type">
+        <el-radio-group v-model="form.user_type" class="user-type-toggle">
           <el-radio-button value="individual">Частное лицо</el-radio-button>
           <el-radio-button value="legal">Компания</el-radio-button>
         </el-radio-group>
@@ -286,6 +286,33 @@ const submitForm = async () => {
   border: 1px solid var(--gray-footer);
   padding: 18px;
   border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.user-type-toggle {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+}
+:deep(.user-type-toggle .el-radio-button) {
+  flex: 1;
+}
+:deep(.user-type-toggle .el-radio-button__inner) {
+  background-color: var(--gray2);
+  border: none;
+  border-radius: 5px;
+  color: gray-footer;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 0;
+  width: 100%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+:deep(.el-radio-button.is-active .el-radio-button__original-radio:not(:disabled)+.el-radio-button__inner) {
+  background-color: var(--gray-footer);
+  border: none;
+  border-radius: 5px;
+  color: white;
 }
 .dialog-header {
   text-align: center;
