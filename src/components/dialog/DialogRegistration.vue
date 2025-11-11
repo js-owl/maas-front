@@ -204,59 +204,82 @@ const submitForm = async () => {
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="Логин" prop="username" :error="usernameError">
+      <el-form-item prop="username" :error="usernameError">
         <el-input
           v-model="form.username"
-          placeholder="Введите логин"
+          placeholder="Логин"
           @input="usernameError = ''"
         />
       </el-form-item>
 
-      <el-form-item label="Email" prop="email">
-        <el-input v-model="form.email" placeholder="Введите email" type="email" />
+      <el-form-item prop="email">
+        <el-input v-model="form.email" placeholder="Email" type="email" />
       </el-form-item>
 
-      <el-form-item label="Полное имя" prop="full_name">
-        <el-input v-model="form.full_name" placeholder="Введите полное имя" />
+      <el-form-item prop="full_name">
+        <el-input v-model="form.full_name" placeholder="Полное имя" />
       </el-form-item>
 
-      <el-form-item label="Телефон" prop="phone_number">
+      <el-form-item prop="phone_number">
         <el-input
           v-model="form.phone_number"
-          placeholder="Введите телефон"
+          placeholder="Телефон"
           type="tel"
           inputmode="numeric"
           @input="onPhoneInput"
         />
       </el-form-item>
 
-      <el-form-item v-if="form.user_type === 'legal'" label="ИНН" prop="inn">
-        <el-input v-model="form.inn" placeholder="Введите ИНН" />
+      <el-form-item v-if="form.user_type === 'legal'" prop="inn">
+        <el-input v-model="form.inn" placeholder="ИНН" />
       </el-form-item>
 
-      <el-form-item label="Пароль" prop="password">
+      <el-form-item prop="password">
         <el-input
           v-model="form.password"
-          placeholder="Введите пароль"
+          placeholder="Пароль"
           type="password"
           show-password
         />
       </el-form-item>
 
-      <el-form-item label="Подтвердите пароль" prop="confirmPassword">
+      <el-form-item prop="confirmPassword">
         <el-input
           v-model="form.confirmPassword"
-          placeholder="Подтвердите пароль"
+          placeholder="Пароль"
           type="password"
           show-password
         />
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" native-type="submit" style="width: 100%; margin-top: 10px;" :loading="loading">
+        <el-button type="primary" class="btn" native-type="submit" style="width: 100%; margin-top: 10px;" :loading="loading">
           {{ loading ? 'Регистрация...' : 'Регистрация' }}
         </el-button>
       </el-form-item>
     </el-form>
   </el-dialog>
 </template>
+
+<style scoped>
+:deep(.el-form-item) {
+  margin-bottom: 20px;
+}
+:deep(.el-input__wrapper) {
+  padding: 0;
+}
+:deep(.el-input__inner) {
+  background-color: var(--bgcolor);
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  color: black;
+  padding: 20px;
+}
+.btn {
+  background-color: var(--gray-footer);
+  border: 1px solid var(--gray-footer);
+  padding: 18px;
+  border-radius: 10px;
+}
+</style>
