@@ -189,6 +189,11 @@ const submitForm = async () => {
     :fullscreen="isMobile"
     @close="closeDialog"
   >
+    <template #header="{ titleId }">
+      <div class="dialog-header">
+          <h3 :id="titleId" class="titleClass">Регистрация</h3>
+        </div>
+    </template>
     <el-form
       :model="form"
       :rules="rules"
@@ -281,5 +286,12 @@ const submitForm = async () => {
   border: 1px solid var(--gray-footer);
   padding: 18px;
   border-radius: 10px;
+}
+.dialog-header {
+  text-align: center;
+}
+.titleClass {
+  font-size: 24px;
+  font-weight: 600;
 }
 </style>
