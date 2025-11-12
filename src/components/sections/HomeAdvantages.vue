@@ -77,7 +77,7 @@ const isMobile = computed(() => width.value <= 767)
   width: 100%;
   height: 100%;
   background-color: #e1e4e6;
-  border-radius: 5px;
+  border-radius: 10px;
   overflow: hidden;
 }
 
@@ -104,15 +104,16 @@ const isMobile = computed(() => width.value <= 767)
 }
 
 .item-title {
-  font-size: 26px;
-  color: red;
+  font-size: 24px;
+  font-weight: 600;
+  color: black;
   font-weight: bold;
-  margin-bottom: 15px;
+  margin-bottom: 40px;
 }
 
 .item-text {
-  font-size: 16px;
-  color: #333;
+  font-size: 20px;
+  color: black;
   margin: 0;
   line-height: 1.4;
 }
