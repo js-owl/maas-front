@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
-import SectionModel from '../components/sections/SectionModel.vue'
+import HomeModel from '../components/sections/HomeModel.vue'
 import HomeUslugi from '../components/sections/HomeUslugi.vue'
 import HomeAbout from '../components/sections/HomeAbout.vue'
 import HomeAdvantages from '../components/sections/HomeAdvantages.vue'
@@ -17,7 +17,7 @@ const isMobile = computed(() => width.value < 768)
     <div v-if="!isMobile">
       <el-row>
         <el-col :offset="3" :span="18">
-          <SectionModel />
+          <HomeModel />
           <HomeUslugi />
           <HomeAbout />
           <HomeAdvantages />
@@ -26,7 +26,7 @@ const isMobile = computed(() => width.value < 768)
       </el-row>
     </div>
     <template v-else>
-      <SectionModel />
+      <HomeModel />
       <el-row>
         <el-col :offset="0" :span="24">
           <HomeUslugi />
