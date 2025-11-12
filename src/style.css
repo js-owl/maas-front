@@ -33,6 +33,7 @@ body {
   margin: 0px 0 40px;
   padding: 30px 50px;
   border-radius: 20px;
+  box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12);
 }
 .section-title {
   text-align: left;
