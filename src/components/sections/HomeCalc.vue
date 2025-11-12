@@ -9,7 +9,7 @@ type UploadFile = {
 
 const formModel = ref({
   name: '',
-  phone: '+7 (',
+  phone: '',
 })
 
 const isSubmitting = ref(false)
@@ -34,10 +34,10 @@ const submit = () => {
 
 <template>
   <section class="section-basic">
-    <div class="section-title">РАСЧЕТ СТОИМОСТИ ПО ЧЕРТЕЖАМ</div>
-
+    
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
+        <div class="section-title">РАСЧЕТ СТОИМОСТИ ПО ЧЕРТЕЖАМ</div>
         <p class="lead">
           Проведем расчет стоимости детали по вашему чертежу в течение 5 рабочих дней, а также вы
           получите анализ и рекомендации по оптимизации процесса изготовления
@@ -50,21 +50,8 @@ const submit = () => {
             <el-input v-model="formModel.name" placeholder="Имя" />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="formModel.phone" placeholder="+7 (" />
+            <el-input v-model="formModel.phone" placeholder="Телефон" />
           </el-form-item>
-
-          <!-- <div class="upload-row">
-            <label class="upload-btn">
-             <span>Документы и чертежи</span>
-              <input
-                class="file-input"
-                type="file"
-                multiple
-                accept=".tif,.tiff,.pdf,.jpg,.jpeg,.png"
-                @change="onFilesChange"
-              />
-            </label>
-          </div> -->
           <UploadDrawings2 color="#fff" />
 
           <div class="formats">Форматы: TIF, PDF, JPG</div>
@@ -93,11 +80,13 @@ const submit = () => {
 .calc-wrap.mobile {
   grid-template-columns: 1fr;
 }
-
+.calc-left{
+  padding-right: 60px;
+}
 .calc-left .lead {
   color: #4c4c4c;
   font-size: 24px;
-  margin: 0;
+  margin-bottom: 0;
 }
 
 .calc-right {
@@ -135,8 +124,9 @@ const submit = () => {
 }
 
 .formats {
-  color: #8c8c8c;
-  font-size: 12px;
+  color: var(--gray-footer);
+  font-size: 20px;
+  font-weight: 500;
   margin: 10px 0 14px 2px;
 }
 
@@ -144,8 +134,8 @@ const submit = () => {
   background: var(--bgcolor);
   border: none;
   padding: 20px 40px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 500;
   color: #000;
 }
 
@@ -153,6 +143,17 @@ const submit = () => {
   margin-top: 12px;
   font-size: 12px;
   color: #666;
+}
+:deep(.el-input__wrapper) {
+  padding: 0;
+}
+:deep(.el-input__inner) {
+  background-color: var(--bgcolor);
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  /* color: black; */
+  padding: 20px;
 }
 
 @media (max-width: 768px) {
