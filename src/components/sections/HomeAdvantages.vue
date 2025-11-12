@@ -45,7 +45,11 @@ const isMobile = computed(() => width.value <= 767)
             <p class="item-text">{{ advantage.text }}</p>
           </div>
           <div class="item-image-container">
-            <el-image :src="advantage.image" :fit="isMobile ? 'contain' : 'cover'" class="item-img" />
+            <el-image
+              :src="advantage.image"
+              :fit="isMobile ? 'contain' : 'cover'"
+              class="item-img"
+            />
           </div>
         </div>
       </div>
@@ -56,16 +60,15 @@ const isMobile = computed(() => width.value <= 767)
 <style scoped>
 .items {
   display: flex;
-  /* gap: 1%; */
-  justify-content: space-evenly;
+  justify-content: space-between;
   flex-wrap: wrap;
 }
 
 .item {
-  width: 46%;
-  margin: 1%;
+  width: 49%;
   border-radius: 5px;
   height: 300px;
+  margin-bottom: 22px;
 }
 
 .item-wrap {
@@ -136,9 +139,9 @@ const isMobile = computed(() => width.value <= 767)
   }
 
   .item-img {
-  /* width: 100%; */
-  height: 40%;
-  /* object-fit: cover; */
-}
+    /* width: 100%; */
+    height: 40%;
+    /* object-fit: cover; */
+  }
 }
 </style>
