@@ -5,7 +5,7 @@ let file_id = ref(4)
 
 <template>
   <el-row :gutter="0" class="section-basic">
-    <el-col :span="10" :xs="{ span: 24, offset: 0 }">
+    <el-col :span="9" :xs="{ span: 24, offset: 0 }">
       <div style="padding-top: 10px">
         <div class="model-title">ЦЕНТР КОЛЛЕКТИВНОГО ПОЛЬЗОВАНИЯ АЭРОМАКС</div>
         <p class="model-subtitle">
@@ -18,7 +18,7 @@ let file_id = ref(4)
         </div>
       </div>
     </el-col>
-    <el-col :offset="2" :span="12" :xs="{ span: 24, offset: 0 }" class="model-right">
+    <el-col :offset="3" :span="12" :xs="{ span: 24, offset: 0 }" class="model-right">
       <el-row :gutter="20">
         <el-col :span="24">
           <div style="border: 3px dashed red; border-radius: 8px;">
@@ -63,14 +63,15 @@ let file_id = ref(4)
 }
 
 .model-icon {
-  width: 20%;
+  width: 27%;
   height: 44px;
   text-align: center;
   line-height: 44px;
   font-size: 20x;
-  font-weight: normal;
-  color: var(--gray-footer);
+  font-weight: 500;
+  color: black;
   background-color: var(--whity);
+  border: 1px solid var(--gray2);
   border-radius: 10px;
   margin-top: 100px;
   /* padding: 10px; */
