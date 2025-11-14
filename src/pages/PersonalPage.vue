@@ -2,15 +2,19 @@
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMaterialStore } from '../stores/material.store'
+import { useProfileStore } from '../stores/profile.store'
 
 const route = useRoute()
 const materialStore = useMaterialStore()
+const profileStore = useProfileStore()
 
 const activeKey = computed(() => {
   // ensure parent path when at /personal
   if (route.path === '/personal') return '/personal/profile'
   return route.path
 })
+
+const isAdmin = computed(() => profileStore.profile?.username === 'admin')
 
 onMounted(async () => {
   await materialStore.setAllMaterials()
@@ -32,7 +36,7 @@ onMounted(async () => {
             <el-menu-item index="/personal/calc-info">
               <span>Информация о расчете</span>
             </el-menu-item>
-            <el-menu-item index="/personal/users">
+            <el-menu-item v-if="isAdmin" index="/personal/users">
               <span>Пользователи</span>
             </el-menu-item>
           </el-menu>
