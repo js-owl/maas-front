@@ -29,6 +29,9 @@ onMounted(async () => {
             <el-menu-item index="/personal/orders">
               <span>Заказы</span>
             </el-menu-item>
+            <el-menu-item index="/personal/calc-info">
+              <span>Информация о расчете</span>
+            </el-menu-item>
           </el-menu>
         </aside>
         <main class="content">
