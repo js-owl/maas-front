@@ -1,7 +1,17 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { Clock, Location } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { req_json_auth } from '../api'
+import type { IOrderResponse } from '../interfaces/order.interface'
+
+// Get orderId from route query
+const route = useRoute()
+const orderId = computed(() => Number(route.query.orderId) || 0)
+
+// Loading state
+const isLoading = ref(false)
 
 // Model filename - represents the uploaded 3D model file
 const modelFilename = ref('Example_model.stl')
@@ -85,10 +95,58 @@ const handleProductionChange = (location: string) => {
   // TODO: Update delivery cost and time based on selected location
   console.log('Production location changed to:', location)
 }
+
+// Fetch order data from API
+const fetchOrder = async (id: number) => {
+  if (!id || id === 0) return
+
+  isLoading.value = true
+  try {
+    const response = await req_json_auth(`/orders/${id}`, 'GET')
+    if (response?.ok) {
+      const orderData = (await response.json()) as IOrderResponse
+      
+      // Map order data to component state
+      if (orderData.quantity) quantity.value = orderData.quantity
+      if (orderData.detail_price_one) manufacturingCost.value = orderData.detail_price_one
+      if (orderData.manufacturing_cycle) manufacturingTime.value = orderData.manufacturing_cycle
+      
+      // Map product properties
+      if (orderData.length && orderData.width && orderData.height) {
+        productProperties.value.dimensions = `${orderData.length} × ${orderData.width} × ${orderData.height}`
+      }
+      if (orderData.mat_volume) {
+        productProperties.value.partVolume = `${orderData.mat_volume.toFixed(2)} см³`
+      }
+      if (orderData.material_id) {
+        productProperties.value.material = orderData.material_id
+      }
+      
+      // Update model filename if file_id exists
+      if (orderData.file_id) {
+        modelFilename.value = `Model_${orderData.file_id}.stl`
+      }
+    } else {
+      ElMessage.error('Не удалось загрузить данные заказа')
+    }
+  } catch (error) {
+    console.error('Error fetching order:', error)
+    ElMessage.error('Ошибка при загрузке заказа')
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// Watch for orderId changes and fetch order data
+watch(orderId, (newId) => {
+  if (newId && newId > 0) {
+    fetchOrder(newId)
+  }
+}, { immediate: true })
 </script>
 
 <template>
-  <div class="personal-calc-container">
+  <div class="personal-calc-container" v-loading="isLoading" element-loading-text="Загрузка данных заказа...">
     <el-row :gutter="20">
       <!-- Left Card - Product Details and Configuration (2/3 width) -->
       <el-col :span="16">
