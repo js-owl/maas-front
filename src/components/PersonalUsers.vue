@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { req_json_auth } from '../api'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { Delete } from '@element-plus/icons-vue'
 
 // User interface - defines the structure of user data returned from the API
 // This interface represents a user object with common fields like id, username, email, etc.
@@ -62,6 +64,51 @@ const formatUserType = (userType: string | undefined): string => {
   }
   return typeMap[userType] || userType
 }
+
+// Delete user function - shows confirmation dialog and sends DELETE request
+// Removes user from local state after successful deletion
+const handleDelete = async (user: IUser) => {
+  if (!user.id) {
+    ElMessage.error('Не удалось определить ID пользователя')
+    return
+  }
+
+  try {
+    // Show confirmation dialog before deleting
+    await ElMessageBox.confirm(
+      `Вы уверены, что хотите удалить пользователя "${user.username || user.email || user.id}"?`,
+      'Подтверждение удаления',
+      {
+        confirmButtonText: 'Удалить',
+        cancelButtonText: 'Отмена',
+        type: 'warning',
+        confirmButtonClass: 'el-button--danger',
+      }
+    )
+
+    // Make DELETE request to /users/{id} endpoint
+    loading.value = true
+    const response = await req_json_auth(`/users/${user.id}`, 'DELETE')
+
+    if (response && response.ok) {
+      // Remove user from local state after successful deletion
+      users.value = users.value.filter((u) => u.id !== user.id)
+      ElMessage.success('Пользователь успешно удален')
+    } else {
+      ElMessage.error('Ошибка при удалении пользователя')
+    }
+  } catch (error: any) {
+    // User cancelled the confirmation dialog - this is expected behavior
+    // ElMessageBox rejects with action string when user clicks cancel
+    if (error === 'cancel' || error === 'close' || error?.action === 'cancel') {
+      return
+    }
+    console.error('Error deleting user:', error)
+    ElMessage.error('Ошибка при удалении пользователя')
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
@@ -110,6 +157,21 @@ const formatUserType = (userType: string | undefined): string => {
           :formatter="formatDate"
           width="150"
         />
+
+        <!-- Actions column - displays delete button for each user -->
+        <el-table-column label="Действия" width="100" align="center" fixed="right">
+          <template #default="{ row }">
+            <el-button
+              :icon="Delete"
+              type="danger"
+              size="small"
+              circle
+              @click="handleDelete(row)"
+              :disabled="loading || !row.id"
+              :title="`Удалить пользователя ${row.username || row.email || row.id}`"
+            />
+          </template>
+        </el-table-column>
       </el-table>
     </el-col>
   </el-row>
