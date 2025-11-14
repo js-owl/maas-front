@@ -36,6 +36,9 @@ onMounted(async () => {
             <el-menu-item index="/personal/calc-info">
               <span>Информация о расчете</span>
             </el-menu-item>
+            <el-menu-item index="/personal/calc">
+              <span>Калькуляция</span>
+            </el-menu-item>
             <el-menu-item v-if="isAdmin" index="/personal/users">
               <span>Пользователи</span>
             </el-menu-item>
