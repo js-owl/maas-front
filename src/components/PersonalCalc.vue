@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Clock, Location } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
@@ -8,6 +8,7 @@ import type { IOrderResponse } from '../interfaces/order.interface'
 
 // Get orderId from route query
 const route = useRoute()
+const router = useRouter()
 const orderId = computed(() => Number(route.query.orderId) || 0)
 
 // Loading state
@@ -80,13 +81,8 @@ const handleQuantityChange = (value: number | null) => {
 
 // Handle calculate cost button click
 const handleCalculateCost = () => {
-  // TODO: Implement cost calculation logic with API call
-  ElMessage.info('Расчет стоимости...')
-  console.log('Calculating cost for:', {
-    quantity: quantity.value,
-    production: selectedProduction.value,
-    properties: productProperties.value,
-  })
+  // Navigate to calculation info page
+  router.push({ name: 'personal-calc-info' })
 }
 
 // Handle production location selection
