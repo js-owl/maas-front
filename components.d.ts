@@ -81,6 +81,7 @@ declare module 'vue' {
     PersonalCalcInfo: typeof import('./src/components/PersonalCalcInfo.vue')['default']
     PersonalOrders: typeof import('./src/components/PersonalOrders.vue')['default']
     PersonalProfile: typeof import('./src/components/PersonalProfile.vue')['default']
+    PersonalUsers: typeof import('./src/components/PersonalUsers.vue')['default']
     PlasticPreparation: typeof import('./src/components/coefficients/PlasticPreparation.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
