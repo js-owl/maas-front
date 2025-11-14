@@ -47,7 +47,7 @@ COPY --from=builder /app/dist .
 
 # Copy the entrypoint script
 COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+RUN sed -i 's/\r$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
 
 # Expose port 80 to the outside world
 EXPOSE 80
