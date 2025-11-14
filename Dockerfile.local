@@ -1,0 +1,56 @@
+#---- Stage 1: Build the Vue application ----
+ARG APT_PROXY=""
+FROM node:20-slim AS builder
+
+# Set the working directory
+WORKDIR /app
+
+# Configure apt proxy for private registry (if provided)
+RUN if [ -n "${APT_PROXY}" ]; then \
+        echo "Acquire::http::Proxy \"${APT_PROXY}\";" > /etc/apt/apt.conf.d/99proxy && \
+        echo "Acquire::https::Proxy \"${APT_PROXY}\";" >> /etc/apt/apt.conf.d/99proxy; \
+    fi
+
+# Install git for build info (optional)
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Copy package files and install dependencies
+COPY package*.json ./
+
+# Install dependencies (simplified single command)
+RUN npm ci --include=dev
+
+# Copy the entire project source code
+COPY . .
+
+# Build the application for production
+# This  creates the /app/dist folder
+
+RUN npm run build -- --mode production
+
+
+# Stage 2: Serve the application with Nginx ----
+# Use a stable Nginx image
+FROM nginx:stable
+
+# Copy the custom Nginx configuration for local testing
+COPY nginx.local.conf /etc/nginx/nginx.conf
+
+# Set the working directory to Nginx's web root
+WORKDIR /usr/share/nginx/html
+
+# Remove default Nginx welcome page
+RUN rm -rf ./*
+
+# Copy the built assets from the 'builder' stage
+COPY --from=builder /app/dist .
+
+# Copy the entrypoint script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Expose port 80 to the outside world
+EXPOSE 80
+
+# Use entrypoint for runtime configuration
+ENTRYPOINT ["/docker-entrypoint.sh"]
