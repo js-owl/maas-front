@@ -61,32 +61,10 @@ const getStatusText = (status: string): string => {
 }
 
 const handleEdit = (row: IOrderResponse): void => {
-  switch (row.service_id) {
-    case 'cnc-lathe':
-      router.push({
-        path: '/machining',
-        query: { orderId: row.order_id.toString() },
-      })
-      break
-    case 'cnc-milling':
-      router.push({
-        path: '/milling',
-        query: { orderId: row.order_id.toString() },
-      })
-      break
-    case 'printing':
-      router.push({
-        path: '/printing',
-        query: { orderId: row.order_id.toString() },
-      })
-      break
-    default:
-      router.push({
-        path: '/machining',
-        query: { orderId: row.order_id.toString() },
-      })
-      break
-  }
+  router.push({
+    path: '/personal/calc',
+    query: { orderId: row.order_id.toString() },
+  })
 }
 
 // const handleDelete = async (row: IOrderResponse): Promise<void> => {
