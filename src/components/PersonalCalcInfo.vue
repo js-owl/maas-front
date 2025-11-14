@@ -283,26 +283,31 @@ const handleSave = async () => {
 }
 
 /* Cost item row - label on left, value on right */
+/* Ensures cost-item takes full width of tree node content area for proper alignment */
 .cost-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
   min-height: 32px;
+  width: 100%;
 }
 
 .cost-label {
   flex: 1;
   color: #606266;
   font-size: 14px;
+  text-align: left;
 }
 
+/* Cost value alignment - ensures values are right-aligned within the cost-item */
 .cost-value {
   flex: 0 0 auto;
   color: #303133;
   font-size: 14px;
   text-align: right;
   min-width: 80px;
+  margin-left: auto;
 }
 
 /* Comment section styling */
