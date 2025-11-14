@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 // Document number - typically would come from props or route params
 // This represents the calculation document identifier
@@ -39,6 +39,85 @@ const laborCosts = ref({
 // Represents costs for tooling and equipment
 const toolingCosts = ref('-')
 
+// Convert material costs to tree data structure
+// Tree structure allows hierarchical display of nested cost categories using el-tree component
+const materialCostsTree = computed(() => [
+  {
+    label: '1 Сырье и основные материалы',
+    value: null, // Parent nodes don't have direct values
+    children: [
+      {
+        label: '1.1 Информация о заготовке',
+        value: materialCosts.value.rawMaterials.blankInfo,
+      },
+      {
+        label: '1.2 Извлеченные габариты детали',
+        value: materialCosts.value.rawMaterials.extractedDimensions,
+      },
+      {
+        label: '1.3 Объем детали',
+        value: materialCosts.value.rawMaterials.partVolume,
+      },
+      {
+        label: '1.4 Норма расхода',
+        value: materialCosts.value.rawMaterials.consumptionRate,
+      },
+      {
+        label: '1.5 Основной материал',
+        value: materialCosts.value.rawMaterials.mainMaterial,
+      },
+    ],
+  },
+  {
+    label: '2 Вспомогательные материалы',
+    value: materialCosts.value.auxiliaryMaterials,
+  },
+])
+
+// Convert labor costs to tree data structure
+// Tree structure organizes labor costs into expandable categories for better UX
+const laborCostsTree = computed(() => [
+  {
+    label: '1 Трудоемкость',
+    value: laborCosts.value.laborIntensity,
+  },
+  {
+    label: '2 Стоимость нормочаса',
+    value: null, // Parent node
+    children: [
+      {
+        label: '2.1 Основная заработная плата',
+        value: laborCosts.value.costPerStandardHour.basicSalary,
+      },
+      {
+        label: '2.2 Дополнительная заработная плата',
+        value: laborCosts.value.costPerStandardHour.additionalSalary,
+      },
+      {
+        label: '2.3 Страховые взносы',
+        value: laborCosts.value.costPerStandardHour.insuranceContributions,
+      },
+      {
+        label: '2.4 Общепроизводственные затраты',
+        value: laborCosts.value.costPerStandardHour.generalProductionCosts,
+      },
+      {
+        label: '2.5 Общехозяйственные затраты',
+        value: laborCosts.value.costPerStandardHour.generalAdministrativeCosts,
+      },
+    ],
+  },
+])
+
+// Convert tooling costs to tree data structure
+// Simple single-node tree structure for tooling costs display
+const toolingCostsTree = computed(() => [
+  {
+    label: '',
+    value: toolingCosts.value,
+  },
+])
+
 // Handler for opening calculation details
 // This would typically navigate to a detailed calculation view or open a modal
 const handleOpenCalculation = () => {
@@ -68,101 +147,63 @@ const handleSave = async () => {
     </div>
 
     <!-- Material Costs Section -->
+    <!-- Using el-tree to display hierarchical cost structure with expandable nodes -->
     <div class="cost-section">
       <div class="section-title">Материальные затраты</div>
       <div class="section-divider"></div>
-
-      <!-- Raw materials subsection -->
-      <div class="subsection">
-        <div class="subsection-title">1 Сырье и основные материалы</div>
-        <div class="subsection-content">
+      <el-tree
+        :data="materialCostsTree"
+        :props="{ children: 'children', label: 'label' }"
+        :expand-on-click-node="false"
+        class="cost-tree"
+      >
+        <template #default="{ data }">
           <div class="cost-item">
-            <span class="cost-label">1.1 Информация о заготовке</span>
-            <span class="cost-value">{{ materialCosts.rawMaterials.blankInfo }}</span>
+            <span class="cost-label">{{ data.label }}</span>
+            <span class="cost-value" v-if="data.value !== null">{{ data.value }}</span>
           </div>
-          <div class="cost-item">
-            <span class="cost-label">1.2 Извлеченные габариты детали</span>
-            <span class="cost-value">{{ materialCosts.rawMaterials.extractedDimensions }}</span>
-          </div>
-          <div class="cost-item">
-            <span class="cost-label">1.3 Объем детали</span>
-            <span class="cost-value">{{ materialCosts.rawMaterials.partVolume }}</span>
-          </div>
-          <div class="cost-item">
-            <span class="cost-label">1.4 Норма расхода</span>
-            <span class="cost-value">{{ materialCosts.rawMaterials.consumptionRate }}</span>
-          </div>
-          <div class="cost-item">
-            <span class="cost-label">1.5 Основной материал</span>
-            <span class="cost-value">{{ materialCosts.rawMaterials.mainMaterial }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-divider"></div>
-
-      <!-- Auxiliary materials subsection -->
-      <div class="subsection">
-        <div class="subsection-title">2 Вспомогательные материалы</div>
-        <div class="cost-item">
-          <span class="cost-label"></span>
-          <span class="cost-value">{{ materialCosts.auxiliaryMaterials }}</span>
-        </div>
-      </div>
+        </template>
+      </el-tree>
     </div>
 
     <!-- Labor Costs Section -->
+    <!-- Using el-tree for hierarchical display of labor costs with nested subcategories -->
     <div class="cost-section">
       <div class="section-title">Затраты на оплату труда</div>
       <div class="section-divider"></div>
-
-      <!-- Labor intensity subsection -->
-      <div class="subsection">
-        <div class="subsection-title">1 Трудоемкость</div>
-        <div class="cost-item">
-          <span class="cost-label"></span>
-          <span class="cost-value">{{ laborCosts.laborIntensity }}</span>
-        </div>
-      </div>
-
-      <div class="section-divider"></div>
-
-      <!-- Cost per standard hour subsection -->
-      <div class="subsection">
-        <div class="subsection-title">2 Стоимость нормочаса</div>
-        <div class="subsection-content">
+      <el-tree
+        :data="laborCostsTree"
+        :props="{ children: 'children', label: 'label' }"
+        :expand-on-click-node="false"
+        class="cost-tree"
+      >
+        <template #default="{ data }">
           <div class="cost-item">
-            <span class="cost-label">2.1 Основная заработная плата</span>
-            <span class="cost-value">{{ laborCosts.costPerStandardHour.basicSalary }}</span>
+            <span class="cost-label">{{ data.label }}</span>
+            <span class="cost-value" v-if="data.value !== null">{{ data.value }}</span>
           </div>
-          <div class="cost-item">
-            <span class="cost-label">2.2 Дополнительная заработная плата</span>
-            <span class="cost-value">{{ laborCosts.costPerStandardHour.additionalSalary }}</span>
-          </div>
-          <div class="cost-item">
-            <span class="cost-label">2.3 Страховые взносы</span>
-            <span class="cost-value">{{ laborCosts.costPerStandardHour.insuranceContributions }}</span>
-          </div>
-          <div class="cost-item">
-            <span class="cost-label">2.4 Общепроизводственные затраты</span>
-            <span class="cost-value">{{ laborCosts.costPerStandardHour.generalProductionCosts }}</span>
-          </div>
-          <div class="cost-item">
-            <span class="cost-label">2.5 Общехозяйственные затраты</span>
-            <span class="cost-value">{{ laborCosts.costPerStandardHour.generalAdministrativeCosts }}</span>
-          </div>
-        </div>
-      </div>
+        </template>
+      </el-tree>
     </div>
 
     <!-- Tooling Costs Section -->
+    <!-- Using el-tree for consistent display structure across all cost sections -->
     <div class="cost-section">
       <div class="section-title">Затраты на оснастку</div>
       <div class="section-divider"></div>
-      <div class="cost-item">
-        <span class="cost-label"></span>
-        <span class="cost-value">{{ toolingCosts }}</span>
-      </div>
+      <el-tree
+        :data="toolingCostsTree"
+        :props="{ children: 'children', label: 'label' }"
+        :expand-on-click-node="false"
+        class="cost-tree"
+      >
+        <template #default="{ data }">
+          <div class="cost-item">
+            <span class="cost-label">{{ data.label }}</span>
+            <span class="cost-value" v-if="data.value !== null">{{ data.value }}</span>
+          </div>
+        </template>
+      </el-tree>
     </div>
 
     <!-- Comment Section -->
@@ -224,20 +265,21 @@ const handleSave = async () => {
   margin: 12px 0;
 }
 
-/* Subsection styling - numbered items within sections */
-.subsection {
-  margin: 16px 0;
+/* Tree styling for cost sections */
+/* Customizes el-tree appearance to match the original cost-item layout */
+.cost-tree {
+  padding: 8px 0;
 }
 
-.subsection-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #606266;
-  margin-bottom: 8px;
+.cost-tree :deep(.el-tree-node__content) {
+  height: auto;
+  min-height: 32px;
+  padding: 8px 0;
 }
 
-.subsection-content {
-  margin-left: 16px;
+.cost-tree :deep(.el-tree-node__expand-icon) {
+  padding: 4px;
+  margin-right: 4px;
 }
 
 /* Cost item row - label on left, value on right */
