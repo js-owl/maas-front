@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onBeforeUnmount } from "vue";
 import { API_BASE } from "../../api";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import * as THREE from "three";
@@ -247,12 +247,48 @@ function createPreviewFromGeometry(geometry: THREE.BufferGeometry): void {
   material.dispose();
 }
 
+// Попытка загрузить превью с сервера
+async function loadPreviewFromServer(): Promise<boolean> {
+  try {
+    const headers = new Headers();
+
+    // Add auth header only if user is authenticated
+    if (authStore.getToken) {
+      headers.append("Authorization", `Bearer ${authStore.getToken}`);
+    }
+
+    const res = await fetch(`${API_BASE}/files/${props.fileId}/preview`, {
+      method: "GET",
+      headers: headers,
+    });
+
+    if (!res.ok) {
+      return false;
+    }
+
+    const blob = await res.blob();
+    const imageUrl = URL.createObjectURL(blob);
+    previewImage.value = imageUrl;
+    return true;
+  } catch (error) {
+    console.error("Error loading preview from server:", error);
+    return false;
+  }
+}
+
 // Создаем превью изображение
 async function generatePreview(): Promise<void> {
   if (!props.fileId) return;
 
   isLoading.value = true;
   try {
+    // Сначала пытаемся загрузить превью с сервера
+    const previewLoaded = await loadPreviewFromServer();
+    if (previewLoaded) {
+      return;
+    }
+
+    // Если превью нет на сервере, генерируем его из геометрии
     // Определяем тип файла
     const fileType = await detectFileType(props.fileId);
     if (!fileType) {
@@ -304,6 +340,13 @@ async function generatePreview(): Promise<void> {
 
 // Генерируем превью при монтировании
 generatePreview();
+
+// Очистка object URL при размонтировании компонента
+onBeforeUnmount(() => {
+  if (previewImage.value && previewImage.value.startsWith("blob:")) {
+    URL.revokeObjectURL(previewImage.value);
+  }
+});
 </script>
 
 <template>
