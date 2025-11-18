@@ -223,6 +223,13 @@ async function getOrder(id: number) {
     <!-- 2. Правая часть -->
     <el-col :span="10" :xs="{ span: 24, offset: 0 }" class="right-section">
       <el-row :gutter="5">
+        <el-col :offset="0" :span="23" :xs="{ span: 24, offset: 0 }">
+          <MaterialMilling v-model="material_id" />
+        </el-col>
+        <el-col :offset="1" :span="5"> </el-col>
+      </el-row>
+
+      <el-row :gutter="5">
         <el-col :offset="0" :span="7" :xs="{ span: 24, offset: 0 }">
           <!-- <div class="disabled-block"> -->
           <div>
@@ -238,25 +245,6 @@ async function getOrder(id: number) {
         <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
           <CoefficientQuantity v-model="quantity" />
         </el-col>
-      </el-row>
-
-      <!-- <el-row :gutter="5">
-        <el-col :offset="2" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
-          <CoefficientFinish v-model="finish_id" />
-        </el-col>
-        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
-          <CoefficientTolerance v-model="tolerance_id" />
-        </el-col>
-        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
-          <CoefficientSize v-model="n_dimensions" />
-        </el-col>
-      </el-row> -->
-
-      <el-row :gutter="5">
-        <el-col :offset="0" :span="15" :xs="{ span: 24, offset: 0 }">
-          <MaterialMilling v-model="material_id" />
-        </el-col>
-        <el-col :offset="1" :span="5"> </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top">

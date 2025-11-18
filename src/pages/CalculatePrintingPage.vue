@@ -207,33 +207,15 @@ async function getOrder(id: number) {
 
     <!-- 2. Правая часть -->
     <el-col :span="10" :xs="{ span: 24, offset: 0 }" class="right-section">
-      <!--   <el-row :gutter="5">
-        <el-col :offset="0" :span="7" :xs="{ span: 24, offset: 0 }">
-          <Length v-model="length" />
+      <el-row :gutter="5">
+        <el-col :offset="0" :span="23" :xs="{ span: 24, offset: 0 }">
+          <MaterialPrinting v-model="material_id" />
         </el-col>
-        <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
-          <Width v-model="width" />
-        </el-col>
-        <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
-          <Height v-model="height" />
-        </el-col>
-      </el-row> -->
-
-      <!-- <el-row :gutter="5">
-        <el-col :offset="2" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
-          <CoefficientFinish v-model="finish_id" />
-        </el-col>
-        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
-          <CoefficientTolerance v-model="tolerance_id" />
-        </el-col>
-        <el-col :offset="1" :span="5" :xs="{ span: 24, offset: 0 }" class="disabled-block">
-          <CoefficientSize v-model="n_dimensions" />
-        </el-col>
-      </el-row> -->
-
+      </el-row>
       <el-row :gutter="5">
         <el-col :offset="0" :span="15" :xs="{ span: 24, offset: 0 }">
-          <MaterialPrinting v-model="material_id" />
+          <p class="coefficient-title">Технология печати</p>
+          <p class="gray-input">SLS (послойное лазерное спекание)</p>
         </el-col>
         <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
           <CoefficientQuantity v-model="quantity" />
@@ -385,6 +367,16 @@ async function getOrder(id: number) {
 
 .row-spacing-bottom {
   padding: 0 0 30px 0;
+}
+
+.gray-input {
+  background-color: var(--whity);
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  margin-top: 10px;
+  padding: 10px;
 }
 
 .row-spacing-both {

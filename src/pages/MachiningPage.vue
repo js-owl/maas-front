@@ -83,6 +83,7 @@
                 <div class="requirement-title">Оборудование</div>
                 <div class="requirement-item">Универсальные станки</div>
                 <div class="requirement-item">Станки ЧПУ, 5-осевой</div>
+                <div class="requirement-item"></div>
                 <div class="requirement-item">Станки ЧПУ, 3-осевой</div>
                 <div class="requirement-item">Фрезерно-гравировальный станок</div>
               </div>
@@ -229,6 +230,7 @@
 }
 
 .requirement-item {
+  height: 20px;
   font-size: 16px;
   color: #000;
   margin-bottom: 12px;

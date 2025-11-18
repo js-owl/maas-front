@@ -12,13 +12,12 @@
 
   --left-section-bg: #283d5b; /* 283d5b - dee2eb*/
   --left-section-color: #fff; /* fff - 5f646c*/
-  
+
   --bgcolor: #e1e4e6;
   --whity: #f4f6f8;
   --gray-footer: #55585b;
   --gray2: #d1d1d1;
   --custom-red: #ce132f;
-
 }
 
 body {
@@ -59,6 +58,7 @@ body {
   color: black;
   font-weight: 500;
   font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .coefficient-label {

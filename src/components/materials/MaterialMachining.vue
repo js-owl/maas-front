@@ -38,8 +38,14 @@ onMounted(async () => {
   width: 100%;
 }
 
-.full :deep(.el-select__wrapper) {
-  border: 1px solid black;
+:deep(.el-select__wrapper) {
+  background-color: var(--whity);
+  border-color: var(--whity);
   border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  margin-top: 10px;
+  padding: 10px;
 }
 </style>
