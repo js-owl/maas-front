@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 
 // Get orderId from route query
 const route = useRoute()
+const router = useRouter()
 const orderId = computed(() => Number(route.query.orderId) || 0)
 
 // Loading state
@@ -134,8 +135,11 @@ const laborCostsTree = computed(() => [
 // Handler for opening calculation details
 // This would typically navigate to a detailed calculation view or open a modal
 const handleOpenCalculation = () => {
-  // TODO: Implement navigation or modal opening logic
-  console.log('Opening calculation:', documentNumber.value)
+  if (!orderId.value) return
+  router.push({
+    name: 'personal-calc',
+    query: { orderId: orderId.value.toString() },
+  })
 }
 
 // Fetch order data from API
