@@ -15,7 +15,24 @@ export interface IOrderBase {
   k_cert: string[]
   special_instructions?: string
   total_price_breakdown?: {
+    location?: string
+    mat_price?: number
+    administrative_expenses?: number
+    cost?: number
+    dop_mat_price?: number
+    dop_salary?: number
+    insurance_price?: number
     mat_price_full?: number
+    net_cost?: number
+    overhead_expenses?: number
+    price_of_hour?: number
+    price_of_hour_with_others?: number
+    price_per_kg?: number
+    price_special_equipment_to_quantity?: number
+    profit?: number
+    sum_costs_labor?: number
+    total_time?: number
+    work_price?: number
     [key: string]: any
   }
 }

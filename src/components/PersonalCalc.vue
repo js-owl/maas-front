@@ -81,8 +81,11 @@ const handleQuantityChange = (value: number | null) => {
 
 // Handle calculate cost button click
 const handleCalculateCost = () => {
-  // Navigate to calculation info page
-  router.push({ name: 'personal-calc-info' })
+  // Navigate to calculation info page with orderId as query parameter
+  router.push({
+    name: 'personal-calc-info',
+    query: { orderId: orderId.value },
+  })
 }
 
 // Handle production location selection

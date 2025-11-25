@@ -1,5 +1,16 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { req_json_auth } from '../api'
+import type { IOrderResponse } from '../interfaces/order.interface'
+
+// Get orderId from route query
+const route = useRoute()
+const orderId = computed(() => Number(route.query.orderId) || 0)
+
+// Loading state
+const isLoading = ref(false)
 
 // Document number - typically would come from props or route params
 // This represents the calculation document identifier
@@ -124,6 +135,87 @@ const handleOpenCalculation = () => {
   // TODO: Implement navigation or modal opening logic
   console.log('Opening calculation:', documentNumber.value)
 }
+
+// Fetch order data from API
+// Retrieves order information including calculation details and cost breakdown
+const fetchOrder = async (id: number) => {
+  if (!id || id === 0) return
+
+  isLoading.value = true
+  try {
+    const response = await req_json_auth(`/orders/${id}`, 'GET')
+    if (response?.ok) {
+      const orderData = (await response.json()) as IOrderResponse
+
+      // Map order data to component state
+      // Set document number from order_id
+      if (orderData.order_id) {
+        documentNumber.value = `ФР-${orderData.order_id}`
+      }
+
+      // Map material costs from order data
+      if (orderData.length && orderData.width && orderData.height) {
+        materialCosts.value.rawMaterials.extractedDimensions = `${orderData.length} × ${orderData.width} × ${orderData.height}`
+      }
+      if (orderData.mat_volume) {
+        materialCosts.value.rawMaterials.partVolume = `${orderData.mat_volume.toFixed(2)} см³`
+      }
+      if (orderData.material_id) {
+        materialCosts.value.rawMaterials.mainMaterial = orderData.material_id
+      }
+      if (orderData.total_price_breakdown?.dop_mat_price) {
+        materialCosts.value.auxiliaryMaterials = `${orderData.total_price_breakdown.dop_mat_price.toFixed(2)} руб`
+      }
+
+      // Map labor costs from order data
+      if (orderData.total_time) {
+        laborCosts.value.laborIntensity = `${orderData.total_time.toFixed(2)} ч`
+      }
+      if (orderData.total_price_breakdown) {
+        const breakdown = orderData.total_price_breakdown
+        if (breakdown.work_price) {
+          laborCosts.value.costPerStandardHour.basicSalary = `${breakdown.work_price.toFixed(2)} руб`
+        }
+        if (breakdown.dop_salary) {
+          laborCosts.value.costPerStandardHour.additionalSalary = `${breakdown.dop_salary.toFixed(2)} руб`
+        }
+        if (breakdown.insurance_price) {
+          laborCosts.value.costPerStandardHour.insuranceContributions = `${breakdown.insurance_price.toFixed(2)} руб`
+        }
+        if (breakdown.overhead_expenses) {
+          laborCosts.value.costPerStandardHour.generalProductionCosts = `${breakdown.overhead_expenses.toFixed(2)} руб`
+        }
+        if (breakdown.administrative_expenses) {
+          laborCosts.value.costPerStandardHour.generalAdministrativeCosts = `${breakdown.administrative_expenses.toFixed(2)} руб`
+        }
+      }
+
+      // Map tooling costs
+      if (orderData.total_price_breakdown?.price_special_equipment_to_quantity) {
+        toolingCosts.value = `${orderData.total_price_breakdown.price_special_equipment_to_quantity.toFixed(2)} руб`
+      }
+
+      // Set comment from special instructions if available
+      if (orderData.special_instructions) {
+        comment.value = orderData.special_instructions
+      }
+    } else {
+      ElMessage.error('Не удалось загрузить данные заказа')
+    }
+  } catch (error) {
+    console.error('Error fetching order:', error)
+    ElMessage.error('Ошибка при загрузке заказа')
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// Fetch order data when component is mounted
+onMounted(() => {
+  if (orderId.value && orderId.value > 0) {
+    fetchOrder(orderId.value)
+  }
+})
 
 // Handler for saving the calculation information
 // This would typically send the data to the backend API
