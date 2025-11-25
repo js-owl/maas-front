@@ -131,15 +131,6 @@ const laborCostsTree = computed(() => [
   },
 ])
 
-// Convert tooling costs to tree data structure
-// Tree structure matches the exact label from the specification image
-const toolingCostsTree = computed(() => [
-  {
-    label: '3 Затраты на специальную технологическую оснастку',
-    value: toolingCosts.value,
-  },
-])
-
 // Handler for opening calculation details
 // This would typically navigate to a detailed calculation view or open a modal
 const handleOpenCalculation = () => {
@@ -317,21 +308,10 @@ const handleSave = async () => {
     <!-- Tooling Costs Section -->
     <!-- Using el-tree for consistent display structure across all cost sections -->
     <div class="cost-section">
-      <div class="section-title">3 Затраты на специальную технологическую оснастку</div>
-      <div class="section-divider"></div>
-      <el-tree
-        :data="toolingCostsTree"
-        :props="{ children: 'children', label: 'label' }"
-        :expand-on-click-node="false"
-        class="cost-tree"
-      >
-        <template #default="{ data }">
-          <div class="cost-item">
-            <span class="cost-label">{{ data.label }}</span>
-            <span class="cost-value" v-if="data.value !== null">{{ data.value }}</span>
-          </div>
-        </template>
-      </el-tree>
+      <div class="section-title">
+        <span>3 Затраты на специальную технологическую оснастку</span>
+        <span class="section-value">{{ toolingCosts }}</span>
+      </div>
     </div>
 
     <!-- Comment Section -->
