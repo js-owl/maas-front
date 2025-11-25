@@ -22,109 +22,120 @@ const comment = ref('')
 
 // Material costs section data
 // Represents costs related to raw materials and auxiliary materials
+// Structure matches the hierarchical breakdown from the specification
 const materialCosts = ref({
+  matPriceFull: '-', // 1 Материальные затраты (mat_price_full)
   rawMaterials: {
-    blankInfo: '-', // Information about the blank/workpiece
-    extractedDimensions: '-', // Extracted part dimensions
-    partVolume: '-', // Part volume
-    consumptionRate: '-', // Consumption rate
-    mainMaterial: '-', // Main material
+    matPrice: '-', // 1.1 сырье и основные материалы (mat_price)
+    blankInfo: {
+      // 1.1.1 Информация о заготовке (blank_info) - parent category
+      extractedDimensions: '-', // 1.1.1.1 Извлечённые габаритные размеры детали (extracted_dimensions)
+      matVolume: '-', // 1.1.1.2 Объём заготовки (mat_volume)
+      matWeight: '-', // 1.1.1.3 Норма расхода (mat_weight)
+    },
+    pricePerKg: '-', // 1.1.2 Основной материал (price_per_kg)
   },
-  auxiliaryMaterials: '-', // Auxiliary materials cost
+  dopMatPrice: '-', // 1.2 вспомогательные материалы (dop_mat_price)
 })
 
 // Labor costs section data
 // Represents costs associated with labor and workforce
+// Structure matches the hierarchical breakdown from the specification
 const laborCosts = ref({
-  laborIntensity: '-', // Labor intensity/workload
-  costPerStandardHour: {
-    basicSalary: '-', // Basic salary
-    additionalSalary: '-', // Additional salary
-    insuranceContributions: '-', // Insurance contributions
-    generalProductionCosts: '-', // General production costs
-    generalAdministrativeCosts: '-', // General administrative costs
+  sumCostsLabor: '-', // 2 Затраты на оплату труда (sum_costs_labor)
+  totalTime: '-', // 2.1 Трудоёмкость (total_time)
+  priceOfHourWithOthers: {
+    priceOfHourWithOthers: '-', // 2.2 Стоимость нормочаса (price_of_hour_with_others)
+    workPrice: '-', // 2.2.1 Основная заработная плата (work_price)
+    dopSalary: '-', // 2.2.2 Дополнительная заработная плата (dop_salary)
+    insurancePrice: '-', // 2.2.3 Страховые взносы (insurance_price)
+    overheadExpenses: '-', // 2.2.4 Общепроизводственные затраты (overhead_expenses)
+    administrativeExpenses: '-', // 2.2.5 Общехозяйственные затраты (administrative_expenses)
   },
 })
 
 // Tooling costs
-// Represents costs for tooling and equipment
+// Represents costs for special technological equipment
+// 3 Затраты на специальную технологическую оснастку (price_special_equipment_to_quantity)
 const toolingCosts = ref('-')
 
 // Convert material costs to tree data structure
-// Tree structure allows hierarchical display of nested cost categories using el-tree component
+// Tree structure matches the exact hierarchy from the specification image
 const materialCostsTree = computed(() => [
   {
-    label: '1 Сырье и основные материалы',
-    value: null, // Parent nodes don't have direct values
+    label: '1.1 сырье и основные материалы',
+    value: materialCosts.value.rawMaterials.matPrice,
     children: [
       {
-        label: '1.1 Информация о заготовке',
-        value: materialCosts.value.rawMaterials.blankInfo,
+        label: '1.1.1 Информация о заготовке',
+        value: null, // Parent node without direct value
+        children: [
+          {
+            label: '1.1.1.1 Извлечённые габаритные размеры детали',
+            value: materialCosts.value.rawMaterials.blankInfo.extractedDimensions,
+          },
+          {
+            label: '1.1.1.2 Объём заготовки',
+            value: materialCosts.value.rawMaterials.blankInfo.matVolume,
+          },
+          {
+            label: '1.1.1.3 Норма расхода',
+            value: materialCosts.value.rawMaterials.blankInfo.matWeight,
+          },
+        ],
       },
       {
-        label: '1.2 Извлеченные габариты детали',
-        value: materialCosts.value.rawMaterials.extractedDimensions,
-      },
-      {
-        label: '1.3 Объем детали',
-        value: materialCosts.value.rawMaterials.partVolume,
-      },
-      {
-        label: '1.4 Норма расхода',
-        value: materialCosts.value.rawMaterials.consumptionRate,
-      },
-      {
-        label: '1.5 Основной материал',
-        value: materialCosts.value.rawMaterials.mainMaterial,
+        label: '1.1.2 Основной материал',
+        value: materialCosts.value.rawMaterials.pricePerKg,
       },
     ],
   },
   {
-    label: '2 Вспомогательные материалы',
-    value: materialCosts.value.auxiliaryMaterials,
+    label: '1.2 вспомогательные материалы',
+    value: materialCosts.value.dopMatPrice,
   },
 ])
 
 // Convert labor costs to tree data structure
-// Tree structure organizes labor costs into expandable categories for better UX
+// Tree structure matches the exact hierarchy from the specification image
 const laborCostsTree = computed(() => [
   {
-    label: '1 Трудоемкость',
-    value: laborCosts.value.laborIntensity,
+    label: '2.1 Трудоёмкость',
+    value: laborCosts.value.totalTime,
   },
   {
-    label: '2 Стоимость нормочаса',
-    value: null, // Parent node
+    label: '2.2 Стоимость нормочаса',
+    value: laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers,
     children: [
       {
-        label: '2.1 Основная заработная плата',
-        value: laborCosts.value.costPerStandardHour.basicSalary,
+        label: '2.2.1 Основная заработная плата',
+        value: laborCosts.value.priceOfHourWithOthers.workPrice,
       },
       {
-        label: '2.2 Дополнительная заработная плата',
-        value: laborCosts.value.costPerStandardHour.additionalSalary,
+        label: '2.2.2 Дополнительная заработная плата',
+        value: laborCosts.value.priceOfHourWithOthers.dopSalary,
       },
       {
-        label: '2.3 Страховые взносы',
-        value: laborCosts.value.costPerStandardHour.insuranceContributions,
+        label: '2.2.3 Страховые взносы',
+        value: laborCosts.value.priceOfHourWithOthers.insurancePrice,
       },
       {
-        label: '2.4 Общепроизводственные затраты',
-        value: laborCosts.value.costPerStandardHour.generalProductionCosts,
+        label: '2.2.4 Общепроизводственные затраты',
+        value: laborCosts.value.priceOfHourWithOthers.overheadExpenses,
       },
       {
-        label: '2.5 Общехозяйственные затраты',
-        value: laborCosts.value.costPerStandardHour.generalAdministrativeCosts,
+        label: '2.2.5 Общехозяйственные затраты',
+        value: laborCosts.value.priceOfHourWithOthers.administrativeExpenses,
       },
     ],
   },
 ])
 
 // Convert tooling costs to tree data structure
-// Simple single-node tree structure for tooling costs display
+// Tree structure matches the exact label from the specification image
 const toolingCostsTree = computed(() => [
   {
-    label: '',
+    label: '3 Затраты на специальную технологическую оснастку',
     value: toolingCosts.value,
   },
 ])
@@ -154,39 +165,56 @@ const fetchOrder = async (id: number) => {
       }
 
       // Map material costs from order data
+      // Mapping follows the structure from specification: extracted_dimensions, mat_volume, mat_weight, price_per_kg, dop_mat_price
+      if (orderData.total_price_breakdown?.mat_price_full) {
+        materialCosts.value.matPriceFull = `${orderData.total_price_breakdown.mat_price_full.toFixed(2)} руб`
+      }
+      if (orderData.total_price_breakdown?.mat_price) {
+        materialCosts.value.rawMaterials.matPrice = `${orderData.total_price_breakdown.mat_price.toFixed(2)} руб`
+      }
       if (orderData.length && orderData.width && orderData.height) {
-        materialCosts.value.rawMaterials.extractedDimensions = `${orderData.length} × ${orderData.width} × ${orderData.height}`
+        materialCosts.value.rawMaterials.blankInfo.extractedDimensions = `${orderData.length} × ${orderData.width} × ${orderData.height}`
       }
       if (orderData.mat_volume) {
-        materialCosts.value.rawMaterials.partVolume = `${orderData.mat_volume.toFixed(2)} см³`
+        materialCosts.value.rawMaterials.blankInfo.matVolume = `${orderData.mat_volume.toFixed(2)} см³`
       }
-      if (orderData.material_id) {
-        materialCosts.value.rawMaterials.mainMaterial = orderData.material_id
+      if (orderData.total_price_breakdown?.mat_weight) {
+        materialCosts.value.rawMaterials.blankInfo.matWeight = `${orderData.total_price_breakdown.mat_weight.toFixed(2)} кг`
+      }
+      if (orderData.total_price_breakdown?.price_per_kg) {
+        materialCosts.value.rawMaterials.pricePerKg = `${orderData.total_price_breakdown.price_per_kg.toFixed(2)} руб/кг`
       }
       if (orderData.total_price_breakdown?.dop_mat_price) {
-        materialCosts.value.auxiliaryMaterials = `${orderData.total_price_breakdown.dop_mat_price.toFixed(2)} руб`
+        materialCosts.value.dopMatPrice = `${orderData.total_price_breakdown.dop_mat_price.toFixed(2)} руб`
       }
 
       // Map labor costs from order data
+      // Mapping follows the structure from specification: sum_costs_labor, total_time, price_of_hour_with_others, work_price, dop_salary, insurance_price, overhead_expenses, administrative_expenses
+      if (orderData.total_price_breakdown?.sum_costs_labor) {
+        laborCosts.value.sumCostsLabor = `${orderData.total_price_breakdown.sum_costs_labor.toFixed(2)} руб`
+      }
       if (orderData.total_time) {
-        laborCosts.value.laborIntensity = `${orderData.total_time.toFixed(2)} ч`
+        laborCosts.value.totalTime = `${orderData.total_time.toFixed(2)} ч`
       }
       if (orderData.total_price_breakdown) {
         const breakdown = orderData.total_price_breakdown
+        if (breakdown.price_of_hour_with_others) {
+          laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers = `${breakdown.price_of_hour_with_others.toFixed(2)} руб/ч`
+        }
         if (breakdown.work_price) {
-          laborCosts.value.costPerStandardHour.basicSalary = `${breakdown.work_price.toFixed(2)} руб`
+          laborCosts.value.priceOfHourWithOthers.workPrice = `${breakdown.work_price.toFixed(2)} руб`
         }
         if (breakdown.dop_salary) {
-          laborCosts.value.costPerStandardHour.additionalSalary = `${breakdown.dop_salary.toFixed(2)} руб`
+          laborCosts.value.priceOfHourWithOthers.dopSalary = `${breakdown.dop_salary.toFixed(2)} руб`
         }
         if (breakdown.insurance_price) {
-          laborCosts.value.costPerStandardHour.insuranceContributions = `${breakdown.insurance_price.toFixed(2)} руб`
+          laborCosts.value.priceOfHourWithOthers.insurancePrice = `${breakdown.insurance_price.toFixed(2)} руб`
         }
         if (breakdown.overhead_expenses) {
-          laborCosts.value.costPerStandardHour.generalProductionCosts = `${breakdown.overhead_expenses.toFixed(2)} руб`
+          laborCosts.value.priceOfHourWithOthers.overheadExpenses = `${breakdown.overhead_expenses.toFixed(2)} руб`
         }
         if (breakdown.administrative_expenses) {
-          laborCosts.value.costPerStandardHour.generalAdministrativeCosts = `${breakdown.administrative_expenses.toFixed(2)} руб`
+          laborCosts.value.priceOfHourWithOthers.administrativeExpenses = `${breakdown.administrative_expenses.toFixed(2)} руб`
         }
       }
 
@@ -241,7 +269,7 @@ const handleSave = async () => {
     <!-- Material Costs Section -->
     <!-- Using el-tree to display hierarchical cost structure with expandable nodes -->
     <div class="cost-section">
-      <div class="section-title">Материальные затраты</div>
+      <div class="section-title">1 Материальные затраты</div>
       <div class="section-divider"></div>
       <el-tree
         :data="materialCostsTree"
@@ -261,7 +289,7 @@ const handleSave = async () => {
     <!-- Labor Costs Section -->
     <!-- Using el-tree for hierarchical display of labor costs with nested subcategories -->
     <div class="cost-section">
-      <div class="section-title">Затраты на оплату труда</div>
+      <div class="section-title">2 Затраты на оплату труда</div>
       <div class="section-divider"></div>
       <el-tree
         :data="laborCostsTree"
@@ -281,7 +309,7 @@ const handleSave = async () => {
     <!-- Tooling Costs Section -->
     <!-- Using el-tree for consistent display structure across all cost sections -->
     <div class="cost-section">
-      <div class="section-title">Затраты на оснастку</div>
+      <div class="section-title">3 Затраты на специальную технологическую оснастку</div>
       <div class="section-divider"></div>
       <el-tree
         :data="toolingCostsTree"
