@@ -271,7 +271,10 @@ const handleSave = async () => {
     <!-- Material Costs Section -->
     <!-- Using el-tree to display hierarchical cost structure with expandable nodes -->
     <div class="cost-section">
-      <div class="section-title">1 Материальные затраты</div>
+      <div class="section-title">
+        <span>1 Материальные затраты</span>
+        <span class="section-value">{{ materialCosts.matPriceFull }}</span>
+      </div>
       <div class="section-divider"></div>
       <el-tree
         :data="materialCostsTree"
@@ -291,7 +294,10 @@ const handleSave = async () => {
     <!-- Labor Costs Section -->
     <!-- Using el-tree for hierarchical display of labor costs with nested subcategories -->
     <div class="cost-section">
-      <div class="section-title">2 Затраты на оплату труда</div>
+      <div class="section-title">
+        <span>2 Затраты на оплату труда</span>
+        <span class="section-value">{{ laborCosts.sumCostsLabor }}</span>
+      </div>
       <div class="section-divider"></div>
       <el-tree
         :data="laborCostsTree"
@@ -375,10 +381,19 @@ const handleSave = async () => {
 }
 
 .section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 16px;
   font-weight: bold;
   color: #303133;
   margin-bottom: 12px;
+}
+
+.section-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: #606266;
 }
 
 .section-divider {
