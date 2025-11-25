@@ -176,7 +176,9 @@ const fetchOrder = async (id: number) => {
         materialCosts.value.rawMaterials.blankInfo.extractedDimensions = `${orderData.length} × ${orderData.width} × ${orderData.height}`
       }
       if (orderData.mat_volume) {
-        materialCosts.value.rawMaterials.blankInfo.matVolume = `${orderData.mat_volume.toFixed(2)} см³`
+        // Конвертация из м³ в см³ (1 м³ = 1,000,000 см³)
+        const volumeInCm3 = orderData.mat_volume * 1_000_000
+        materialCosts.value.rawMaterials.blankInfo.matVolume = `${volumeInCm3.toFixed(2)} см³`
       }
       if (orderData.total_price_breakdown?.mat_weight) {
         materialCosts.value.rawMaterials.blankInfo.matWeight = `${orderData.total_price_breakdown.mat_weight.toFixed(2)} кг`
