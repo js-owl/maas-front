@@ -63,7 +63,7 @@ const toolingCosts = ref('-')
 // Tree structure matches the exact hierarchy from the specification image
 const materialCostsTree = computed(() => [
   {
-    label: '1.1 сырье и основные материалы',
+    label: '1.1 Сырье и основные материалы',
     value: materialCosts.value.rawMaterials.matPrice,
     children: [
       {
@@ -171,8 +171,8 @@ const fetchOrder = async (id: number) => {
         const volumeInCm3 = orderData.mat_volume * 1_000_000
         materialCosts.value.rawMaterials.blankInfo.matVolume = `${volumeInCm3.toFixed(2)} см³`
       }
-      if (orderData.total_price_breakdown?.mat_weight !== undefined && orderData.total_price_breakdown?.mat_weight !== null) {
-        materialCosts.value.rawMaterials.blankInfo.matWeight = `${orderData.total_price_breakdown.mat_weight.toFixed(2)} кг`
+      if (orderData?.mat_weight !== undefined && orderData?.mat_weight !== null) {
+        materialCosts.value.rawMaterials.blankInfo.matWeight = `${orderData.mat_weight.toFixed(2)} кг`
       }
       if (orderData.total_price_breakdown?.price_per_kg !== undefined && orderData.total_price_breakdown?.price_per_kg !== null) {
         materialCosts.value.rawMaterials.pricePerKg = `${orderData.total_price_breakdown.price_per_kg.toFixed(2)} руб/кг`
