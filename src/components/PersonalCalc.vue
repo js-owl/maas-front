@@ -170,9 +170,9 @@ watch(orderId, (newId) => {
                 <div class="cost-value">{{ formatCurrency(manufacturingCost) }}</div>
                 <div class="quantity-display">{{ quantity }} шт.</div>
               </div>
-
-              <!-- Quantity Input Section -->
-              <div class="quantity-section">
+            </div>
+                          <!-- Quantity Input Section -->
+                          <div class="quantity-section">
                 <el-button
                   type="default"
                   class="calculate-button"
@@ -202,7 +202,6 @@ watch(orderId, (newId) => {
                   <el-button circle size="small" @click="increaseQuantity">+</el-button>
                 </div>
               </div>
-            </div>
           </div>
 
           <!-- Bottom Section: Product Properties -->
