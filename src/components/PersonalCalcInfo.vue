@@ -157,62 +157,62 @@ const fetchOrder = async (id: number) => {
 
       // Map material costs from order data
       // Mapping follows the structure from specification: extracted_dimensions, mat_volume, mat_weight, price_per_kg, dop_mat_price
-      if (orderData.total_price_breakdown?.mat_price_full) {
+      if (orderData.total_price_breakdown?.mat_price_full !== undefined && orderData.total_price_breakdown?.mat_price_full !== null) {
         materialCosts.value.matPriceFull = `${orderData.total_price_breakdown.mat_price_full.toFixed(2)} руб`
       }
-      if (orderData.total_price_breakdown?.mat_price) {
+      if (orderData.total_price_breakdown?.mat_price !== undefined && orderData.total_price_breakdown?.mat_price !== null) {
         materialCosts.value.rawMaterials.matPrice = `${orderData.total_price_breakdown.mat_price.toFixed(2)} руб`
       }
       if (orderData.length && orderData.width && orderData.height) {
         materialCosts.value.rawMaterials.blankInfo.extractedDimensions = `${orderData.length} × ${orderData.width} × ${orderData.height}`
       }
-      if (orderData.mat_volume) {
+      if (orderData.mat_volume !== undefined && orderData.mat_volume !== null) {
         // Конвертация из м³ в см³ (1 м³ = 1,000,000 см³)
         const volumeInCm3 = orderData.mat_volume * 1_000_000
         materialCosts.value.rawMaterials.blankInfo.matVolume = `${volumeInCm3.toFixed(2)} см³`
       }
-      if (orderData.total_price_breakdown?.mat_weight) {
+      if (orderData.total_price_breakdown?.mat_weight !== undefined && orderData.total_price_breakdown?.mat_weight !== null) {
         materialCosts.value.rawMaterials.blankInfo.matWeight = `${orderData.total_price_breakdown.mat_weight.toFixed(2)} кг`
       }
-      if (orderData.total_price_breakdown?.price_per_kg) {
+      if (orderData.total_price_breakdown?.price_per_kg !== undefined && orderData.total_price_breakdown?.price_per_kg !== null) {
         materialCosts.value.rawMaterials.pricePerKg = `${orderData.total_price_breakdown.price_per_kg.toFixed(2)} руб/кг`
       }
-      if (orderData.total_price_breakdown?.dop_mat_price) {
+      if (orderData.total_price_breakdown?.dop_mat_price !== undefined && orderData.total_price_breakdown?.dop_mat_price !== null) {
         materialCosts.value.dopMatPrice = `${orderData.total_price_breakdown.dop_mat_price.toFixed(2)} руб`
       }
 
       // Map labor costs from order data
       // Mapping follows the structure from specification: sum_costs_labor, total_time, price_of_hour_with_others, work_price, dop_salary, insurance_price, overhead_expenses, administrative_expenses
-      if (orderData.total_price_breakdown?.sum_costs_labor) {
+      if (orderData.total_price_breakdown?.sum_costs_labor !== undefined && orderData.total_price_breakdown?.sum_costs_labor !== null) {
         laborCosts.value.sumCostsLabor = `${orderData.total_price_breakdown.sum_costs_labor.toFixed(2)} руб`
       }
-      if (orderData.total_time) {
+      if (orderData.total_time !== undefined && orderData.total_time !== null) {
         laborCosts.value.totalTime = `${orderData.total_time.toFixed(2)} ч`
       }
       if (orderData.total_price_breakdown) {
         const breakdown = orderData.total_price_breakdown
-        if (breakdown.price_of_hour_with_others) {
+        if (breakdown.price_of_hour_with_others !== undefined && breakdown.price_of_hour_with_others !== null) {
           laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers = `${breakdown.price_of_hour_with_others.toFixed(2)} руб/ч`
         }
-        if (breakdown.work_price) {
+        if (breakdown.work_price !== undefined && breakdown.work_price !== null) {
           laborCosts.value.priceOfHourWithOthers.workPrice = `${breakdown.work_price.toFixed(2)} руб`
         }
-        if (breakdown.dop_salary) {
+        if (breakdown.dop_salary !== undefined && breakdown.dop_salary !== null) {
           laborCosts.value.priceOfHourWithOthers.dopSalary = `${breakdown.dop_salary.toFixed(2)} руб`
         }
-        if (breakdown.insurance_price) {
+        if (breakdown.insurance_price !== undefined && breakdown.insurance_price !== null) {
           laborCosts.value.priceOfHourWithOthers.insurancePrice = `${breakdown.insurance_price.toFixed(2)} руб`
         }
-        if (breakdown.overhead_expenses) {
+        if (breakdown.overhead_expenses !== undefined && breakdown.overhead_expenses !== null) {
           laborCosts.value.priceOfHourWithOthers.overheadExpenses = `${breakdown.overhead_expenses.toFixed(2)} руб`
         }
-        if (breakdown.administrative_expenses) {
+        if (breakdown.administrative_expenses !== undefined && breakdown.administrative_expenses !== null) {
           laborCosts.value.priceOfHourWithOthers.administrativeExpenses = `${breakdown.administrative_expenses.toFixed(2)} руб`
         }
       }
 
       // Map tooling costs
-      if (orderData.total_price_breakdown?.price_special_equipment_to_quantity) {
+      if (orderData.total_price_breakdown?.price_special_equipment_to_quantity !== undefined && orderData.total_price_breakdown?.price_special_equipment_to_quantity !== null) {
         toolingCosts.value = `${orderData.total_price_breakdown.price_special_equipment_to_quantity.toFixed(2)} руб`
       }
 
