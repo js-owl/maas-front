@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { View } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
@@ -89,7 +88,6 @@ const handleOpen = (row: IOrderResponse): void => {
   <el-row :gutter="20" style="background-color: #fff; padding-top: 0px; min-height: 500px">
     <el-col :offset="0" :span="24">
       <el-table
-        stripe
         :data="orders || []"
         :default-sort="{ prop: 'order_id', order: 'descending' }"
         style="width: 100%"
@@ -137,10 +135,8 @@ const handleOpen = (row: IOrderResponse): void => {
         <el-table-column prop="total_price" label="Цена" width="100" :formatter="formatPrice" />
         <el-table-column fixed="right" label="Операции" min-width="120">
           <template #default="scope">
-            <el-button link type="primary" size="small" @click="handleOpen(scope.row)">
-              <el-icon color="black" class="no-inherit">
-                <View />
-              </el-icon>
+            <el-button link type="primary" size="small" @click="handleOpen(scope.row)" class="open-button">
+              Открыть
             </el-button>
             <!-- <el-button
               link
@@ -172,5 +168,21 @@ const handleOpen = (row: IOrderResponse): void => {
   color: #909399;
   font-style: italic;
   font-size: 12px;
+}
+
+.open-button {
+  color: rgb(96, 98, 102);
+  background-color: var(--whity);
+  border-color: var(--grey2);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  &:hover {
+    border: 1px solid var(--grey2);
+    color: black;
+  }
 }
 </style>
