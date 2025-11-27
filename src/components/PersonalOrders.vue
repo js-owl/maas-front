@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Edit } from '@element-plus/icons-vue'
+import { View } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
@@ -60,7 +60,7 @@ const getStatusText = (status: string): string => {
   return statusTexts[status] || status
 }
 
-const handleEdit = (row: IOrderResponse): void => {
+const handleOpen = (row: IOrderResponse): void => {
   router.push({
     path: '/personal/calc',
     query: { orderId: row.order_id.toString() },
@@ -136,9 +136,9 @@ const handleEdit = (row: IOrderResponse): void => {
         <el-table-column prop="total_price" label="Цена" width="100" :formatter="formatPrice" />
         <el-table-column fixed="right" label="Операции" min-width="120">
           <template #default="scope">
-            <el-button link type="primary" size="small" @click="handleEdit(scope.row)">
-              <el-icon color="blue" class="no-inherit">
-                <Edit />
+            <el-button link type="primary" size="small" @click="handleOpen(scope.row)">
+              <el-icon color="black" class="no-inherit">
+                <View />
               </el-icon>
             </el-button>
             <!-- <el-button
