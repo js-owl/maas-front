@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { View } from '@element-plus/icons-vue'
+import { View, Edit } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
@@ -65,6 +65,18 @@ const handleOpen = (row: IOrderResponse): void => {
     path: '/personal/calc',
     query: { orderId: row.order_id.toString() },
   })
+}
+
+const handleEdit = (row: IOrderResponse): void => {
+  const routeMap: Record<string, string> = {
+    'cnc-lathe': '/machining',
+    'cnc-milling': '/milling',
+    printing: '/printing',
+  }
+  const route = routeMap[row.service_id]
+  if (route) {
+    router.push(route)
+  }
 }
 
 // const handleDelete = async (row: IOrderResponse): Promise<void> => {
@@ -139,6 +151,11 @@ const handleOpen = (row: IOrderResponse): void => {
             <el-button link type="primary" size="small" @click="handleOpen(scope.row)">
               <el-icon color="black" class="no-inherit">
                 <View />
+              </el-icon>
+            </el-button>
+            <el-button link type="primary" size="small" @click="handleEdit(scope.row)">
+              <el-icon color="black" class="no-inherit">
+                <Edit />
               </el-icon>
             </el-button>
             <!-- <el-button
