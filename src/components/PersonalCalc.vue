@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Clock, Location } from '@element-plus/icons-vue'
+import { Clock, Location, Edit } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
@@ -13,6 +13,9 @@ const orderId = computed(() => Number(route.query.orderId) || 0)
 
 // Loading state
 const isLoading = ref(false)
+
+// Order data storage
+const orderData = ref<IOrderResponse | null>(null)
 
 // Model filename - represents the uploaded 3D model file
 const modelFilename = ref('Example_model.stl')
@@ -103,27 +106,28 @@ const fetchOrder = async (id: number) => {
   try {
     const response = await req_json_auth(`/orders/${id}`, 'GET')
     if (response?.ok) {
-      const orderData = (await response.json()) as IOrderResponse
+      const fetchedOrderData = (await response.json()) as IOrderResponse
+      orderData.value = fetchedOrderData
       
       // Map order data to component state
-      if (orderData.quantity) quantity.value = orderData.quantity
-      if (orderData.detail_price_one) manufacturingCost.value = orderData.detail_price_one
-      if (orderData.manufacturing_cycle) manufacturingTime.value = orderData.manufacturing_cycle
+      if (fetchedOrderData.quantity) quantity.value = fetchedOrderData.quantity
+      if (fetchedOrderData.detail_price_one) manufacturingCost.value = fetchedOrderData.detail_price_one
+      if (fetchedOrderData.manufacturing_cycle) manufacturingTime.value = fetchedOrderData.manufacturing_cycle
       
       // Map product properties
-      if (orderData.length && orderData.width && orderData.height) {
-        productProperties.value.dimensions = `${orderData.length} × ${orderData.width} × ${orderData.height}`
+      if (fetchedOrderData.length && fetchedOrderData.width && fetchedOrderData.height) {
+        productProperties.value.dimensions = `${fetchedOrderData.length} × ${fetchedOrderData.width} × ${fetchedOrderData.height}`
       }
-      if (orderData.mat_volume) {
-        productProperties.value.partVolume = `${orderData.mat_volume.toFixed(2)} см³`
+      if (fetchedOrderData.mat_volume) {
+        productProperties.value.partVolume = `${fetchedOrderData.mat_volume.toFixed(2)} см³`
       }
-      if (orderData.material_id) {
-        productProperties.value.material = orderData.material_id
+      if (fetchedOrderData.material_id) {
+        productProperties.value.material = fetchedOrderData.material_id
       }
       
       // Update model filename if file_id exists
-      if (orderData.file_id) {
-        modelFilename.value = `Model_${orderData.file_id}.stl`
+      if (fetchedOrderData.file_id) {
+        modelFilename.value = `Model_${fetchedOrderData.file_id}.stl`
       }
     } else {
       ElMessage.error('Не удалось загрузить данные заказа')
@@ -142,6 +146,38 @@ watch(orderId, (newId) => {
     fetchOrder(newId)
   }
 }, { immediate: true })
+
+// Handle edit button click - navigate to appropriate edit page based on service_id
+const handleEdit = (): void => {
+  if (!orderData.value) return
+  
+  switch (orderData.value.service_id) {
+    case 'cnc-lathe':
+      router.push({
+        path: '/machining',
+        query: { orderId: orderData.value.order_id.toString() },
+      })
+      break
+    case 'cnc-milling':
+      router.push({
+        path: '/milling',
+        query: { orderId: orderData.value.order_id.toString() },
+      })
+      break
+    case 'printing':
+      router.push({
+        path: '/printing',
+        query: { orderId: orderData.value.order_id.toString() },
+      })
+      break
+    default:
+      router.push({
+        path: '/machining',
+        query: { orderId: orderData.value.order_id.toString() },
+      })
+      break
+  }
+}
 </script>
 
 <template>
@@ -179,6 +215,17 @@ watch(orderId, (newId) => {
                   @click="handleCalculateCost"
                 >
                   Калькуляция стоимости
+                </el-button>
+                <el-button
+                  type="primary"
+                  class="edit-button"
+                  @click="handleEdit"
+                  :disabled="!orderData"
+                >
+                  <el-icon class="no-inherit">
+                    <Edit />
+                  </el-icon>
+                  Редактировать
                 </el-button>
                 <div class="quantity-label">Количество</div>
                 <div class="quantity-controls">
@@ -382,6 +429,11 @@ watch(orderId, (newId) => {
   background-color: #f5f7fa;
   border-color: #dcdfe6;
   color: #606266;
+  margin-bottom: 8px;
+}
+
+.edit-button {
+  width: 100%;
   margin-bottom: 8px;
 }
 

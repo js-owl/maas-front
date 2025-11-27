@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { View, Edit } from '@element-plus/icons-vue'
+import { View } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
@@ -67,34 +67,6 @@ const handleOpen = (row: IOrderResponse): void => {
   })
 }
 
-const handleEdit = (row: IOrderResponse): void => {
-  switch (row.service_id) {
-    case "cnc-lathe":
-      router.push({
-        path: "/machining",
-        query: { orderId: row.order_id.toString() },
-      });
-      break;
-    case "cnc-milling":
-      router.push({
-        path: "/milling",
-        query: { orderId: row.order_id.toString() },
-      });
-      break;
-    case "printing":
-      router.push({
-        path: "/printing",
-        query: { orderId: row.order_id.toString() },
-      });
-      break;
-    default:
-      router.push({
-        path: "/machining",
-        query: { orderId: row.order_id.toString() },
-      });
-      break;
-  }
-};
 
 // const handleDelete = async (row: IOrderResponse): Promise<void> => {
 //   deleteLoading.value = row.order_id
@@ -168,11 +140,6 @@ const handleEdit = (row: IOrderResponse): void => {
             <el-button link type="primary" size="small" @click="handleOpen(scope.row)">
               <el-icon color="black" class="no-inherit">
                 <View />
-              </el-icon>
-            </el-button>
-            <el-button link type="primary" size="small" @click="handleEdit(scope.row)">
-              <el-icon color="black" class="no-inherit">
-                <Edit />
               </el-icon>
             </el-button>
             <!-- <el-button
