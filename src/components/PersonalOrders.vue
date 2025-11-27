@@ -68,16 +68,33 @@ const handleOpen = (row: IOrderResponse): void => {
 }
 
 const handleEdit = (row: IOrderResponse): void => {
-  const routeMap: Record<string, string> = {
-    'cnc-lathe': '/machining',
-    'cnc-milling': '/milling',
-    printing: '/printing',
+  switch (row.service_id) {
+    case "cnc-lathe":
+      router.push({
+        path: "/machining",
+        query: { orderId: row.order_id.toString() },
+      });
+      break;
+    case "cnc-milling":
+      router.push({
+        path: "/milling",
+        query: { orderId: row.order_id.toString() },
+      });
+      break;
+    case "printing":
+      router.push({
+        path: "/printing",
+        query: { orderId: row.order_id.toString() },
+      });
+      break;
+    default:
+      router.push({
+        path: "/machining",
+        query: { orderId: row.order_id.toString() },
+      });
+      break;
   }
-  const route = routeMap[row.service_id]
-  if (route) {
-    router.push(route)
-  }
-}
+};
 
 // const handleDelete = async (row: IOrderResponse): Promise<void> => {
 //   deleteLoading.value = row.order_id
