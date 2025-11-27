@@ -216,17 +216,7 @@ const handleEdit = (): void => {
                 >
                   Калькуляция стоимости
                 </el-button>
-                <el-button
-                  type="primary"
-                  class="edit-button"
-                  @click="handleEdit"
-                  :disabled="!orderData"
-                >
-                  <el-icon class="no-inherit">
-                    <Edit />
-                  </el-icon>
-                  Редактировать
-                </el-button>
+
                 <div class="quantity-label">Количество</div>
                 <div class="quantity-controls">
                   <el-button
@@ -277,6 +267,10 @@ const handleEdit = (): void => {
               <span class="property-label">Сертификация</span>
               <span class="property-value">{{ productProperties.certification || '-' }}</span>
             </div>
+          </div>
+          <div class="edit-button-container">
+            <el-button type="primary" @click="handleEdit">< Редактировать</el-button>
+            <el-button type="primary" @click="handleEdit">Оформить заказ ></el-button>
           </div>
         </el-card>
       </el-col>
@@ -571,6 +565,30 @@ const handleEdit = (): void => {
 
 .production-radio :deep(.el-radio__label) {
   padding-left: 8px;
+}
+
+.edit-button-container {
+    display: flex;
+    margin: 20px 0;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.edit-button-container button {
+    background-color: var(--gray2);
+    border-color: var(--gray2);
+    color: black;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 20px 48px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    &:hover {
+      background-color: var(--gray-footer);
+      border-color: var(--gray-footer);
+      color: white;
+    }
 }
 
 /* Responsive Design */
