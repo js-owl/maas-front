@@ -119,7 +119,8 @@ const fetchOrder = async (id: number) => {
         productProperties.value.dimensions = `${fetchedOrderData.length} × ${fetchedOrderData.width} × ${fetchedOrderData.height}`
       }
       if (fetchedOrderData.mat_volume) {
-        productProperties.value.partVolume = `${fetchedOrderData.mat_volume.toFixed(2)} см³`
+        const volumeInCm3 = fetchedOrderData.mat_volume * 1_000_000
+        productProperties.value.partVolume = `${volumeInCm3.toFixed(2)} см³`
       }
       if (fetchedOrderData.material_id) {
         productProperties.value.material = fetchedOrderData.material_id
