@@ -5,6 +5,7 @@ import { Clock, Location, Edit } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
+import { useMaterialStore } from '../stores/material.store'
 
 // Get orderId from route query
 const route = useRoute()
@@ -13,6 +14,9 @@ const orderId = computed(() => Number(route.query.orderId) || 0)
 
 // Loading state
 const isLoading = ref(false)
+
+// Material store
+const materialStore = useMaterialStore()
 
 // Order data storage
 const orderData = ref<IOrderResponse | null>(null)
@@ -104,6 +108,11 @@ const fetchOrder = async (id: number) => {
 
   isLoading.value = true
   try {
+    // Ensure materials are loaded to resolve material label
+    if (!materialStore.materials.length) {
+      await materialStore.setAllMaterials()
+    }
+
     const response = await req_json_auth(`/orders/${id}`, 'GET')
     if (response?.ok) {
       const fetchedOrderData = (await response.json()) as IOrderResponse
@@ -123,7 +132,10 @@ const fetchOrder = async (id: number) => {
         productProperties.value.partVolume = `${volumeInCm3.toFixed(2)} см³`
       }
       if (fetchedOrderData.material_id) {
-        productProperties.value.material = fetchedOrderData.material_id
+        const foundMaterial = materialStore.materials.find(
+          m => m.value === fetchedOrderData.material_id
+        )
+        productProperties.value.material = foundMaterial?.label ?? fetchedOrderData.material_id
       }
       
       // Update model filename if file_id exists
