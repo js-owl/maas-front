@@ -79,7 +79,7 @@ const onRestore = async () => {
           <el-button type="primary" class="btn" style="width: 27%" @click="onSubmit">
             Войти
           </el-button>
-          <el-button type="primary" class="btn" style="width: 67%" @click="onRegistration">
+          <el-button v-if="false" type="primary" class="btn" style="width: 67%" @click="onRegistration">
             Регистрация
           </el-button>
         </div>
