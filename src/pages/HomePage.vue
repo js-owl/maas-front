@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useWindowSize } from '@vueuse/core'
+import { useCoefficientsStore } from '../stores/coefficients.store'
 import HomeModel from '../components/sections/HomeModel.vue'
 import HomeUslugi from '../components/sections/HomeUslugi.vue'
 import HomeAbout from '../components/sections/HomeAbout.vue'
@@ -10,6 +11,12 @@ import HomeCalc from '../components/sections/HomeCalc.vue'
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
+
+const coefficientsStore = useCoefficientsStore()
+
+onMounted(() => {
+  coefficientsStore.setAllCoefficients()
+})
 </script>
 
 <template>
