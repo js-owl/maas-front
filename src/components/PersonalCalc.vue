@@ -6,6 +6,7 @@ import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
+import { useCoefficientsStore } from '../stores/coefficients.store'
 
 // Get orderId from route query
 const route = useRoute()
@@ -17,6 +18,9 @@ const isLoading = ref(false)
 
 // Material store
 const materialStore = useMaterialStore()
+
+// Coefficients store
+const coefficientsStore = useCoefficientsStore()
 
 // Order data storage
 const orderData = ref<IOrderResponse | null>(null)
@@ -113,6 +117,15 @@ const fetchOrder = async (id: number) => {
       await materialStore.setAllMaterials()
     }
 
+    // Ensure coefficients are loaded to resolve finish/cover/tolerance labels
+    if (
+      !coefficientsStore.coefficients.finish.length &&
+      !coefficientsStore.coefficients.cover.length &&
+      !coefficientsStore.coefficients.tolerance.length
+    ) {
+      await coefficientsStore.setAllCoefficients()
+    }
+
     const response = await req_json_auth(`/orders/${id}`, 'GET')
     if (response?.ok) {
       const fetchedOrderData = (await response.json()) as IOrderResponse
@@ -136,6 +149,18 @@ const fetchOrder = async (id: number) => {
           m => m.value === fetchedOrderData.material_id
         )
         productProperties.value.material = foundMaterial?.label ?? fetchedOrderData.material_id
+      }
+
+      // Map cover_id (array of ids) to coating labels from coefficients store
+      if (Array.isArray(fetchedOrderData.cover_id) && fetchedOrderData.cover_id.length) {
+        const coverLabels = fetchedOrderData.cover_id
+          .map(id =>
+            coefficientsStore.coefficients.cover.find(cover => cover.value === id)?.label
+          )
+          .filter((label): label is string => Boolean(label))
+
+        productProperties.value.coating =
+          coverLabels.join(', ') || fetchedOrderData.cover_id.join(', ')
       }
       
       // Update model filename if file_id exists
