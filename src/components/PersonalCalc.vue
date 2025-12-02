@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Clock, Location, Edit } from '@element-plus/icons-vue'
+import { Clock, Location } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
@@ -292,10 +292,6 @@ const handleEdit = (): void => {
             <div class="property-item">
               <span class="property-label">Материал</span>
               <span class="property-value">{{ productProperties.material || '-' }}</span>
-            </div>
-            <div class="property-item">
-              <span class="property-label">Постобработка</span>
-              <span class="property-value">{{ productProperties.postProcessing || '-' }}</span>
             </div>
             <div class="property-item">
               <span class="property-label">Покрытие</span>
