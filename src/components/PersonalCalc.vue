@@ -70,25 +70,25 @@ const formatCurrency = (value: number): string => {
 }
 
 // Handle quantity increase
-const increaseQuantity = () => {
-  quantity.value += 1
-}
+// const increaseQuantity = () => {
+//   quantity.value += 1
+// }
 
-// Handle quantity decrease
-const decreaseQuantity = () => {
-  if (quantity.value > 1) {
-    quantity.value -= 1
-  }
-}
+// // Handle quantity decrease
+// const decreaseQuantity = () => {
+//   if (quantity.value > 1) {
+//     quantity.value -= 1
+//   }
+// }
 
-// Handle quantity input change
-const handleQuantityChange = (value: number | null) => {
-  if (value !== null && value >= 1) {
-    quantity.value = value
-  } else {
-    quantity.value = 1
-  }
-}
+// // Handle quantity input change
+// const handleQuantityChange = (value: number | null) => {
+//   if (value !== null && value >= 1) {
+//     quantity.value = value
+//   } else {
+//     quantity.value = 1
+//   }
+// }
 
 // Handle calculate cost button click
 const handleCalculateCost = () => {
@@ -130,12 +130,14 @@ const fetchOrder = async (id: number) => {
     if (response?.ok) {
       const fetchedOrderData = (await response.json()) as IOrderResponse
       orderData.value = fetchedOrderData
-      
+
       // Map order data to component state
       if (fetchedOrderData.quantity) quantity.value = fetchedOrderData.quantity
-      if (fetchedOrderData.detail_price_one) manufacturingCost.value = fetchedOrderData.detail_price_one
-      if (fetchedOrderData.manufacturing_cycle) manufacturingTime.value = fetchedOrderData.manufacturing_cycle
-      
+      if (fetchedOrderData.detail_price_one)
+        manufacturingCost.value = fetchedOrderData.detail_price_one
+      if (fetchedOrderData.manufacturing_cycle)
+        manufacturingTime.value = fetchedOrderData.manufacturing_cycle
+
       // Map product properties
       if (fetchedOrderData.length && fetchedOrderData.width && fetchedOrderData.height) {
         productProperties.value.dimensions = `${fetchedOrderData.length} × ${fetchedOrderData.width} × ${fetchedOrderData.height}`
@@ -146,7 +148,7 @@ const fetchOrder = async (id: number) => {
       }
       if (fetchedOrderData.material_id) {
         const foundMaterial = materialStore.materials.find(
-          m => m.value === fetchedOrderData.material_id
+          (m) => m.value === fetchedOrderData.material_id
         )
         productProperties.value.material = foundMaterial?.label ?? fetchedOrderData.material_id
       }
@@ -154,15 +156,15 @@ const fetchOrder = async (id: number) => {
       // Map cover_id (array of ids) to coating labels from coefficients store
       if (Array.isArray(fetchedOrderData.cover_id) && fetchedOrderData.cover_id.length) {
         const coverLabels = fetchedOrderData.cover_id
-          .map(id =>
-            coefficientsStore.coefficients.cover.find(cover => cover.value === id)?.label
+          .map(
+            (id) => coefficientsStore.coefficients.cover.find((cover) => cover.value === id)?.label
           )
           .filter((label): label is string => Boolean(label))
 
         productProperties.value.coating =
           coverLabels.join(', ') || fetchedOrderData.cover_id.join(', ')
       }
-      
+
       // Update model filename if file_id exists
       if (fetchedOrderData.file_id) {
         modelFilename.value = `Model_${fetchedOrderData.file_id}.stl`
@@ -179,16 +181,20 @@ const fetchOrder = async (id: number) => {
 }
 
 // Watch for orderId changes and fetch order data
-watch(orderId, (newId) => {
-  if (newId && newId > 0) {
-    fetchOrder(newId)
-  }
-}, { immediate: true })
+watch(
+  orderId,
+  (newId) => {
+    if (newId && newId > 0) {
+      fetchOrder(newId)
+    }
+  },
+  { immediate: true }
+)
 
 // Handle edit button click - navigate to appropriate edit page based on service_id
 const handleEdit = (): void => {
   if (!orderData.value) return
-  
+
   switch (orderData.value.service_id) {
     case 'cnc-lathe':
       router.push({
@@ -219,7 +225,11 @@ const handleEdit = (): void => {
 </script>
 
 <template>
-  <div class="personal-calc-container" v-loading="isLoading" element-loading-text="Загрузка данных заказа...">
+  <div
+    class="personal-calc-container"
+    v-loading="isLoading"
+    element-loading-text="Загрузка данных заказа..."
+  >
     <el-row :gutter="20">
       <!-- Left Card - Product Details and Configuration (2/3 width) -->
       <el-col :span="16">
@@ -245,38 +255,29 @@ const handleEdit = (): void => {
                 <div class="quantity-display">{{ quantity }} шт.</div>
               </div>
             </div>
-                          <!-- Quantity Input Section -->
-                          <div class="quantity-section">
-                <el-button
-                  type="default"
-                  class="calculate-button"
-                  @click="handleCalculateCost"
-                >
-                  Калькуляция стоимости
-                </el-button>
+            <!-- Quantity Input Section -->
+            <div class="quantity-section">
+              <el-button type="default" class="calculate-button" @click="handleCalculateCost">
+                Калькуляция стоимости
+              </el-button>
 
-                <div class="quantity-label">Количество</div>
-                <div class="quantity-controls">
-                  <el-button
-                    circle
-                    size="small"
-                    :disabled="quantity <= 1"
-                    @click="decreaseQuantity"
-                  >
-                    -
-                  </el-button>
-                  <el-input-number
-                    v-model="quantity"
-                    :min="1"
-                    :max="1000"
-                    size="default"
-                    :controls="false"
-                    class="quantity-input"
-                    @change="handleQuantityChange"
-                  />
-                  <el-button circle size="small" @click="increaseQuantity">+</el-button>
-                </div>
-              </div>
+              <!-- <div class="quantity-label">Количество</div>
+              <div class="quantity-controls">
+                <el-button circle size="small" :disabled="quantity <= 1" @click="decreaseQuantity">
+                  -
+                </el-button>
+                <el-input-number
+                  v-model="quantity"
+                  :min="1"
+                  :max="1000"
+                  size="default"
+                  :controls="false"
+                  class="quantity-input"
+                  @change="handleQuantityChange"
+                />
+                <el-button circle size="small" @click="increaseQuantity">+</el-button>
+              </div> -->
+            </div>
           </div>
 
           <!-- Bottom Section: Product Properties -->
@@ -297,14 +298,14 @@ const handleEdit = (): void => {
               <span class="property-label">Покрытие</span>
               <span class="property-value">{{ productProperties.coating || '-' }}</span>
             </div>
-            <div class="property-item">
+            <!-- <div class="property-item">
               <span class="property-label">Сертификация</span>
               <span class="property-value">{{ productProperties.certification || '-' }}</span>
-            </div>
+            </div> -->
           </div>
           <div class="edit-button-container">
             <el-button type="primary" @click="handleEdit">< Редактировать</el-button>
-            <el-button type="primary" @click="handleEdit">Оформить заказ ></el-button>
+            <!-- <el-button type="primary" @click="handleEdit">Оформить заказ ></el-button> -->
           </div>
         </el-card>
       </el-col>
@@ -333,7 +334,9 @@ const handleEdit = (): void => {
                 </div>
                 <div class="order-detail-item">
                   <span class="detail-label">Стоимость доставки</span>
-                  <span class="detail-value">{{ deliveryCost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') }}</span>
+                  <span class="detail-value">{{
+                    deliveryCost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                  }}</span>
                 </div>
               </div>
             </el-card>
@@ -602,27 +605,27 @@ const handleEdit = (): void => {
 }
 
 .edit-button-container {
-    display: flex;
-    margin: 20px 0;
-    justify-content: space-between;
-    margin: 20px 0;
+  display: flex;
+  margin: 20px 0;
+  justify-content: space-between;
+  margin: 20px 0;
 }
 
 .edit-button-container button {
-    background-color: var(--gray2);
-    border-color: var(--gray2);
-    color: black;
-    font-size: 20px;
-    font-weight: 500;
-    padding: 20px 48px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    &:hover {
-      background-color: var(--gray-footer);
-      border-color: var(--gray-footer);
-      color: white;
-    }
+  background-color: var(--gray2);
+  border-color: var(--gray2);
+  color: black;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 20px 48px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  &:hover {
+    background-color: var(--gray-footer);
+    border-color: var(--gray-footer);
+    color: white;
+  }
 }
 
 /* Responsive Design */

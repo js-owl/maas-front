@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { req_json } from '../api'
 
@@ -87,4 +87,3 @@ export const useCoefficientsStore = defineStore('coefficients', () => {
     loadCoefficients,
   }
 })
-
