@@ -56,6 +56,13 @@ watch(quantity, (newVal) => {
     hasQuantityWarningShown.value = false
   }
 })
+watch(
+  document_ids,
+  (newVal) => {
+    console.log('document_ids', newVal)
+  },
+  { deep: true },
+)
 
 let material_id = ref('alum_D16')
 let material_form = ref('rod')

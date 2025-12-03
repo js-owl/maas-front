@@ -133,22 +133,13 @@ onMounted(() => {
   }
 });
 watch(
-  () => document_ids.value,
-  (ids) => {
-    if (
-      Array.isArray(ids) &&
-      ids.length > 0 &&
-      allDocuments.value.length === 0
-    ) {
-      loadUserDocuments();
-    }
-    if (!ids || ids.length === 0) {
-      // если список очистили — очистим отображение
-      allDocuments.value = [];
-      saveDocumentsToStorage();
-    }
-  }
-);
+  document_ids,
+  (newVal) => {
+    console.log('DocumentShowByIds.vue document_ids', newVal)
+    loadUserDocuments();
+  },
+  { deep: true },
+)
 </script>
 
 <template>
