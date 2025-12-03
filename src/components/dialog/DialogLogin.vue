@@ -71,7 +71,7 @@ const onRestore = async () => {
           />
         </el-form-item>
       </el-form>
-      <div><el-checkbox label="Запомниить данные" value="remember_me" /></div>
+      <div><el-checkbox label="Запомнить данные" value="remember_me" /></div>
     </div>
     <template #footer>
       <div class="dialog-footer">
