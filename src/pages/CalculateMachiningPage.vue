@@ -214,7 +214,10 @@ async function getOrder(id: number) {
         {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
       </div>
 
-      <CalculateResults :result="result" />
+      <template v-if="profileStore.profile?.username === 'diam-aero'">
+        <div class="disclaimer-text">Расчитываем цену…</div>
+      </template>
+      <CalculateResults v-else :result="result" />
 
       <el-row :gutter="20" class="component-section">
         <el-col :offset="0" :span="24" class="cad-section">
