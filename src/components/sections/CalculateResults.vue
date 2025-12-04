@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { useProfileStore } from '../../stores/profile.store'
 import type { IOrderResponse } from '../../interfaces/order.interface'
 
@@ -12,6 +12,17 @@ const props = defineProps({
 })
 
 const profileStore = useProfileStore()
+const hiddenUsernames = ['diam-aero', 'bbb']
+const hiddenStatuses = ['pending', 'ccc']
+const username = profileStore.profile?.username
+const status = props.result?.status
+const hidePrice = computed(
+  () => username && hiddenUsernames.includes(username) && (!status || hiddenStatuses.includes(status))
+)
+console.log('username', username && hiddenUsernames.includes(username))
+console.log('status', !status || hiddenStatuses.includes(status))
+console.log('hidePrice', hidePrice.value)
+
 const formatNumber = (value: number | string | null | undefined) => {
   const num = Number(value ?? 0)
   return isFinite(num) ? Math.round(num).toLocaleString('ru-RU') : '0'
@@ -20,7 +31,7 @@ const formatNumber = (value: number | string | null | undefined) => {
 
 <template>
   <div>
-    <template v-if="profileStore.profile?.username === 'diam-aero'">
+    <template v-if="hidePrice">
       <div class="disclaimer-text">Расчитываем цену…</div>
     </template>
     <template v-else>
