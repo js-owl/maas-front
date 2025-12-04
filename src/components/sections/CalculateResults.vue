@@ -20,32 +20,37 @@ const formatNumber = (value: number | string | null | undefined) => {
 
 <template>
   <div>
-    <div class="price-section">
-      <div class="card">
-        <div class="card-title">Стоимость</div>
-        <div class="price-line">
-          <span class="price">{{ formatNumber(props.result?.total_price) }} ₽</span>
-          <span v-if="props.result?.quantity !== 1" class="per-item">{{ formatNumber(props.result?.detail_price_one) }} ₽ за 1 шт.*</span>
+    <template v-if="profileStore.profile?.username === 'diam-aero'">
+      <div class="disclaimer-text">Расчитываем цену…</div>
+    </template>
+    <template v-else>
+      <div class="price-section">
+        <div class="card">
+          <div class="card-title">Стоимость</div>
+          <div class="price-line">
+            <span class="price">{{ formatNumber(props.result?.total_price) }} ₽</span>
+            <span v-if="props.result?.quantity !== 1" class="per-item">
+              {{ formatNumber(props.result?.detail_price_one) }} ₽ за 1 шт.*
+            </span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Время изготовления (дни)</div>
+          <div class="price">{{ props.result?.manufacturing_cycle ?? '—' }}</div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title">Время изготовления (дни)</div>
-        <div class="price">{{ props.result?.manufacturing_cycle ?? '—' }}</div>
-      </div>
-    </div>
-
-    
-    <div v-if="profileStore.profile?.username == 'admin'" class="card">
+      <div v-if="profileStore.profile?.username == 'admin'" class="card">
         <div>Трудоемкость</div>
         <div>{{ Number(props.result?.detail_time ?? 0).toFixed(2) || '?' }} ч.</div>
-    </div>
+      </div>
 
-    <div class="disclaimer-text">
-      *При увеличении количества единиц в заказе стоимость одного изделия становится выгоднее
-    </div>
+      <div class="disclaimer-text">
+        *При увеличении количества единиц в заказе стоимость одного изделия становится выгоднее
+      </div>
+    </template>
   </div>
-  
 </template>
 
 <style scoped>
