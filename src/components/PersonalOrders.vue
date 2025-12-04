@@ -32,10 +32,11 @@ const formatDate = (_row: any, _column: any, cellValue: string) => {
 }
 
 const hiddenUsernames = ['diam-aero', 'bbb']
+const hiddenStatuses = ['pending', 'ccc']
 
 const formatPrice = (row: any, _column: any, cellValue: number | string) => {
   const username = profileStore.profile?.username
-  if (row?.status === 'pending' && username && hiddenUsernames.includes(username)) return 'скрыто'
+  if (username && hiddenUsernames.includes(username) && row?.status && hiddenStatuses.includes(row.status)) return 'скрыто'
   if (cellValue == null || cellValue === '') return ''
   const value = Number(cellValue)
   if (Number.isNaN(value)) return String(cellValue)
