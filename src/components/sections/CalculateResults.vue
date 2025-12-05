@@ -3,6 +3,7 @@ import { computed, type PropType } from 'vue'
 import { useProfileStore } from '../../stores/profile.store'
 import type { IOrderResponse } from '../../interfaces/order.interface'
 import { hidePrice as hidePriceFn } from '../../helpers/hide-price'
+import { Clock } from '@element-plus/icons-vue'
 
 const props = defineProps({
   result: {
@@ -26,7 +27,13 @@ const formatNumber = (value: number | string | null | undefined) => {
 <template>
   <div>
     <template v-if="hidePrice">
-      <div class="disclaimer-text">Расчитываем цену…</div>
+      <div class="calculating-price-container">
+        <el-icon class="clock-icon">
+          <Clock />
+        </el-icon>
+        <div class="calculating-title">Пара минут!</div>
+        <div class="calculating-subtitle">Рассчитываем цену</div>
+      </div>
     </template>
     <template v-else>
       <div class="price-section">
@@ -87,6 +94,36 @@ const formatNumber = (value: number | string | null | undefined) => {
   font-size: 16px;
   padding-top: 10px;
   padding-bottom: 30px;
+}
+
+.calculating-price-container {
+  background-color: var(--whity);
+  border-radius: 8px;
+  padding: 24px 20px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.clock-icon {
+  font-size: 48px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.calculating-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.calculating-subtitle {
+  font-size: 16px;
+  color: #666;
 }
 
 .card {
@@ -150,6 +187,24 @@ const formatNumber = (value: number | string | null | undefined) => {
   font-size: 24px;
   font-weight: 700;
 }
+
+  .calculating-price-container {
+    padding: 20px 16px;
+  }
+
+  .clock-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  .calculating-title {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .calculating-subtitle {
+    font-size: 14px;
+  }
 }
 </style>
 
