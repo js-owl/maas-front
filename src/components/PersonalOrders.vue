@@ -6,7 +6,7 @@ import type { IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
 import { useMaterialStore } from '../stores/material.store'
 import { useProfileStore } from '../stores/profile.store'
-import { shouldHidePrice } from '../settings/order-visibility'
+import { shouldHidePrice } from '../helpers/order-visibility'
 
 const router = useRouter()
 const orders = ref<IOrderResponse[]>()
