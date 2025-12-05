@@ -2,7 +2,7 @@
 import { computed, type PropType } from 'vue'
 import { useProfileStore } from '../../stores/profile.store'
 import type { IOrderResponse } from '../../interfaces/order.interface'
-import { shouldHidePrice } from '../../helpers/order-visibility'
+import { shouldHidePrice } from '../../helpers/hide-price'
 
 const props = defineProps({
   result: {
