@@ -24,6 +24,7 @@ declare module 'vue' {
     CoefficientTooling: typeof import('./src/components/coefficients/CoefficientTooling.vue')['default']
     CoefficientType: typeof import('./src/components/coefficients/CoefficientType.vue')['default']
     DialogCall: typeof import('./src/components/dialog/DialogCall.vue')['default']
+    DialogEditUser: typeof import('./src/components/dialog/DialogEditUser.vue')['default']
     DialogInfoPayment: typeof import('./src/components/dialog/DialogInfoPayment.vue')['default']
     DialogLogin: typeof import('./src/components/dialog/DialogLogin.vue')['default']
     DialogRegistration: typeof import('./src/components/dialog/DialogRegistration.vue')['default']

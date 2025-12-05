@@ -2,8 +2,9 @@
 import { onMounted, ref, watch } from 'vue'
 import { req_json_auth } from '../api'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Delete, Plus } from '@element-plus/icons-vue'
+import { Delete, Edit, Plus } from '@element-plus/icons-vue'
 import DialogRegistration from './dialog/DialogRegistration.vue'
+import DialogEditUser from './dialog/DialogEditUser.vue'
 
 // User interface - defines the structure of user data returned from the API
 // This interface represents a user object with common fields like id, username, email, etc.
@@ -26,6 +27,12 @@ const loading = ref(false)
 
 // State to control registration dialog visibility
 const isRegistrationVisible = ref(false)
+
+// State to control edit dialog visibility
+const isEditDialogVisible = ref(false)
+
+// Selected user for editing
+const selectedUser = ref<IUser | null>(null)
 
 // Fetch users from the API endpoint /users using authenticated request
 // This function can be called to reload the user list
@@ -63,6 +70,17 @@ watch(isRegistrationVisible, async (newValue, oldValue) => {
 // Handler to open registration dialog
 const handleAddUser = () => {
   isRegistrationVisible.value = true
+}
+
+// Handler to open edit dialog with selected user data
+const handleEdit = (user: IUser) => {
+  selectedUser.value = user
+  isEditDialogVisible.value = true
+}
+
+// Handler for when user is updated - refresh the list
+const handleUserUpdated = async () => {
+  await fetchUsers()
 }
 
 // Format date string to readable format (DD-MM-YYYY)
@@ -186,9 +204,19 @@ const handleDelete = async (user: IUser) => {
           width="150"
         />
 
-        <!-- Actions column - displays delete button for each user -->
-        <el-table-column label="Действия" width="100" align="center" fixed="right">
+        <!-- Actions column - displays edit and delete buttons for each user -->
+        <el-table-column label="Действия" width="150" align="center" fixed="right">
           <template #default="{ row }">
+            <el-button
+              :icon="Edit"
+              type="primary"
+              size="small"
+              circle
+              @click="handleEdit(row)"
+              :disabled="loading || !row.id"
+              :title="`Редактировать пользователя ${row.username || row.email || row.id}`"
+              style="margin-right: 8px"
+            />
             <el-button
               :icon="Delete"
               type="danger"
@@ -204,6 +232,7 @@ const handleDelete = async (user: IUser) => {
     </el-col>
   </el-row>
   <DialogRegistration v-model="isRegistrationVisible" />
+  <DialogEditUser v-model="isEditDialogVisible" :user="selectedUser" @updated="handleUserUpdated" />
 </template>
 
 <style scoped>
