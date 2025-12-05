@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { req_json_auth } from '../api'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Delete } from '@element-plus/icons-vue'
+import { Delete, Plus } from '@element-plus/icons-vue'
+import DialogRegistration from './dialog/DialogRegistration.vue'
 
 // User interface - defines the structure of user data returned from the API
 // This interface represents a user object with common fields like id, username, email, etc.
@@ -23,9 +24,12 @@ const users = ref<IUser[]>([])
 // Loading state to track when data is being fetched
 const loading = ref(false)
 
+// State to control registration dialog visibility
+const isRegistrationVisible = ref(false)
+
 // Fetch users from the API endpoint /users using authenticated request
-// This function is called when the component is mounted to load initial data
-onMounted(async () => {
+// This function can be called to reload the user list
+const fetchUsers = async () => {
   loading.value = true
   try {
     // Make authenticated GET request to /users endpoint
@@ -40,7 +44,26 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+}
+
+// Load users when component is mounted
+onMounted(() => {
+  fetchUsers()
 })
+
+// Watch for registration dialog close to refresh user list
+// This ensures the list is updated after successful registration
+watch(isRegistrationVisible, async (newValue, oldValue) => {
+  // If dialog was closed (changed from true to false), refresh the user list
+  if (oldValue === true && newValue === false) {
+    await fetchUsers()
+  }
+})
+
+// Handler to open registration dialog
+const handleAddUser = () => {
+  isRegistrationVisible.value = true
+}
 
 // Format date string to readable format (DD-MM-YYYY)
 // This function converts ISO date strings to a more user-friendly format
@@ -114,7 +137,12 @@ const handleDelete = async (user: IUser) => {
 <template>
   <el-row :gutter="20" style="background-color: #fff; padding: 10px 0 0px 20px; min-height: 100px">
     <el-col :offset="0" :span="24">
-      <h1>Пользователи</h1>
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <h1>Пользователи</h1>
+        <el-button type="primary" :icon="Plus" @click="handleAddUser" :disabled="loading">
+          Добавить пользователя
+        </el-button>
+      </div>
     </el-col>
   </el-row>
   <el-row :gutter="20" style="background-color: #fff; padding-top: 0px; min-height: 500px">
@@ -175,6 +203,7 @@ const handleDelete = async (user: IUser) => {
       </el-table>
     </el-col>
   </el-row>
+  <DialogRegistration v-model="isRegistrationVisible" />
 </template>
 
 <style scoped>
