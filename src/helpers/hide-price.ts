@@ -1,6 +1,5 @@
-export const hiddenUsernames = ['diam-aero', 'bbb']
-
-export const hiddenStatuses = ['pending', 'ccc']
+export const hiddenUsernames = ['AODMZ', 'KTSPECTR', 'AOIKAR', 'Kronshtadt']
+export const hiddenStatuses = ['C3:NEW', 'C3:PREPARATION']
 
 export const hidePrice = (username?: string | null, status?: string | null): boolean => {
   const u = !!username && hiddenUsernames.includes(username)
@@ -12,5 +11,3 @@ export const hidePrice = (username?: string | null, status?: string | null): boo
 
   return u && s
 }
-
-
