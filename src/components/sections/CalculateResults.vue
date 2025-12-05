@@ -2,6 +2,7 @@
 import { computed, type PropType } from 'vue'
 import { useProfileStore } from '../../stores/profile.store'
 import type { IOrderResponse } from '../../interfaces/order.interface'
+import { shouldHidePrice } from '../../settings/order-visibility'
 
 const props = defineProps({
   result: {
@@ -12,16 +13,9 @@ const props = defineProps({
 })
 
 const profileStore = useProfileStore()
-const hiddenUsernames = ['diam-aero', 'bbb']
-const hiddenStatuses = ['pending', 'ccc']
-const username = profileStore.profile?.username
-const status = props.result?.status
-const hidePrice = computed(
-  () => username && hiddenUsernames.includes(username) && (!status || hiddenStatuses.includes(status))
-)
-console.log('username', username && hiddenUsernames.includes(username))
-console.log('status', !status || hiddenStatuses.includes(status))
-console.log('hidePrice', hidePrice.value)
+const username = profileStore.profile?.username ?? null
+const status = computed(() => props.result?.status ?? null)
+const hidePrice = computed(() => shouldHidePrice(username, status.value))
 
 const formatNumber = (value: number | string | null | undefined) => {
   const num = Number(value ?? 0)

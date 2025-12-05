@@ -6,6 +6,7 @@ import type { IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
 import { useMaterialStore } from '../stores/material.store'
 import { useProfileStore } from '../stores/profile.store'
+import { shouldHidePrice } from '../settings/order-visibility'
 
 const router = useRouter()
 const orders = ref<IOrderResponse[]>()
@@ -31,12 +32,9 @@ const formatDate = (_row: any, _column: any, cellValue: string) => {
   return `${day}-${month}-${year}`
 }
 
-const hiddenUsernames = ['diam-aero', 'bbb']
-const hiddenStatuses = ['pending', 'ccc']
-
 const formatPrice = (row: any, _column: any, cellValue: number | string) => {
   const username = profileStore.profile?.username
-  if (username && hiddenUsernames.includes(username) && row?.status && hiddenStatuses.includes(row.status)) return 'скрыто'
+  if (shouldHidePrice(username, row?.status)) return 'скрыто'
   if (cellValue == null || cellValue === '') return ''
   const value = Number(cellValue)
   if (Number.isNaN(value)) return String(cellValue)
