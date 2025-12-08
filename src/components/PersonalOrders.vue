@@ -13,6 +13,36 @@ const orders = ref<IOrderResponse[]>()
 // const deleteLoading = ref<number | null>(null)
 const materialStore = useMaterialStore()
 const profileStore = useProfileStore()
+const filenames = ref<Map<number, string>>(new Map())
+
+const fetchFilename = async (fileId: number): Promise<string | null> => {
+  if (!fileId) return null
+  try {
+    const response = await req_json_auth(`/files/${fileId}`, 'GET')
+    if (response?.ok) {
+      const fileInfo = (await response.json()) as { filename?: string; name?: string }
+      return fileInfo.filename || fileInfo.name || null
+    }
+  } catch (error) {
+    console.error(`Error fetching filename for file ${fileId}:`, error)
+  }
+  return null
+}
+
+const loadFilenames = async (ordersData: IOrderResponse[]) => {
+  const uniqueFileIds = Array.from(
+    new Set(ordersData.filter((order) => order.file_id).map((order) => order.file_id))
+  ) as number[]
+
+  const filenamePromises = uniqueFileIds.map(async (fileId) => {
+    const filename = await fetchFilename(fileId)
+    if (filename) {
+      filenames.value.set(fileId, filename)
+    }
+  })
+
+  await Promise.all(filenamePromises)
+}
 
 onMounted(async () => {
   const [ordersResponse] = await Promise.all([
@@ -20,7 +50,9 @@ onMounted(async () => {
     materialStore.loadMaterials(),
   ])
   const allOrders = (await ordersResponse?.json()) as IOrderResponse[]
-  orders.value = allOrders?.filter((order) => order.status !== 'cancelled') || []
+  const filteredOrders = allOrders?.filter((order) => order.status !== 'cancelled') || []
+  orders.value = filteredOrders
+  await loadFilenames(filteredOrders)
 })
 
 const formatDate = (_row: any, _column: any, cellValue: string) => {
@@ -65,6 +97,11 @@ const getStatusText = (status: string): string => {
   return statusTexts[status] || status
 }
 
+const getFilename = (fileId: number | null | undefined): string | null => {
+  if (!fileId) return null
+  return filenames.value.get(fileId) || null
+}
+
 const handleOpen = (row: IOrderResponse): void => {
   router.push({
     path: '/personal/calc',
@@ -106,7 +143,18 @@ const handleOpen = (row: IOrderResponse): void => {
         <el-table-column prop="file_id" label="3D модель" width="120">
           <template #default="{ row }">
             <div v-if="row.file_id" class="model-preview">
-              <CadPreview :file-id="row.file_id" />
+              <el-tooltip
+                v-if="getFilename(row.file_id)"
+                :content="getFilename(row.file_id) || ''"
+                placement="top"
+              >
+                <div>
+                  <CadPreview :file-id="row.file_id" />
+                </div>
+              </el-tooltip>
+              <div v-else>
+                <CadPreview :file-id="row.file_id" />
+              </div>
             </div>
             <span v-else class="no-model">Нет модели</span>
           </template>
