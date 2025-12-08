@@ -19,7 +19,8 @@ onMounted(async () => {
     req_json_auth(`/orders`, 'GET'),
     materialStore.loadMaterials(),
   ])
-  orders.value = (await ordersResponse?.json()) as IOrderResponse[]
+  const allOrders = (await ordersResponse?.json()) as IOrderResponse[]
+  orders.value = allOrders?.filter((order) => order.status !== 'cancelled') || []
 })
 
 const formatDate = (_row: any, _column: any, cellValue: string) => {
