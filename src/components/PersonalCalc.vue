@@ -350,7 +350,6 @@ const handleDelete = async (): Promise<void> => {
           <div class="edit-button-container">
             <el-button type="primary" @click="handleDelete">Удалить</el-button>
             <el-button type="primary" @click="handleEdit">Редактировать</el-button>
-
           </div>
         </el-card>
       </el-col>

@@ -55,7 +55,7 @@ const formatNumber = (value: number | string | null | undefined) => {
 
       <div v-if="profileStore.profile?.username == 'admin'" class="card">
         <div>Трудоемкость</div>
-        <div>{{ Number(props.result?.detail_time ?? 0).toFixed(2) || '?' }} ч.</div>
+        <div>{{ Number(props.result?.total_time ?? 0).toFixed(2) || '?' }} ч.</div>
       </div>
 
       <div class="disclaimer-text">
@@ -184,9 +184,9 @@ const formatNumber = (value: number | string | null | undefined) => {
     margin-bottom: 16px;
   }
   .price {
-  font-size: 24px;
-  font-weight: 700;
-}
+    font-size: 24px;
+    font-weight: 700;
+  }
 
   .calculating-price-container {
     padding: 20px 16px;
@@ -207,5 +207,3 @@ const formatNumber = (value: number | string | null | undefined) => {
   }
 }
 </style>
-
-
