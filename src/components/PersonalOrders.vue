@@ -44,13 +44,15 @@ const loadFilenames = async (ordersData: IOrderResponse[]) => {
   await Promise.all(filenamePromises)
 }
 
+const excludedStatuses = ['cancelled', 'C3:CLOSE']
+
 onMounted(async () => {
   const [ordersResponse] = await Promise.all([
     req_json_auth(`/orders`, 'GET'),
     materialStore.loadMaterials(),
   ])
   const allOrders = (await ordersResponse?.json()) as IOrderResponse[]
-  const filteredOrders = allOrders?.filter((order) => order.status !== 'cancelled') || []
+  const filteredOrders = allOrders?.filter((order) => !excludedStatuses.includes(order.status)) || []
   orders.value = filteredOrders
   await loadFilenames(filteredOrders)
 })
