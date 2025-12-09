@@ -62,7 +62,7 @@ watch(
   (newVal) => {
     console.log('document_ids', newVal)
   },
-  { deep: true },
+  { deep: true }
 )
 
 let material_id = ref('alum_D16')
@@ -81,10 +81,10 @@ let special_instructions = ref('')
 
 // Определяем location на основе компании пользователя
 const location = computed(() => {
-  const companyName = profileStore.profile?.full_name
+  const companyName = profileStore.profile?.username
   console.log('companyName', companyName)
   if (!companyName) return 'location_1'
-  
+
   const foundLocation = locations.find((loc) => loc.company === companyName)
   return foundLocation?.location || 'location_1'
 })
