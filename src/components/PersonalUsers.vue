@@ -2,7 +2,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { req_json_auth } from '../api'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Delete, Edit, Plus } from '@element-plus/icons-vue'
+import { Delete, Edit, Plus, RefreshRight } from '@element-plus/icons-vue'
 import DialogRegistration from './dialog/DialogRegistration.vue'
 import DialogEditUser from './dialog/DialogEditUser.vue'
 
@@ -24,6 +24,9 @@ const users = ref<IUser[]>([])
 
 // Loading state to track when data is being fetched
 const loading = ref(false)
+
+// Loading state for sync operation
+const syncLoading = ref(false)
 
 // State to control registration dialog visibility
 const isRegistrationVisible = ref(false)
@@ -81,6 +84,27 @@ const handleEdit = (user: IUser) => {
 // Handler for when user is updated - refresh the list
 const handleUserUpdated = async () => {
   await fetchUsers()
+}
+
+// Handler to process sync - calls POST /sync/process endpoint
+const handleSyncProcess = async () => {
+  syncLoading.value = true
+  try {
+    // Make authenticated POST request to /sync/process endpoint
+    const response = await req_json_auth('/sync/process', 'POST')
+    if (response && response.ok) {
+      ElMessage.success('Синхронизация успешно запущена')
+      // Optionally refresh users list after sync
+      await fetchUsers()
+    } else {
+      ElMessage.error('Ошибка при запуске синхронизации')
+    }
+  } catch (error) {
+    console.error('Error processing sync:', error)
+    ElMessage.error('Ошибка при запуске синхронизации')
+  } finally {
+    syncLoading.value = false
+  }
 }
 
 // Format date string to readable format (DD-MM-YYYY)
@@ -157,9 +181,20 @@ const handleDelete = async (user: IUser) => {
     <el-col :offset="0" :span="24">
       <div style="display: flex; justify-content: space-between; align-items: center">
         <h1>Пользователи</h1>
-        <el-button type="primary" :icon="Plus" @click="handleAddUser" :disabled="loading">
-          Добавить пользователя
-        </el-button>
+        <div style="display: flex; gap: 10px">
+          <el-button
+            type="default"
+            :icon="RefreshRight"
+            @click="handleSyncProcess"
+            :disabled="loading || syncLoading"
+            :loading="syncLoading"
+          >
+            Синхронизация
+          </el-button>
+          <el-button type="primary" :icon="Plus" @click="handleAddUser" :disabled="loading">
+            Добавить пользователя
+          </el-button>
+        </div>
       </div>
     </el-col>
   </el-row>
