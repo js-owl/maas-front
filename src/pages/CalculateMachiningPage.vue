@@ -30,6 +30,7 @@ import CalculateResults from '../components/sections/CalculateResults.vue'
 import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
 // import Height from "../components/coefficients/Height.vue";
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
+import { locations } from '../helpers/get-location'
 
 const profileStore = useProfileStore()
 
@@ -78,8 +79,19 @@ let k_cert = ref(['a', 'f'])
 let manufacturing_cycle = ref<number>(0)
 let special_instructions = ref('')
 
+// Определяем location на основе компании пользователя
+const location = computed(() => {
+  const companyName = profileStore.profile?.full_name
+  console.log('companyName', companyName)
+  if (!companyName) return 'location_1'
+  
+  const foundLocation = locations.find((loc) => loc.company === companyName)
+  return foundLocation?.location || 'location_1'
+})
+
 const payload = reactive({
   service_id: 'cnc-lathe',
+  location,
   file_id,
   document_ids,
   quantity,
