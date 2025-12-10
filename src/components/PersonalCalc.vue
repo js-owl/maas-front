@@ -106,6 +106,21 @@ const handleProductionChange = (location: string) => {
   console.log('Production location changed to:', location)
 }
 
+// Fetch filename from API by file_id
+const fetchFilename = async (fileId: number): Promise<string | null> => {
+  if (!fileId) return null
+  try {
+    const response = await req_json_auth(`/files/${fileId}`, 'GET')
+    if (response?.ok) {
+      const fileInfo = (await response.json()) as { filename?: string; name?: string }
+      return fileInfo.filename || fileInfo.name || null
+    }
+  } catch (error) {
+    console.error(`Error fetching filename for file ${fileId}:`, error)
+  }
+  return null
+}
+
 // Fetch order data from API
 const fetchOrder = async (id: number) => {
   if (!id || id === 0) return
@@ -167,7 +182,8 @@ const fetchOrder = async (id: number) => {
 
       // Update model filename if file_id exists
       if (fetchedOrderData.file_id) {
-        modelFilename.value = `Model_${fetchedOrderData.file_id}.stl`
+        const filename = await fetchFilename(fetchedOrderData.file_id)
+        modelFilename.value = filename || `Model_${fetchedOrderData.file_id}.stl`
       }
     } else {
       ElMessage.error('Не удалось загрузить данные заказа')
