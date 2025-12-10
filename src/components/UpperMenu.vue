@@ -208,6 +208,26 @@ function onCallRequest() {
       <DialogLogin v-model="isLoginVisible" />
       <DialogCall v-model="isCallVisible" />
     </el-row>
+
+    <!-- Hero content on home page -->
+    <div v-if="isHomePage" class="hero-content">
+      <el-row :gutter="0">
+        <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
+          <h1 class="hero-title">
+            КОМПЛЕКС ПРЕДПРИЯТИЙ<br />
+            ПОЛНОГО ЦИКЛА
+          </h1>
+          <p class="hero-description">
+            АЭРОМАКС - комплекс предприятий для выполнения<br />
+            задач в области механообработки, работы<br />
+            с полимерными и композиционными материалами.
+          </p>
+          <p class="hero-slogan">
+            Оптимизируйте, развивайте и производите.
+          </p>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 
   <el-drawer v-model="isDrawerOpen" direction="ltr" :with-header="false" size="80%">
@@ -570,6 +590,39 @@ function onCallRequest() {
   color: #333 !important;
 }
 
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 60px 0 80px;
+}
+
+.hero-title {
+  font-size: 64px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0 0 40px 0;
+  letter-spacing: 2px;
+  text-align: left;
+}
+
+.hero-description {
+  font-size: 24px;
+  color: #fff;
+  line-height: 1.6;
+  margin: 0 0 30px 0;
+  text-align: left;
+}
+
+.hero-slogan {
+  font-size: 20px;
+  color: #fff;
+  font-weight: 500;
+  margin: 0;
+  text-align: left;
+}
+
 @media (max-width: 767px) {
   .uppermenu-wrapper {
     min-height: auto;
@@ -608,6 +661,28 @@ function onCallRequest() {
 
   .services-title {
     font-size: 16px;
+  }
+
+  .hero-content {
+    padding: 40px 20px 60px;
+  }
+
+  .hero-title {
+    font-size: 32px;
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  .hero-description {
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .hero-slogan {
+    font-size: 16px;
+    text-align: center;
   }
 }
 
