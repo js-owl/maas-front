@@ -20,8 +20,8 @@ const fetchFilename = async (fileId: number): Promise<string | null> => {
   try {
     const response = await req_json_auth(`/files/${fileId}`, 'GET')
     if (response?.ok) {
-      const fileInfo = (await response.json()) as { filename?: string; name?: string }
-      return fileInfo.filename || fileInfo.name || null
+      const fileInfo = (await response.json()) as { original_filename?: string; filename?: string; }
+      return fileInfo.original_filename || fileInfo.filename || null
     }
   } catch (error) {
     console.error(`Error fetching filename for file ${fileId}:`, error)
