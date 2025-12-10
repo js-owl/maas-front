@@ -311,7 +311,7 @@ const handleDelete = async (): Promise<void> => {
               <!-- Manufacturing Cost -->
               <div class="cost-section">
                 <div class="cost-label">Стоимость изготовления</div>
-                <div class="cost-value">{{ formatCurrency(manufacturingCost) }}</div>
+                <div class="cost-value">{{ formatCurrency(totalCost) }}</div>
                 <div class="quantity-display">{{ quantity }} шт.</div>
               </div>
             </div>
