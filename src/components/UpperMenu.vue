@@ -592,7 +592,7 @@ function onCallRequest() {
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   padding: 60px 0 80px;
 }
 
