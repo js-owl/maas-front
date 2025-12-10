@@ -145,51 +145,41 @@ const handleOpen = (row: IOrderResponse): void => {
         <el-table-column prop="file_id" label="3D модель" width="120">
           <template #default="{ row }">
             <div v-if="row.file_id" class="model-preview">
-              <el-tooltip
-                v-if="getFilename(row.file_id)"
-                :content="getFilename(row.file_id) || ''"
-                placement="top"
-              >
-                <div>
-                  <CadPreview :file-id="row.file_id" />
-                </div>
-              </el-tooltip>
-              <div v-else>
-                <CadPreview :file-id="row.file_id" />
-              </div>
+              <CadPreview :file-id="row.file_id" />
             </div>
             <span v-else class="no-model">Нет модели</span>
           </template>
         </el-table-column>
 
-        <!-- Тип услуги -->
-        <el-table-column prop="service_id" label="Тип обработки" width="120">
+        <!-- Имя файла -->
+        <el-table-column prop="file_id" label="Название ДСЕ">
           <template #default="{ row }">
-            {{ getServiceName(row.service_id) }}
+            <span v-if="getFilename(row.file_id)" class="filename-text">{{ getFilename(row.file_id) }}</span>
+            <span v-else class="no-filename">Нет файла</span>
           </template>
         </el-table-column>
 
         <!-- Дата создания -->
-        <el-table-column
+        <!-- <el-table-column
           prop="created_at"
           label="Дата создания"
           :formatter="formatDate"
           width="150"
-        />
-        <el-table-column prop="material_id" label="Материал" width="150">
+        /> -->
+        <!-- <el-table-column prop="material_id" label="Материал" width="150">
           <template #default="{ row }">
             {{ getMaterialName(row.material_id) }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="quantity" label="Кол-во" width="100" />
         <!-- <el-table-column prop="document_ids" label="Документы" width="150" /> -->
+        <el-table-column prop="total_price" label="Цена" width="100" :formatter="formatPrice" />
         <el-table-column prop="status" label="Статус" width="150">
           <template #default="{ row }">
             {{ getStatusText(row.status) }}
           </template>
         </el-table-column>
-        <el-table-column prop="total_price" label="Цена" width="100" :formatter="formatPrice" />
-        <el-table-column fixed="right" label="Операции" min-width="120">
+        <el-table-column fixed="right" label="" min-width="120">
           <template #default="scope">
             <el-button link type="primary" size="small" @click="handleOpen(scope.row)" class="open-button">
               Открыть
@@ -221,6 +211,20 @@ const handleOpen = (row: IOrderResponse): void => {
 }
 
 .no-model {
+  color: #909399;
+  font-style: italic;
+  font-size: 12px;
+}
+
+.filename-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.no-filename {
   color: #909399;
   font-style: italic;
   font-size: 12px;
