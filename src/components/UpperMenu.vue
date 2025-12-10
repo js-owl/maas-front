@@ -172,11 +172,12 @@ function onCallRequest() {
                   </el-sub-menu>  -->
                 </el-sub-menu>
               </el-menu>
+
+              <el-button class="call-btn" @click="onCallRequest"> Заказать звонок </el-button>
             </div>
           </div>
 
           <div class="right-wrap">
-            <el-button class="call-btn" @click="onCallRequest"> Заказать звонок </el-button>
             <template v-if="!authStore.getToken">
               <el-button v-if="!isMobile" class="auth-btn" @click="isLoginVisible = true">
                 Войти / Регистрация
