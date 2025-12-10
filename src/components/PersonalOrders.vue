@@ -44,7 +44,7 @@ const loadFilenames = async (ordersData: IOrderResponse[]) => {
   await Promise.all(filenamePromises)
 }
 
-const excludedStatuses = ['cancelled', 'C3:CLOSE']
+const excludedStatuses = ['cancelled', 'C3:LOSE']
 
 onMounted(async () => {
   const [ordersResponse] = await Promise.all([

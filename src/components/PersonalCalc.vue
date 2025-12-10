@@ -44,7 +44,7 @@ const manufacturingTime = ref(3)
 const deliveryTime = ref(4)
 
 // Delivery cost in rubles
-const deliveryCost = ref(1474)
+const deliveryCost = ref(0)
 
 // Product properties - stores various attributes of the product
 const productProperties = ref({
