@@ -48,7 +48,7 @@ const abilities = ref([
 </script>
 
 <template>
-  <section class="section-basic">
+  <section class="section-basic" style="margin-top: 40px;">
     <div class="section-title">УСЛУГИ</div>
 
     <div class="services-grid">

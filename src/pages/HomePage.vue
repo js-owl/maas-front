@@ -24,7 +24,7 @@ onMounted(() => {
     <div v-if="!isMobile">
       <el-row>
         <el-col :offset="3" :span="18">
-          <HomeModel />
+          <!-- <HomeModel /> -->
           <HomeUslugi />
           <HomeAbout />
           <HomeAdvantages />
