@@ -139,7 +139,7 @@ const handleOpen = (row: IOrderResponse): void => {
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
         empty-text="Нет данных"
       >
-        <el-table-column prop="order_id" label="№ зак." width="80" />
+        <el-table-column prop="order_id" label="№" width="60" />
 
         <!-- 3D модель -->
         <el-table-column prop="file_id" label="3D модель" width="120">
@@ -152,7 +152,7 @@ const handleOpen = (row: IOrderResponse): void => {
         </el-table-column>
 
         <!-- Имя файла -->
-        <el-table-column prop="file_id" label="Название ДСЕ">
+        <el-table-column prop="file_id" label="Название ДСЕ"  width="300">
           <template #default="{ row }">
             <span v-if="getFilename(row.file_id)" class="filename-text">{{ getFilename(row.file_id) }}</span>
             <span v-else class="no-filename">Нет файла</span>
@@ -171,7 +171,7 @@ const handleOpen = (row: IOrderResponse): void => {
             {{ getMaterialName(row.material_id) }}
           </template>
         </el-table-column> -->
-        <el-table-column prop="quantity" label="Кол-во" width="100" />
+        <el-table-column prop="quantity" label="Кол-во" width="100" align="center" />
         <!-- <el-table-column prop="document_ids" label="Документы" width="150" /> -->
         <el-table-column prop="total_price" label="Цена" width="100" :formatter="formatPrice" />
         <el-table-column prop="status" label="Статус" width="150">
