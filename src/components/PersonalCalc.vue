@@ -7,6 +7,8 @@ import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
 import { useCoefficientsStore } from '../stores/coefficients.store'
+import { useProfileStore } from '../stores/profile.store'
+import { hidePrice as hidePriceFn } from '../helpers/hide-price'
 
 // Get orderId from route query
 const route = useRoute()
@@ -21,6 +23,12 @@ const materialStore = useMaterialStore()
 
 // Coefficients store
 const coefficientsStore = useCoefficientsStore()
+
+// Profile store
+const profileStore = useProfileStore()
+const username = computed(() => profileStore.profile?.username ?? null)
+const status = computed(() => orderData.value?.status ?? null)
+const hidePrice = computed(() => hidePriceFn(username.value, status.value))
 
 // Order data storage
 const orderData = ref<IOrderResponse | null>(null)
@@ -311,7 +319,8 @@ const handleDelete = async (): Promise<void> => {
               <!-- Manufacturing Cost -->
               <div class="cost-section">
                 <div class="cost-label">Стоимость изготовления</div>
-                <div class="cost-value">{{ formatCurrency(totalCost) }}</div>
+                <div v-if="!hidePrice" class="cost-value">{{ formatCurrency(totalCost) }}</div>
+                <div v-else class="cost-value">Рассчитываем цену...</div>
                 <div class="quantity-display">{{ quantity }} шт.</div>
               </div>
             </div>
@@ -375,8 +384,8 @@ const handleDelete = async (): Promise<void> => {
         <el-row :gutter="20">
           <!-- Top-Right Card - Order Summary -->
           <el-col :span="24">
-            <el-card class="order-summary-card" shadow="never">
-              <div class="total-cost">{{ formatCurrency(totalCost) }}</div>
+            <el-card v-if="!hidePrice" class="order-summary-card" shadow="never">
+                <div class="total-cost">{{ formatCurrency(totalCost) }}</div>
               <div class="order-details">
                 <div class="order-detail-item">
                   <el-icon class="detail-icon">
