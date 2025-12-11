@@ -7,6 +7,7 @@ import HomeUslugi from '../components/sections/HomeUslugi.vue'
 import HomeAbout from '../components/sections/HomeAbout.vue'
 import HomeAdvantages from '../components/sections/HomeAdvantages.vue'
 import HomeCalc from '../components/sections/HomeCalc.vue'
+import HomeMilestones from '../components/sections/HomeMilestones.vue'
 // import SectionMilestones from '../components/sections/SectionMilestones.vue'
 
 const { width } = useWindowSize()
@@ -26,9 +27,10 @@ onMounted(() => {
         <el-col :offset="3" :span="18">
           <!-- <HomeModel /> -->
           <HomeUslugi />
-          <HomeAbout />
-          <HomeAdvantages />
+          <HomeMilestones />
+          <!-- <HomeAbout /> -->
           <HomeCalc />
+          <HomeAdvantages />
         </el-col>
       </el-row>
     </div>
@@ -37,9 +39,10 @@ onMounted(() => {
       <el-row>
         <el-col :offset="0" :span="24">
           <HomeUslugi />
-          <HomeAbout />
-          <HomeAdvantages />
+          <HomeMilestones />
+          <!-- <HomeAbout /> -->
           <HomeCalc />
+          <HomeAdvantages />
         </el-col>
       </el-row>
     </template>
