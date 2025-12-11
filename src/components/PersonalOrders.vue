@@ -20,7 +20,7 @@ const fetchFilename = async (fileId: number): Promise<string | null> => {
   try {
     const response = await req_json_auth(`/files/${fileId}`, 'GET')
     if (response?.ok) {
-      const fileInfo = (await response.json()) as { original_filename?: string; filename?: string; }
+      const fileInfo = (await response.json()) as { original_filename?: string; filename?: string }
       return fileInfo.original_filename || fileInfo.filename || null
     }
   } catch (error) {
@@ -52,20 +52,21 @@ onMounted(async () => {
     materialStore.loadMaterials(),
   ])
   const allOrders = (await ordersResponse?.json()) as IOrderResponse[]
-  const filteredOrders = allOrders?.filter((order) => !excludedStatuses.includes(order.status)) || []
+  const filteredOrders =
+    allOrders?.filter((order) => !excludedStatuses.includes(order.status)) || []
   orders.value = filteredOrders
   await loadFilenames(filteredOrders)
 })
 
-const formatDate = (_row: any, _column: any, cellValue: string) => {
-  if (!cellValue) return ''
-  const date = new Date(cellValue)
-  if (Number.isNaN(date.getTime())) return cellValue
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const year = String(date.getFullYear())
-  return `${day}-${month}-${year}`
-}
+// const formatDate = (_row: any, _column: any, cellValue: string) => {
+//   if (!cellValue) return ''
+//   const date = new Date(cellValue)
+//   if (Number.isNaN(date.getTime())) return cellValue
+//   const day = String(date.getDate()).padStart(2, '0')
+//   const month = String(date.getMonth() + 1).padStart(2, '0')
+//   const year = String(date.getFullYear())
+//   return `${day}-${month}-${year}`
+// }
 
 const formatPrice = (row: any, _column: any, cellValue: number | string) => {
   const username = profileStore.profile?.username
@@ -76,20 +77,20 @@ const formatPrice = (row: any, _column: any, cellValue: number | string) => {
   return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(Math.trunc(value))
 }
 
-const serviceNames: any = {
-  'cnc-lathe': 'токарная',
-  'cnc-milling': 'фрезерная',
-  printing: '3D печать',
-}
-const getServiceName = (service_id: number): string => {
-  return serviceNames[service_id] || service_id
-}
+// const serviceNames: any = {
+//   'cnc-lathe': 'токарная',
+//   'cnc-milling': 'фрезерная',
+//   printing: '3D печать',
+// }
+// const getServiceName = (service_id: number): string => {
+//   return serviceNames[service_id] || service_id
+// }
 
-const getMaterialName = (materialCode: string): string => {
-  if (!materialCode) return ''
-  const found = materialStore.materials.find((m) => m.value === materialCode)
-  return found?.label ?? materialCode
-}
+// const getMaterialName = (materialCode: string): string => {
+//   if (!materialCode) return ''
+//   const found = materialStore.materials.find((m) => m.value === materialCode)
+//   return found?.label ?? materialCode
+// }
 
 const statusTexts: any = {
   pending: 'ожидание оплаты',
@@ -110,7 +111,6 @@ const handleOpen = (row: IOrderResponse): void => {
     query: { orderId: row.order_id.toString() },
   })
 }
-
 
 // const handleDelete = async (row: IOrderResponse): Promise<void> => {
 //   deleteLoading.value = row.order_id
@@ -152,9 +152,11 @@ const handleOpen = (row: IOrderResponse): void => {
         </el-table-column>
 
         <!-- Имя файла -->
-        <el-table-column prop="file_id" label="Название ДСЕ"  width="300">
+        <el-table-column prop="file_id" label="Название ДСЕ" width="300">
           <template #default="{ row }">
-            <span v-if="getFilename(row.file_id)" class="filename-text">{{ getFilename(row.file_id) }}</span>
+            <span v-if="getFilename(row.file_id)" class="filename-text">{{
+              getFilename(row.file_id)
+            }}</span>
             <span v-else class="no-filename">Нет файла</span>
           </template>
         </el-table-column>
@@ -181,7 +183,13 @@ const handleOpen = (row: IOrderResponse): void => {
         </el-table-column>
         <el-table-column fixed="right" label="" min-width="120">
           <template #default="scope">
-            <el-button link type="primary" size="small" @click="handleOpen(scope.row)" class="open-button">
+            <el-button
+              link
+              type="primary"
+              size="small"
+              @click="handleOpen(scope.row)"
+              class="open-button"
+            >
               Открыть
             </el-button>
             <!-- <el-button

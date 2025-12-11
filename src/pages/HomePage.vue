@@ -2,7 +2,7 @@
 import { computed, onMounted } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { useCoefficientsStore } from '../stores/coefficients.store'
-import HomeModel from '../components/sections/HomeModel.vue'
+// import HomeModel from '../components/sections/HomeModel.vue'
 import HomeUslugi from '../components/sections/HomeUslugi.vue'
 import HomeAbout from '../components/sections/HomeAbout.vue'
 import HomeAdvantages from '../components/sections/HomeAdvantages.vue'
@@ -33,7 +33,7 @@ onMounted(() => {
       </el-row>
     </div>
     <template v-else>
-      <HomeModel />
+      <!-- <HomeModel /> -->
       <el-row>
         <el-col :offset="0" :span="24">
           <HomeUslugi />
