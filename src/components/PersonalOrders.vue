@@ -219,9 +219,18 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
 </script>
 
 <template>
-  <el-row :gutter="20" style="background-color: #fff; padding: 10px 0 0px 20px; min-height: 100px">
-    <el-col :offset="0" :span="24">
+  <el-row :gutter="20" style="background-color: #fff; padding: 10px 20px 10px 20px; min-height: 100px">
+    <el-col :span="18">
       <h1>Мои заказы</h1>
+    </el-col>
+    <el-col :span="6" class="search-col">
+      <el-input
+        v-model="searchQuery"
+        placeholder="Поиск"
+        class="search-input"
+        :prefix-icon="Search"
+        clearable
+      />
     </el-col>
   </el-row>
   <el-row :gutter="20" style="background-color: #fff; padding: 20px; min-height: 500px">
@@ -233,13 +242,6 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
           <el-tab-pane label="Неоплаченные" name="unpaid" />
           <el-tab-pane label="Расчеты" name="calculations" />
         </el-tabs>
-        <el-input
-          v-model="searchQuery"
-          placeholder="Поиск"
-          class="search-input"
-          :prefix-icon="Search"
-          clearable
-        />
       </div>
       <el-table
         :data="filteredOrders"
@@ -331,11 +333,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
 
 <style scoped>
 .table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 20px;
-  gap: 20px;
 }
 
 .filter-tabs {
@@ -360,8 +358,45 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
   background-color: #ce132f;
 }
 
+.search-col {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .search-input {
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.search-input :deep(.el-input__wrapper) {
+  background-color: #fff;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 8px 12px;
+}
+
+.search-input :deep(.el-input__wrapper:hover) {
+  border-color: #c0c4cc;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  border-color: #409eff;
+  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+}
+
+.search-input :deep(.el-input__inner) {
+  font-size: 14px;
+  color: #606266;
+}
+
+.search-input :deep(.el-input__prefix) {
+  left: 12px;
+}
+
+.search-input :deep(.el-input__prefix .el-input__prefix-inner) {
+  color: #909399;
 }
 
 .model-preview {
@@ -422,13 +457,14 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
 }
 
 @media (max-width: 768px) {
-  .table-header {
-    flex-direction: column;
-    align-items: stretch;
+  .search-col {
+    margin-top: 10px;
+    justify-content: stretch;
   }
 
   .search-input {
     width: 100%;
+    max-width: 100%;
   }
 }
 </style>
