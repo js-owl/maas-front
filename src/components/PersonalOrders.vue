@@ -178,7 +178,32 @@ const handleView = (row: IOrderResponse): void => {
 }
 
 const handleEdit = (row: IOrderResponse): void => {
-  handleOpen(row)
+  switch (row.service_id) {
+    case 'cnc-lathe':
+      router.push({
+        path: '/machining',
+        query: { orderId: row.order_id.toString() },
+      })
+      break
+    case 'cnc-milling':
+      router.push({
+        path: '/milling',
+        query: { orderId: row.order_id.toString() },
+      })
+      break
+    case 'printing':
+      router.push({
+        path: '/printing',
+        query: { orderId: row.order_id.toString() },
+      })
+      break
+    default:
+      router.push({
+        path: '/machining',
+        query: { orderId: row.order_id.toString() },
+      })
+      break
+  }
 }
 
 const handleDelete = async (row: IOrderResponse): Promise<void> => {
@@ -263,7 +288,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
         </el-table-column>
 
         <!-- Наименование -->
-        <el-table-column prop="file_id" label="Наименование" width="200">
+        <el-table-column prop="file_id" label="Наименование" width="250">
           <template #default="{ row }">
             <span v-if="getFilename(row.file_id)" class="filename-text">{{
               getFilename(row.file_id)

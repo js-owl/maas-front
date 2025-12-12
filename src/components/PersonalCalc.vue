@@ -215,37 +215,6 @@ watch(
   { immediate: true }
 )
 
-// Handle edit button click - navigate to appropriate edit page based on service_id
-const handleEdit = (): void => {
-  if (!orderData.value) return
-
-  switch (orderData.value.service_id) {
-    case 'cnc-lathe':
-      router.push({
-        path: '/machining',
-        query: { orderId: orderData.value.order_id.toString() },
-      })
-      break
-    case 'cnc-milling':
-      router.push({
-        path: '/milling',
-        query: { orderId: orderData.value.order_id.toString() },
-      })
-      break
-    case 'printing':
-      router.push({
-        path: '/printing',
-        query: { orderId: orderData.value.order_id.toString() },
-      })
-      break
-    default:
-      router.push({
-        path: '/machining',
-        query: { orderId: orderData.value.order_id.toString() },
-      })
-      break
-  }
-}
 
 </script>
 
@@ -328,9 +297,6 @@ const handleEdit = (): void => {
               <span class="property-label">Сертификация</span>
               <span class="property-value">{{ productProperties.certification || '-' }}</span>
             </div> -->
-          </div>
-          <div class="edit-button-container">
-            <el-button type="primary" @click="handleEdit">Редактировать</el-button>
           </div>
         </el-card>
       </el-col>
@@ -629,29 +595,6 @@ const handleEdit = (): void => {
   padding-left: 8px;
 }
 
-.edit-button-container {
-  display: flex;
-  margin: 20px 0;
-  justify-content: space-between;
-  margin: 20px 0;
-}
-
-.edit-button-container button {
-  background-color: var(--gray2);
-  border-color: var(--gray2);
-  color: black;
-  font-size: 20px;
-  font-weight: 500;
-  padding: 20px 48px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  &:hover {
-    background-color: var(--gray-footer);
-    border-color: var(--gray-footer);
-    color: white;
-  }
-}
 
 /* Responsive Design */
 @media (max-width: 1024px) {
