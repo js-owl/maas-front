@@ -8,6 +8,7 @@ import { useMaterialStore } from '../stores/material.store'
 import { useProfileStore } from '../stores/profile.store'
 import { hidePrice } from '../helpers/hide-price'
 import { View, Edit, Delete, Search } from '@element-plus/icons-vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 const router = useRouter()
 const allOrders = ref<IOrderResponse[]>([])
@@ -17,7 +18,6 @@ const profileStore = useProfileStore()
 const filenames = ref<Map<number, string>>(new Map())
 const activeTab = ref('all')
 const searchQuery = ref('')
-const selectedOrders = ref<number[]>([])
 
 const fetchFilename = async (fileId: number): Promise<string | null> => {
   if (!fileId) return null
@@ -182,14 +182,35 @@ const handleEdit = (row: IOrderResponse): void => {
 }
 
 const handleDelete = async (row: IOrderResponse): Promise<void> => {
-  deleteLoading.value = row.order_id
   try {
-    const r = await req_json_auth(`/admin/orders/${row.order_id}`, 'DELETE')
+    // Show confirmation dialog before deleting
+    await ElMessageBox.confirm(
+      `Вы уверены, что хотите удалить заказ #${row.order_id}?`,
+      'Подтверждение удаления',
+      {
+        confirmButtonText: 'Удалить',
+        cancelButtonText: 'Отмена',
+        type: 'warning',
+        confirmButtonClass: 'el-button--danger',
+      }
+    )
+
+    deleteLoading.value = row.order_id
+    const r = await req_json_auth(`/orders/${row.order_id}`, 'DELETE')
     if (r?.ok) {
       allOrders.value = allOrders.value.filter((item) => item.order_id !== row.order_id)
+      ElMessage.success('Заказ успешно удален')
+    } else {
+      ElMessage.error('Ошибка при удалении заказа')
     }
-  } catch (error) {
+  } catch (error: any) {
+    // User cancelled the confirmation dialog - this is expected behavior
+    // ElMessageBox rejects with action string when user clicks cancel
+    if (error === 'cancel' || error === 'close' || error?.action === 'cancel') {
+      return
+    }
     console.error('Error deleting order:', error)
+    ElMessage.error('Ошибка при удалении заказа')
   } finally {
     deleteLoading.value = null
   }
