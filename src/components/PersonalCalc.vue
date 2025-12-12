@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Clock, Location } from '@element-plus/icons-vue'
+import { Clock, Location, ArrowLeft } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
@@ -104,6 +104,13 @@ const handleCalculateCost = () => {
   router.push({
     name: 'personal-calc-info',
     query: { orderId: orderId.value },
+  })
+}
+
+// Handle back button click - navigate to orders page
+const handleBack = () => {
+  router.push({
+    name: 'personal-orders',
   })
 }
 
@@ -297,6 +304,9 @@ watch(
               <span class="property-label">Сертификация</span>
               <span class="property-value">{{ productProperties.certification || '-' }}</span>
             </div> -->
+          </div>
+          <div class="back-button-container">
+            <el-button type="default" :icon="ArrowLeft" @click="handleBack">Назад</el-button>
           </div>
         </el-card>
       </el-col>
@@ -595,6 +605,29 @@ watch(
   padding-left: 8px;
 }
 
+.back-button-container {
+  display: flex;
+  margin-top: 20px;
+  justify-content: flex-start;
+}
+
+.back-button-container :deep(.el-button) {
+  background-color: var(--gray2);
+  border-color: var(--gray2);
+  color: black;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.back-button-container :deep(.el-button:hover) {
+  background-color: var(--gray-footer);
+  border-color: var(--gray-footer);
+  color: white;
+}
 
 /* Responsive Design */
 @media (max-width: 1024px) {
