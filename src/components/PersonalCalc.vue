@@ -222,7 +222,81 @@ watch(
   { immediate: true }
 )
 
+// Handle edit button click - navigate to appropriate edit page based on service_id
+const handleEdit = (): void => {
+  if (!orderData.value) return
 
+  switch (orderData.value.service_id) {
+    case 'cnc-lathe':
+      router.push({
+        path: '/machining',
+        query: { orderId: orderData.value.order_id.toString() },
+      })
+      break
+    case 'cnc-milling':
+      router.push({
+        path: '/milling',
+        query: { orderId: orderData.value.order_id.toString() },
+      })
+      break
+    case 'printing':
+      router.push({
+        path: '/printing',
+        query: { orderId: orderData.value.order_id.toString() },
+      })
+      break
+    default:
+      router.push({
+        path: '/machining',
+        query: { orderId: orderData.value.order_id.toString() },
+      })
+      break
+  }
+}
+
+// Handle delete button click - shows confirmation dialog and sends DELETE request
+const handleDelete = async (): Promise<void> => {
+  if (!orderId.value || orderId.value === 0) {
+    ElMessage.error('Не удалось определить ID заказа')
+    return
+  }
+
+  try {
+    // Show confirmation dialog before deleting
+    await ElMessageBox.confirm(
+      `Вы уверены, что хотите удалить заказ #${orderId.value}?`,
+      'Подтверждение удаления',
+      {
+        confirmButtonText: 'Удалить',
+        cancelButtonText: 'Отмена',
+        type: 'warning',
+        confirmButtonClass: 'el-button--danger',
+      }
+    )
+
+    // Make DELETE request to /orders/{id} endpoint
+    isLoading.value = true
+    const response = await req_json_auth(`/orders/${orderId.value}`, 'DELETE')
+
+    if (response && response.ok) {
+      ElMessage.success('Заказ успешно удален')
+      // Redirect to orders list or home page after successful deletion
+      router.push({ name: 'personal-orders' })
+    } else {
+      ElMessage.error('Ошибка при удалении заказа')
+    }
+  } catch (error: any) {
+    // User cancelled the confirmation dialog - this is expected behavior
+    // ElMessageBox rejects with action string when user clicks cancel
+    if (error === 'cancel' || error === 'close' || error?.action === 'cancel') {
+      return
+    }
+    console.error('Error deleting order:', error)
+    ElMessage.error('Ошибка при удалении заказа')
+  } finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -305,8 +379,10 @@ watch(
               <span class="property-value">{{ productProperties.certification || '-' }}</span>
             </div> -->
           </div>
-          <div class="back-button-container">
+          <div class="edit-button-container">
             <el-button type="default" :icon="ArrowLeft" @click="handleBack">Назад</el-button>
+            <el-button type="primary" @click="handleDelete">Удалить</el-button>
+            <el-button type="primary" @click="handleEdit">Редактировать</el-button>
           </div>
         </el-card>
       </el-col>
@@ -317,7 +393,7 @@ watch(
           <!-- Top-Right Card - Order Summary -->
           <el-col :span="24">
             <el-card v-if="!hidePrice" class="order-summary-card" shadow="never">
-                <div class="total-cost">{{ formatCurrency(totalCost) }}</div>
+              <div class="total-cost">{{ formatCurrency(totalCost) }}</div>
               <div class="order-details">
                 <div class="order-detail-item">
                   <el-icon class="detail-icon">
@@ -605,28 +681,28 @@ watch(
   padding-left: 8px;
 }
 
-.back-button-container {
+.edit-button-container {
   display: flex;
-  margin-top: 20px;
-  justify-content: flex-start;
+  margin: 20px 0;
+  justify-content: space-between;
+  margin: 20px 0;
 }
 
-.back-button-container :deep(.el-button) {
+.edit-button-container button {
   background-color: var(--gray2);
   border-color: var(--gray2);
   color: black;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
-  padding: 12px 24px;
+  padding: 20px 48px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.back-button-container :deep(.el-button:hover) {
-  background-color: var(--gray-footer);
-  border-color: var(--gray-footer);
-  color: white;
+  &:hover {
+    background-color: var(--gray-footer);
+    border-color: var(--gray-footer);
+    color: white;
+  }
 }
 
 /* Responsive Design */

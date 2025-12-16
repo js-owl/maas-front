@@ -91,7 +91,20 @@ const formatDate = (cellValue: string | null | undefined): string => {
   const date = new Date(cellValue)
   if (Number.isNaN(date.getTime())) return ''
   const day = date.getDate()
-  const months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
+  const months = [
+    'янв',
+    'фев',
+    'мар',
+    'апр',
+    'май',
+    'июн',
+    'июл',
+    'авг',
+    'сен',
+    'окт',
+    'ноя',
+    'дек',
+  ]
   const month = months[date.getMonth()]
   const year = date.getFullYear()
   return `${day} ${month} ${year}`
@@ -103,7 +116,9 @@ const getCompletionDate = (order: IOrderResponse): string => {
   }
   if (order.created_at && order.manufacturing_cycle) {
     const createdDate = new Date(order.created_at)
-    const completionDate = new Date(createdDate.getTime() + order.manufacturing_cycle * 24 * 60 * 60 * 1000)
+    const completionDate = new Date(
+      createdDate.getTime() + order.manufacturing_cycle * 24 * 60 * 60 * 1000
+    )
     return formatDate(completionDate.toISOString())
   }
   return formatDate(order.created_at)
@@ -240,11 +255,13 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
     deleteLoading.value = null
   }
 }
-
 </script>
 
 <template>
-  <el-row :gutter="20" style="background-color: #fff; padding: 10px 20px 10px 20px; min-height: 100px">
+  <el-row
+    :gutter="20"
+    style="background-color: #fff; padding: 10px 20px 10px 20px; min-height: 100px"
+  >
     <el-col :span="18">
       <h1>Мои заказы</h1>
     </el-col>
@@ -290,7 +307,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
         <!-- Наименование -->
         <el-table-column prop="file_id" label="Наименование" width="250">
           <template #default="{ row }">
-            <span v-if="getFilename(row.file_id)" class="filename-text">{{
+            <span v-if="getFilename(row.file_id)" class="filename-text" @click="handleView(row)">{{
               getFilename(row.file_id)
             }}</span>
             <span v-else class="no-filename">Нет файла</span>
@@ -319,7 +336,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
         <el-table-column prop="total_price" label="Цена" width="100" :formatter="formatPrice" />
 
         <!-- Действия -->
-        <el-table-column fixed="right" label="" width="150">
+        <!-- <el-table-column fixed="right" label="" width="150">
           <template #default="scope">
             <div class="action-buttons">
               <el-button
@@ -350,7 +367,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
               />
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </el-col>
   </el-row>
@@ -450,6 +467,7 @@ const handleDelete = async (row: IOrderResponse): Promise<void> => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .no-filename {
