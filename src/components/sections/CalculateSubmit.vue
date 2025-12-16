@@ -109,7 +109,8 @@ const submitOrder = async () => {
     try {
       const res = await req_json_auth(`/orders/${id}`, 'PUT', {
         ...props.payload,
-        order_name: originalFilename || props.payload.order_name || '',
+        // при обновлении оставляем имя заказа таким, как оно передано в payload
+        order_name: props.payload.order_name || '',
         special_instructions: props.specialInstructions,
       })
       const data = (await res?.json()) as IOrderResponse
