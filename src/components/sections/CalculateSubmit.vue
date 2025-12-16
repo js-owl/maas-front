@@ -57,6 +57,21 @@ const ensureProfileLoaded = async () => {
   }
 }
 
+const fetchOriginalFilename = async (fileId: number): Promise<string | null> => {
+  if (!fileId) return null
+  try {
+    const response = await req_json_auth(`/files/${fileId}`, 'GET')
+    if (response?.ok) {
+      const fileInfo = (await response.json()) as { original_filename?: string; filename?: string }
+      return fileInfo.original_filename || fileInfo.filename || null
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`Error fetching filename for file ${fileId}:`, error)
+  }
+  return null
+}
+
 const submitOrder = async () => {
   if (!authStore.getToken) {
     isLoginDialogVisible.value = true
@@ -70,10 +85,15 @@ const submitOrder = async () => {
     return
   }
 
+  // Загружаем original_filename из файла
+  const fileId = props.payload.file_id
+  const originalFilename = fileId ? await fetchOriginalFilename(fileId) : null
+
   if (isNewOrder.value) {
     try {
       const postPayload: IOrderPostPayload = {
         ...props.payload,
+        order_name: originalFilename || props.payload.order_name || '',
         special_instructions: props.specialInstructions,
         document_ids: props.payload.document_ids,
       }
@@ -89,6 +109,7 @@ const submitOrder = async () => {
     try {
       const res = await req_json_auth(`/orders/${id}`, 'PUT', {
         ...props.payload,
+        order_name: originalFilename || props.payload.order_name || '',
         special_instructions: props.specialInstructions,
       })
       const data = (await res?.json()) as IOrderResponse
