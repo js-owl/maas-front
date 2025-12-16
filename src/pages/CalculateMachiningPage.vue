@@ -227,7 +227,15 @@ async function getOrder(id: number) {
     <!-- 1. Левая часть -->
     <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
       <div class="title-text">
-        {{ order_id != 0 && order_name ? order_name : 'ТОКАРНАЯ ОБРАБОТКА' }} <br />
+        <div v-if="order_id != 0" class="title-input-wrapper">
+          <el-input
+            v-model="order_name"
+            placeholder="Название заказа"
+            class="title-input"
+          />
+        </div>
+        <div v-else>ТОКАРНАЯ ОБРАБОТКА</div>
+        <br v-if="order_id != 0" />
         {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
       </div>
 
@@ -384,6 +392,37 @@ async function getOrder(id: number) {
   padding-bottom: 30px;
 }
 
+.title-input-wrapper {
+  width: 100%;
+}
+
+.title-input :deep(.el-input__wrapper) {
+  padding: 0;
+  box-shadow: none;
+  background-color: transparent;
+  border: none;
+}
+
+.title-input :deep(.el-input__wrapper:hover) {
+  box-shadow: none;
+}
+
+.title-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: none;
+  border: none;
+}
+
+.title-input :deep(.el-input__inner) {
+  padding: 0;
+  font-size: 38px;
+  font-weight: 600;
+  color: black;
+}
+
+.title-input :deep(.el-input__inner::placeholder) {
+  color: rgba(0, 0, 0, 0.4);
+}
+
 .price-section {
   /* border-top: 1px solid #577aad; */
   /* border-bottom: 1px solid #577aad; */
@@ -496,6 +535,11 @@ async function getOrder(id: number) {
     font-size: 24px;
     text-align: center;
     padding-bottom: 16px;
+  }
+
+  .title-input :deep(.el-input__inner) {
+    font-size: 24px;
+    text-align: center;
   }
 
   .price-section {
