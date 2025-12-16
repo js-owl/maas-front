@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Clock, Location, ArrowLeft } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
