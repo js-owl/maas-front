@@ -67,9 +67,10 @@ const filteredOrders = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter((order) => {
+      const orderName = order.order_name?.toLowerCase() || ''
       const filename = getFilename(order.file_id)?.toLowerCase() || ''
       const orderId = order.order_id.toString()
-      return filename.includes(query) || orderId.includes(query)
+      return orderName.includes(query) || filename.includes(query) || orderId.includes(query)
     })
   }
 
@@ -305,12 +306,17 @@ const handleView = (row: IOrderResponse): void => {
         </el-table-column>
 
         <!-- Наименование -->
-        <el-table-column prop="file_id" label="Наименование" width="250">
+        <el-table-column prop="order_name" label="Наименование" width="250">
           <template #default="{ row }">
-            <span v-if="getFilename(row.file_id)" class="filename-text" @click="handleView(row)">{{
+            <span
+              v-if="row.order_name"
+              class="filename-text"
+              @click="handleView(row)"
+            >{{ row.order_name }}</span>
+            <span v-else-if="getFilename(row.file_id)" class="filename-text" @click="handleView(row)">{{
               getFilename(row.file_id)
             }}</span>
-            <span v-else class="no-filename">Нет файла</span>
+            <span v-else class="no-filename">Нет названия</span>
           </template>
         </el-table-column>
 
