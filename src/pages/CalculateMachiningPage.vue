@@ -36,6 +36,7 @@ const profileStore = useProfileStore()
 
 const route = useRoute()
 const order_id = computed(() => Number(route.query.orderId) || 0)
+let order_name = ref('')
 
 let file_id = ref(4)
 let document_ids = ref<number[]>([])
@@ -89,8 +90,6 @@ const location = computed(() => {
   return foundLocation?.location || 'location_1'
 })
 
-let order_name = ref('')
-
 const payload = reactive({
   service_id: 'cnc-lathe',
   order_name,
@@ -131,12 +130,39 @@ const stopLoading = async () => {
   isLoading.value = false
 }
 
-// Отправляем запрос на сервер при любом изменении данных
-watch(payload, sendData, { deep: true })
+// Пэйлоад только для расчета (игнорируем order_name, чтобы не дергать /calculate-price)
+const calculationPayload = computed(() => ({
+  service_id: payload.service_id,
+  location: payload.location,
+  file_id: payload.file_id,
+  document_ids: payload.document_ids,
+  quantity: payload.quantity,
+  length: payload.length,
+  width: payload.width,
+  height: payload.height,
+  material_id: payload.material_id,
+  material_form: payload.material_form,
+  tolerance_id: payload.tolerance_id,
+  finish_id: payload.finish_id,
+  cover_id: payload.cover_id,
+  n_dimensions: payload.n_dimensions,
+  k_otk: payload.k_otk,
+  k_cert: payload.k_cert,
+  manufacturing_cycle: payload.manufacturing_cycle,
+}))
+
+// Отправляем запрос на сервер при изменении значимых для расчета данных
+watch(
+  calculationPayload,
+  (newVal) => {
+    sendData(newVal as unknown as IOrderPayload)
+  },
+  { deep: true }
+)
 
 onMounted(() => {
   if (order_id.value == 0) {
-    sendData(payload)
+    sendData(calculationPayload.value as unknown as IOrderPayload)
   } else {
     getOrder(order_id.value)
   }
