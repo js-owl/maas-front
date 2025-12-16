@@ -32,6 +32,7 @@ const profileStore = useProfileStore()
 
 const route = useRoute()
 const order_id = computed(() => Number(route.query.orderId) || 0)
+let order_name = ref('')
 
 let file_id = ref(1)
 let document_ids = ref<number[]>([])
@@ -53,6 +54,7 @@ let special_instructions = ref('')
 
 const payload = reactive({
   service_id: 'printing',
+  order_name,
   file_id,
   document_ids,
   quantity,
@@ -86,12 +88,35 @@ const stopLoading = async () => {
   isLoading.value = false
 }
 
-// Отправляем запрос на сервер при любом изменении данных
-watch(payload, sendData, { deep: true })
+// Пэйлоад только для расчета (игнорируем order_name, чтобы не дергать /calculate-price)
+const calculationPayload = computed(() => ({
+  service_id: payload.service_id,
+  file_id: payload.file_id,
+  document_ids: payload.document_ids,
+  quantity: payload.quantity,
+  length: payload.length,
+  width: payload.width,
+  height: payload.height,
+  material_id: payload.material_id,
+  material_form: payload.material_form,
+  cover_id: payload.cover_id,
+  k_otk: payload.k_otk,
+  k_cert: payload.k_cert,
+  manufacturing_cycle: payload.manufacturing_cycle,
+}))
+
+// Отправляем запрос на сервер при изменении значимых для расчета данных
+watch(
+  calculationPayload,
+  (newVal) => {
+    sendData(newVal as unknown as IOrderPayload)
+  },
+  { deep: true }
+)
 
 onMounted(() => {
   if (order_id.value == 0) {
-    sendData(payload)
+    sendData(calculationPayload.value as unknown as IOrderPayload)
   } else {
     getOrder(order_id.value)
   }
@@ -135,10 +160,12 @@ async function getOrder(id: number) {
     if (data.k_cert) k_cert.value = data.k_cert
     if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
     if (data.special_instructions) special_instructions.value = data.special_instructions
+    if (data.order_name) order_name.value = data.order_name
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
       service_id: 'printing',
+      order_name: order_name.value,
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
@@ -171,7 +198,15 @@ async function getOrder(id: number) {
     <!-- 1. Левая часть -->
     <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
       <div class="title-text">
-        3D ПЕЧАТЬ <br />
+        <div v-if="order_id != 0" class="title-input-wrapper">
+          <el-input
+            v-model="order_name"
+            placeholder="Название заказа"
+            class="title-input"
+          />
+        </div>
+        <div v-else>3D ПЕЧАТЬ</div>
+        <br v-if="order_id != 0" />
         {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
       </div>
 
@@ -316,6 +351,37 @@ async function getOrder(id: number) {
   font-size: 38px;
   font-weight: 600;
   padding-bottom: 30px;
+}
+
+.title-input-wrapper {
+  width: 100%;
+}
+
+.title-input :deep(.el-input__wrapper) {
+  padding: 0;
+  box-shadow: none;
+  background-color: transparent;
+  border: none;
+}
+
+.title-input :deep(.el-input__wrapper:hover) {
+  box-shadow: none;
+}
+
+.title-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: none;
+  border: none;
+}
+
+.title-input :deep(.el-input__inner) {
+  padding: 0;
+  font-size: 38px;
+  font-weight: 600;
+  color: black;
+}
+
+.title-input :deep(.el-input__inner::placeholder) {
+  color: rgba(0, 0, 0, 0.4);
 }
 
 /* price section moved to CalculateResults */
