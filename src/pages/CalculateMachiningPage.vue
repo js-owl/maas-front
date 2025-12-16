@@ -89,9 +89,11 @@ const location = computed(() => {
   return foundLocation?.location || 'location_1'
 })
 
+let order_name = ref('')
+
 const payload = reactive({
   service_id: 'cnc-lathe',
-  order_name: '',
+  order_name,
   location,
   file_id,
   document_ids,
@@ -184,10 +186,12 @@ async function getOrder(id: number) {
     if (data.k_cert) k_cert.value = data.k_cert
     if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
     if (data.special_instructions) special_instructions.value = data.special_instructions
+    if (data.order_name) order_name.value = data.order_name
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
       service_id: 'cnc-lathe',
+      order_name: order_name.value,
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
@@ -223,7 +227,7 @@ async function getOrder(id: number) {
     <!-- 1. Левая часть -->
     <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
       <div class="title-text">
-        ТОКАРНАЯ ОБРАБОТКА <br />
+        {{ order_id != 0 && order_name ? order_name : 'ТОКАРНАЯ ОБРАБОТКА' }} <br />
         {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
       </div>
 
