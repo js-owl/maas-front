@@ -33,8 +33,8 @@ const hidePrice = computed(() => hidePriceFn(username.value, status.value))
 // Order data storage
 const orderData = ref<IOrderResponse | null>(null)
 
-// Model filename - represents the uploaded 3D model file
-const modelFilename = ref('Example_model.stl')
+// Order name - represents the order name
+const order_name = ref('')
 
 // Manufacturing cost per unit in rubles
 const manufacturingCost = ref(10526)
@@ -121,21 +121,6 @@ const handleProductionChange = (location: string) => {
   console.log('Production location changed to:', location)
 }
 
-// Fetch filename from API by file_id
-const fetchFilename = async (fileId: number): Promise<string | null> => {
-  if (!fileId) return null
-  try {
-    const response = await req_json_auth(`/files/${fileId}`, 'GET')
-    if (response?.ok) {
-      const fileInfo = (await response.json()) as { original_filename?: string; filename?: string }
-      return fileInfo.original_filename || fileInfo.filename || null
-    }
-  } catch (error) {
-    console.error(`Error fetching filename for file ${fileId}:`, error)
-  }
-  return null
-}
-
 // Fetch order data from API
 const fetchOrder = async (id: number) => {
   if (!id || id === 0) return
@@ -195,10 +180,9 @@ const fetchOrder = async (id: number) => {
           coverLabels.join(', ') || fetchedOrderData.cover_id.join(', ')
       }
 
-      // Update model filename if file_id exists
-      if (fetchedOrderData.file_id) {
-        const filename = await fetchFilename(fetchedOrderData.file_id)
-        modelFilename.value = filename || `Model_${fetchedOrderData.file_id}.stl`
+      // Update order name if order_name exists
+      if (fetchedOrderData.order_name) {
+        order_name.value = fetchedOrderData.order_name
       }
     } else {
       ElMessage.error('Не удалось загрузить данные заказа')
@@ -320,8 +304,8 @@ const handleDelete = async (): Promise<void> => {
 
             <!-- Product Info Section -->
             <div class="product-info">
-              <!-- Filename -->
-              <div class="filename">{{ modelFilename }}</div>
+              <!-- Order Name -->
+              <div class="filename">{{ order_name }}</div>
 
               <!-- Manufacturing Cost -->
               <div class="cost-section">
