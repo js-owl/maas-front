@@ -78,13 +78,17 @@ const filteredOrders = computed(() => {
 })
 
 onMounted(async () => {
-  const [ordersResponse] = await Promise.all([
-    req_json_auth(`/orders`, 'GET'),
-    materialStore.loadMaterials(),
-  ])
-  const ordersData = (await ordersResponse?.json()) as IOrderResponse[]
+  // const [calcsResponse] = await Promise.all([
+  //   req_json_auth(`/orders`, 'GET'),
+  //   materialStore.loadMaterials(),
+  // ])
+  // const calcsData = (await calcsResponse?.json()) as unknown as IOrderResponse[] // временно, если нужно использовать реальные данные
+  const orderData1 = { order_id: 1, order_name: 'aaa', calc_ids: [41, 42] } as unknown as IOrderResponse
+  const orderData2 = { order_id: 2, order_name: 'bbb', calc_ids: [40, 41] } as unknown as IOrderResponse
+  const ordersData: IOrderResponse[] = [orderData1, orderData2]
   allOrders.value = ordersData
-  await loadFilenames(ordersData)
+  // console.log({ ordersData }, { allOrders: allOrders.value })
+  // await loadFilenames(ordersData)
 })
 
 const formatDate = (cellValue: string | null | undefined): string => {

@@ -67,4 +67,5 @@ export interface IOrderResponse extends IOrderBase {
   message: string
   manufacturing_cycle: number
   suitable_machines: []
+  calc_ids: number[]
 }
