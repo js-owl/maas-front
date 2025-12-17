@@ -85,6 +85,7 @@ declare module 'vue' {
     PaintType: typeof import('./src/components/coefficients/PaintType.vue')['default']
     PersonalCalc: typeof import('./src/components/PersonalCalc.vue')['default']
     PersonalCalcInfo: typeof import('./src/components/PersonalCalcInfo.vue')['default']
+    PersonalOrder: typeof import('./src/components/PersonalOrder.vue')['default']
     PersonalOrders: typeof import('./src/components/PersonalOrders.vue')['default']
     PersonalProfile: typeof import('./src/components/PersonalProfile.vue')['default']
     PersonalUsers: typeof import('./src/components/PersonalUsers.vue')['default']

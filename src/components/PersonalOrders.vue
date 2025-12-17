@@ -187,10 +187,9 @@ const getFilename = (fileId: number | null | undefined): string | null => {
 }
 
 const handleOpen = (row: IOrderResponse): void => {
-  router.push({
-    path: '/personal/calc',
-    query: { orderId: row.order_id.toString() },
-  })
+  const storageKey = `order_${row.order_id}`
+  localStorage.setItem(storageKey, JSON.stringify(row))
+  router.push({ path: '/personal/order', query: { orderId: row.order_id.toString() } })
 }
 
 const handleView = (row: IOrderResponse): void => {
