@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { Edit } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { Edit, Delete } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
@@ -18,6 +18,8 @@ const quantity = ref<number>(0)
 const filename = ref<string>('')
 const isEditingFilename = ref(false)
 const editedFilename = ref('')
+
+const deleteLoading = ref<number | null>(null)
 
 type CalcRow = {
   calc_id: number
@@ -255,6 +257,38 @@ const handleEdit = (row: any): void => {
   }
 }
 
+const handleDelete = async (row: any): Promise<void> => {
+  try {
+    // Show confirmation dialog before deleting
+    await ElMessageBox.confirm(
+      `Вы уверены, что хотите удалить заказ #${row.calc_id}?`,
+      'Подтверждение удаления',
+      {
+        confirmButtonText: 'Удалить',
+        cancelButtonText: 'Отмена',
+        type: 'warning',
+        confirmButtonClass: 'el-button--danger',
+      }
+    )
+
+    deleteLoading.value = row.calc_id
+    const r = await req_json_auth(`/orders/${row.calc_id}`, 'DELETE')
+    if (r?.ok) {
+      ElMessage.success('Заказ успешно удален')
+    } else {
+      ElMessage.error('Ошибка при удалении заказа')
+    }
+  } catch (error: any) {
+    if (error === 'cancel' || error === 'close' || error?.action === 'cancel') {
+      return
+    }
+    console.error('Error deleting order:', error)
+    ElMessage.error('Ошибка при удалении заказа')
+  } finally {
+    deleteLoading.value = null
+  }
+}
+
 const goBack = () => {
   router.push({ path: '/personal/orders' })
 }
@@ -366,16 +400,16 @@ onMounted(() => {
                     :icon="Edit"
                     title="Редактировать"
                   />
-                  <!-- <el-button
+                  <el-button
                     link
                     type="primary"
                     size="small"
-                    @click="handleDelete(scope.row)"
-                    :loading="deleteLoading === scope.row.order_id"
+                    @click="handleDelete(row.row)"
+                    :loading="deleteLoading === row.row.order_id"
                     :icon="Delete"
                     title="Удалить"
                     class="delete-button"
-                  /> -->
+                  />
                 </div>
               </template>
             </el-table-column>
