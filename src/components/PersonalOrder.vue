@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
+import CadPreview from './cad/CadPreview.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -196,7 +197,6 @@ onMounted(() => {
           <el-table
             :data="calcRows"
             class="details-table"
-            border
             :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
             v-loading="isLoading"
             empty-text="Нет данных по деталям"
@@ -206,9 +206,12 @@ onMounted(() => {
                 {{ row.id || $index + 1 }}
               </template>
             </el-table-column>
-            <el-table-column label="Превью" width="120">
-              <template #default>
-                <div class="preview-placeholder" />
+            <el-table-column prop="file_id" label="Превью" width="120">
+              <template #default="{ row }">
+                <div v-if="row.file_id" class="model-preview">
+                  <CadPreview :file-id="row.file_id" />
+                </div>
+                <div v-else class="preview-placeholder" />
               </template>
             </el-table-column>
             <el-table-column label="Наименование детали">
@@ -356,6 +359,13 @@ onMounted(() => {
 
 .details-table {
   margin-top: 10px;
+}
+
+.model-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
 }
 
 .preview-placeholder {
