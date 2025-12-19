@@ -299,10 +299,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="order-page">
+  <section class="personal-order">
     <el-row :gutter="20">
-      <el-col :span="18">
-        <el-card shadow="never" class="order-card">
+      <el-col :span="16">
+        <!-- <el-card shadow="never" class="order-card"> -->
           <div class="order-header">
             <div class="order-title">
               <div class="order-name-wrapper">
@@ -379,7 +379,7 @@ onMounted(() => {
                 {{ row.calc_name }}
               </template>
             </el-table-column>
-            <el-table-column label="Количество, шт" width="140" align="center">
+            <el-table-column label="Кол-во, шт" width="100" align="center">
               <template #default="{ row }">
                 {{ row.calc_qty }}
               </template>
@@ -423,10 +423,10 @@ onMounted(() => {
               Сохранить
             </el-button>
           </div>
-        </el-card>
+        <!-- </el-card> -->
       </el-col>
 
-      <el-col :span="6">
+      <el-col :span="8">
         <el-card shadow="never" class="summary-card">
           <div class="dates-block">
             <div class="date-row">
@@ -440,15 +440,15 @@ onMounted(() => {
           </div>
 
           <div class="summary-item">
-            <div class="summary-label">Доставка</div>
-            <div class="summary-value">
+            <div style="font-size: 16px; font-weight: 500;">Доставка</div>
+            <div style="font-size: 24px; font-weight: 600;">
               {{ deliveryCost }} <span class="rub">руб.</span>
             </div>
           </div>
 
           <div class="summary-item total">
-            <div class="summary-label">Стоимость с учетом доставки</div>
-            <div class="summary-total">
+            <div style="font-size: 16px; font-weight: 500;">Стоимость с учетом доставки</div>
+            <div style="font-size: 36px; font-weight: 700;"	>
               {{ totalWithDelivery }} <span class="rub">руб.</span>
             </div>
           </div>
@@ -461,19 +461,27 @@ onMounted(() => {
         </el-card>
       </el-col>
     </el-row>
-  </div>
+  </section>
 </template>
 
 <style scoped>
+.personal-order{
+  min-height: 200px;
+  background-color: white;
+  /* margin: 0px 0 40px;*/
+  padding: 20px 10px; 
+  border-radius: 20px;
+  /* box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12); */
+}
 .order-page {
   padding: 20px;
 }
 
-.order-card {
+/* .order-card {
   background-color: #f7f8fa;
   border-radius: 16px;
   border: none;
-}
+} */
 
 .order-header {
   display: flex;
@@ -623,19 +631,20 @@ onMounted(() => {
 }
 
 .summary-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  display: block;
+  /* justify-content: space-between;
+  align-items: baseline; */
 }
 
 .summary-label {
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 500;
   color: #606266;
 }
 
 .summary-value {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 36px;
+  font-weight: 700;
 }
 
 .summary-item.total {
@@ -650,7 +659,8 @@ onMounted(() => {
 
 .rub {
   margin-left: 4px;
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .dates-block {

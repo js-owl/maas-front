@@ -22,7 +22,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <el-row :gutter="0" style="padding-top: 30px; min-height: 300px">
+  <el-row :gutter="0" style="padding-top: 30px; min-height: 300px; background-color: var(--bgcolor);">
     <el-col :offset="3" :span="18">
       <div class="personal-layout">
         <aside class="sidebar">
@@ -60,6 +60,7 @@ onMounted(async () => {
   border: 1px solid var(--el-border-color);
   border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12);
 }
 
 .menu {
@@ -68,14 +69,14 @@ onMounted(async () => {
 
 .content {
   background: #fff;
-  border: 1px solid var(--el-border-color);
+  /* border: 1px solid var(--el-border-color); */
   border-radius: 8px;
-  padding: 16px;
-  min-height: 60vh;
+  padding: 0 16px;
+  /* min-height: 60vh; */
   /* Prevent grid child from overflowing horizontally */
   min-width: 0;
-  /* Allow inner scroll for wide tables/content */
   overflow: auto;
+  box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12);
 }
 
 @media (max-width: 1024px) {

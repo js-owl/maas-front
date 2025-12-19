@@ -83,8 +83,8 @@ onMounted(async () => {
   //   materialStore.loadMaterials(),
   // ])
   // const calcsData = (await calcsResponse?.json()) as unknown as IOrderResponse[] // временно, если нужно использовать реальные данные
-  const orderData1 = { order_id: 1, order_name: 'aaa', updated_at: 10000000,  total_price: 100500, calc_ids: [41, 42] } as unknown as IOrderResponse
-  const orderData2 = { order_id: 2, order_name: 'bbb', updated_at: 1000000000, total_price: 100600, calc_ids: [40, 41] } as unknown as IOrderResponse
+  const orderData1 = { order_id: 1, order_name: 'aaa', created_at: 10000000, updated_at: 1000000000,  total_price: 100500, calc_ids: [41, 42] } as unknown as IOrderResponse
+  const orderData2 = { order_id: 2, order_name: 'bbb', created_at: 10000000, updated_at: 1000000000, total_price: 100600, calc_ids: [40, 41] } as unknown as IOrderResponse
   const ordersData: IOrderResponse[] = [orderData1, orderData2]
   allOrders.value = ordersData
   // console.log({ ordersData }, { allOrders: allOrders.value })
@@ -328,12 +328,12 @@ const handleView = (row: IOrderResponse): void => {
         <!-- Дата создания / завершения -->
         <el-table-column label="Дата созд." width="120">
           <template #default="{ row }">
-            {{ getCompletionDate(row) }}
+            {{ formatDate(row.created_at) }}
           </template>
         </el-table-column>
         <el-table-column label="Дата завер." width="120">
           <template #default="{ row }">
-            {{ getCompletionDate(row) }}
+            {{ formatDate(row.updated_at) }}
           </template>
         </el-table-column>
 
