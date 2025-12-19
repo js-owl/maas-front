@@ -2,6 +2,7 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { Edit } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
@@ -14,16 +15,19 @@ const isLoading = ref(false)
 const hasError = ref(false)
 
 const quantity = ref<number>(0)
+const filename = ref<string>('')
+const isEditingFilename = ref(false)
+const editedFilename = ref('')
 
-type OrderCalcRow = {
-  id: number
-  name: string
-  quantity: number
-  price: number
+type CalcRow = {
+  calc_id: number
+  calc_name: string
+  calc_qty: number
+  calc_price: number
   file_id?: number | null
 }
 
-const calcRows = ref<OrderCalcRow[]>([])
+const calcRows = ref<CalcRow[]>([])
 
 const orderId = computed(() => {
   const fromQuery = route.query.orderId
@@ -54,8 +58,71 @@ const totalWithDelivery = computed(() => {
   return formatPrice(total)
 })
 
-const createdDate = computed(() => order.value?.created_at ?? '')
-const completionDate = computed(() => order.value?.updated_at ?? '')
+const formatDate = (dateString?: string | null): string => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) return ''
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
+  return `${day}.${month}.${year}`
+}
+
+const createdDate = computed(() => formatDate(order.value?.created_at))
+const completionDate = computed(() => formatDate(order.value?.updated_at))
+
+const fetchFilename = async (fileId: number): Promise<string | null> => {
+  if (!fileId) return null
+  try {
+    const response = await req_json_auth(`/files/${fileId}`, 'GET')
+    if (response?.ok) {
+      const fileInfo = (await response.json()) as { original_filename?: string; filename?: string }
+      return fileInfo.original_filename || fileInfo.filename || null
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`Error fetching filename for file ${fileId}:`, error)
+  }
+  return null
+}
+
+const loadFilename = async () => {
+  if (order.value?.file_id) {
+    const name = await fetchFilename(order.value.file_id)
+    if (name) {
+      filename.value = name
+      editedFilename.value = name
+    }
+  }
+}
+
+const startEditFilename = () => {
+  isEditingFilename.value = true
+  editedFilename.value = filename.value
+}
+
+const saveFilename = () => {
+  filename.value = editedFilename.value
+  isEditingFilename.value = false
+  // TODO: сохранить имя файла на сервере
+}
+
+const cancelEditFilename = () => {
+  editedFilename.value = filename.value
+  isEditingFilename.value = false
+}
+
+const decreaseQuantity = () => {
+  if (quantity.value > 1) {
+    quantity.value--
+  }
+}
+
+const increaseQuantity = () => {
+  if (quantity.value < 9999) {
+    quantity.value++
+  }
+}
 
 const loadCalcs = async () => {
   if (!order.value?.calc_ids?.length) {
@@ -77,21 +144,18 @@ const loadCalcs = async () => {
     )
 
     calcRows.value = responses.map((item, index) => {
-      const id = Number(item.id ?? item.order_id ?? ids[index] ?? index + 1)
-      const name =
-        item.detail_name ??
-        item.order_name ??
-        item.name ??
-        item.title ??
-        `деталь №${id}`
-      const qty = Number(item.quantity ?? item.qty ?? item.k_quantity ?? 0) || 0
-      const price = Number(item.price ?? item.detail_price ?? item.total_price ?? 0) || 0
+      const calc_id = Number(item.id ?? item.order_id ?? ids[index] ?? index + 1)
+      const calc_service_id = item.service_id ?? ''
+      const calc_name =`деталь №${calc_id}`
+      const calc_qty = Number(item.quantity ?? 0) || 0
+      const calc_price = Number(item.total_price ?? 0) || 0
 
       return {
-        id,
-        name,
-        quantity: qty,
-        price,
+        calc_id,
+        calc_service_id,
+        calc_name,
+        calc_qty,
+        calc_price,
         file_id: item.file_id ?? null,
       }
     })
@@ -107,6 +171,7 @@ const loadOrder = async (orderData?: IOrderResponse | null) => {
   if (orderData) {
     order.value = orderData
     quantity.value = orderData.quantity ?? 0
+    await loadFilename()
     await loadCalcs()
     return
   }
@@ -123,6 +188,7 @@ const loadOrder = async (orderData?: IOrderResponse | null) => {
         quantity.value = parsedData.quantity ?? 0
         // Удаляем данные из localStorage после использования
         localStorage.removeItem(storageKey)
+        await loadFilename()
         await loadCalcs()
         return
       } catch (e) {
@@ -147,6 +213,7 @@ const loadOrder = async (orderData?: IOrderResponse | null) => {
     const data = (await res.json()) as IOrderResponse
     order.value = data
     quantity.value = data.quantity ?? 0
+    await loadFilename()
     await loadCalcs()
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -155,6 +222,36 @@ const loadOrder = async (orderData?: IOrderResponse | null) => {
     ElMessage.error('Не удалось загрузить данные заказа')
   } finally {
     isLoading.value = false
+  }
+}
+
+const handleEdit = (row: any): void => {
+  console.log({row})
+  switch (row.calc_service_id) {
+    case 'cnc-lathe':
+      router.push({
+        path: '/machining',
+        query: { orderId: row.calc_id.toString() },
+      })
+      break
+    case 'cnc-milling':
+      router.push({
+        path: '/milling',
+        query: { orderId: row.calc_id.toString() },
+      })
+      break
+    case 'printing':
+      router.push({
+        path: '/printing',
+        query: { orderId: row.calc_id.toString() },
+      })
+      break
+    default:
+      router.push({
+        path: '/machining',
+        query: { orderId: row.calc_id.toString() },
+      })
+      break
   }
 }
 
@@ -174,22 +271,51 @@ onMounted(() => {
         <el-card shadow="never" class="order-card">
           <div class="order-header">
             <div class="order-title">
-              <div class="order-name">Заказ {{ orderId || '' }}</div>
+              <div class="order-name-wrapper">
+                <div v-if="!isEditingFilename" class="order-name">
+                  {{ filename || 'Загрузка...' }}
+                  <el-button
+                    text
+                    type="primary"
+                    :icon="Edit"
+                    class="edit-name-btn"
+                    @click="startEditFilename"
+                  />
+                </div>
+                <div v-else class="order-name-edit">
+                  <el-input
+                    v-model="editedFilename"
+                    class="filename-input"
+                    @keyup.enter="saveFilename"
+                    @keyup.esc="cancelEditFilename"
+                  />
+                  <el-button text type="primary" size="small" @click="saveFilename">
+                    ✓
+                  </el-button>
+                  <el-button text type="danger" size="small" @click="cancelEditFilename">
+                    ✕
+                  </el-button>
+                </div>
+              </div>
               <div class="order-subtitle">Стоимость изготовления</div>
               <div class="order-price">
                 {{ manufacturingCost }}
-                <span class="order-price-currency">руб</span>
+                <span class="order-price-currency">руб.</span>
               </div>
             </div>
             <div class="order-quantity">
               <div class="quantity-label">Количество</div>
-              <el-input-number
-                v-model="quantity"
-                :min="1"
-                :max="9999"
-                controls-position="right"
-                class="quantity-input"
-              />
+              <div class="quantity-controls">
+                <el-button class="quantity-btn" @click="decreaseQuantity">-</el-button>
+                <el-input
+                  v-model.number="quantity"
+                  type="number"
+                  :min="1"
+                  :max="9999"
+                  class="quantity-input-simple"
+                />
+                <el-button class="quantity-btn" @click="increaseQuantity">+</el-button>
+              </div>
               <el-button class="calc-button">Калькуляция стоимости</el-button>
             </div>
           </div>
@@ -203,7 +329,7 @@ onMounted(() => {
           >
             <el-table-column prop="id" label="№" width="60">
               <template #default="{ row, $index }">
-                {{ row.id || $index + 1 }}
+                {{ row.calc_id || $index + 1 }}
               </template>
             </el-table-column>
             <el-table-column prop="file_id" label="Превью" width="120">
@@ -216,27 +342,41 @@ onMounted(() => {
             </el-table-column>
             <el-table-column label="Наименование детали">
               <template #default="{ row }">
-                {{ row.name }}
+                {{ row.calc_name }}
               </template>
             </el-table-column>
             <el-table-column label="Количество, шт" width="140" align="center">
               <template #default="{ row }">
-                {{ row.quantity }}
+                {{ row.calc_qty }}
               </template>
             </el-table-column>
             <el-table-column label="Цена" width="120" align="right">
               <template #default="{ row }">
-                {{ formatPrice(row.price) }}
+                {{ formatPrice(row.calc_price) }}
               </template>
             </el-table-column>
             <el-table-column label="" width="90" align="center">
-              <template #default>
-                <el-button link type="primary" size="small">
-                  <span class="icon-placeholder">✎</span>
-                </el-button>
-                <el-button link type="danger" size="small">
-                  <span class="icon-placeholder">🗑</span>
-                </el-button>
+              <template #default="row">
+                <div class="action-buttons">
+                  <el-button
+                    link
+                    type="primary"
+                    size="small"
+                    @click="handleEdit(row.row)"
+                    :icon="Edit"
+                    title="Редактировать"
+                  />
+                  <!-- <el-button
+                    link
+                    type="primary"
+                    size="small"
+                    @click="handleDelete(scope.row)"
+                    :loading="deleteLoading === scope.row.order_id"
+                    :icon="Delete"
+                    title="Удалить"
+                    class="delete-button"
+                  /> -->
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -245,8 +385,8 @@ onMounted(() => {
             <el-button class="back-button" @click="goBack">
               &lt; к списку
             </el-button>
-            <el-button type="primary" class="pay-button">
-              Оплатить заказ
+            <el-button type="primary" class="save-button-footer">
+              Сохранить
             </el-button>
           </div>
         </el-card>
@@ -254,6 +394,17 @@ onMounted(() => {
 
       <el-col :span="6">
         <el-card shadow="never" class="summary-card">
+          <div class="dates-block">
+            <div class="date-row">
+              <span class="date-label">Дата создания</span>
+              <span class="date-value">{{ createdDate }}</span>
+            </div>
+            <div class="date-row">
+              <span class="date-label">Дата завершения</span>
+              <span class="date-value">{{ completionDate }}</span>
+            </div>
+          </div>
+
           <div class="summary-item">
             <div class="summary-label">Доставка</div>
             <div class="summary-value">
@@ -268,23 +419,9 @@ onMounted(() => {
             </div>
           </div>
 
-          <div class="dates-block">
-            <div class="date-row">
-              <span class="date-label">Дата создания</span>
-              <span class="date-value">{{ createdDate }}</span>
-            </div>
-            <div class="date-row">
-              <span class="date-label">Дата завершения</span>
-              <span class="date-value">{{ completionDate }}</span>
-            </div>
-          </div>
-
           <div class="summary-actions">
-            <el-button text class="small-delete">
-              <span class="icon-placeholder">🗑</span>
-            </el-button>
-            <el-button type="primary" class="save-button">
-              Сохранить
+            <el-button type="primary" class="pay-button">
+              Оплатить заказ
             </el-button>
           </div>
         </el-card>
@@ -317,9 +454,33 @@ onMounted(() => {
   gap: 4px;
 }
 
+.order-name-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .order-name {
   font-size: 18px;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-name-btn {
+  padding: 4px;
+  min-height: auto;
+}
+
+.order-name-edit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.filename-input {
+  flex: 1;
 }
 
 .order-subtitle {
@@ -349,8 +510,27 @@ onMounted(() => {
   color: #909399;
 }
 
-.quantity-input {
-  width: 140px;
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quantity-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-input-simple {
+  width: 80px;
+}
+
+.quantity-input-simple :deep(.el-input__inner) {
+  text-align: center;
 }
 
 .calc-button {
@@ -392,6 +572,11 @@ onMounted(() => {
 
 .pay-button {
   border-radius: 24px;
+  width: 100%;
+}
+
+.save-button-footer {
+  border-radius: 24px;
 }
 
 .summary-card {
@@ -420,7 +605,8 @@ onMounted(() => {
 }
 
 .summary-item.total {
-  margin-top: 8px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 .summary-total {
@@ -434,9 +620,9 @@ onMounted(() => {
 }
 
 .dates-block {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px dashed #d4d7de;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #d4d7de;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -456,16 +642,22 @@ onMounted(() => {
 .summary-actions {
   margin-top: auto;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
   align-items: center;
 }
 
-.small-delete {
-  padding: 8px;
+.action-buttons :deep(.el-button) {
+  padding: 4px 8px;
+  color: #606266;
 }
 
-.save-button {
-  border-radius: 24px;
+.action-buttons :deep(.el-button:hover) {
+  color: #409eff;
 }
 
 @media (max-width: 992px) {
