@@ -7,6 +7,7 @@ import { useAuthStore } from '../../stores/auth.store'
 import { req_json_auth } from '../../api'
 import type { IOrderPayload, IOrderPostPayload, IOrderResponse } from '../../interfaces/order.interface'
 import DialogLogin from '../dialog/DialogLogin.vue'
+import Button from '../ui/Button.vue'
 
 const props = defineProps<{
   orderId: number
@@ -142,9 +143,9 @@ const cancel = () => {
       </el-button>
     </el-col>
     <el-col :span="12">
-      <el-button type="primary" plain class="submit" :class="{ 'is-disabled': isDisabled }" @click="submitOrder">
+      <Button :disabled="isDisabled" @click="submitOrder">
         {{ isNewOrder ? 'Оформить заказ' : 'Сохранить заказ' }}
-      </el-button>
+      </Button>
     </el-col>
   </el-row>
   <DialogLogin v-model="isLoginDialogVisible" />
