@@ -196,7 +196,7 @@ const handleDelete = async (row: any): Promise<void> => {
   try {
     // Show confirmation dialog before deleting
     await ElMessageBox.confirm(
-      `Вы уверены, что хотите удалить заказ #${row.calc_id}?`,
+      `Вы уверены, что хотите удалить заказ #${row.order_id}?`,
       'Подтверждение удаления',
       {
         confirmButtonText: 'Удалить',
@@ -207,7 +207,7 @@ const handleDelete = async (row: any): Promise<void> => {
     )
 
     deleteLoading.value = row.calc_id
-    const r = await req_json_auth(`/orders/${row.calc_id}`, 'DELETE')
+    const r = await req_json_auth(`/orders/${row.order_id}`, 'DELETE')
     if (r?.ok) {
       ElMessage.success('Заказ успешно удален')
     } else {
@@ -321,7 +321,7 @@ onMounted(() => {
           </el-table-column>
           <el-table-column label="Наименование детали">
             <template #default="{ row }">
-              {{ `деталь ${row.file_id}` }}
+              {{ row.order_name }}
             </template>
           </el-table-column>
           <el-table-column label="Кол-во, шт" width="100" align="center">
