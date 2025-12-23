@@ -7,7 +7,7 @@ import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
 import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
-
+import Button from './ui/Button.vue'
 const route = useRoute()
 const router = useRouter()
 
@@ -361,8 +361,8 @@ onMounted(() => {
         </el-table>
 
         <div class="order-footer">
-          <el-button class="back-button" @click="goBack"> &lt; к списку </el-button>
-          <el-button type="primary" class="save-button-footer" @click="saveOrder"> Сохранить </el-button>
+          <Button @click="goBack"> &lt; к списку </Button>
+          <Button @click="saveOrder"> Сохранить </Button>
         </div>
         <!-- </el-card> -->
       </el-col>
@@ -558,9 +558,6 @@ onMounted(() => {
   width: 100%;
 }
 
-.save-button-footer {
-  border-radius: 24px;
-}
 
 .summary-card {
   background-color: #e9ecef;
