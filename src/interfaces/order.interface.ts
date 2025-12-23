@@ -1,3 +1,19 @@
+export interface IKit {
+  kit_id: number
+  kit_name: string
+  order_ids: number[]
+  user_id: number
+  quantity: number
+  status: string
+  created_at: string
+  updated_at: string
+  bitrix_deal_id: number
+  location: string
+  kit_price: number
+  delivery_price: number
+  total_kit_price: number
+}
+
 export interface IOrderBase {
   service_id: string
   order_name?: string

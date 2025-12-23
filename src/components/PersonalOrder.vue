@@ -4,13 +4,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Edit, Delete } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
-import type { IOrderResponse } from '../interfaces/order.interface'
+import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
 
 const route = useRoute()
 const router = useRouter()
 
-const order = ref<IOrderResponse | null>(null)
+const order = ref<IKit | null>(null)
 const isLoading = ref(false)
 const hasError = ref(false)
 
@@ -21,15 +21,15 @@ const editedFilename = ref('')
 
 const deleteLoading = ref<number | null>(null)
 
-type CalcRow = {
-  calc_id: number
-  calc_name: string
-  calc_qty: number
-  calc_price: number
-  file_id?: number | null
-}
+// type CalcRow = {
+//   calc_id: number
+//   calc_name: string
+//   calc_qty: number
+//   calc_price: number
+//   file_id?: number | null
+// }
 
-const calcRows = ref<CalcRow[]>([])
+const calcRows = ref<IOrderResponse[]>([])
 
 const orderId = computed(() => {
   const fromQuery = route.query.orderId
@@ -47,16 +47,16 @@ const formatPrice = (value?: number | null): string => {
 }
 
 const manufacturingCost = computed(() => {
-  return formatPrice(order.value?.total_price ?? 0)
+  return formatPrice(order.value?.total_kit_price ?? 0)
 })
 
 const deliveryCost = computed(() => {
   // TODO: заменить на реальные данные о доставке
-  return formatPrice(1474)
+  return formatPrice(order.value?.delivery_price)
 })
 
 const totalWithDelivery = computed(() => {
-  const total = (order.value?.total_price ?? 0) + 1474
+  const total = (order.value?.total_kit_price ?? 0) + Number(deliveryCost.value)
   return formatPrice(total)
 })
 
@@ -73,30 +73,20 @@ const formatDate = (dateString?: string | null): string => {
 const createdDate = computed(() => formatDate(order.value?.created_at))
 const completionDate = computed(() => formatDate(order.value?.updated_at))
 
-const fetchFilename = async (fileId: number): Promise<string | null> => {
-  if (!fileId) return null
-  try {
-    const response = await req_json_auth(`/files/${fileId}`, 'GET')
-    if (response?.ok) {
-      const fileInfo = (await response.json()) as { original_filename?: string; filename?: string }
-      return fileInfo.original_filename || fileInfo.filename || null
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`Error fetching filename for file ${fileId}:`, error)
-  }
-  return null
-}
-
-const loadFilename = async () => {
-  if (order.value?.file_id) {
-    const name = await fetchFilename(order.value.file_id)
-    if (name) {
-      filename.value = name
-      editedFilename.value = name
-    }
-  }
-}
+// const fetchFilename = async (fileId: number): Promise<string | null> => {
+//   if (!fileId) return null
+//   try {
+//     const response = await req_json_auth(`/files/${fileId}`, 'GET')
+//     if (response?.ok) {
+//       const fileInfo = (await response.json()) as { original_filename?: string; filename?: string }
+//       return fileInfo.original_filename || fileInfo.filename || null
+//     }
+//   } catch (error) {
+//     // eslint-disable-next-line no-console
+//     console.error(`Error fetching filename for file ${fileId}:`, error)
+//   }
+//   return null
+// }
 
 const startEditFilename = () => {
   isEditingFilename.value = true
@@ -127,13 +117,13 @@ const increaseQuantity = () => {
 }
 
 const loadCalcs = async () => {
-  if (!order.value?.calc_ids?.length) {
+  if (!order.value?.order_ids?.length) {
     calcRows.value = []
     return
   }
 
   try {
-    const ids = order.value.calc_ids
+    const ids = order.value.order_ids
 
     const responses = await Promise.all(
       ids.map(async (id) => {
@@ -145,77 +135,24 @@ const loadCalcs = async () => {
       })
     )
 
-    calcRows.value = responses.map((item, index) => {
-      const calc_id = Number(item.id ?? item.order_id ?? ids[index] ?? index + 1)
-      const calc_service_id = item.service_id ?? ''
-      const calc_name =`деталь №${calc_id}`
-      const calc_qty = Number(item.quantity ?? 0) || 0
-      const calc_price = Number(item.total_price ?? 0) || 0
-
-      return {
-        calc_id,
-        calc_service_id,
-        calc_name,
-        calc_qty,
-        calc_price,
-        file_id: item.file_id ?? null,
-      }
-    })
+    calcRows.value = responses
+    // .map(item =>{if(item == f return item} ) fetchFilename
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.error(e)
     ElMessage.error('Не удалось загрузить расчеты заказа')
   }
 }
 
-const loadOrder = async (orderData?: IOrderResponse | null) => {
-  // Если данные переданы напрямую, используем их
-  if (orderData) {
-    order.value = orderData
-    quantity.value = orderData.quantity ?? 0
-    await loadFilename()
-    await loadCalcs()
-    return
-  }
-
-  // Пытаемся получить данные из localStorage
-  if (orderId.value && !Number.isNaN(orderId.value)) {
-    const storageKey = `order_${orderId.value}`
-    const storedData = localStorage.getItem(storageKey)
-    
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData) as IOrderResponse
-        order.value = parsedData
-        quantity.value = parsedData.quantity ?? 0
-        // Удаляем данные из localStorage после использования
-        localStorage.removeItem(storageKey)
-        await loadFilename()
-        await loadCalcs()
-        return
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Error parsing stored order data:', e)
-        localStorage.removeItem(storageKey)
-      }
-    }
-  }
-
-  // Если данных нет в localStorage, загружаем с сервера (fallback)
-  if (!orderId.value || Number.isNaN(orderId.value)) {
-    hasError.value = true
-    return
-  }
-
+const loadOrder = async () => {
   isLoading.value = true
   hasError.value = false
   try {
-    const res = await req_json_auth(`/orders/${orderId.value}`, 'GET')
+    const res = await req_json_auth(`/kits/${orderId.value}`, 'GET')
     if (!res?.ok) throw new Error('Failed to load order')
-    const data = (await res.json()) as IOrderResponse
+    const data = (await res.json()) as IKit
     order.value = data
     quantity.value = data.quantity ?? 0
-    await loadFilename()
+    filename.value = data.kit_name ?? ''
     await loadCalcs()
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -228,7 +165,7 @@ const loadOrder = async (orderData?: IOrderResponse | null) => {
 }
 
 const handleEdit = (row: any): void => {
-  console.log({row})
+  console.log({ row })
   switch (row.calc_service_id) {
     case 'cnc-lathe':
       router.push({
@@ -293,6 +230,10 @@ const goBack = () => {
   router.push({ path: '/personal/orders' })
 }
 
+const cancel = () => {
+  console.log('cancel')
+}
+
 onMounted(() => {
   void loadOrder()
 })
@@ -303,126 +244,120 @@ onMounted(() => {
     <el-row :gutter="20">
       <el-col :span="16">
         <!-- <el-card shadow="never" class="order-card"> -->
-          <div class="order-header">
-            <div class="order-title">
-              <div class="order-name-wrapper">
-                <div v-if="!isEditingFilename" class="order-name">
-                  {{ filename || 'Загрузка...' }}
-                  <el-button
-                    text
-                    type="primary"
-                    :icon="Edit"
-                    class="edit-name-btn"
-                    @click="startEditFilename"
-                  />
-                </div>
-                <div v-else class="order-name-edit">
-                  <el-input
-                    v-model="editedFilename"
-                    class="filename-input"
-                    @keyup.enter="saveFilename"
-                    @keyup.esc="cancelEditFilename"
-                  />
-                  <el-button text type="primary" size="small" @click="saveFilename">
-                    ✓
-                  </el-button>
-                  <el-button text type="danger" size="small" @click="cancelEditFilename">
-                    ✕
-                  </el-button>
-                </div>
-              </div>
-              <div class="order-subtitle">Стоимость изготовления</div>
-              <div class="order-price">
-                {{ manufacturingCost }}
-                <span class="order-price-currency">руб.</span>
-              </div>
-            </div>
-            <div class="order-quantity">
-              <div class="quantity-label">Количество</div>
-              <div class="quantity-controls">
-                <el-button class="quantity-btn" @click="decreaseQuantity">-</el-button>
-                <el-input
-                  v-model.number="quantity"
-                  type="number"
-                  :min="1"
-                  :max="9999"
-                  class="quantity-input-simple"
+        <div class="order-header">
+          <div class="order-title">
+            <div class="order-name-wrapper">
+              <div v-if="!isEditingFilename" class="order-name">
+                {{ filename || 'Загрузка...' }}
+                <el-button
+                  text
+                  type="primary"
+                  :icon="Edit"
+                  class="edit-name-btn"
+                  @click="startEditFilename"
                 />
-                <el-button class="quantity-btn" @click="increaseQuantity">+</el-button>
               </div>
-              <el-button class="calc-button">Калькуляция стоимости</el-button>
+              <div v-else class="order-name-edit">
+                <el-input
+                  v-model="editedFilename"
+                  class="filename-input"
+                  @keyup.enter="saveFilename"
+                  @keyup.esc="cancelEditFilename"
+                />
+                <el-button text type="primary" size="small" @click="saveFilename"> ✓ </el-button>
+                <el-button text type="danger" size="small" @click="cancelEditFilename">
+                  ✕
+                </el-button>
+              </div>
+            </div>
+            <div class="order-subtitle">Стоимость изготовления</div>
+            <div class="order-price">
+              {{ manufacturingCost }}
+              <span class="order-price-currency">руб.</span>
             </div>
           </div>
-
-          <el-table
-            :data="calcRows"
-            class="details-table"
-            :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
-            v-loading="isLoading"
-            empty-text="Нет данных по деталям"
-          >
-            <el-table-column prop="id" label="№" width="60">
-              <template #default="{ row, $index }">
-                {{ row.calc_id || $index + 1 }}
-              </template>
-            </el-table-column>
-            <el-table-column prop="file_id" label="Превью" width="120">
-              <template #default="{ row }">
-                <div v-if="row.file_id" class="model-preview">
-                  <CadPreview :file-id="row.file_id" />
-                </div>
-                <div v-else class="preview-placeholder" />
-              </template>
-            </el-table-column>
-            <el-table-column label="Наименование детали">
-              <template #default="{ row }">
-                {{ row.calc_name }}
-              </template>
-            </el-table-column>
-            <el-table-column label="Кол-во, шт" width="100" align="center">
-              <template #default="{ row }">
-                {{ row.calc_qty }}
-              </template>
-            </el-table-column>
-            <el-table-column label="Цена" width="120" align="right">
-              <template #default="{ row }">
-                {{ formatPrice(row.calc_price) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="" width="90" align="center">
-              <template #default="row">
-                <div class="action-buttons">
-                  <el-button
-                    link
-                    type="primary"
-                    size="small"
-                    @click="handleEdit(row.row)"
-                    :icon="Edit"
-                    title="Редактировать"
-                  />
-                  <el-button
-                    link
-                    type="primary"
-                    size="small"
-                    @click="handleDelete(row.row)"
-                    :loading="deleteLoading === row.row.order_id"
-                    :icon="Delete"
-                    title="Удалить"
-                    class="delete-button"
-                  />
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-
-          <div class="order-footer">
-            <el-button class="back-button" @click="goBack">
-              &lt; к списку
-            </el-button>
-            <el-button type="primary" class="save-button-footer">
-              Сохранить
-            </el-button>
+          <div class="order-quantity">
+            <div class="quantity-label">Количество</div>
+            <div class="quantity-controls">
+              <el-button class="quantity-btn" @click="decreaseQuantity">-</el-button>
+              <el-input
+                v-model.number="quantity"
+                type="number"
+                :min="1"
+                :max="9999"
+                class="quantity-input-simple"
+              />
+              <el-button class="quantity-btn" @click="increaseQuantity">+</el-button>
+            </div>
+            <el-button class="calc-button">Калькуляция стоимости</el-button>
           </div>
+        </div>
+
+        <el-table
+          :data="calcRows"
+          class="details-table"
+          :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
+          v-loading="isLoading"
+          empty-text="Нет данных по деталям"
+        >
+          <el-table-column prop="id" label="№" width="60">
+            <template #default="{ row }">
+              {{ row.order_id }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="file_id" label="Превью" width="120">
+            <template #default="{ row }">
+              <div v-if="row.file_id" class="model-preview">
+                <CadPreview :file-id="row.file_id" />
+              </div>
+              <div v-else class="preview-placeholder" />
+            </template>
+          </el-table-column>
+          <el-table-column label="Наименование детали">
+            <template #default="{ row }">
+              {{ `деталь ${row.file_id}` }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Кол-во, шт" width="100" align="center">
+            <template #default="{ row }">
+              {{ row.quantity }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Цена" width="120" align="right">
+            <template #default="{ row }">
+              {{ formatPrice(row.detail_price) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="" width="90" align="center">
+            <template #default="row">
+              <div class="action-buttons">
+                <el-button
+                  link
+                  type="primary"
+                  size="small"
+                  @click="handleEdit(row.row)"
+                  :icon="Edit"
+                  title="Редактировать"
+                />
+                <el-button
+                  link
+                  type="primary"
+                  size="small"
+                  @click="handleDelete(row.row)"
+                  :loading="deleteLoading === row.row.order_id"
+                  :icon="Delete"
+                  title="Удалить"
+                  class="delete-button"
+                />
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <div class="order-footer">
+          <el-button class="back-button" @click="goBack"> &lt; к списку </el-button>
+          <el-button type="primary" class="save-button-footer"> Сохранить </el-button>
+        </div>
         <!-- </el-card> -->
       </el-col>
 
@@ -440,23 +375,22 @@ onMounted(() => {
           </div>
 
           <div class="summary-item">
-            <div style="font-size: 16px; font-weight: 500;">Доставка</div>
-            <div style="font-size: 24px; font-weight: 600;">
+            <div style="font-size: 16px; font-weight: 500">Доставка</div>
+            <div style="font-size: 24px; font-weight: 600">
               {{ deliveryCost }} <span class="rub">руб.</span>
             </div>
           </div>
 
           <div class="summary-item total">
-            <div style="font-size: 16px; font-weight: 500;">Стоимость с учетом доставки</div>
-            <div style="font-size: 36px; font-weight: 700;"	>
+            <div style="font-size: 16px; font-weight: 500">Стоимость с учетом доставки</div>
+            <div style="font-size: 36px; font-weight: 700">
               {{ totalWithDelivery }} <span class="rub">руб.</span>
             </div>
           </div>
 
           <div class="summary-actions">
-            <el-button type="primary" class="pay-button">
-              Оплатить заказ
-            </el-button>
+            <Button @click="cancel"> Оплатить заказ </Button>
+            <!-- <el-button type="primary" class="pay-button"> Оплатить заказ </el-button> -->
           </div>
         </el-card>
       </el-col>
@@ -465,11 +399,11 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.personal-order{
+.personal-order {
   min-height: 200px;
   background-color: white;
   /* margin: 0px 0 40px;*/
-  padding: 20px 10px; 
+  padding: 20px 10px;
   border-radius: 20px;
   /* box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12); */
 }
@@ -503,8 +437,8 @@ onMounted(() => {
 }
 
 .order-name {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -543,12 +477,13 @@ onMounted(() => {
 .order-quantity {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  /* align-items: flex-end; */
   gap: 8px;
 }
 
 .quantity-label {
-  font-size: 12px;
+  font-size: 16px;
+  font-weight: 500;
   color: #909399;
 }
 
@@ -649,7 +584,7 @@ onMounted(() => {
 
 .summary-item.total {
   margin-top: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 80px;
 }
 
 .summary-total {
@@ -716,5 +651,3 @@ onMounted(() => {
   }
 }
 </style>
-
-

@@ -5,7 +5,11 @@ import { ElMessage } from 'element-plus'
 import { useProfileStore, type IProfile } from '../../stores/profile.store'
 import { useAuthStore } from '../../stores/auth.store'
 import { req_json_auth } from '../../api'
-import type { IOrderPayload, IOrderPostPayload, IOrderResponse } from '../../interfaces/order.interface'
+import type {
+  IOrderPayload,
+  IOrderPostPayload,
+  IOrderResponse,
+} from '../../interfaces/order.interface'
 import DialogLogin from '../dialog/DialogLogin.vue'
 import Button from '../ui/Button.vue'
 
@@ -136,18 +140,14 @@ const cancel = () => {
 </script>
 
 <template>
-  <el-row :gutter="5" class="upload-section">
-    <el-col :span="12">
-      <el-button type="primary" plain class="submit" :class="{ 'is-disabled': isDisabled }" @click="cancel">
-        Отменить
-      </el-button>
-    </el-col>
-    <el-col :span="12">
-      <Button :disabled="isDisabled" @click="submitOrder">
-        {{ isNewOrder ? 'Оформить заказ' : 'Сохранить заказ' }}
-      </Button>
-    </el-col>
-  </el-row>
+  <div style="display: flex; justify-content: space-between; align-self: flex-start">
+    <Button :disabled="isDisabled" @click="cancel"> Отменить </Button>
+
+    <Button :disabled="isDisabled" @click="submitOrder">
+      {{ isNewOrder ? 'Оформить заказ' : 'Сохранить заказ' }}
+    </Button>
+  </div>
+
   <DialogLogin v-model="isLoginDialogVisible" />
 </template>
 
@@ -157,8 +157,8 @@ const cancel = () => {
   border: 1px solid var(--bgcolor);
   color: black;
   font-size: 20px;
-  padding: 30px 0;
-  width: 100%;
+  padding: 10px 20px;
+  /* width: 100%; */
 }
 .submit.is-disabled {
   background-color: var(--bgcolor) !important;
@@ -176,5 +176,3 @@ const cancel = () => {
   box-shadow: none !important;
 }
 </style>
-
-
