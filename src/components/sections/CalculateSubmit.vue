@@ -158,9 +158,9 @@ const cancel = () => {
 
 <template>
   <div style="display: flex; justify-content: space-between; align-self: flex-start">
-    <Button :disabled="isDisabled" @click="cancel"> Отменить </Button>
+    <Button width="250px" :disabled="isDisabled" @click="cancel"> Отменить </Button>
 
-    <Button :disabled="isDisabled" @click="submitOrder">
+    <Button width="250px" :disabled="isDisabled" @click="submitOrder">
       {{ isNewOrder ? 'Оформить заказ' : 'Сохранить заказ' }}
     </Button>
   </div>

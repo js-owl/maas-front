@@ -361,8 +361,8 @@ onMounted(() => {
         </el-table>
 
         <div class="order-footer">
-          <Button @click="goBack"> &lt; к списку </Button>
-          <Button @click="saveOrder"> Сохранить </Button>
+          <Button width="200px" @click="goBack"> &lt; к списку </Button>
+          <Button width="200px" @click="saveOrder"> Сохранить </Button>
         </div>
         <!-- </el-card> -->
       </el-col>

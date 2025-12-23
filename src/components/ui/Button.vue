@@ -5,10 +5,12 @@ const props = withDefaults(
   defineProps<{
     disabled?: boolean
     plain?: boolean
+    width?: string
   }>(),
   {
     disabled: false,
     plain: false,
+    width: '100%',
   }
 )
 
@@ -28,7 +30,12 @@ const handleClick = () => {
 </script>
 
 <template>
-  <button :class="['btn', buttonClasses]" :disabled="disabled" @click="handleClick">
+  <button
+    :class="['btn', buttonClasses]"
+    :disabled="disabled"
+    :style="{ width: props.width }"
+    @click="handleClick"
+  >
     <slot />
   </button>
 </template>
