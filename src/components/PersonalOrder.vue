@@ -21,14 +21,6 @@ const editedFilename = ref('')
 
 const deleteLoading = ref<number | null>(null)
 
-// type CalcRow = {
-//   calc_id: number
-//   calc_name: string
-//   calc_qty: number
-//   calc_price: number
-//   file_id?: number | null
-// }
-
 const calcRows = ref<IOrderResponse[]>([])
 
 const orderId = computed(() => {
@@ -94,9 +86,26 @@ const startEditFilename = () => {
 }
 
 const saveFilename = () => {
-  filename.value = editedFilename.value
+  if (!order.value) {
+    isEditingFilename.value = false
+    return
+  }
+
+  const newName = editedFilename.value.trim()
+
+  if (!newName) {
+    editedFilename.value = filename.value
+    isEditingFilename.value = false
+    return
+  }
+
+  filename.value = newName
+  order.value = {
+    ...order.value,
+    kit_name: newName,
+  }
+
   isEditingFilename.value = false
-  // TODO: сохранить имя файла на сервере
 }
 
 const cancelEditFilename = () => {
@@ -234,6 +243,25 @@ const cancel = () => {
   console.log('cancel')
 }
 
+const saveOrder = async () => {
+  if (!order.value) return
+
+  try {
+    const res = await req_json_auth(`/kits/${orderId.value}`, 'PUT', {
+      kit_name: order.value.kit_name,
+      quantity: quantity.value,
+    })
+
+    if (!res?.ok) throw new Error('Failed to save order')
+
+    ElMessage.success('Заказ сохранен')
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+    ElMessage.error('Не удалось сохранить заказ')
+  }
+}
+
 onMounted(() => {
   void loadOrder()
 })
@@ -356,7 +384,7 @@ onMounted(() => {
 
         <div class="order-footer">
           <el-button class="back-button" @click="goBack"> &lt; к списку </el-button>
-          <el-button type="primary" class="save-button-footer"> Сохранить </el-button>
+          <el-button type="primary" class="save-button-footer" @click="saveOrder"> Сохранить </el-button>
         </div>
         <!-- </el-card> -->
       </el-col>
