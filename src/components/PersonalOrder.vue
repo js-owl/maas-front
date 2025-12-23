@@ -331,7 +331,7 @@ onMounted(() => {
           </el-table-column>
           <el-table-column label="Цена" width="120" align="right">
             <template #default="{ row }">
-              {{ formatPrice(row.detail_price) }}
+              {{ formatPrice(row.total_price) }}
             </template>
           </el-table-column>
           <el-table-column label="" width="90" align="center">
