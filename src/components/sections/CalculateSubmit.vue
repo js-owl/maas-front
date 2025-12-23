@@ -5,11 +5,7 @@ import { ElMessage } from 'element-plus'
 import { useProfileStore, type IProfile } from '../../stores/profile.store'
 import { useAuthStore } from '../../stores/auth.store'
 import { req_json_auth } from '../../api'
-import type {
-  IOrderPayload,
-  IOrderPostPayload,
-  IOrderResponse,
-} from '../../interfaces/order.interface'
+import type { IKit, IOrderPayload, IOrderPostPayload, IOrderResponse } from '../../interfaces/order.interface'
 import DialogLogin from '../dialog/DialogLogin.vue'
 import Button from '../ui/Button.vue'
 
@@ -105,6 +101,27 @@ const submitOrder = async () => {
       const res = await req_json_auth('/orders', 'POST', postPayload)
       const data = (await res?.json()) as IOrderResponse
       emit('updateResult', data)
+
+      // После успешного создания заказа создаем kit с значениями по умолчанию
+      const kitPayload: IKit = {
+        kit_name: data.order_name || originalFilename || '',
+        order_ids: [data.order_id],
+        user_id: data.user_id,
+        quantity: data.quantity,
+        status: 'pending',
+        bitrix_deal_id: 1,
+        location: data.total_price_breakdown?.location || '',
+        kit_price: 0,
+        delivery_price: 0,
+        total_kit_price: 0,
+      }
+
+      try {
+        await req_json_auth('/kits', 'POST', kitPayload)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error creating kit', error)
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error({ error })

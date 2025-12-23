@@ -1,12 +1,12 @@
 export interface IKit {
-  kit_id: number
+  kit_id?: number
   kit_name: string
   order_ids: number[]
   user_id: number
   quantity: number
   status: string
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
   bitrix_deal_id: number
   location: string
   kit_price: number
