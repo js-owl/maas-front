@@ -164,29 +164,29 @@ const loadOrder = async () => {
 
 const handleEdit = (row: any): void => {
   console.log({ row })
-  switch (row.calc_service_id) {
+  switch (row.service_id) {
     case 'cnc-lathe':
       router.push({
         path: '/machining',
-        query: { orderId: row.calc_id.toString() },
+        query: { orderId: row.order_id.toString() },
       })
       break
     case 'cnc-milling':
       router.push({
         path: '/milling',
-        query: { orderId: row.calc_id.toString() },
+        query: { orderId: row.order_id.toString() },
       })
       break
     case 'printing':
       router.push({
         path: '/printing',
-        query: { orderId: row.calc_id.toString() },
+        query: { orderId: row.order_id.toString() },
       })
       break
     default:
       router.push({
         path: '/machining',
-        query: { orderId: row.calc_id.toString() },
+        query: { orderId: row.order_id.toString() },
       })
       break
   }
