@@ -209,7 +209,7 @@ const handleView = (row: IKit): void => {
         </el-table-column>
 
         <!-- Цена -->
-        <el-table-column prop="total_price" label="Цена" width="100" :formatter="formatPrice" />
+        <el-table-column prop="total_kit_price" label="Цена" width="100" :formatter="formatPrice" />
       </el-table>
     </el-col>
   </el-row>
