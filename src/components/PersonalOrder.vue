@@ -6,6 +6,7 @@ import { Edit, Delete } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
+import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -111,18 +112,6 @@ const saveFilename = () => {
 const cancelEditFilename = () => {
   editedFilename.value = filename.value
   isEditingFilename.value = false
-}
-
-const decreaseQuantity = () => {
-  if (quantity.value > 1) {
-    quantity.value--
-  }
-}
-
-const increaseQuantity = () => {
-  if (quantity.value < 9999) {
-    quantity.value++
-  }
 }
 
 const loadCalcs = async () => {
@@ -305,18 +294,7 @@ onMounted(() => {
             </div>
           </div>
           <div class="order-quantity">
-            <div class="quantity-label">Количество</div>
-            <div class="quantity-controls">
-              <el-button class="quantity-btn" @click="decreaseQuantity">-</el-button>
-              <el-input
-                v-model.number="quantity"
-                type="number"
-                :min="1"
-                :max="9999"
-                class="quantity-input-simple"
-              />
-              <el-button class="quantity-btn" @click="increaseQuantity">+</el-button>
-            </div>
+            <CoefficientQuantity v-model="quantity" />
             <el-button class="calc-button">Калькуляция стоимости</el-button>
           </div>
         </div>
