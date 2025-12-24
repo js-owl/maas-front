@@ -94,6 +94,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SectionMilestones: typeof import('./src/components/sections/SectionMilestones.vue')['default']
+    Select: typeof import('./src/components/ui/Select.vue')['default']
     STLViewer: typeof import('./src/components/cad/STLViewer.vue')['default']
     STPViewer: typeof import('./src/components/cad/STPViewer.vue')['default']
     SuitableMachines: typeof import('./src/components/SuitableMachines.vue')['default']

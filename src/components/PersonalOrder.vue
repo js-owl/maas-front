@@ -8,6 +8,7 @@ import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
 import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
 import Button from './ui/Button.vue'
+import Select from './ui/Select.vue'
 const route = useRoute()
 const router = useRouter()
 
@@ -240,9 +241,10 @@ const cancel = () => {
   console.log('cancel')
 }
 
-const handleOrderTypeChange = (value: string) => {
+const handleOrderTypeChange = (value: string | number | boolean | object) => {
   if (!order.value || !value) return
 
+  const valueStr = String(value)
   const existingIds = Array.isArray(order.value.order_ids) ? order.value.order_ids : []
 
   const pathMap: Record<string, string> = {
@@ -251,7 +253,7 @@ const handleOrderTypeChange = (value: string) => {
     printing: '/printing',
   }
 
-  const path = pathMap[value] || '/machining'
+  const path = pathMap[valueStr] || '/machining'
 
   router.push({
     path,
@@ -396,19 +398,19 @@ onMounted(() => {
 
         <div class="order-footer">
           <Button width="200px" @click="goBack"> &lt; к списку </Button>
-          <el-select
-              v-model="selectedOrderType"
-              placeholder="Добавить деталь"
-              class="order-type-select"
-              @change="handleOrderTypeChange"
-            >
-              <el-option
-                v-for="option in orderTypeOptions"
-                :key="option.value"
-                :label="option.label"
-                :value="option.value"
-              />
-            </el-select>
+          <Select
+            v-model="selectedOrderType"
+            placeholder="Добавить деталь"
+            width="200px"
+            @change="handleOrderTypeChange"
+          >
+            <el-option
+              v-for="option in orderTypeOptions"
+              :key="option.value"
+              :label="option.label"
+              :value="option.value"
+            />
+          </Select>
           <Button width="200px" @click="saveOrder"> Сохранить </Button>
         </div>
         <!-- </el-card> -->
@@ -567,10 +569,6 @@ onMounted(() => {
   margin-top: 4px;
 }
 
-.order-type-select {
-  width: 200px;
-  margin-top: 4px;
-}
 
 .details-table {
   margin-top: 10px;

@@ -44,13 +44,17 @@ const handleClick = () => {
 .btn {
   background-color: var(--bgcolor);
   border: 1px solid var(--bgcolor);
+  border-radius: 10px;
   color: black;
-  font-size: 20px;
+  
+  font-family: 'Segoe UI';
+  font-size: 16px;
+  font-weight: 500;
   padding: 10px 20px;
   /* width: 100%; */
   cursor: pointer;
   transition: opacity 0.2s;
-  border-radius: 5px;
+
 }
 
 .btn.is-disabled {
