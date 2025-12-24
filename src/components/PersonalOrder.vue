@@ -482,7 +482,7 @@ onMounted(() => {
 
 <style scoped>
 .personal-order {
-  min-height: 200px;
+  min-height: 100vh;
   background-color: white;
   /* margin: 0px 0 40px;*/
   padding: 20px 10px;
