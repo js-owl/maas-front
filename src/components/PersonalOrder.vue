@@ -304,6 +304,8 @@ const saveOrder = async () => {
     const res = await updateKit()
     if (!res?.ok) throw new Error('Failed to save order')
 
+    await loadOrder()
+
     ElMessage.success('Заказ сохранен')
   } catch (e) {
     // eslint-disable-next-line no-console
