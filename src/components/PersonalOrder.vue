@@ -275,6 +275,7 @@ const saveOrder = async () => {
     const res = await req_json_auth(`/kits/${orderId.value}`, 'PUT', {
       kit_name: order.value.kit_name,
       quantity: quantity.value,
+      order_ids: order.value.order_ids,
     })
 
     if (!res?.ok) throw new Error('Failed to save order')
