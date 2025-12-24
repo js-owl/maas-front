@@ -24,6 +24,14 @@ const deleteLoading = ref<number | null>(null)
 
 const calcRows = ref<IOrderResponse[]>([])
 
+const selectedOrderType = ref<string>('')
+
+const orderTypeOptions = [
+  { label: 'токарная', value: 'machining' },
+  { label: 'фрезерная', value: 'milling' },
+  { label: '3D-печать', value: 'printing' },
+]
+
 const orderId = computed(() => {
   const fromQuery = route.query.orderId
   if (Array.isArray(fromQuery)) return Number(fromQuery[0])
@@ -232,19 +240,30 @@ const cancel = () => {
   console.log('cancel')
 }
 
-const addOrder = () => {
-  if (!order.value) return
+const handleOrderTypeChange = (value: string) => {
+  if (!order.value || !value) return
 
   const existingIds = Array.isArray(order.value.order_ids) ? order.value.order_ids : []
 
+  const pathMap: Record<string, string> = {
+    machining: '/machining',
+    milling: '/milling',
+    printing: '/printing',
+  }
+
+  const path = pathMap[value] || '/machining'
+
   router.push({
-    path: '/machining',
+    path,
     query: {
       orderId: '0',
       kitId: orderId.value.toString(),
       orderIds: existingIds.join(','),
     },
   })
+
+  // Сброс выбранного значения после навигации
+  selectedOrderType.value = ''
 }
 
 const saveOrder = async () => {
@@ -311,7 +330,6 @@ onMounted(() => {
           <div class="order-quantity">
             <CoefficientQuantity v-model="quantity" />
             <el-button class="calc-button">Калькуляция стоимости</el-button>
-            <Button width="200px" @click="addOrder"> Add </Button>
           </div>
         </div>
 
@@ -378,6 +396,19 @@ onMounted(() => {
 
         <div class="order-footer">
           <Button width="200px" @click="goBack"> &lt; к списку </Button>
+          <el-select
+              v-model="selectedOrderType"
+              placeholder="Добавить деталь"
+              class="order-type-select"
+              @change="handleOrderTypeChange"
+            >
+              <el-option
+                v-for="option in orderTypeOptions"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"
+              />
+            </el-select>
           <Button width="200px" @click="saveOrder"> Сохранить </Button>
         </div>
         <!-- </el-card> -->
@@ -533,6 +564,11 @@ onMounted(() => {
 }
 
 .calc-button {
+  margin-top: 4px;
+}
+
+.order-type-select {
+  width: 200px;
   margin-top: 4px;
 }
 
