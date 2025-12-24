@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useProfileStore, type IProfile } from '../../stores/profile.store'
 import { useAuthStore } from '../../stores/auth.store'
@@ -23,8 +23,29 @@ const emit = defineEmits<{
 const authStore = useAuthStore()
 const profileStore = useProfileStore()
 const router = useRouter()
+const route = useRoute()
 
 const isNewOrder = computed(() => props.orderId === 0)
+const kitId = computed(() => {
+  const raw = route.query.kitId
+  if (Array.isArray(raw)) return Number(raw[0]) || 0
+  return Number(raw) || 0
+})
+
+const existingOrderIds = computed<number[]>(() => {
+  const raw = route.query.orderIds
+  if (!raw) return []
+
+  const toNumbers = (val: string): number[] =>
+    val
+      .split(',')
+      .map((v) => Number(v.trim()))
+      .filter((n) => Number.isFinite(n) && n > 0)
+
+  if (Array.isArray(raw)) return raw.flatMap((v) => toNumbers(String(v)))
+
+  return toNumbers(String(raw))
+})
 
 const isLoginDialogVisible = ref(false)
 
@@ -102,25 +123,41 @@ const submitOrder = async () => {
       const data = (await res?.json()) as IOrderResponse
       emit('updateResult', data)
 
-      // После успешного создания заказа создаем kit с значениями по умолчанию
-      const kitPayload: IKit = {
-        kit_name: data.order_name || originalFilename || '',
-        order_ids: [data.order_id],
-        user_id: data.user_id,
-        quantity: data.quantity,
-        status: 'pending',
-        bitrix_deal_id: 1,
-        location: data.total_price_breakdown?.location || '',
-        kit_price: 0,
-        delivery_price: 0,
-        total_kit_price: 0,
-      }
+      const targetKitId = kitId.value
 
-      try {
-        await req_json_auth('/kits', 'POST', kitPayload)
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error creating kit', error)
+      if (targetKitId > 0) {
+        // Добавляем новый order_id в существующий kit
+        const updatedIds = Array.from(new Set([...existingOrderIds.value, data.order_id]))
+
+        try {
+          await req_json_auth(`/kits/${targetKitId}`, 'PUT', {
+            order_ids: updatedIds,
+          })
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('Error updating existing kit with new order_id', error)
+        }
+      } else {
+        // После успешного создания заказа создаем kit с значениями по умолчанию
+        const kitPayload: IKit = {
+          kit_name: data.order_name || originalFilename || '',
+          order_ids: [data.order_id],
+          user_id: data.user_id,
+          quantity: data.quantity,
+          status: 'pending',
+          bitrix_deal_id: 1,
+          location: data.total_price_breakdown?.location || '',
+          kit_price: 0,
+          delivery_price: 0,
+          total_kit_price: 0,
+        }
+
+        try {
+          await req_json_auth('/kits', 'POST', kitPayload)
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('Error creating kit', error)
+        }
       }
     } catch (error) {
       // eslint-disable-next-line no-console

@@ -232,6 +232,21 @@ const cancel = () => {
   console.log('cancel')
 }
 
+const addOrder = () => {
+  if (!order.value) return
+
+  const existingIds = Array.isArray(order.value.order_ids) ? order.value.order_ids : []
+
+  router.push({
+    path: '/machining',
+    query: {
+      orderId: '0',
+      kitId: orderId.value.toString(),
+      orderIds: existingIds.join(','),
+    },
+  })
+}
+
 const saveOrder = async () => {
   if (!order.value) return
 
@@ -296,6 +311,7 @@ onMounted(() => {
           <div class="order-quantity">
             <CoefficientQuantity v-model="quantity" />
             <el-button class="calc-button">Калькуляция стоимости</el-button>
+            <Button width="200px" @click="addOrder"> Add </Button>
           </div>
         </div>
 
