@@ -201,6 +201,15 @@ const handleEdit = (row: any): void => {
   }
 }
 
+const updateKit = async (): Promise<Response | undefined> => {
+  if (!order.value) return undefined
+  return await req_json_auth(`/kits/${orderId.value}`, 'PUT', {
+    kit_name: order.value.kit_name,
+    quantity: quantity.value,
+    order_ids: order.value.order_ids,
+  })
+}
+
 const handleDelete = async (row: any): Promise<void> => {
   try {
     // Show confirmation dialog before deleting
@@ -226,21 +235,14 @@ const handleDelete = async (row: any): Promise<void> => {
       }
 
       // Отправляем PUT запрос с обновленным списком order_ids
-      if (order.value) {
-        try {
-          const updateRes = await req_json_auth(`/kits/${orderId.value}`, 'PUT', {
-            kit_name: order.value.kit_name,
-            quantity: quantity.value,
-            order_ids: order.value.order_ids,
-          })
-
-          if (!updateRes?.ok) {
-            console.error('Failed to update kit after deletion')
-          }
-        } catch (updateError) {
-          // eslint-disable-next-line no-console
-          console.error('Error updating kit:', updateError)
+      try {
+        const updateRes = await updateKit()
+        if (!updateRes?.ok) {
+          console.error('Failed to update kit after deletion')
         }
+      } catch (updateError) {
+        // eslint-disable-next-line no-console
+        console.error('Error updating kit:', updateError)
       }
 
       ElMessage.success('Заказ успешно удален')
@@ -299,12 +301,7 @@ const saveOrder = async () => {
   if (!order.value) return
 
   try {
-    const res = await req_json_auth(`/kits/${orderId.value}`, 'PUT', {
-      kit_name: order.value.kit_name,
-      quantity: quantity.value,
-      order_ids: order.value.order_ids,
-    })
-
+    const res = await updateKit()
     if (!res?.ok) throw new Error('Failed to save order')
 
     ElMessage.success('Заказ сохранен')
