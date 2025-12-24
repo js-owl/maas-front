@@ -75,11 +75,15 @@ const handleChange = (value: string | number | boolean | object) => {
   background-color: var(--bgcolor);
   border: 1px solid var(--bgcolor);
   border-radius: 10px;
-  color: black;
   font-family: 'Segoe UI';
   font-size: 16px;
   font-weight: 500;
   padding: 14px 20px;
+}
+
+.full :deep(.el-select__selection-text),
+.full :deep(.el-select__placeholder) {
+  color: black;
 }
 </style>
 
