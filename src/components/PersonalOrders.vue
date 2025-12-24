@@ -150,7 +150,6 @@ const handleView = (row: IKit): void => {
           <el-tab-pane label="Все" name="all" />
           <el-tab-pane label="Оплаченные" name="paid" />
           <el-tab-pane label="Неоплаченные" name="unpaid" />
-          <el-tab-pane label="Расчеты" name="calculations" />
         </el-tabs>
       </div>
       <el-table
