@@ -218,7 +218,34 @@ const handleDelete = async (row: any): Promise<void> => {
     deleteLoading.value = row.calc_id
     const r = await req_json_auth(`/orders/${row.order_id}`, 'DELETE')
     if (r?.ok) {
+      // Удаляем order_id из списка
+      if (order.value?.order_ids) {
+        order.value.order_ids = order.value.order_ids.filter(
+          (id: number) => id !== row.order_id
+        )
+      }
+
+      // Отправляем PUT запрос с обновленным списком order_ids
+      if (order.value) {
+        try {
+          const updateRes = await req_json_auth(`/kits/${orderId.value}`, 'PUT', {
+            kit_name: order.value.kit_name,
+            quantity: quantity.value,
+            order_ids: order.value.order_ids,
+          })
+
+          if (!updateRes?.ok) {
+            console.error('Failed to update kit after deletion')
+          }
+        } catch (updateError) {
+          // eslint-disable-next-line no-console
+          console.error('Error updating kit:', updateError)
+        }
+      }
+
       ElMessage.success('Заказ успешно удален')
+      // Обновляем список деталей
+      await loadOrder()
     } else {
       ElMessage.error('Ошибка при удалении заказа')
     }
