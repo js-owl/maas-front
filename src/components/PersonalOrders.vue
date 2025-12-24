@@ -114,6 +114,7 @@ const getFilename = (fileId: number | null | undefined): string | null => {
 }
 
 const handleOpen = (row: IKit): void => {
+  if (!row.kit_id) return
   const storageKey = `order_${row.kit_id}`
   localStorage.setItem(storageKey, JSON.stringify(row))
   router.push({ path: '/personal/order', query: { orderId: row.kit_id.toString() } })
