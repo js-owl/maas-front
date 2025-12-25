@@ -159,14 +159,7 @@ const handleView = (row: IKit): void => {
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
         empty-text="Нет данных"
       >
-        <el-table-column prop="kit_id" label="№" width="60" />
-
-        <!-- Превью -->
-        <el-table-column prop="file_id" label="Превью" width="120">
-          <template>
-            <div class="preview-placeholder" />
-          </template>
-        </el-table-column>
+        <el-table-column prop="kit_id" label="№" width="70" />
 
         <!-- Наименование -->
         <el-table-column prop="kit_name" label="Наименование">
@@ -188,19 +181,19 @@ const handleView = (row: IKit): void => {
         <el-table-column prop="quantity" label="Кол-во" width="100" align="center" />
 
         <!-- Дата создания / завершения -->
-        <el-table-column label="Дата созд." width="120">
+        <el-table-column label="Дата созд." width="130">
           <template #default="{ row }">
             {{ formatDate(row.created_at) }}
           </template>
         </el-table-column>
-        <el-table-column label="Дата завер." width="120">
+        <el-table-column label="Дата завер." width="130">
           <template #default="{ row }">
             {{ formatDate(row.updated_at) }}
           </template>
         </el-table-column>
 
         <!-- Статус -->
-        <el-table-column prop="status" label="Статус" width="150">
+        <el-table-column prop="status" label="Статус" width="160">
           <template #default="{ row }">
             <el-tag :type="getStatusColor(row.status)" size="small">
               {{ getStatusText(row.status) }}
@@ -209,7 +202,7 @@ const handleView = (row: IKit): void => {
         </el-table-column>
 
         <!-- Цена -->
-        <el-table-column prop="total_kit_price" label="Цена" width="100" :formatter="formatPrice" />
+        <el-table-column prop="total_kit_price" label="Цена" width="110" :formatter="formatPrice" />
       </el-table>
     </el-col>
   </el-row>
@@ -281,26 +274,6 @@ const handleView = (row: IKit): void => {
 
 .search-input :deep(.el-input__prefix .el-input__prefix-inner) {
   color: #909399;
-}
-
-.model-preview {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-}
-
-.preview-placeholder {
-  width: 60px;
-  height: 60px;
-  background-color: red;
-  border-radius: 4px;
-}
-
-.no-model {
-  color: #909399;
-  font-style: italic;
-  font-size: 12px;
 }
 
 .filename-text {
