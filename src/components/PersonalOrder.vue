@@ -367,7 +367,7 @@ onMounted(() => {
           </div>
           <div class="order-quantity">
             <CoefficientQuantity v-model="quantity" />
-            <el-button class="calc-button">Калькуляция стоимости</el-button>
+            <Button class="calc-button">Калькуляция стоимости</Button>
           </div>
         </div>
 
