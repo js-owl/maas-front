@@ -330,10 +330,11 @@ onMounted(() => {
 <template>
   <section class="personal-order">
     <el-row :gutter="20">
-      <el-col :span="16">
+      <el-col :span="17">
         <!-- <el-card shadow="never" class="order-card"> -->
         <div class="order-header">
           <div class="order-title">
+            <div class="order-name">Заказ №{{ orderId }}</div>
             <div class="order-name-wrapper">
               <div v-if="!isEditingFilename" class="order-name">
                 {{ filename || 'Загрузка...' }}
@@ -377,11 +378,11 @@ onMounted(() => {
           v-loading="isLoading"
           empty-text="Нет данных по деталям"
         >
-          <el-table-column prop="id" label="№" width="60">
+          <!-- <el-table-column prop="id" label="№" width="60">
             <template #default="{ row }">
               {{ row.order_id }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column prop="file_id" label="Превью" width="120">
             <template #default="{ row }">
               <div v-if="row.file_id" class="model-preview">
@@ -390,7 +391,12 @@ onMounted(() => {
               <div v-else class="preview-placeholder" />
             </template>
           </el-table-column>
-          <el-table-column label="Наименование детали">
+          <el-table-column label="Обозначение" width="200" >
+            <template #default="{ row }">
+              {{ row.order_name }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Наименование">
             <template #default="{ row }">
               {{ row.order_name }}
             </template>
@@ -406,7 +412,7 @@ onMounted(() => {
             </template>
           </el-table-column>
 
-          <el-table-column label="" width="150" align="center">
+          <el-table-column label="" width="100" align="center">
             <template #default="row">
               <div class="action-buttons">
                 <el-button
@@ -460,7 +466,7 @@ onMounted(() => {
         <!-- </el-card> -->
       </el-col>
 
-      <el-col :span="8">
+      <el-col :span="7">
         <el-card shadow="never" class="summary-card">
           <div class="dates-block">
             <div class="date-row">
@@ -723,12 +729,12 @@ onMounted(() => {
 
 .action-buttons {
   display: flex;
-  gap: 8px;
+  /* gap: 8px; */
   align-items: center;
 }
 
 .action-buttons :deep(.el-button) {
-  padding: 4px 8px;
+  padding: 4px 2px;
   color: #606266;
 }
 
