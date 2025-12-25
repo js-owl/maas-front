@@ -2,7 +2,7 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Edit, Delete } from '@element-plus/icons-vue'
+import { Edit, Delete, Notebook } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
@@ -210,6 +210,14 @@ const updateKit = async (): Promise<Response | undefined> => {
   })
 }
 
+const handleOpenCalculation = (row: any): void => {
+  if (!row?.order_id) return
+  router.push({
+    name: 'personal-calc-info',
+    query: { orderId: row.order_id.toString() },
+  })
+}
+
 const handleDelete = async (row: any): Promise<void> => {
   try {
     // Show confirmation dialog before deleting
@@ -387,19 +395,28 @@ onMounted(() => {
               {{ row.order_name }}
             </template>
           </el-table-column>
-          <el-table-column label="Кол-во, шт" width="100" align="center">
+          <el-table-column label="Кол-во" width="80" align="center">
             <template #default="{ row }">
               {{ row.quantity }}
             </template>
           </el-table-column>
-          <el-table-column label="Цена" width="120" align="right">
+          <el-table-column label="Цена" width="80" align="center">
             <template #default="{ row }">
               {{ formatPrice(row.total_price) }}
             </template>
           </el-table-column>
-          <el-table-column label="" width="90" align="center">
+
+          <el-table-column label="" width="150" align="center">
             <template #default="row">
               <div class="action-buttons">
+                <el-button
+                  link
+                  type="primary"
+                  size="small"
+                  @click="handleOpenCalculation(row.row)"
+                  :icon="Notebook"
+                  title="Калькуляция"
+                />
                 <el-button
                   link
                   type="primary"
