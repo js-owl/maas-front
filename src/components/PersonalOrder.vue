@@ -222,7 +222,7 @@ const handleDelete = async (row: any): Promise<void> => {
   try {
     // Show confirmation dialog before deleting
     await ElMessageBox.confirm(
-      `Вы уверены, что хотите удалить заказ #${row.order_id}?`,
+      `Вы уверены, что хотите удалить деталь #${row.order_id}?`,
       'Подтверждение удаления',
       {
         confirmButtonText: 'Удалить',

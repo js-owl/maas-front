@@ -198,7 +198,7 @@ const cancel = () => {
     <Button width="250px" :disabled="isDisabled" @click="cancel"> Отменить </Button>
 
     <Button width="250px" :disabled="isDisabled" @click="submitOrder">
-      {{ isNewOrder ? 'Оформить заказ' : 'Сохранить заказ' }}
+      {{ isNewOrder ? 'Оформить расчет' : 'Сохранить расчет' }}
     </Button>
   </div>
 
