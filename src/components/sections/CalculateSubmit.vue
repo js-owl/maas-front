@@ -109,7 +109,15 @@ const submitOrder = async () => {
 
   // Загружаем original_filename из файла
   const fileId = props.payload.file_id
-  const originalFilename = fileId ? await fetchOriginalFilename(fileId) : null
+  let originalFilename = fileId ? await fetchOriginalFilename(fileId) : null
+  
+  // Отрезаем расширение (все, что после последней точки)
+  if (originalFilename) {
+    const lastDotIndex = originalFilename.lastIndexOf('.')
+    if (lastDotIndex > 0) {
+      originalFilename = originalFilename.substring(0, lastDotIndex)
+    }
+  }
 
   if (isNewOrder.value) {
     try {
