@@ -181,7 +181,13 @@ const submitOrder = async () => {
   }
 
   emit('showInfo')
-  router.push({ path: '/personal/orders' })
+  
+  const targetKitId = kitId.value
+  if (targetKitId > 0) {
+    router.push({ path: '/personal/order', query: { orderId: targetKitId.toString() } })
+  } else {
+    router.push({ path: '/personal/orders' })
+  }
 }
 
 const cancel = () => {
