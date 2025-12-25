@@ -2,7 +2,7 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Edit, Delete, Notebook } from '@element-plus/icons-vue'
+import { Edit, Delete, Notebook, Plus, Minus } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
@@ -22,6 +22,7 @@ const isEditingFilename = ref(false)
 const editedFilename = ref('')
 
 const deleteLoading = ref<number | null>(null)
+const quantityUpdating = ref<number | null>(null)
 
 const calcRows = ref<IOrderResponse[]>([])
 
@@ -218,6 +219,67 @@ const handleOpenCalculation = (row: any): void => {
   })
 }
 
+const updateOrderQuantity = async (row: IOrderResponse, newQuantity: number): Promise<void> => {
+  if (newQuantity < 1) {
+    ElMessage.warning('Количество не может быть меньше 1')
+    return
+  }
+
+  quantityUpdating.value = row.order_id
+  try {
+    // Получаем текущие данные заказа
+    const res = await req_json_auth(`/orders/${row.order_id}`, 'GET')
+    if (!res?.ok) {
+      throw new Error('Failed to load order data')
+    }
+    const orderData = (await res.json()) as IOrderResponse
+
+    // Обновляем количество
+    const updatedData = {
+      ...orderData,
+      quantity: newQuantity,
+    }
+
+    // Отправляем PUT запрос с обновленными данными
+    const updateRes = await req_json_auth(`/orders/${row.order_id}`, 'PUT', updatedData)
+    if (!updateRes?.ok) {
+      throw new Error('Failed to update order quantity')
+    }
+
+    // Обновляем локальные данные
+    const updatedOrder = (await updateRes.json()) as IOrderResponse
+    const index = calcRows.value.findIndex((item) => item.order_id === row.order_id)
+    if (index !== -1) {
+      calcRows.value[index] = updatedOrder
+    }
+
+    // Перезагружаем заказ для обновления общей стоимости
+    await loadOrder()
+    ElMessage.success('Количество обновлено')
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error updating quantity:', error)
+    ElMessage.error('Ошибка при обновлении количества')
+  } finally {
+    quantityUpdating.value = null
+  }
+}
+
+const incrementQuantity = async (row: IOrderResponse): Promise<void> => {
+  const newQuantity = (row.quantity || 1) + 1
+  await updateOrderQuantity(row, newQuantity)
+}
+
+const decrementQuantity = async (row: IOrderResponse): Promise<void> => {
+  const currentQuantity = row.quantity || 1
+  if (currentQuantity <= 1) {
+    ElMessage.warning('Количество не может быть меньше 1')
+    return
+  }
+  const newQuantity = currentQuantity - 1
+  await updateOrderQuantity(row, newQuantity)
+}
+
 const handleDelete = async (row: any): Promise<void> => {
   try {
     // Show confirmation dialog before deleting
@@ -401,9 +463,27 @@ onMounted(() => {
               {{ row.order_name }}
             </template>
           </el-table-column>
-          <el-table-column label="Кол-во" width="80" align="center">
+          <el-table-column label="Кол-во" width="140" align="center">
             <template #default="{ row }">
-              {{ row.quantity }}
+              <div class="quantity-controls-cell">
+                <el-button
+                  :icon="Minus"
+                  size="small"
+                  circle
+                  :disabled="quantityUpdating === row.order_id || (row.quantity || 1) <= 1"
+                  :loading="quantityUpdating === row.order_id"
+                  @click="decrementQuantity(row)"
+                />
+                <span class="quantity-value">{{ row.quantity || 1 }}</span>
+                <el-button
+                  :icon="Plus"
+                  size="small"
+                  circle
+                  :disabled="quantityUpdating === row.order_id"
+                  :loading="quantityUpdating === row.order_id"
+                  @click="incrementQuantity(row)"
+                />
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="Цена" width="80" align="center">
@@ -740,6 +820,19 @@ onMounted(() => {
 
 .action-buttons :deep(.el-button:hover) {
   color: #409eff;
+}
+
+.quantity-controls-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.quantity-value {
+  min-width: 30px;
+  text-align: center;
+  font-weight: 500;
 }
 
 @media (max-width: 992px) {
