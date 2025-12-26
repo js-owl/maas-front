@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { req_json_auth } from '../api'
 import { useProfileStore } from '../stores/profile.store'
 import { hidePrice } from '../helpers/hide-price'
-import { Search } from '@element-plus/icons-vue'
+import { Search, Delete } from '@element-plus/icons-vue'
 import type { IKit } from '../interfaces/order.interface'
 
 const router = useRouter()
@@ -13,6 +14,7 @@ const profileStore = useProfileStore()
 const filenames = ref<Map<number, string>>(new Map())
 const activeTab = ref('all')
 const searchQuery = ref('')
+const deleteLoading = ref<number | null>(null)
 
 const excludedStatuses = ['cancelled', 'C3:LOSE']
 
@@ -41,10 +43,14 @@ const filteredOrders = computed(() => {
   return result
 })
 
-onMounted(async () => {
+const loadOrders = async () => {
   const res = await req_json_auth('/kits', 'GET')
   const ordersData = await res?.json()
   allOrders.value = ordersData
+}
+
+onMounted(async () => {
+  await loadOrders()
 })
 
 const formatDate = (cellValue: string | null | undefined): string => {
@@ -122,6 +128,38 @@ const handleOpen = (row: IKit): void => {
 
 const handleView = (row: IKit): void => {
   handleOpen(row)
+}
+
+const handleDelete = async (row: IKit): Promise<void> => {
+  try {
+    await ElMessageBox.confirm(
+      `Вы уверены, что хотите удалить заказ #${row.kit_id}?`,
+      'Подтверждение удаления',
+      {
+        confirmButtonText: 'Удалить',
+        cancelButtonText: 'Отмена',
+        type: 'warning',
+        confirmButtonClass: 'el-button--danger',
+      }
+    )
+
+    deleteLoading.value = row.kit_id ?? null
+    const r = await req_json_auth(`/kits/${row.kit_id}`, 'DELETE')
+    if (r?.ok) {
+      ElMessage.success('Заказ успешно удален')
+      await loadOrders()
+    } else {
+      ElMessage.error('Ошибка при удалении заказа')
+    }
+  } catch (error: any) {
+    if (error === 'cancel' || error === 'close' || error?.action === 'cancel') {
+      return
+    }
+    console.error('Error deleting order:', error)
+    ElMessage.error('Ошибка при удалении заказа')
+  } finally {
+    deleteLoading.value = null
+  }
 }
 </script>
 
@@ -203,6 +241,24 @@ const handleView = (row: IKit): void => {
 
         <!-- Цена -->
         <el-table-column prop="total_kit_price" label="Цена" width="110" :formatter="formatPrice" />
+
+        <!-- Действия -->
+        <el-table-column label="" width="100" align="center">
+          <template #default="{ row }">
+            <div class="action-buttons">
+              <el-button
+                link
+                type="primary"
+                size="small"
+                @click="handleDelete(row)"
+                :loading="deleteLoading === row.kit_id"
+                :icon="Delete"
+                title="Удалить"
+                class="delete-button"
+              />
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
     </el-col>
   </el-row>
@@ -304,14 +360,6 @@ const handleView = (row: IKit): void => {
 
 .action-buttons :deep(.el-button:hover) {
   color: #409eff;
-}
-
-.delete-button :deep(.el-icon) {
-  color: #f56c6c;
-}
-
-.delete-button:hover :deep(.el-icon) {
-  color: #f56c6c;
 }
 
 @media (max-width: 768px) {
