@@ -35,7 +35,7 @@ onMounted(() => {
 
   checkTokenValidity()
   const tokenCheckInterval = setInterval(checkTokenValidity, 5 * 60 * 1000)
-  
+
   // Apply styles to printing menu item if on home page
   if (isHomePage.value) {
     const applyPrintingStyles = () => {
@@ -49,16 +49,16 @@ onMounted(() => {
         }
       }
     }
-    
+
     // Apply immediately and after a short delay to ensure DOM is ready
     applyPrintingStyles()
     setTimeout(applyPrintingStyles, 100)
-    
+
     // Watch for route changes
     const unwatch = router.afterEach(() => {
       setTimeout(applyPrintingStyles, 100)
     })
-    
+
     onUnmounted(() => {
       clearInterval(tokenCheckInterval)
       unwatch()
@@ -156,7 +156,11 @@ function onCallRequest() {
                       Фрезерные работы
                     </el-menu-item>
                   </el-sub-menu>
-                  <el-menu-item index="/printing" :route="{ path: '/printing' }" class="printing-menu-item">
+                  <el-menu-item
+                    index="/printing"
+                    :route="{ path: '/printing' }"
+                    class="printing-menu-item"
+                  >
                     <span class="printing-text">3D печать</span>
                   </el-menu-item>
                   <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
@@ -223,9 +227,7 @@ function onCallRequest() {
             задач в области механообработки, работы<br />
             с полимерными и композиционными материалами.
           </p>
-          <p class="hero-slogan">
-            Оптимизируйте, развивайте и производите.
-          </p>
+          <p class="hero-slogan">Оптимизируйте, развивайте и производите.</p>
         </el-col>
       </el-row>
     </div>
@@ -691,4 +693,3 @@ function onCallRequest() {
   padding: 12px;
 }
 </style>
-

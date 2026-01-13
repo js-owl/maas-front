@@ -29,8 +29,8 @@ const calcRows = ref<IOrderResponse[]>([])
 const selectedOrderType = ref<string>('')
 
 const orderTypeOptions = [
-  { label: 'токарная', value: 'machining' },
-  { label: 'фрезерная', value: 'milling' },
+  // { label: 'токарная', value: 'machining' },
+  { label: 'механическая', value: 'milling' },
   { label: '3D-печать', value: 'printing' },
 ]
 
@@ -299,9 +299,7 @@ const handleDelete = async (row: any): Promise<void> => {
     if (r?.ok) {
       // Удаляем order_id из списка
       if (order.value?.order_ids) {
-        order.value.order_ids = order.value.order_ids.filter(
-          (id: number) => id !== row.order_id
-        )
+        order.value.order_ids = order.value.order_ids.filter((id: number) => id !== row.order_id)
       }
 
       // Отправляем PUT запрос с обновленным списком order_ids
@@ -453,7 +451,7 @@ onMounted(() => {
               <div v-else class="preview-placeholder" />
             </template>
           </el-table-column>
-          <el-table-column label="Обозначение" width="200" >
+          <el-table-column label="Обозначение" width="200">
             <template #default="{ row }">
               {{ row.order_name }}
             </template>
@@ -699,7 +697,6 @@ onMounted(() => {
   margin-top: 4px;
 }
 
-
 .details-table {
   margin-top: 10px;
 }
@@ -737,7 +734,6 @@ onMounted(() => {
   border-radius: 24px;
   width: 100%;
 }
-
 
 .summary-card {
   background-color: #e9ecef;
