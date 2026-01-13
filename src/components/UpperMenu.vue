@@ -36,7 +36,7 @@ onMounted(() => {
   checkTokenValidity()
   const tokenCheckInterval = setInterval(checkTokenValidity, 5 * 60 * 1000)
 
-  // Apply styles to printing menu item if on home page
+  // Apply styles to printing and paint menu items if on home page
   if (isHomePage.value) {
     const applyPrintingStyles = () => {
       const printingItem = document.querySelector('.printing-menu-item')
@@ -47,6 +47,11 @@ onMounted(() => {
         if (textSpan) {
           ;(textSpan as HTMLElement).style.color = '#333'
         }
+      }
+      const mechItem = document.querySelector('.mech-menu-item')
+      if (mechItem) {
+        const element = mechItem as HTMLElement
+        element.style.color = '#333'
       }
     }
 
@@ -147,7 +152,7 @@ function onCallRequest() {
                       <ArrowDown />
                     </el-icon>
                   </template>
-                  <el-sub-menu index="1-1">
+                  <!-- <el-sub-menu index="1-1">
                     <template #title>Механообрабатывающее производство ></template>
                     <el-menu-item index="/machining" :route="{ path: '/machining' }">
                       Токарные работы
@@ -155,7 +160,14 @@ function onCallRequest() {
                     <el-menu-item index="/milling" :route="{ path: '/milling' }">
                       Фрезерные работы
                     </el-menu-item>
-                  </el-sub-menu>
+                  </el-sub-menu> -->
+                  <el-menu-item
+                    index="/milling"
+                    :route="{ path: '/milling' }"
+                    class="mech-menu-item"
+                  >
+                    Механообработка
+                  </el-menu-item>
                   <el-menu-item
                     index="/printing"
                     :route="{ path: '/printing' }"
@@ -163,6 +175,7 @@ function onCallRequest() {
                   >
                     <span class="printing-text">3D печать</span>
                   </el-menu-item>
+
                   <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
                     Лабораторные исследования
                   </el-menu-item> -->
@@ -262,6 +275,9 @@ function onCallRequest() {
           <!-- <el-menu-item index="/plastic" :route="{ path: '/plastic' }" disabled>Производство из композитных материалов</el-menu-item> -->
           <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Нанесение лакокрасочных покрытий</el-menu-item> -->
           <el-menu-item index="/printing" :route="{ path: '/printing' }">3D печать</el-menu-item>
+          <el-menu-item index="/milling" :route="{ path: '/milling' }" class="mech-menu-item"
+            >Механообработка</el-menu-item
+          >
           <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Лабораторные исследования</el-menu-item> -->
           <!-- <el-sub-menu index="m1-2" disabled>
             <template #title>Сварочное производство</template>
@@ -570,6 +586,17 @@ function onCallRequest() {
   background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
+:deep(.services-menu .el-menu .el-menu-item.mech-menu-item),
+:deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item) {
+  color: #333 !important;
+}
+
+:deep(.services-menu .el-menu .el-menu-item.mech-menu-item:hover),
+:deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item:hover) {
+  color: #333 !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
 .fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.printing-menu-item),
 .fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item) {
   color: #333 !important;
@@ -591,6 +618,17 @@ function onCallRequest() {
 .fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.printing-menu-item:hover .printing-text),
 .fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item:hover .printing-text) {
   color: #333 !important;
+}
+
+.fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.mech-menu-item),
+.fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item) {
+  color: #333 !important;
+}
+
+.fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.mech-menu-item:hover),
+.fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item:hover) {
+  color: #333 !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 .hero-content {
