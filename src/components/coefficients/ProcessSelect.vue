@@ -13,7 +13,7 @@ if (!selectedMaterial.value && processes.length > 0) {
 
 <template>
   <div>
-    <p class="coefficient-title">Процесс</p>
+    <p class="coefficient-label">Процесс</p>
     <el-select
       v-model="selectedMaterial"
       value-key="label"
@@ -43,7 +43,7 @@ if (!selectedMaterial.value && processes.length > 0) {
   font-size: 16px;
   font-weight: 500;
   color: black;
-  margin-top: 10px;
-  padding: 10px;
+  margin-top: -20px;
+  /* padding: 10px; */
 }
 </style>
