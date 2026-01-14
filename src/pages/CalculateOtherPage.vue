@@ -105,6 +105,7 @@ const payload = reactive({
   tolerance_id,
   finish_id,
   cover_id,
+  procces_id,
   n_dimensions,
   k_otk,
   k_cert,
@@ -145,6 +146,7 @@ const calculationPayload = computed(() => ({
   tolerance_id: payload.tolerance_id,
   finish_id: payload.finish_id,
   cover_id: payload.cover_id,
+  procces_id: payload.procces_id,
   n_dimensions: payload.n_dimensions,
   k_otk: payload.k_otk,
   k_cert: payload.k_cert,
@@ -207,6 +209,7 @@ async function getOrder(id: number) {
     if (data.finish_id) finish_id.value = data.finish_id
     if (data.cover_id)
       cover_id.value = Array.isArray(data.cover_id) ? data.cover_id : [data.cover_id]
+    if (data.procces_id) procces_id.value = data.procces_id
     if (data.n_dimensions) n_dimensions.value = data.n_dimensions
     if (data.k_otk) k_otk.value = data.k_otk
     if (data.k_cert) k_cert.value = data.k_cert
@@ -229,6 +232,7 @@ async function getOrder(id: number) {
       tolerance_id: tolerance_id.value,
       finish_id: finish_id.value,
       cover_id: cover_id.value,
+      procces_id: procces_id.value,
       n_dimensions: n_dimensions.value,
       k_otk: k_otk.value,
       k_cert: k_cert.value,
