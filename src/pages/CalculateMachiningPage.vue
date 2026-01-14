@@ -11,8 +11,6 @@ import MaterialMachining from '../components/materials/MaterialMachining.vue'
 
 import CoefficientOtk from '../components/coefficients/CoefficientOtk.vue'
 import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
-import CoefficientTolerance from '../components/coefficients/CoefficientTolerance.vue'
-import CoefficientFinish from '../components/coefficients/CoefficientFinish.vue'
 import CoefficientCover from '../components/coefficients/CoefficientCover.vue'
 // import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
@@ -31,6 +29,7 @@ import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
 // import Height from "../components/coefficients/Height.vue";
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
 import { locations } from '../helpers/get-location'
+import ProcessSelect from '../components/coefficients/ProcessSelect.vue'
 
 const profileStore = useProfileStore()
 
@@ -72,6 +71,7 @@ let material_form = ref('rod')
 let tolerance_id = ref('4')
 let finish_id = ref('3')
 let cover_id = ref<string[]>(['1'])
+let procces_id = ref('laser-cutting')
 let n_dimensions = ref(55)
 
 let k_otk = ref('1')
@@ -308,18 +308,16 @@ async function getOrder(id: number) {
         <el-col :offset="0" :span="7" :xs="{ span: 24, offset: 0 }">
           <!-- <div class="disabled-block"> -->
           <div>
-            <CoefficientFinish v-model="finish_id" />
+            <CoefficientQuantity v-model="quantity" />
           </div>
         </el-col>
-        <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
-          <!-- <div class="disabled-block"> -->
-          <div>
-            <CoefficientTolerance v-model="tolerance_id" />
-          </div>
+      </el-row>
+
+      <el-row :gutter="5">
+        <el-col :offset="0" :span="23" :xs="{ span: 24, offset: 0 }">
+          <ProcessSelect v-model="procces_id" />
         </el-col>
-        <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
-          <CoefficientQuantity v-model="quantity" />
-        </el-col>
+        <el-col :offset="1" :span="5"> </el-col>
       </el-row>
 
       <el-row :gutter="5" class="row-spacing-top">
