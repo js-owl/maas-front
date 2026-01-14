@@ -41,7 +41,7 @@ const formatNumber = (value: number | string | null | undefined) => {
           <div class="card-title">Стоимость</div>
           <div class="price-line">
             <span class="price">{{ formatNumber(props.result?.total_price) }} ₽</span>
-            <span v-if="props.result?.quantity !== 1" class="per-item">
+            <span v-if="props.result && props.result.quantity > 1" class="per-item">
               {{ formatNumber(props.result?.detail_price_one) }} ₽ за 1 шт.*
             </span>
           </div>

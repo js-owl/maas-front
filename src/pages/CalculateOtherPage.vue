@@ -91,7 +91,7 @@ const location = computed(() => {
 })
 
 const payload = reactive({
-  service_id: 'cnc-lathe',
+  service_id: 'cnc-lath',
   order_name,
   location,
   file_id,
