@@ -25,12 +25,12 @@ const routes: RouteRecordRaw[] = [
   // },
   {
     path: '/machining',
-    component: () => import('./pages/CalculateMachiningPage.vue'),
+    component: () => import('./pages/CalculateOtherPage.vue'),
     name: 'machining',
   },
   {
     path: '/machining2',
-    component: () => import('./pages/CalculateMachiningPage.vue'),
+    component: () => import('./pages/CalculateOtherPage.vue'),
     name: 'machining2',
   },
   {

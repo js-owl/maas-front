@@ -361,11 +361,11 @@ async function getOrder(id: number) {
 </template>
 
 <style scoped>
-:deep(.el-upload-dragger) {
+::deep(.el-upload-dragger) {
   padding: 10px;
   background-color: #283d5b;
 }
-:deep(.loading-top .el-loading-spinner) {
+::deep(.loading-top .el-loading-spinner) {
   top: 40px;
   margin-top: 0;
   transform: scale(1.5);
@@ -617,3 +617,4 @@ async function getOrder(id: number) {
   }
 }
 </style>
+
