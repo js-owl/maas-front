@@ -48,9 +48,16 @@ onMounted(() => {
           ;(textSpan as HTMLElement).style.color = '#333'
         }
       }
+
       const mechItem = document.querySelector('.mech-menu-item')
       if (mechItem) {
         const element = mechItem as HTMLElement
+        element.style.color = '#333'
+      }
+
+      const otherItem = document.querySelector('.other-menu-item')
+      if (otherItem) {
+        const element = otherItem as HTMLElement
         element.style.color = '#333'
       }
     }
@@ -175,6 +182,13 @@ function onCallRequest() {
                   >
                     <span class="printing-text">3D печать</span>
                   </el-menu-item>
+                  <el-menu-item
+                    index="/machining"
+                    :route="{ path: '/machining' }"
+                    class="other-menu-item"
+                  >
+                    Прочее
+                  </el-menu-item>
 
                   <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
                     Лабораторные исследования
@@ -278,6 +292,7 @@ function onCallRequest() {
           <el-menu-item index="/milling" :route="{ path: '/milling' }" class="mech-menu-item"
             >Механообработка</el-menu-item
           >
+          <el-menu-item index="/machining" :route="{ path: '/machining' }">Прочее</el-menu-item>
           <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Лабораторные исследования</el-menu-item> -->
           <!-- <el-sub-menu index="m1-2" disabled>
             <template #title>Сварочное производство</template>
