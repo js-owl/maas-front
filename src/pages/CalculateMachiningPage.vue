@@ -260,18 +260,18 @@ async function getOrder(id: number) {
             class="title-input"
           />
         </div>
-        <div v-else>ТОКАРНАЯ ОБРАБОТКА</div>
+        <div v-else>ПРОЧЕЕ</div>
         <br v-if="order_id != 0" />
         {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
       </div>
 
       <CalculateResults :result="result" />
 
-      <el-row :gutter="20" class="component-section">
+      <!-- <el-row :gutter="20" class="component-section">
         <el-col :offset="0" :span="24" class="cad-section">
           <CadShowById v-model="file_id" />
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-row :gutter="5" class="upload-section">
         <el-col :span="24" class="upload-title"> Загрузите файлы для расчета </el-col>
         <el-col :span="24" class="upload-model">

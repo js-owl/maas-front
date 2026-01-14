@@ -30,8 +30,9 @@ const selectedOrderType = ref<string>('')
 
 const orderTypeOptions = [
   // { label: 'токарная', value: 'machining' },
-  { label: 'механическая', value: 'milling' },
+  { label: 'мехобработка', value: 'milling' },
   { label: '3D-печать', value: 'printing' },
+  { label: 'прочее', value: 'machining' },
 ]
 
 const orderId = computed(() => {
