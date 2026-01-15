@@ -1,14 +1,53 @@
 <script lang="ts" setup>
+import { onMounted, ref } from 'vue'
+import { req_json } from '../../api'
+
 const selectedMaterial = defineModel<string | null>()
 
-const processes = [
-  { label: 'Лазерная резка', value: 'laser-cutting' },
-  { label: 'Покраска', value: 'painting' },
-]
-
-if (!selectedMaterial.value && processes.length > 0) {
-  selectedMaterial.value = processes[0].value
+type ProcessItem = {
+  label: string
+  value: string
 }
+
+type OtherService = {
+  id: string
+  label: string
+  service: string
+}
+
+type OtherServicesResponse = {
+  other_services: OtherService[]
+}
+
+const processes = ref<ProcessItem[]>([])
+const isLoading = ref(false)
+
+const loadProcesses = async () => {
+  isLoading.value = true
+  try {
+    const res = await req_json('/other_services', 'GET')
+    const data = (await res?.json()) as OtherServicesResponse
+
+    if (data?.other_services && Array.isArray(data.other_services)) {
+      processes.value = data.other_services.map((item) => ({
+        label: item.label,
+        value: item.service,
+      }))
+
+      if (!selectedMaterial.value && processes.value.length > 0) {
+        selectedMaterial.value = processes.value[0].value
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load other services:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  loadProcesses()
+})
 </script>
 
 <template>
@@ -20,6 +59,8 @@ if (!selectedMaterial.value && processes.length > 0) {
       placeholder="Выбрать"
       size="large"
       class="full"
+      :loading="isLoading"
+      :disabled="isLoading"
     >
       <el-option
         v-for="item in processes"
