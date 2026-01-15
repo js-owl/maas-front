@@ -71,7 +71,7 @@ let material_form = ref('rod')
 let tolerance_id = ref('4')
 let finish_id = ref('3')
 let cover_id = ref<string[]>(['1'])
-let process_id = ref('laser-cutting')
+let service_id = ref('bending')
 let n_dimensions = ref(55)
 
 let k_otk = ref('1')
@@ -91,7 +91,7 @@ const location = computed(() => {
 })
 
 const payload = reactive({
-  service_id: 'cnc-lath',
+  service_id,
   order_name,
   location,
   file_id,
@@ -105,7 +105,6 @@ const payload = reactive({
   tolerance_id,
   finish_id,
   cover_id,
-  process_id,
   n_dimensions,
   k_otk,
   k_cert,
@@ -146,7 +145,6 @@ const calculationPayload = computed(() => ({
   tolerance_id: payload.tolerance_id,
   finish_id: payload.finish_id,
   cover_id: payload.cover_id,
-  process_id: payload.process_id,
   n_dimensions: payload.n_dimensions,
   k_otk: payload.k_otk,
   k_cert: payload.k_cert,
@@ -209,7 +207,7 @@ async function getOrder(id: number) {
     if (data.finish_id) finish_id.value = data.finish_id
     if (data.cover_id)
       cover_id.value = Array.isArray(data.cover_id) ? data.cover_id : [data.cover_id]
-    if (data.process_id) process_id.value = data.process_id
+    if (data.service_id) service_id.value = data.service_id
     if (data.n_dimensions) n_dimensions.value = data.n_dimensions
     if (data.k_otk) k_otk.value = data.k_otk
     if (data.k_cert) k_cert.value = data.k_cert
@@ -219,7 +217,7 @@ async function getOrder(id: number) {
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
-      service_id: 'cnc-lathe',
+      service_id: service_id.value,
       order_name: order_name.value,
       file_id: file_id.value,
       document_ids: document_ids.value,
@@ -232,7 +230,6 @@ async function getOrder(id: number) {
       tolerance_id: tolerance_id.value,
       finish_id: finish_id.value,
       cover_id: cover_id.value,
-      process_id: process_id.value,
       n_dimensions: n_dimensions.value,
       k_otk: k_otk.value,
       k_cert: k_cert.value,
@@ -319,7 +316,7 @@ async function getOrder(id: number) {
 
       <el-row :gutter="5">
         <el-col :offset="0" :span="23" :xs="{ span: 24, offset: 0 }">
-          <ProcessSelect v-model="process_id" />
+          <ProcessSelect v-model="service_id" />
         </el-col>
         <el-col :offset="1" :span="5"> </el-col>
       </el-row>
