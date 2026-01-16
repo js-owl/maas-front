@@ -11,10 +11,15 @@ import { useCoefficientsStore } from '../stores/coefficients.store'
 import { useProfileStore } from '../stores/profile.store'
 import { hidePrice as hidePriceFn } from '../helpers/hide-price'
 
-// Get orderId from route query
+// Get orderId and kitId from route query
 const route = useRoute()
 const router = useRouter()
 const orderId = computed(() => Number(route.query.orderId) || 0)
+const kitId = computed(() => {
+  const fromQuery = route.query.kitId
+  if (Array.isArray(fromQuery)) return Number(fromQuery[0]) || 0
+  return Number(fromQuery) || 0
+})
 
 // Loading state
 const isLoading = ref(false)
@@ -68,12 +73,12 @@ const formatCurrency = (value: number): string => {
 }
 
 
-// Handle back button click - navigate to order page with current orderId
+// Handle back button click - navigate to order page with current kitId
 const handleBack = () => {
-  if (orderId.value && orderId.value > 0) {
+  if (kitId.value && kitId.value > 0) {
     router.push({
       name: 'personal-order',
-      query: { orderId: orderId.value.toString() },
+      query: { kitId: kitId.value.toString() },
     })
   } else {
     router.push({

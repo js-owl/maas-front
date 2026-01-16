@@ -41,6 +41,12 @@ const orderId = computed(() => {
   return Number(fromQuery)
 })
 
+const kitId = computed(() => {
+  const fromQuery = route.query.kitId
+  if (Array.isArray(fromQuery)) return Number(fromQuery[0])
+  return Number(fromQuery) || orderId.value
+})
+
 const formatPrice = (value?: number | null): string => {
   if (value == null) return '0'
   const n = Number(value)
@@ -156,7 +162,7 @@ const loadOrder = async () => {
   isLoading.value = true
   hasError.value = false
   try {
-    const res = await req_json_auth(`/kits/${orderId.value}`, 'GET')
+    const res = await req_json_auth(`/kits/${kitId.value}`, 'GET')
     if (!res?.ok) throw new Error('Failed to load order')
     const data = (await res.json()) as IKit
     order.value = data
@@ -205,7 +211,7 @@ const handleEdit = (row: any): void => {
 
 const updateKit = async (): Promise<Response | undefined> => {
   if (!order.value) return undefined
-  return await req_json_auth(`/kits/${orderId.value}`, 'PUT', {
+  return await req_json_auth(`/kits/${kitId.value}`, 'PUT', {
     kit_name: order.value.kit_name,
     quantity: quantity.value,
     order_ids: order.value.order_ids,
@@ -216,7 +222,7 @@ const handleOpenCalculation = (row: any): void => {
   if (!row?.order_id) return
   router.push({
     name: 'personal-calc',
-    query: { orderId: row.order_id.toString() },
+    query: { kitId: kitId.value.toString(), orderId: row.order_id.toString() },
   })
 }
 
@@ -357,7 +363,7 @@ const handleOrderTypeChange = (value: string | number | boolean | object) => {
     path,
     query: {
       orderId: '0',
-      kitId: orderId.value.toString(),
+      kitId: kitId.value.toString(),
       orderIds: existingIds.join(','),
     },
   })
@@ -395,7 +401,7 @@ onMounted(() => {
         <!-- <el-card shadow="never" class="order-card"> -->
         <div class="order-header">
           <div class="order-title">
-            <div class="order-name">Заказ №{{ orderId }}</div>
+            <div class="order-name">Заказ №{{ kitId }}</div>
             <div class="order-name-wrapper">
               <div v-if="!isEditingFilename" class="order-name">
                 {{ filename || 'Загрузка...' }}
