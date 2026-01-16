@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Clock, Location, ArrowLeft } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ArrowLeft } from '@element-plus/icons-vue'
+import { ElMessage, ElIcon } from 'element-plus'
 import { req_json_auth } from '../api'
+import Button from './ui/Button.vue'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
 import { useCoefficientsStore } from '../stores/coefficients.store'
@@ -77,48 +78,12 @@ const formatCurrency = (value: number): string => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' руб'
 }
 
-// Handle quantity increase
-// const increaseQuantity = () => {
-//   quantity.value += 1
-// }
-
-// // Handle quantity decrease
-// const decreaseQuantity = () => {
-//   if (quantity.value > 1) {
-//     quantity.value -= 1
-//   }
-// }
-
-// // Handle quantity input change
-// const handleQuantityChange = (value: number | null) => {
-//   if (value !== null && value >= 1) {
-//     quantity.value = value
-//   } else {
-//     quantity.value = 1
-//   }
-// }
-
-// Handle calculate cost button click
-const handleCalculateCost = () => {
-  // Navigate to calculation info page with orderId as query parameter
-  router.push({
-    name: 'personal-calc-info',
-    query: { orderId: orderId.value },
-  })
-}
 
 // Handle back button click - navigate to orders page
 const handleBack = () => {
   router.push({
     name: 'personal-orders',
   })
-}
-
-// Handle production location selection
-const handleProductionChange = (location: string) => {
-  selectedProduction.value = location
-  // TODO: Update delivery cost and time based on selected location
-  console.log('Production location changed to:', location)
 }
 
 // Fetch order data from API
@@ -206,81 +171,6 @@ watch(
   { immediate: true }
 )
 
-// Handle edit button click - navigate to appropriate edit page based on service_id
-const handleEdit = (): void => {
-  if (!orderData.value) return
-
-  switch (orderData.value.service_id) {
-    case 'cnc-lathe':
-      router.push({
-        path: '/machining',
-        query: { orderId: orderData.value.order_id.toString() },
-      })
-      break
-    case 'cnc-milling':
-      router.push({
-        path: '/milling',
-        query: { orderId: orderData.value.order_id.toString() },
-      })
-      break
-    case 'printing':
-      router.push({
-        path: '/printing',
-        query: { orderId: orderData.value.order_id.toString() },
-      })
-      break
-    default:
-      router.push({
-        path: '/machining',
-        query: { orderId: orderData.value.order_id.toString() },
-      })
-      break
-  }
-}
-
-// Handle delete button click - shows confirmation dialog and sends DELETE request
-const handleDelete = async (): Promise<void> => {
-  if (!orderId.value || orderId.value === 0) {
-    ElMessage.error('Не удалось определить ID заказа')
-    return
-  }
-
-  try {
-    // Show confirmation dialog before deleting
-    await ElMessageBox.confirm(
-      `Вы уверены, что хотите удалить заказ #${orderId.value}?`,
-      'Подтверждение удаления',
-      {
-        confirmButtonText: 'Удалить',
-        cancelButtonText: 'Отмена',
-        type: 'warning',
-        confirmButtonClass: 'el-button--danger',
-      }
-    )
-
-    // Make DELETE request to /orders/{id} endpoint
-    isLoading.value = true
-    const response = await req_json_auth(`/orders/${orderId.value}`, 'DELETE')
-
-    if (response && response.ok) {
-      ElMessage.success('Заказ успешно удален')
-      // Redirect to orders list or home page after successful deletion
-      router.push({ name: 'personal-orders' })
-    } else {
-      ElMessage.error('Ошибка при удалении заказа')
-    }
-  } catch (error: any) {
-    // User cancelled the confirmation dialog - this is expected behavior
-    // ElMessageBox rejects with action string when user clicks cancel
-    if (error === 'cancel' || error === 'close' || error?.action === 'cancel') {
-      return
-    }
-    console.error('Error deleting order:', error)
-    ElMessage.error('Ошибка при удалении заказа')
-  } finally {
-    isLoading.value = false
-  }
-}
 </script>
 
 <template>
@@ -291,7 +181,7 @@ const handleDelete = async (): Promise<void> => {
   >
     <el-row :gutter="20">
       <!-- Left Card - Product Details and Configuration (2/3 width) -->
-      <el-col :span="16">
+      <el-col :span="24">
         <el-card class="product-card" shadow="never">
           <!-- Top Section: Image, Filename, Cost, Quantity -->
           <div class="product-header">
@@ -317,9 +207,9 @@ const handleDelete = async (): Promise<void> => {
             </div>
             <!-- Quantity Input Section -->
             <div class="quantity-section">
-              <el-button type="default" class="calculate-button" @click="handleCalculateCost">
+              <!-- <el-button type="default" class="calculate-button" @click="handleCalculateCost">
                 Калькуляция стоимости
-              </el-button>
+              </el-button> -->
 
               <!-- <div class="quantity-label">Количество</div>
               <div class="quantity-controls">
@@ -363,68 +253,15 @@ const handleDelete = async (): Promise<void> => {
               <span class="property-value">{{ productProperties.certification || '-' }}</span>
             </div> -->
           </div>
-          <div class="edit-button-container">
-            <el-button type="default" :icon="ArrowLeft" @click="handleBack">Назад</el-button>
-            <el-button type="primary" @click="handleDelete">Удалить</el-button>
-            <el-button type="primary" @click="handleEdit">Редактировать</el-button>
+          <div style="padding-top: 20px;">
+            <Button width="200px" @click="handleBack">
+              <el-icon><ArrowLeft /></el-icon>
+              Назад
+            </Button>
           </div>
         </el-card>
       </el-col>
 
-      <!-- Right Column - Order Summary and Production Selection -->
-      <el-col :span="8">
-        <el-row :gutter="20">
-          <!-- Top-Right Card - Order Summary -->
-          <el-col :span="24">
-            <el-card v-if="!hidePrice" class="order-summary-card" shadow="never">
-              <div class="total-cost">{{ formatCurrency(totalCost) }}</div>
-              <div class="order-details">
-                <div class="order-detail-item">
-                  <el-icon class="detail-icon">
-                    <Clock />
-                  </el-icon>
-                  <span class="detail-label">Срок изготовления</span>
-                  <span class="detail-value">{{ manufacturingTime }}</span>
-                </div>
-                <div class="order-detail-item">
-                  <el-icon class="detail-icon">
-                    <Location />
-                  </el-icon>
-                  <span class="detail-label">Срок доставки</span>
-                  <span class="detail-value">{{ deliveryTime }}</span>
-                </div>
-                <div class="order-detail-item">
-                  <span class="detail-label">Стоимость доставки</span>
-                  <span class="detail-value">{{
-                    deliveryCost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                  }}</span>
-                </div>
-              </div>
-            </el-card>
-          </el-col>
-
-          <!-- Bottom-Right Card - Production Location Selection -->
-          <el-col :span="24">
-            <el-card class="production-card" shadow="never">
-              <div class="production-title">Выбрать производство</div>
-              <el-radio-group
-                v-model="selectedProduction"
-                class="production-options"
-                @change="handleProductionChange"
-              >
-                <el-radio
-                  v-for="location in productionLocations"
-                  :key="location"
-                  :label="location"
-                  class="production-radio"
-                >
-                  {{ location }}
-                </el-radio>
-              </el-radio-group>
-            </el-card>
-          </el-col>
-        </el-row>
-      </el-col>
     </el-row>
   </div>
 </template>
@@ -442,8 +279,13 @@ const handleDelete = async (): Promise<void> => {
   margin-bottom: 20px;
 }
 
+:deep(.el-card) {
+  border: none;
+}
+
 .product-card :deep(.el-card__body) {
   padding: 24px;
+  border: none;
 }
 
 /* Product Header - Image and Info Section */
@@ -663,30 +505,6 @@ const handleDelete = async (): Promise<void> => {
 
 .production-radio :deep(.el-radio__label) {
   padding-left: 8px;
-}
-
-.edit-button-container {
-  display: flex;
-  margin: 20px 0;
-  justify-content: space-between;
-  margin: 20px 0;
-}
-
-.edit-button-container button {
-  background-color: var(--gray2);
-  border-color: var(--gray2);
-  color: black;
-  font-size: 20px;
-  font-weight: 500;
-  padding: 20px 48px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  &:hover {
-    background-color: var(--gray-footer);
-    border-color: var(--gray-footer);
-    color: white;
-  }
 }
 
 /* Responsive Design */
