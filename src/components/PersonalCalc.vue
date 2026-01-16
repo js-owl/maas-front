@@ -3,13 +3,23 @@ import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { req_json_auth } from '../api'
+import { req_json_auth, req_json } from '../api'
 import Button from './ui/Button.vue'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
 import { useCoefficientsStore } from '../stores/coefficients.store'
 import { useProfileStore } from '../stores/profile.store'
 import { hidePrice as hidePriceFn } from '../helpers/hide-price'
+
+type OtherService = {
+  id: string
+  label: string
+  service: string
+}
+
+type OtherServicesResponse = {
+  other_services: OtherService[]
+}
 
 // Get orderId and kitId from route query
 const route = useRoute()
@@ -38,6 +48,9 @@ const hidePrice = computed(() => hidePriceFn(username.value, status.value))
 
 // Order data storage
 const orderData = ref<IOrderResponse | null>(null)
+
+// Other services storage
+const otherServices = ref<OtherService[]>([])
 
 // Order name - represents the order name
 const order_name = ref('')
@@ -88,6 +101,23 @@ const handleBack = () => {
   }
 }
 
+// Load other services from API
+const loadOtherServices = async () => {
+  if (otherServices.value.length > 0) return
+
+  try {
+    const res = await req_json('/other_services', 'GET')
+    if (res?.ok) {
+      const data = (await res.json()) as OtherServicesResponse
+      if (data?.other_services && Array.isArray(data.other_services)) {
+        otherServices.value = data.other_services
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load other services:', error)
+  }
+}
+
 // Fetch order data from API
 const fetchOrder = async (id: number) => {
   if (!id || id === 0) return
@@ -108,6 +138,9 @@ const fetchOrder = async (id: number) => {
       await coefficientsStore.setAllCoefficients()
     }
 
+    // Load other services to resolve service label
+    await loadOtherServices()
+
     const response = await req_json_auth(`/orders/${id}`, 'GET')
     if (response?.ok) {
       const fetchedOrderData = (await response.json()) as IOrderResponse
@@ -122,7 +155,11 @@ const fetchOrder = async (id: number) => {
 
       // Map product properties
       if (fetchedOrderData.service_id) {
-        productProperties.value.serviceId = fetchedOrderData.service_id
+        // Find service label by service field (not id) from other_services
+        const foundService = otherServices.value.find(
+          (service) => service.service === fetchedOrderData.service_id
+        )
+        productProperties.value.serviceId = foundService?.label ?? fetchedOrderData.service_id
       }
       if (fetchedOrderData.length && fetchedOrderData.width && fetchedOrderData.height) {
         productProperties.value.dimensions = `${fetchedOrderData.length} × ${fetchedOrderData.width} × ${fetchedOrderData.height}`
