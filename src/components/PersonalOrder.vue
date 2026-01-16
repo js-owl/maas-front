@@ -215,7 +215,7 @@ const updateKit = async (): Promise<Response | undefined> => {
 const handleOpenCalculation = (row: any): void => {
   if (!row?.order_id) return
   router.push({
-    name: 'personal-calc-info',
+    name: 'personal-calc',
     query: { orderId: row.order_id.toString() },
   })
 }
@@ -454,7 +454,9 @@ onMounted(() => {
           </el-table-column>
           <el-table-column label="Обозначение" width="200">
             <template #default="{ row }">
-              {{ row.order_name }}
+              <span class="order-name-link" @click="handleOpenCalculation(row)">
+                {{ row.order_name }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column label="Наименование">
@@ -830,6 +832,15 @@ onMounted(() => {
   min-width: 30px;
   text-align: center;
   font-weight: 500;
+}
+
+.order-name-link {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.order-name-link:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 992px) {

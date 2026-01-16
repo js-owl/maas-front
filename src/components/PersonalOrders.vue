@@ -340,6 +340,9 @@ const handleDelete = async (row: IKit): Promise<void> => {
   white-space: nowrap;
   cursor: pointer;
 }
+.filename-text:hover {
+  text-decoration: underline;
+}
 
 .no-filename {
   color: #909399;
