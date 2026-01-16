@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
 
 // Get orderId from route query
 const route = useRoute()
-const router = useRouter()
 const orderId = computed(() => Number(route.query.orderId) || 0)
 
 // Loading state
@@ -132,16 +131,6 @@ const laborCostsTree = computed(() => [
   },
 ])
 
-// Handler for opening calculation details
-// This would typically navigate to a detailed calculation view or open a modal
-const handleOpenCalculation = () => {
-  if (!orderId.value) return
-  router.push({
-    name: 'personal-calc',
-    query: { orderId: orderId.value.toString() },
-  })
-}
-
 // Fetch order data from API
 // Retrieves order information including calculation details and cost breakdown
 const fetchOrder = async (id: number) => {
@@ -255,12 +244,9 @@ const handleSave = async () => {
 
 <template>
   <div class="calc-info-container">
-    <!-- Header section with document number and open button -->
+    <!-- Header section with document number -->
     <div class="calc-header">
       <div class="document-number">{{ documentNumber }}</div>
-      <el-button type="default" size="small" @click="handleOpenCalculation">
-        Открыть расчет
-      </el-button>
     </div>
 
     <!-- Material Costs Section -->

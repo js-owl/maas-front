@@ -226,6 +226,15 @@ const handleOpenCalculation = (row: any): void => {
   })
 }
 
+const handleOpenCalcInfo = (row: any): void => {
+  if (!row?.order_id) return
+  router.push({
+    name: 'personal-calc-info',
+    query: { kitId: kitId.value.toString(), orderId: row.order_id.toString() },
+  })
+}
+
+
 const updateOrderQuantity = async (row: IOrderResponse, newQuantity: number): Promise<void> => {
   if (newQuantity < 1) {
     ElMessage.warning('Количество не может быть меньше 1')
@@ -506,7 +515,7 @@ onMounted(() => {
                   link
                   type="primary"
                   size="small"
-                  @click="handleOpenCalculation(row.row)"
+                  @click="handleOpenCalcInfo(row.row)"
                   :icon="Notebook"
                   title="Калькуляция"
                 />
