@@ -26,7 +26,7 @@ let file_id = ref(4)
           </div>
         </el-col>
         <!-- <el-col :span="24">
-          <el-button type="primary" plain class="model-cta" @click="$router.push('/machining')">
+          <el-button type="primary" plain class="model-cta" @click="$router.push('/other')">
             Узнать цену изготовления данной детали
           </el-button>
         </el-col> -->

@@ -32,7 +32,7 @@ const orderTypeOptions = [
   // { label: 'токарная', value: 'machining' },
   { label: 'мехобработка', value: 'milling' },
   { label: '3D-печать', value: 'printing' },
-  { label: 'прочее', value: 'machining' },
+  { label: 'прочее', value: 'other' },
 ]
 
 const orderId = computed(() => {
@@ -184,7 +184,7 @@ const handleEdit = (row: any): void => {
   switch (row.service_id) {
     case 'cnc-lathe':
       router.push({
-        path: '/machining',
+        path: '/other',
         query: { orderId: row.order_id.toString() },
       })
       break
@@ -202,7 +202,7 @@ const handleEdit = (row: any): void => {
       break
     default:
       router.push({
-        path: '/machining',
+        path: '/other',
         query: { orderId: row.order_id.toString() },
       })
       break
@@ -361,12 +361,12 @@ const handleOrderTypeChange = (value: string | number | boolean | object) => {
   const existingIds = Array.isArray(order.value.order_ids) ? order.value.order_ids : []
 
   const pathMap: Record<string, string> = {
-    machining: '/machining',
+    other: '/other',
     milling: '/milling',
     printing: '/printing',
   }
 
-  const path = pathMap[valueStr] || '/machining'
+  const path = pathMap[valueStr] || '/other'
 
   router.push({
     path,

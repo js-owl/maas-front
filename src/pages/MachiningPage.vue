@@ -19,7 +19,7 @@
               пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
             </div>
 
-            <div class="calculator-card" @click="$router.push('/machining')">
+            <div class="calculator-card" @click="$router.push('/other')">
               <div class="calculator-text">Калькулятор стоимости токарной обработки</div>
               <img src="/calc.webp" alt="calculator icon" class="calculator-icon" />
             </div>

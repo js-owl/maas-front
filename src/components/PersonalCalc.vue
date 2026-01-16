@@ -114,7 +114,7 @@ const loadOtherServices = async () => {
     },
     {
       id: '102',
-      label: 'Фрезерные работы',
+      label: 'Механообработка',
       service: 'cnc-milling',
     },
   ]

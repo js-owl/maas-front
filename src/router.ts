@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
   //   name: 'mach',
   // },
   {
-    path: '/machining',
+    path: '/other',
     component: () => import('./pages/CalculateOtherPage.vue'),
     name: 'machining',
   },

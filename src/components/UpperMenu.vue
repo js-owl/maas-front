@@ -161,7 +161,7 @@ function onCallRequest() {
                   </template>
                   <!-- <el-sub-menu index="1-1">
                     <template #title>Механообрабатывающее производство ></template>
-                    <el-menu-item index="/machining" :route="{ path: '/machining' }">
+                    <el-menu-item index="/other" :route="{ path: '/other' }">
                       Токарные работы
                     </el-menu-item>
                     <el-menu-item index="/milling" :route="{ path: '/milling' }">
@@ -183,8 +183,8 @@ function onCallRequest() {
                     <span class="printing-text">3D печать</span>
                   </el-menu-item>
                   <el-menu-item
-                    index="/machining"
-                    :route="{ path: '/machining' }"
+                    index="/other"
+                    :route="{ path: '/other' }"
                     class="other-menu-item"
                   >
                     Прочее
@@ -276,7 +276,7 @@ function onCallRequest() {
           <template #title>Услуги</template>
           <el-sub-menu index="m1-1">
             <template #title>Мех. производство ></template>
-            <el-menu-item index="/machining" :route="{ path: '/machining' }"
+            <el-menu-item index="/other" :route="{ path: '/other' }"
               >Токарные работы</el-menu-item
             >
             <el-menu-item index="/milling" :route="{ path: '/milling' }"
@@ -292,7 +292,7 @@ function onCallRequest() {
           <el-menu-item index="/milling" :route="{ path: '/milling' }" class="mech-menu-item"
             >Механообработка</el-menu-item
           >
-          <el-menu-item index="/machining" :route="{ path: '/machining' }">Прочее</el-menu-item>
+          <el-menu-item index="/other" :route="{ path: '/other' }">Прочее</el-menu-item>
           <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Лабораторные исследования</el-menu-item> -->
           <!-- <el-sub-menu index="m1-2" disabled>
             <template #title>Сварочное производство</template>
