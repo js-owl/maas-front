@@ -105,16 +105,51 @@ const handleBack = () => {
 const loadOtherServices = async () => {
   if (otherServices.value.length > 0) return
 
+  // Default services that are always available
+  const defaultServices: OtherService[] = [
+    {
+      id: '101',
+      label: '3D печать',
+      service: 'printing',
+    },
+    {
+      id: '102',
+      label: 'Фрезерные работы',
+      service: 'cnc-milling',
+    },
+  ]
+
   try {
     const res = await req_json('/other_services', 'GET')
     if (res?.ok) {
       const data = (await res.json()) as OtherServicesResponse
       if (data?.other_services && Array.isArray(data.other_services)) {
-        otherServices.value = data.other_services
+        // Merge default services with API services, avoiding duplicates by service field
+        const serviceMap = new Map<string, OtherService>()
+        
+        // Add default services first
+        defaultServices.forEach((service) => {
+          serviceMap.set(service.service, service)
+        })
+        
+        // Add API services, they will override defaults if service field matches
+        data.other_services.forEach((service) => {
+          serviceMap.set(service.service, service)
+        })
+        
+        otherServices.value = Array.from(serviceMap.values())
+      } else {
+        // If API didn't return valid data, use defaults
+        otherServices.value = defaultServices
       }
+    } else {
+      // If API request failed, use defaults
+      otherServices.value = defaultServices
     }
   } catch (error) {
     console.error('Failed to load other services:', error)
+    // On error, use defaults
+    otherServices.value = defaultServices
   }
 }
 
