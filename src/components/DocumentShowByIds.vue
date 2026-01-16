@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch, computed } from "vue";
 import { req_json_auth } from "../api";
-import { useProfileStore } from "../stores/profile.store";
 import { ElMessage } from "element-plus";
 import { Download } from "@element-plus/icons-vue";
 
@@ -12,7 +11,6 @@ type DocumentInfo = {
 
 const document_ids = defineModel<number[]>();
 
-const profileStore = useProfileStore();
 const isLoading = ref<boolean>(false);
 const allDocuments = ref<DocumentInfo[]>([]);
 
@@ -21,27 +19,33 @@ const filteredDocuments = computed<DocumentInfo[]>(() => {
   return allDocuments.value.filter((d) => ids.has(d.id));
 });
 
-async function ensureProfileLoaded() {
-  if (!profileStore.profile) await profileStore.getProfile();
-}
-
 async function loadUserDocuments() {
   isLoading.value = true;
   try {
-    await ensureProfileLoaded();
-    const userId = (profileStore.profile as unknown as { id?: number })?.id;
-    if (!userId) {
+    const ids = document_ids.value ?? [];
+    if (ids.length === 0) {
+      allDocuments.value = [];
       isLoading.value = false;
       return;
     }
-    const r = await req_json_auth(`/users/${userId}/documents`, "GET");
-    const data = (await r?.json()) as Array<{
-      id: number;
-      original_filename: string;
-    }>;
-    allDocuments.value = Array.isArray(data)
-      ? data.map((d) => ({ id: d.id, original_filename: d.original_filename }))
-      : [];
+
+    // Загружаем каждый документ отдельно по его ID
+    const documentPromises = ids.map(async (documentId) => {
+      try {
+        const r = await req_json_auth(`/documents/${documentId}`, "GET");
+        const data = (await r?.json()) as {
+          id: number;
+          original_filename: string;
+        };
+        return { id: data.id, original_filename: data.original_filename };
+      } catch (e) {
+        console.error(`Error loading document ${documentId}:`, e);
+        return null;
+      }
+    });
+
+    const documents = await Promise.all(documentPromises);
+    allDocuments.value = documents.filter((d): d is DocumentInfo => d !== null);
   } catch (e) {
     console.error('Error loading user documents:', e);
     // If API fails, try to load from localStorage as fallback
