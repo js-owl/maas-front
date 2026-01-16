@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft } from '@element-plus/icons-vue'
-import { ElMessage, ElIcon } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import Button from './ui/Button.vue'
 import type { IOrderResponse } from '../interfaces/order.interface'
@@ -43,14 +43,8 @@ const manufacturingCost = ref(10526)
 // Quantity of items to manufacture
 const quantity = ref(8)
 
-// Selected production location
-const selectedProduction = ref('Москва')
-
 // Manufacturing time in days
 const manufacturingTime = ref(3)
-
-// Delivery time in days
-const deliveryTime = ref(4)
 
 // Delivery cost in rubles
 const deliveryCost = ref(0)
@@ -60,13 +54,8 @@ const productProperties = ref({
   dimensions: '', // Размеры (Dimensions)
   partVolume: '', // Объем детали (Part volume)
   material: '', // Материал (Material)
-  postProcessing: '', // Постобработка (Post-processing)
   coating: '', // Покрытие (Coating)
-  certification: '', // Сертификация (Certification)
 })
-
-// Available production locations
-const productionLocations = ['Москва', 'Дубна', 'Саранск']
 
 // Calculate total cost including manufacturing and delivery
 const totalCost = computed(() => {
@@ -79,11 +68,18 @@ const formatCurrency = (value: number): string => {
 }
 
 
-// Handle back button click - navigate to orders page
+// Handle back button click - navigate to order page with current orderId
 const handleBack = () => {
-  router.push({
-    name: 'personal-orders',
-  })
+  if (orderId.value && orderId.value > 0) {
+    router.push({
+      name: 'personal-order',
+      query: { orderId: orderId.value.toString() },
+    })
+  } else {
+    router.push({
+      name: 'personal-orders',
+    })
+  }
 }
 
 // Fetch order data from API
@@ -205,29 +201,6 @@ watch(
                 <div class="quantity-display">{{ quantity }} шт.</div>
               </div>
             </div>
-            <!-- Quantity Input Section -->
-            <div class="quantity-section">
-              <!-- <el-button type="default" class="calculate-button" @click="handleCalculateCost">
-                Калькуляция стоимости
-              </el-button> -->
-
-              <!-- <div class="quantity-label">Количество</div>
-              <div class="quantity-controls">
-                <el-button circle size="small" :disabled="quantity <= 1" @click="decreaseQuantity">
-                  -
-                </el-button>
-                <el-input-number
-                  v-model="quantity"
-                  :min="1"
-                  :max="1000"
-                  size="default"
-                  :controls="false"
-                  class="quantity-input"
-                  @change="handleQuantityChange"
-                />
-                <el-button circle size="small" @click="increaseQuantity">+</el-button>
-              </div> -->
-            </div>
           </div>
 
           <!-- Bottom Section: Product Properties -->
@@ -248,10 +221,6 @@ watch(
               <span class="property-label">Покрытие</span>
               <span class="property-value">{{ productProperties.coating || '-' }}</span>
             </div>
-            <!-- <div class="property-item">
-              <span class="property-label">Сертификация</span>
-              <span class="property-value">{{ productProperties.certification || '-' }}</span>
-            </div> -->
           </div>
           <div style="padding-top: 20px;">
             <Button width="200px" @click="handleBack">
@@ -351,46 +320,6 @@ watch(
   color: #909399;
 }
 
-/* Quantity Section */
-.quantity-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.calculate-button {
-  width: 100%;
-  background-color: #f5f7fa;
-  border-color: #dcdfe6;
-  color: #606266;
-  margin-bottom: 8px;
-}
-
-.edit-button {
-  width: 100%;
-  margin-bottom: 8px;
-}
-
-.quantity-label {
-  font-size: 14px;
-  color: #606266;
-  margin-bottom: 8px;
-}
-
-.quantity-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.quantity-input {
-  width: 80px;
-}
-
-.quantity-input :deep(.el-input__wrapper) {
-  border-radius: 4px;
-}
-
 /* Properties Section */
 .properties-section {
   border-top: 1px solid #e4e7ed;
@@ -423,88 +352,6 @@ watch(
   color: #909399;
   text-align: right;
   min-width: 100px;
-}
-
-/* Order Summary Card */
-.order-summary-card {
-  background: #fff;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.order-summary-card :deep(.el-card__body) {
-  padding: 24px;
-}
-
-.total-cost {
-  font-size: 28px;
-  font-weight: bold;
-  color: #303133;
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.order-details {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.order-detail-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.detail-icon {
-  font-size: 20px;
-  color: #606266;
-}
-
-.detail-label {
-  font-size: 14px;
-  color: #606266;
-  flex: 1;
-}
-
-.detail-value {
-  font-size: 14px;
-  font-weight: 500;
-  color: #303133;
-}
-
-/* Production Card */
-.production-card {
-  background: #fff;
-  border-radius: 8px;
-}
-
-.production-card :deep(.el-card__body) {
-  padding: 24px;
-}
-
-.production-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: #303133;
-  margin-bottom: 16px;
-}
-
-.production-options {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-.production-radio {
-  width: 100%;
-  margin: 0;
-  padding: 8px 0;
-}
-
-.production-radio :deep(.el-radio__label) {
-  padding-left: 8px;
 }
 
 /* Responsive Design */
