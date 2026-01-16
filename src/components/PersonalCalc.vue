@@ -56,6 +56,7 @@ const deliveryCost = ref(0)
 
 // Product properties - stores various attributes of the product
 const productProperties = ref({
+  serviceId: '', // ID услуги (Service ID)
   dimensions: '', // Размеры (Dimensions)
   partVolume: '', // Объем детали (Part volume)
   material: '', // Материал (Material)
@@ -120,6 +121,9 @@ const fetchOrder = async (id: number) => {
         manufacturingTime.value = fetchedOrderData.manufacturing_cycle
 
       // Map product properties
+      if (fetchedOrderData.service_id) {
+        productProperties.value.serviceId = fetchedOrderData.service_id
+      }
       if (fetchedOrderData.length && fetchedOrderData.width && fetchedOrderData.height) {
         productProperties.value.dimensions = `${fetchedOrderData.length} × ${fetchedOrderData.width} × ${fetchedOrderData.height}`
       }
@@ -210,6 +214,10 @@ watch(
 
           <!-- Bottom Section: Product Properties -->
           <div class="properties-section">
+            <div class="property-item">
+              <span class="property-label">Услуга</span>
+              <span class="property-value">{{ productProperties.serviceId || '-' }}</span>
+            </div>
             <div class="property-item">
               <span class="property-label">Размеры</span>
               <span class="property-value">{{ productProperties.dimensions || '-' }}</span>
