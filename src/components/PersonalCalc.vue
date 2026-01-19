@@ -119,6 +119,41 @@ const handleCalcInfo = () => {
   })
 }
 
+// Handle edit button click - navigate to edit page based on service_id (same logic as in PersonalOrder.vue)
+const handleEdit = () => {
+  if (!orderData.value?.service_id || !orderData.value.order_id) return
+
+  const serviceId = orderData.value.service_id
+  const orderIdValue = orderData.value.order_id
+
+  switch (serviceId) {
+    case 'cnc-lathe':
+      router.push({
+        path: '/other',
+        query: { orderId: orderIdValue.toString() },
+      })
+      break
+    case 'cnc-milling':
+      router.push({
+        path: '/milling',
+        query: { orderId: orderIdValue.toString() },
+      })
+      break
+    case 'printing':
+      router.push({
+        path: '/printing',
+        query: { orderId: orderIdValue.toString() },
+      })
+      break
+    default:
+      router.push({
+        path: '/other',
+        query: { orderId: orderIdValue.toString() },
+      })
+      break
+  }
+}
+
 // Load other services from API
 const loadOtherServices = async () => {
   if (otherServices.value.length > 0) return
@@ -283,6 +318,9 @@ watch(
             <Button width="200px" type="secondary" @click="handleCalcInfo">
               Калькуляция
             </Button>
+            <Button width="200px" type="secondary" @click="handleEdit">
+              Редактировать
+            </Button>
           </div>
 
           <!-- Top Section: Image, Filename, Cost, Quantity -->
@@ -376,7 +414,9 @@ watch(
 
 .card-header-actions {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
   margin-bottom: 12px;
 }
 
