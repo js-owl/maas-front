@@ -101,6 +101,24 @@ const handleBack = () => {
   }
 }
 
+// Handle calc info button click - navigate to calc info page with current orderId (and kitId if present)
+const handleCalcInfo = () => {
+  if (!orderId.value || orderId.value <= 0) return
+
+  const query: Record<string, string> = {}
+
+  if (kitId.value && kitId.value > 0) {
+    query.kitId = kitId.value.toString()
+  }
+
+  query.orderId = orderId.value.toString()
+
+  router.push({
+    name: 'personal-calc-info',
+    query,
+  })
+}
+
 // Load other services from API
 const loadOtherServices = async () => {
   if (otherServices.value.length > 0) return
@@ -260,6 +278,13 @@ watch(
       <!-- Left Card - Product Details and Configuration (2/3 width) -->
       <el-col :span="24">
         <el-card class="product-card" shadow="never">
+          <!-- Top Right Actions -->
+          <div class="card-header-actions">
+            <Button width="200px" type="secondary" @click="handleCalcInfo">
+              Калькуляция
+            </Button>
+          </div>
+
           <!-- Top Section: Image, Filename, Cost, Quantity -->
           <div class="product-header">
             <!-- Image Preview Placeholder -->
@@ -347,6 +372,12 @@ watch(
   display: flex;
   gap: 20px;
   margin-bottom: 24px;
+}
+
+.card-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
 }
 
 /* Image Placeholder */
