@@ -479,10 +479,10 @@ onMounted(() => {
               <div v-else class="preview-placeholder" />
             </template>
           </el-table-column>
-          <el-table-column label="Обозначение" width="200">
+          <el-table-column label="Обозначение" width="150">
             <template #default="{ row }">
               <span class="order-name-link" @click="handleOpenCalculation(row)">
-                {{ row.order_name }}
+                {{ row.order_code }}
               </span>
             </template>
           </el-table-column>

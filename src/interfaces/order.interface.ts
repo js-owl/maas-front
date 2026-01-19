@@ -17,6 +17,7 @@ export interface IKit {
 export interface IOrderBase {
   service_id: string
   order_name?: string
+  order_code?: string
   file_id: number
   quantity: number
   length: number
