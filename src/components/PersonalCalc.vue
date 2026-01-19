@@ -55,6 +55,9 @@ const otherServices = ref<OtherService[]>([])
 // Order name - represents the order name
 const order_name = ref('')
 
+// Order code - represents the order code
+const order_code = ref('')
+
 // Manufacturing cost per unit in rubles
 const manufacturingCost = ref(10526)
 
@@ -275,9 +278,12 @@ const fetchOrder = async (id: number) => {
           coverLabels.join(', ') || fetchedOrderData.cover_id.join(', ')
       }
 
-      // Update order name if order_name exists
+      // Update order name and code if they exist
       if (fetchedOrderData.order_name) {
         order_name.value = fetchedOrderData.order_name
+      }
+      if (fetchedOrderData.order_code) {
+        order_code.value = fetchedOrderData.order_code
       }
     } else {
       ElMessage.error('Не удалось загрузить данные заказа')
@@ -325,6 +331,9 @@ watch(
 
               <!-- Product Info Section -->
               <div class="product-info">
+                <!-- Order Code -->
+                <div class="filename">{{ order_code }}</div>
+
                 <!-- Order Name -->
                 <div class="filename">{{ order_name }}</div>
 
