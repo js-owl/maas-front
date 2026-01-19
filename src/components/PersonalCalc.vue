@@ -313,37 +313,39 @@ watch(
       <!-- Left Card - Product Details and Configuration (2/3 width) -->
       <el-col :span="24">
         <el-card class="product-card" shadow="never">
-          <!-- Top Right Actions -->
-          <div class="card-header-actions">
-            <Button width="200px" type="secondary" @click="handleCalcInfo">
-              Калькуляция
-            </Button>
-            <Button width="200px" type="secondary" @click="handleEdit">
-              Редактировать
-            </Button>
-          </div>
+          <!-- Top Section: Image, Filename, Cost, Quantity + Actions -->
+          <div class="product-header-row">
+            <div class="product-header">
+              <!-- Image Preview Placeholder -->
+              <div class="image-placeholder">
+                <div class="placeholder-content">
+                  <!-- Placeholder for 3D model preview -->
+                </div>
+              </div>
 
-          <!-- Top Section: Image, Filename, Cost, Quantity -->
-          <div class="product-header">
-            <!-- Image Preview Placeholder -->
-            <div class="image-placeholder">
-              <div class="placeholder-content">
-                <!-- Placeholder for 3D model preview -->
+              <!-- Product Info Section -->
+              <div class="product-info">
+                <!-- Order Name -->
+                <div class="filename">{{ order_name }}</div>
+
+                <!-- Manufacturing Cost -->
+                <div class="cost-section">
+                  <div class="cost-label">Стоимость изготовления</div>
+                  <div v-if="!hidePrice" class="cost-value">{{ formatCurrency(totalCost) }}</div>
+                  <div v-else class="cost-value">Рассчитываем цену...</div>
+                  <div class="quantity-display">{{ quantity }} шт.</div>
+                </div>
               </div>
             </div>
 
-            <!-- Product Info Section -->
-            <div class="product-info">
-              <!-- Order Name -->
-              <div class="filename">{{ order_name }}</div>
-
-              <!-- Manufacturing Cost -->
-              <div class="cost-section">
-                <div class="cost-label">Стоимость изготовления</div>
-                <div v-if="!hidePrice" class="cost-value">{{ formatCurrency(totalCost) }}</div>
-                <div v-else class="cost-value">Рассчитываем цену...</div>
-                <div class="quantity-display">{{ quantity }} шт.</div>
-              </div>
+            <!-- Top Right Actions -->
+            <div class="card-header-actions">
+              <Button width="200px" type="secondary" @click="handleCalcInfo">
+                Калькуляция
+              </Button>
+              <Button width="200px" type="secondary" @click="handleEdit">
+                Редактировать
+              </Button>
             </div>
           </div>
 
@@ -406,10 +408,17 @@ watch(
 }
 
 /* Product Header - Image and Info Section */
+.product-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
 .product-header {
   display: flex;
   gap: 20px;
-  margin-bottom: 24px;
 }
 
 .card-header-actions {
@@ -417,7 +426,6 @@ watch(
   flex-direction: column;
   align-items: flex-end;
   gap: 8px;
-  margin-bottom: 12px;
 }
 
 /* Image Placeholder */
