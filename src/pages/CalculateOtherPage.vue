@@ -36,6 +36,7 @@ const profileStore = useProfileStore()
 const route = useRoute()
 const order_id = computed(() => Number(route.query.orderId) || 0)
 let order_name = ref('')
+let order_code = ref('000.001')
 
 let file_id = ref(4)
 let document_ids = ref<number[]>([])
@@ -93,6 +94,7 @@ const location = computed(() => {
 const payload = reactive({
   service_id,
   order_name,
+  order_code,
   location,
   file_id,
   document_ids,
@@ -214,11 +216,13 @@ async function getOrder(id: number) {
     if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
     if (data.special_instructions) special_instructions.value = data.special_instructions
     if (data.order_name) order_name.value = data.order_name
+    if ((data as any).order_code) order_code.value = (data as any).order_code
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
       service_id: service_id.value,
       order_name: order_name.value,
+      order_code: order_code.value,
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
@@ -255,10 +259,12 @@ async function getOrder(id: number) {
     <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
       <div class="title-text">
         <div v-if="order_id != 0" class="title-input-wrapper">
+          <el-input v-model="order_name" placeholder="Название заказа" class="title-input" />
           <el-input
-            v-model="order_name"
-            placeholder="Название заказа"
-            class="title-input"
+            v-model="order_code"
+            placeholder="Код заказа"
+            class="title-input code-input"
+            style="margin-top: 8px"
           />
         </div>
         <div v-else>ПРОЧЕЕ</div>
