@@ -185,25 +185,37 @@ const handleEdit = (row: any): void => {
     case 'cnc-lathe':
       router.push({
         path: '/other',
-        query: { orderId: row.order_id.toString() },
+        query: {
+          kitId: kitId.value.toString(),
+          orderId: row.order_id.toString(),
+        },
       })
       break
     case 'cnc-milling':
       router.push({
         path: '/milling',
-        query: { orderId: row.order_id.toString() },
+        query: {
+          kitId: kitId.value.toString(),
+          orderId: row.order_id.toString(),
+        },
       })
       break
     case 'printing':
       router.push({
         path: '/printing',
-        query: { orderId: row.order_id.toString() },
+        query: {
+          kitId: kitId.value.toString(),
+          orderId: row.order_id.toString(),
+        },
       })
       break
     default:
       router.push({
         path: '/other',
-        query: { orderId: row.order_id.toString() },
+        query: {
+          kitId: kitId.value.toString(),
+          orderId: row.order_id.toString(),
+        },
       })
       break
   }
@@ -371,8 +383,8 @@ const handleOrderTypeChange = (value: string | number | boolean | object) => {
   router.push({
     path,
     query: {
-      orderId: '0',
       kitId: kitId.value.toString(),
+      orderId: '0',
       orderIds: existingIds.join(','),
     },
   })

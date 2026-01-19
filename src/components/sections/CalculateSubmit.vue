@@ -192,7 +192,10 @@ const submitOrder = async () => {
   
   const targetKitId = kitId.value
   if (targetKitId > 0) {
-    router.push({ path: '/personal/order', query: { orderId: targetKitId.toString() } })
+    router.push({
+      path: '/personal/order',
+      query: { kitId: targetKitId.toString() },
+    })
   } else {
     router.push({ path: '/personal/orders' })
   }
@@ -203,7 +206,15 @@ const cancel = () => {
     isLoginDialogVisible.value = true
     return
   }
-  router.push({ path: '/personal/orders' })
+  const targetKitId = kitId.value
+  if (targetKitId > 0) {
+    router.push({
+      path: '/personal/order',
+      query: { kitId: targetKitId.toString() },
+    })
+  } else {
+    router.push({ path: '/personal/orders' })
+  }
 }
 </script>
 
