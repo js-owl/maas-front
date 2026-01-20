@@ -202,17 +202,16 @@ async function getOrder(id: number) {
     <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
       <div class="title-text">
         <div v-if="order_id != 0" class="title-input-wrapper">
-          <el-input v-model="order_name" placeholder="Название заказа" class="title-input" />
           <el-input
             v-model="order_code"
             placeholder="Код заказа"
             class="title-input code-input"
             style="margin-top: 8px"
           />
+          <el-input v-model="order_name" placeholder="Название заказа" class="title-input" />
+          {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
         </div>
-        <div v-else>3D ПЕЧАТЬ</div>
-        <br v-if="order_id != 0" />
-        {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
+        <div v-else style="font-size: 38px;">3D ПЕЧАТЬ</div>
       </div>
 
       <CalculateResults :result="result" />
@@ -348,7 +347,7 @@ async function getOrder(id: number) {
 /* Текстовые стили */
 .title-text {
   color: black;
-  font-size: 38px;
+  font-size: 28px;
   font-weight: 600;
   padding-bottom: 30px;
 }
@@ -375,7 +374,7 @@ async function getOrder(id: number) {
 
 .title-input :deep(.el-input__inner) {
   padding: 0;
-  font-size: 38px;
+  font-size: 28px;
   font-weight: 600;
   color: black;
 }
@@ -473,6 +472,11 @@ async function getOrder(id: number) {
     font-size: 24px;
     text-align: center;
     padding-bottom: 16px;
+  }
+
+  .title-input :deep(.el-input__inner) {
+    font-size: 24px;
+    text-align: center;
   }
 
   /* price section styles now provided by CalculateResults */
