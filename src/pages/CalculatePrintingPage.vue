@@ -8,6 +8,7 @@ import { req_json, req_json_auth } from '../api'
 import CoefficientQuantity from '../components/coefficients/CoefficientQuantity.vue'
 
 // import MaterialMilling from "../components/materials/MaterialMilling.vue";
+import MaterialPrinting from '../components/materials/MaterialPrinting.vue'
 
 import CoefficientOtk from '../components/coefficients/CoefficientOtk.vue'
 import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
@@ -27,6 +28,7 @@ import CalculateResults from '../components/sections/CalculateResults.vue'
 import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
 // import Height from "../components/coefficients/Height.vue";
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
+import Loader from '../components/ui/Loader.vue'
 
 const profileStore = useProfileStore()
 
@@ -191,14 +193,11 @@ async function getOrder(id: number) {
 </script>
 
 <template>
-  <el-row
-    :gutter="0"
-    class="main-container"
-    v-loading="isLoading"
-    element-loading-background="rgba(0, 42, 68, 0.8)"
-    element-loading-text="Расчет цены..."
-    element-loading-custom-class="loading-top"
+  <Loader
+    :loading="isLoading"
+    text="Расчет цены..."
   >
+    <el-row :gutter="0" class="main-container">
     <!-- 1. Левая часть -->
     <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
       <div class="title-text">
@@ -300,19 +299,14 @@ async function getOrder(id: number) {
       </el-row>
     </el-col>
     <DialogInfoPayment v-model="isInfoVisible" />
-  </el-row>
+    </el-row>
+  </Loader>
 </template>
 
 <style scoped>
 :deep(.el-upload-dragger) {
   padding: 10px;
   background-color: #283d5b;
-}
-:deep(.loading-top .el-loading-spinner) {
-  top: 40px;
-  margin-top: 0;
-  transform: scale(1.5);
-  transform-origin: top center;
 }
 
 .custom {
