@@ -5,6 +5,7 @@ import { ArrowLeft } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { req_json_auth, req_json } from '../api'
 import Button from './ui/Button.vue'
+import InputEdit from './ui/InputEdit.vue'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
 import { useCoefficientsStore } from '../stores/coefficients.store'
@@ -33,6 +34,7 @@ const kitId = computed(() => {
 
 // Loading state
 const isLoading = ref(false)
+const isSaving = ref(false)
 
 // Material store
 const materialStore = useMaterialStore()
@@ -296,6 +298,37 @@ const fetchOrder = async (id: number) => {
   }
 }
 
+// Save order - update order with current data
+const saveOrder = async () => {
+  if (!orderData.value || !orderId.value || orderId.value <= 0) {
+    ElMessage.warning('Нет данных для сохранения')
+    return
+  }
+
+  isSaving.value = true
+  try {
+    // Prepare updated order data with current order_code
+    const updatedData = {
+      ...orderData.value,
+      order_code: order_code.value,
+    }
+
+    const response = await req_json_auth(`/orders/${orderId.value}`, 'PUT', updatedData)
+    if (response?.ok) {
+      const updatedOrder = (await response.json()) as IOrderResponse
+      orderData.value = updatedOrder
+      ElMessage.success('Заказ сохранен')
+    } else {
+      ElMessage.error('Не удалось сохранить заказ')
+    }
+  } catch (error) {
+    console.error('Error saving order:', error)
+    ElMessage.error('Ошибка при сохранении заказа')
+  } finally {
+    isSaving.value = false
+  }
+}
+
 // Watch for orderId changes and fetch order data
 watch(
   orderId,
@@ -332,7 +365,7 @@ watch(
               <!-- Product Info Section -->
               <div class="product-info">
                 <!-- Order Code -->
-                <div class="filename">{{ order_code }}</div>
+                <InputEdit v-model="order_code" />
 
                 <!-- Order Name -->
                 <div class="filename">{{ order_name }}</div>
@@ -381,10 +414,13 @@ watch(
               <span class="property-value">{{ productProperties.coating || '-' }}</span>
             </div>
           </div>
-          <div style="padding-top: 20px;">
+          <div style="padding-top: 20px; display: flex; justify-content: space-between; align-items: center;">
             <Button width="200px" @click="handleBack">
               <el-icon><ArrowLeft /></el-icon>
               Назад
+            </Button>
+            <Button width="200px" :loading="isSaving" @click="saveOrder">
+              Сохранить
             </Button>
           </div>
         </el-card>
