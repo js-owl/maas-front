@@ -257,17 +257,16 @@ async function getOrder(id: number) {
     <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
       <div class="title-text">
         <div v-if="order_id != 0" class="title-input-wrapper">
-          <el-input v-model="order_name" placeholder="Название заказа" class="title-input" />
           <el-input
             v-model="order_code"
             placeholder="Код заказа"
             class="title-input code-input"
             style="margin-top: 8px"
           />
+          <el-input v-model="order_name" placeholder="Название заказа" class="title-input" />
+          {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
         </div>
-        <div v-else>ПРОЧЕЕ</div>
-        <br v-if="order_id != 0" />
-        {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
+        <div v-else style="font-size: 38px;">ПРОЧЕЕ</div>
       </div>
 
       <CalculateResults :result="result" />
