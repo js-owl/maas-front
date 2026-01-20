@@ -307,10 +307,11 @@ const saveOrder = async () => {
 
   isSaving.value = true
   try {
-    // Prepare updated order data with current order_code
+    // Prepare updated order data with current order_code and order_name
     const updatedData = {
       ...orderData.value,
       order_code: order_code.value,
+      order_name: order_name.value,
     }
 
     const response = await req_json_auth(`/orders/${orderId.value}`, 'PUT', updatedData)
@@ -368,7 +369,7 @@ watch(
                 <InputEdit v-model="order_code" />
 
                 <!-- Order Name -->
-                <div class="filename">{{ order_name }}</div>
+                <InputEdit v-model="order_name" />
 
                 <!-- Manufacturing Cost -->
                 <div class="cost-section">
