@@ -9,6 +9,7 @@ import CadPreview from './cad/CadPreview.vue'
 import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
 import Button from './ui/Button.vue'
 import Select from './ui/Select.vue'
+import InputEdit from './ui/InputEdit.vue'
 const route = useRoute()
 const router = useRouter()
 
@@ -18,8 +19,6 @@ const hasError = ref(false)
 
 const quantity = ref<number>(0)
 const filename = ref<string>('')
-const isEditingFilename = ref(false)
-const editedFilename = ref('')
 
 const deleteLoading = ref<number | null>(null)
 const quantityUpdating = ref<number | null>(null)
@@ -98,37 +97,14 @@ const completionDate = computed(() => formatDate(order.value?.updated_at))
 //   return null
 // }
 
-const startEditFilename = () => {
-  isEditingFilename.value = true
-  editedFilename.value = filename.value
-}
-
-const saveFilename = () => {
-  if (!order.value) {
-    isEditingFilename.value = false
-    return
-  }
-
-  const newName = editedFilename.value.trim()
-
-  if (!newName) {
-    editedFilename.value = filename.value
-    isEditingFilename.value = false
-    return
-  }
+const handleFilenameUpdate = (newName: string) => {
+  if (!order.value) return
 
   filename.value = newName
   order.value = {
     ...order.value,
     kit_name: newName,
   }
-
-  isEditingFilename.value = false
-}
-
-const cancelEditFilename = () => {
-  editedFilename.value = filename.value
-  isEditingFilename.value = false
 }
 
 const loadCalcs = async () => {
@@ -424,28 +400,7 @@ onMounted(() => {
           <div class="order-title">
             <div class="order-name">Заказ №{{ kitId }}</div>
             <div class="order-name-wrapper">
-              <div v-if="!isEditingFilename" class="order-name">
-                {{ filename || 'Загрузка...' }}
-                <el-button
-                  text
-                  type="primary"
-                  :icon="Edit"
-                  class="edit-name-btn"
-                  @click="startEditFilename"
-                />
-              </div>
-              <div v-else class="order-name-edit">
-                <el-input
-                  v-model="editedFilename"
-                  class="filename-input"
-                  @keyup.enter="saveFilename"
-                  @keyup.esc="cancelEditFilename"
-                />
-                <el-button text type="primary" size="small" @click="saveFilename"> ✓ </el-button>
-                <el-button text type="danger" size="small" @click="cancelEditFilename">
-                  ✕
-                </el-button>
-              </div>
+              <InputEdit v-model="filename" @update:model-value="handleFilenameUpdate" />
             </div>
             <div class="order-subtitle">Стоимость изготовления</div>
             <div class="order-price">
@@ -647,29 +602,6 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.order-name {
-  font-size: 20px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.edit-name-btn {
-  padding: 4px;
-  min-height: auto;
-}
-
-.order-name-edit {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.filename-input {
-  flex: 1;
 }
 
 .order-subtitle {
