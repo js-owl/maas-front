@@ -411,7 +411,7 @@ async function getOrder(id: number) {
 /* Текстовые стили */
 .title-text {
   color: black;
-  font-size: 38px;
+  font-size: 28px;
   font-weight: 600;
   padding-bottom: 30px;
 }
@@ -438,7 +438,7 @@ async function getOrder(id: number) {
 
 .title-input :deep(.el-input__inner) {
   padding: 0;
-  font-size: 38px;
+  font-size: 28px;
   font-weight: 600;
   color: black;
 }
