@@ -2,7 +2,7 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Edit, Delete, Notebook, Plus, Minus } from '@element-plus/icons-vue'
+import { /* Edit, */ Delete /*, Notebook, Plus, Minus */ } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import CadPreview from './cad/CadPreview.vue'
@@ -21,7 +21,7 @@ const quantity = ref<number>(0)
 const filename = ref<string>('')
 
 const deleteLoading = ref<number | null>(null)
-const quantityUpdating = ref<number | null>(null)
+// const quantityUpdating = ref<number | null>(null)
 
 const calcRows = ref<IOrderResponse[]>([])
 
@@ -155,47 +155,47 @@ const loadOrder = async () => {
   }
 }
 
-const handleEdit = (row: any): void => {
-  console.log({ row })
-  switch (row.service_id) {
-    case 'cnc-lathe':
-      router.push({
-        path: '/other',
-        query: {
-          kitId: kitId.value.toString(),
-          orderId: row.order_id.toString(),
-        },
-      })
-      break
-    case 'cnc-milling':
-      router.push({
-        path: '/milling',
-        query: {
-          kitId: kitId.value.toString(),
-          orderId: row.order_id.toString(),
-        },
-      })
-      break
-    case 'printing':
-      router.push({
-        path: '/printing',
-        query: {
-          kitId: kitId.value.toString(),
-          orderId: row.order_id.toString(),
-        },
-      })
-      break
-    default:
-      router.push({
-        path: '/other',
-        query: {
-          kitId: kitId.value.toString(),
-          orderId: row.order_id.toString(),
-        },
-      })
-      break
-  }
-}
+// const handleEdit = (row: any): void => {
+//   console.log({ row })
+//   switch (row.service_id) {
+//     case 'cnc-lathe':
+//       router.push({
+//         path: '/other',
+//         query: {
+//           kitId: kitId.value.toString(),
+//           orderId: row.order_id.toString(),
+//         },
+//       })
+//       break
+//     case 'cnc-milling':
+//       router.push({
+//         path: '/milling',
+//         query: {
+//           kitId: kitId.value.toString(),
+//           orderId: row.order_id.toString(),
+//         },
+//       })
+//       break
+//     case 'printing':
+//       router.push({
+//         path: '/printing',
+//         query: {
+//           kitId: kitId.value.toString(),
+//           orderId: row.order_id.toString(),
+//         },
+//       })
+//       break
+//     default:
+//       router.push({
+//         path: '/other',
+//         query: {
+//           kitId: kitId.value.toString(),
+//           orderId: row.order_id.toString(),
+//         },
+//       })
+//       break
+//   }
+// }
 
 const updateKit = async (): Promise<Response | undefined> => {
   if (!order.value) return undefined
@@ -214,75 +214,75 @@ const handleOpenCalculation = (row: any): void => {
   })
 }
 
-const handleOpenCalcInfo = (row: any): void => {
-  if (!row?.order_id) return
-  router.push({
-    name: 'personal-calc-info',
-    query: { kitId: kitId.value.toString(), orderId: row.order_id.toString() },
-  })
-}
+// const handleOpenCalcInfo = (row: any): void => {
+//   if (!row?.order_id) return
+//   router.push({
+//     name: 'personal-calc-info',
+//     query: { kitId: kitId.value.toString(), orderId: row.order_id.toString() },
+//   })
+// }
 
 
-const updateOrderQuantity = async (row: IOrderResponse, newQuantity: number): Promise<void> => {
-  if (newQuantity < 1) {
-    ElMessage.warning('Количество не может быть меньше 1')
-    return
-  }
+// const updateOrderQuantity = async (row: IOrderResponse, newQuantity: number): Promise<void> => {
+//   if (newQuantity < 1) {
+//     ElMessage.warning('Количество не может быть меньше 1')
+//     return
+//   }
 
-  quantityUpdating.value = row.order_id
-  try {
-    // Получаем текущие данные заказа
-    const res = await req_json_auth(`/orders/${row.order_id}`, 'GET')
-    if (!res?.ok) {
-      throw new Error('Failed to load order data')
-    }
-    const orderData = (await res.json()) as IOrderResponse
+//   quantityUpdating.value = row.order_id
+//   try {
+//     // Получаем текущие данные заказа
+//     const res = await req_json_auth(`/orders/${row.order_id}`, 'GET')
+//     if (!res?.ok) {
+//       throw new Error('Failed to load order data')
+//     }
+//     const orderData = (await res.json()) as IOrderResponse
 
-    // Обновляем количество
-    const updatedData = {
-      ...orderData,
-      quantity: newQuantity,
-    }
+//     // Обновляем количество
+//     const updatedData = {
+//       ...orderData,
+//       quantity: newQuantity,
+//     }
 
-    // Отправляем PUT запрос с обновленными данными
-    const updateRes = await req_json_auth(`/orders/${row.order_id}`, 'PUT', updatedData)
-    if (!updateRes?.ok) {
-      throw new Error('Failed to update order quantity')
-    }
+//     // Отправляем PUT запрос с обновленными данными
+//     const updateRes = await req_json_auth(`/orders/${row.order_id}`, 'PUT', updatedData)
+//     if (!updateRes?.ok) {
+//       throw new Error('Failed to update order quantity')
+//     }
 
-    // Обновляем локальные данные
-    const updatedOrder = (await updateRes.json()) as IOrderResponse
-    const index = calcRows.value.findIndex((item) => item.order_id === row.order_id)
-    if (index !== -1) {
-      calcRows.value[index] = updatedOrder
-    }
+//     // Обновляем локальные данные
+//     const updatedOrder = (await updateRes.json()) as IOrderResponse
+//     const index = calcRows.value.findIndex((item) => item.order_id === row.order_id)
+//     if (index !== -1) {
+//       calcRows.value[index] = updatedOrder
+//     }
 
-    // Перезагружаем заказ для обновления общей стоимости
-    await loadOrder()
-    ElMessage.success('Количество обновлено')
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error updating quantity:', error)
-    ElMessage.error('Ошибка при обновлении количества')
-  } finally {
-    quantityUpdating.value = null
-  }
-}
+//     // Перезагружаем заказ для обновления общей стоимости
+//     await loadOrder()
+//     ElMessage.success('Количество обновлено')
+//   } catch (error) {
+//     // eslint-disable-next-line no-console
+//     console.error('Error updating quantity:', error)
+//     ElMessage.error('Ошибка при обновлении количества')
+//   } finally {
+//     quantityUpdating.value = null
+//   }
+// }
 
-const incrementQuantity = async (row: IOrderResponse): Promise<void> => {
-  const newQuantity = (row.quantity || 1) + 1
-  await updateOrderQuantity(row, newQuantity)
-}
+// const incrementQuantity = async (row: IOrderResponse): Promise<void> => {
+//   const newQuantity = (row.quantity || 1) + 1
+//   await updateOrderQuantity(row, newQuantity)
+// }
 
-const decrementQuantity = async (row: IOrderResponse): Promise<void> => {
-  const currentQuantity = row.quantity || 1
-  if (currentQuantity <= 1) {
-    ElMessage.warning('Количество не может быть меньше 1')
-    return
-  }
-  const newQuantity = currentQuantity - 1
-  await updateOrderQuantity(row, newQuantity)
-}
+// const decrementQuantity = async (row: IOrderResponse): Promise<void> => {
+//   const currentQuantity = row.quantity || 1
+//   if (currentQuantity <= 1) {
+//     ElMessage.warning('Количество не может быть меньше 1')
+//     return
+//   }
+//   const newQuantity = currentQuantity - 1
+//   await updateOrderQuantity(row, newQuantity)
+// }
 
 const handleDelete = async (row: any): Promise<void> => {
   try {
@@ -434,38 +434,38 @@ onMounted(() => {
               <div v-else class="preview-placeholder" />
             </template>
           </el-table-column>
-          <el-table-column label="Обозначение" width="150">
+          <el-table-column label="Обозначение">
             <template #default="{ row }">
               <span class="order-name-link" @click="handleOpenCalculation(row)">
                 {{ row.order_code }}
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="Наименование">
+          <el-table-column label="Наименование"  width="200">
             <template #default="{ row }">
               {{ row.order_name }}
             </template>
           </el-table-column>
-          <el-table-column label="Кол-во" width="140" align="center">
+          <el-table-column label="Кол-во" width="100" align="center">
             <template #default="{ row }">
               <div class="quantity-controls-cell">
-                <el-button
+                <!-- <el-button
                   :icon="Minus"
                   size="small"
                   circle
                   :disabled="quantityUpdating === row.order_id || (row.quantity || 1) <= 1"
                   :loading="quantityUpdating === row.order_id"
                   @click="decrementQuantity(row)"
-                />
+                /> -->
                 <span class="quantity-value">{{ row.quantity || 1 }}</span>
-                <el-button
+                <!-- <el-button
                   :icon="Plus"
                   size="small"
                   circle
                   :disabled="quantityUpdating === row.order_id"
                   :loading="quantityUpdating === row.order_id"
                   @click="incrementQuantity(row)"
-                />
+                /> -->
               </div>
             </template>
           </el-table-column>
@@ -475,29 +475,28 @@ onMounted(() => {
             </template>
           </el-table-column>
 
-          <el-table-column label="" width="100" align="center">
+          <el-table-column label="" width="60" align="center">
             <template #default="row">
               <div class="action-buttons">
-                <el-button
+                <!-- <el-button
                   link
                   type="primary"
                   size="small"
                   @click="handleOpenCalcInfo(row.row)"
                   :icon="Notebook"
                   title="Калькуляция"
-                />
-                <el-button
+                /> -->
+                <!-- <el-button
                   link
                   type="primary"
                   size="small"
                   @click="handleEdit(row.row)"
                   :icon="Edit"
                   title="Редактировать"
-                />
+                /> -->
                 <el-button
                   link
                   type="primary"
-                  size="small"
                   @click="handleDelete(row.row)"
                   :loading="deleteLoading === row.row.order_id"
                   :icon="Delete"
