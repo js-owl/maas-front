@@ -6,9 +6,11 @@ const props = withDefaults(
   defineProps<{
     modelValue: string
     placeholder?: string
+    fontSize?: string
   }>(),
   {
     placeholder: '',
+    fontSize: '20px',
   }
 )
 
@@ -54,7 +56,7 @@ watch(
 
 <template>
   <div v-if="!isEditing" class="input-edit-view">
-    <span class="input-edit-value">{{ modelValue || placeholder || 'Загрузка...' }}</span>
+    <span class="input-edit-value" :style="{ fontSize: props.fontSize }">{{ modelValue || placeholder || 'Загрузка...' }}</span>
     <el-button
       text
       type="primary"
@@ -83,7 +85,6 @@ watch(
 }
 
 .input-edit-value {
-  font-size: 20px;
   font-weight: 500;
 }
 

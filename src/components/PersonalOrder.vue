@@ -415,7 +415,7 @@ onMounted(() => {
           <div class="order-title">
             <div style="font-size: 16px; font-weight: 500;">Заказ №{{ kitId }}</div>
             <div class="order-name-wrapper">
-              <InputEdit v-model="filename" @update:model-value="handleFilenameUpdate" />
+              <InputEdit v-model="filename" :font-size="'24px'" @update:model-value="handleFilenameUpdate" />
             </div>
           </div>
           <div class="order-quantity">
