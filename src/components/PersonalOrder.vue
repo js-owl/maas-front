@@ -416,7 +416,7 @@ onMounted(() => {
 
         <el-table
           :data="calcRows"
-          class="details-table"
+          style="margin-top: 10px; width: 100%; font-size: 16px; font-weight: 600;"  
           :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
           v-loading="isLoading"
           empty-text="Нет данных по деталям"

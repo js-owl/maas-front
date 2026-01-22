@@ -193,7 +193,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
       <el-table
         :data="filteredOrders"
         :default-sort="{ prop: 'kit_id', order: 'descending' }"
-        style="width: 100%"
+        style="width: 100%; font-size: 16px; font-weight: 600;"  
         :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
         empty-text="Нет данных"
       >
@@ -219,14 +219,14 @@ const handleDelete = async (row: IKit): Promise<void> => {
         <el-table-column prop="quantity" label="Кол-во" width="100" align="center" />
 
         <!-- Дата создания / завершения -->
-        <el-table-column label="Дата созд." width="130">
+        <el-table-column label="Дата созд." width="140">
           <template #default="{ row }">
-            {{ formatDate(row.created_at) }}
+              {{ formatDate(row.created_at) }}
           </template>
         </el-table-column>
-        <el-table-column label="Дата завер." width="130">
+        <el-table-column label="Дата завер." width="140">
           <template #default="{ row }">
-            {{ formatDate(row.updated_at) }}
+              {{ formatDate(row.updated_at) }}
           </template>
         </el-table-column>
 
@@ -249,7 +249,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
               <el-button
                 link
                 type="primary"
-                size="small"
+
                 @click="handleDelete(row)"
                 :loading="deleteLoading === row.kit_id"
                 :icon="Delete"
