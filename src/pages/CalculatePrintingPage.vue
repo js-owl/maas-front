@@ -35,7 +35,7 @@ const profileStore = useProfileStore()
 const route = useRoute()
 const order_id = computed(() => Number(route.query.orderId) || 0)
 let order_name = ref('')
-let order_code = ref('000.001')
+let order_code = ref('3000.000.001')
 
 let file_id = ref(1)
 let document_ids = ref<number[]>([])

@@ -82,6 +82,21 @@ const formatDate = (dateString?: string | null): string => {
 const createdDate = computed(() => formatDate(order.value?.created_at))
 const completionDate = computed(() => formatDate(order.value?.updated_at))
 
+const statusTexts: Record<string, string> = {
+  pending: 'Ожидает оплаты',
+  processing: 'Обработка',
+  'in-progress': 'В работе',
+  completed: 'Завершен',
+  'C3:WIN': 'Завершен',
+  'C3:LOSE': 'Отменен',
+  cancelled: 'Отменен',
+}
+
+const orderStatus = computed(() => {
+  if (!order.value?.status) return 'Ожидает оплаты'
+  return statusTexts[order.value.status] || order.value.status
+})
+
 // const fetchFilename = async (fileId: number): Promise<string | null> => {
 //   if (!fileId) return null
 //   try {
@@ -398,14 +413,9 @@ onMounted(() => {
         <!-- <el-card shadow="never" class="order-card"> -->
         <div class="order-header">
           <div class="order-title">
-            <div class="order-name">Заказ №{{ kitId }}</div>
+            <div style="font-size: 16px; font-weight: 500;">Заказ №{{ kitId }}</div>
             <div class="order-name-wrapper">
               <InputEdit v-model="filename" @update:model-value="handleFilenameUpdate" />
-            </div>
-            <div class="order-subtitle">Стоимость изготовления</div>
-            <div class="order-price">
-              {{ manufacturingCost }}
-              <span class="order-price-currency">руб.</span>
             </div>
           </div>
           <div class="order-quantity">
@@ -528,9 +538,15 @@ onMounted(() => {
         <!-- </el-card> -->
       </el-col>
 
+      <!-- Правая карточка -->
       <el-col :span="7">
-        <el-card shadow="never" class="summary-card">
-          <div class="dates-block">
+        <div shadow="never" class="summary-card">
+          <!-- Статус и даты -->
+          <div class="status-section">
+            <div class="status-row">
+              <span class="status-label">Статус</span>
+              <span class="status-badge">{{ orderStatus }}</span>
+            </div>
             <div class="date-row">
               <span class="date-label">Дата создания</span>
               <span class="date-value">{{ createdDate }}</span>
@@ -541,25 +557,35 @@ onMounted(() => {
             </div>
           </div>
 
-          <div class="summary-item">
-            <div style="font-size: 16px; font-weight: 500">Доставка</div>
-            <div style="font-size: 24px; font-weight: 600">
+          <!-- Стоимость изготовления -->
+          <div class="cost-item">
+            <div class="cost-label">Стоимость изготовления</div>
+            <div class="cost-value">
+              {{ manufacturingCost }} <span class="rub">руб.</span>
+            </div>
+          </div>
+
+          <!-- Доставка -->
+          <div class="cost-item">
+            <div class="cost-label">Доставка</div>
+            <div class="cost-value">
               {{ deliveryCost }} <span class="rub">руб.</span>
             </div>
           </div>
 
-          <div class="summary-item total">
-            <div style="font-size: 16px; font-weight: 500">Стоимость с учетом доставки</div>
-            <div style="font-size: 36px; font-weight: 700">
+          <!-- Итого -->
+          <div class="cost-item total">
+            <div class="cost-label">Стоимость с учетом доставки</div>
+            <div class="cost-value total-value">
               {{ totalWithDelivery }} <span class="rub">руб.</span>
             </div>
           </div>
 
+          <!-- Кнопка оплаты -->
           <div class="summary-actions">
-            <Button @click="cancel"> Оплатить заказ </Button>
-            <!-- <el-button type="primary" class="pay-button"> Оплатить заказ </el-button> -->
+            <Button @click="cancel" class="pay-order-button">Оплатить заказ</Button>
           </div>
-        </el-card>
+        </div>
       </el-col>
     </el-row>
   </section>
@@ -702,59 +728,90 @@ onMounted(() => {
   border: none;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0;
+  padding: 20px;
 }
 
-.summary-item {
-  display: block;
-  /* justify-content: space-between;
-  align-items: baseline; */
-}
-
-.summary-label {
-  font-size: 16px;
-  font-weight: 500;
-  color: #606266;
-}
-
-.summary-value {
-  font-size: 36px;
-  font-weight: 700;
-}
-
-.summary-item.total {
-  margin-top: 16px;
-  margin-bottom: 80px;
-}
-
-.summary-total {
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.rub {
-  margin-left: 4px;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.dates-block {
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px dashed #d4d7de;
+.status-section {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-label {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #ffd89b;
+  color: #000;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .date-row {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  color: #606266;
+  font-size: 16px;
+  color: #909399;
+}
+
+.date-label {
+  color: #909399;
 }
 
 .date-value {
+  font-weight: 500;
+  color: #606266;
+}
+
+.cost-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.cost-item.total {
+  margin-bottom: 32px;
+}
+
+.cost-label {
+  text-align: right;
+  font-size: 16px;
+  font-weight: 500;
+  color: #909399;
+}
+
+.cost-value {
+  text-align: right;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+}
+
+.cost-value.total-value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.rub {
+  margin-left: 4px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -762,6 +819,35 @@ onMounted(() => {
   margin-top: auto;
   display: flex;
   justify-content: center;
+  width: 100%;
+}
+
+.pay-order-button :deep(.btn) {
+  width: 100% !important;
+  background: #e9ecef !important;
+  background-size: 100% 100% !important;
+  border: none !important;
+  color: #606266 !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  padding: 12px 24px !important;
+}
+
+.pay-order-button :deep(.btn:hover) {
+  background: #dee2e6 !important;
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+.pay-order-button :deep(.btn:active) {
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+}
+
+.pay-order-button :deep(.btn::before) {
+  display: none !important;
 }
 
 .action-buttons {
