@@ -5,6 +5,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { req_json_auth } from '../api'
 import { useProfileStore } from '../stores/profile.store'
 import { hidePrice } from '../helpers/hide-price'
+import { statusTexts } from '../helpers/status-text'
 import { Search, Delete } from '@element-plus/icons-vue'
 import type { IKit } from '../interfaces/order.interface'
 
@@ -84,16 +85,6 @@ const formatPrice = (row: any, _column: any, cellValue: number | string) => {
   const value = Number(cellValue)
   if (Number.isNaN(value)) return String(cellValue)
   return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(Math.trunc(value))
-}
-
-const statusTexts: Record<string, string> = {
-  pending: 'Ожидает оплаты',
-  processing: 'Обработка',
-  'in-progress': 'В работе',
-  completed: 'Завершен',
-  'C3:WIN': 'Завершен',
-  'C3:LOSE': 'Отменен',
-  cancelled: 'Отменен',
 }
 
 const statusColors: Record<string, string> = {

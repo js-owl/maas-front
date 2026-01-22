@@ -5,6 +5,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { /* Edit, */ Delete /*, Notebook, Plus, Minus */ } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
+import { statusTexts } from '../helpers/status-text'
 import CadPreview from './cad/CadPreview.vue'
 import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
 import Button from './ui/Button.vue'
@@ -81,16 +82,6 @@ const formatDate = (dateString?: string | null): string => {
 
 const createdDate = computed(() => formatDate(order.value?.created_at))
 const completionDate = computed(() => formatDate(order.value?.updated_at))
-
-const statusTexts: Record<string, string> = {
-  pending: 'Ожидает оплаты',
-  processing: 'Обработка',
-  'in-progress': 'В работе',
-  completed: 'Завершен',
-  'C3:WIN': 'Завершен',
-  'C3:LOSE': 'Отменен',
-  cancelled: 'Отменен',
-}
 
 const orderStatus = computed(() => {
   if (!order.value?.status) return 'Ожидает оплаты'
