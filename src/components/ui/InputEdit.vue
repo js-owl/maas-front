@@ -10,7 +10,7 @@ const props = withDefaults(
   }>(),
   {
     placeholder: '',
-    fontSize: '20px',
+    fontSize: '24px',
   }
 )
 

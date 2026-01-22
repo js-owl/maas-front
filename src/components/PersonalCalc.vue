@@ -6,11 +6,10 @@ import { ElMessage } from 'element-plus'
 import { req_json_auth, req_json } from '../api'
 import Button from './ui/Button.vue'
 import InputEdit from './ui/InputEdit.vue'
+import CadPreview from './cad/CadPreview.vue'
 import type { IOrderResponse } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
 import { useCoefficientsStore } from '../stores/coefficients.store'
-import { useProfileStore } from '../stores/profile.store'
-import { hidePrice as hidePriceFn } from '../helpers/hide-price'
 
 type OtherService = {
   id: string
@@ -42,12 +41,6 @@ const materialStore = useMaterialStore()
 // Coefficients store
 const coefficientsStore = useCoefficientsStore()
 
-// Profile store
-const profileStore = useProfileStore()
-const username = computed(() => profileStore.profile?.username ?? null)
-const status = computed(() => orderData.value?.status ?? null)
-const hidePrice = computed(() => hidePriceFn(username.value, status.value))
-
 // Order data storage
 const orderData = ref<IOrderResponse | null>(null)
 
@@ -69,9 +62,6 @@ const quantity = ref(8)
 // Manufacturing time in days
 const manufacturingTime = ref(3)
 
-// Delivery cost in rubles
-const deliveryCost = ref(0)
-
 // Product properties - stores various attributes of the product
 const productProperties = ref({
   serviceId: '', // ID услуги (Service ID)
@@ -81,15 +71,22 @@ const productProperties = ref({
   coating: '', // Покрытие (Coating)
 })
 
-// Calculate total cost including manufacturing and delivery
-const totalCost = computed(() => {
-  return manufacturingCost.value * quantity.value + deliveryCost.value
+
+// Format price without decimal (for total cost)
+const formatPrice = (value: number): string => {
+  return Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' руб.'
+}
+
+// Cost per item
+const costPerItem = computed(() => {
+  return manufacturingCost.value
 })
 
-// Format number with spaces as thousand separators (Russian format)
-const formatCurrency = (value: number): string => {
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' руб'
-}
+// Total cost
+const totalCostFormatted = computed(() => {
+  return manufacturingCost.value * quantity.value
+})
+
 
 
 // Handle back button click - navigate to order page with current kitId
@@ -307,11 +304,12 @@ const saveOrder = async () => {
 
   isSaving.value = true
   try {
-    // Prepare updated order data with current order_code and order_name
+    // Prepare updated order data with current order_code, order_name, and quantity
     const updatedData = {
       ...orderData.value,
       order_code: order_code.value,
       order_name: order_name.value,
+      quantity: quantity.value,
     }
 
     const response = await req_json_auth(`/orders/${orderId.value}`, 'PUT', updatedData)
@@ -349,35 +347,21 @@ watch(
     v-loading="isLoading"
     element-loading-text="Загрузка данных заказа..."
   >
+  <section class="personal-order">
     <el-row :gutter="20">
-      <!-- Left Card - Product Details and Configuration (2/3 width) -->
-      <el-col :span="24">
+      <el-col :span="17">
         <el-card class="product-card" shadow="never">
           <!-- Top Section: Image, Filename, Cost, Quantity + Actions -->
           <div class="product-header-row">
             <div class="product-header">
-              <!-- Image Preview Placeholder -->
-              <div class="image-placeholder">
-                <div class="placeholder-content">
-                  <!-- Placeholder for 3D model preview -->
-                </div>
-              </div>
 
               <!-- Product Info Section -->
               <div class="product-info">
                 <!-- Order Code -->
-                <InputEdit v-model="order_code" />
+                <InputEdit v-model="order_code"/>
 
                 <!-- Order Name -->
                 <InputEdit v-model="order_name" />
-
-                <!-- Manufacturing Cost -->
-                <div class="cost-section">
-                  <div class="cost-label">Стоимость изготовления</div>
-                  <div v-if="!hidePrice" class="cost-value">{{ formatCurrency(totalCost) }}</div>
-                  <div v-else class="cost-value">Рассчитываем цену...</div>
-                  <div class="quantity-display">{{ quantity }} шт.</div>
-                </div>
               </div>
             </div>
 
@@ -427,11 +411,54 @@ watch(
         </el-card>
       </el-col>
 
+      <!-- Правая карточка -->
+      <el-col :span="7">
+        <div class="summary-card">
+          <!-- Image Container -->
+          <div class="image-container">
+            <div class="image-wrapper">
+              <div v-if="orderData?.file_id" class="preview-wrapper">
+                <CadPreview :file-id="orderData.file_id" />
+              </div>
+              <div v-else class="preview-placeholder">
+                <div class="placeholder-content"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quantity Display -->
+          <div class="cost-value" style="padding-top:20px">
+            {{ quantity }} шт.
+          </div>
+
+          
+          <div class="cost-item">
+            <div class="cost-label">Стоимость 1 изд.</div>
+            <div class="cost-value">
+              {{ formatPrice(costPerItem) }}
+            </div>
+          </div>
+
+          <div class="cost-item">
+            <div class="cost-label">Общая стоимость</div>
+            <div class="cost-value">
+              {{ formatPrice(totalCostFormatted) }}
+            </div>
+          </div>
+        </div>
+      </el-col>
     </el-row>
+  </section>
   </div>
 </template>
 
 <style scoped>
+.personal-order {
+  min-height: 100vh;
+  background-color: white;
+  padding: 20px 10px;
+  border-radius: 20px;
+}
 .personal-calc-container {
   padding: 0;
   min-height: 500px;
@@ -515,6 +542,7 @@ watch(
 }
 
 .cost-label {
+  padding-top: 10px;
   font-size: 14px;
   color: #606266;
 }
@@ -564,6 +592,114 @@ watch(
   min-width: 100px;
 }
 
+/* Right Summary Card */
+.summary-card {
+  background-color: #e9ecef;
+  border-radius: 16px;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 20px;
+}
+
+/* Image Container */
+.image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-wrapper :deep(.cad-preview-container) {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-wrapper :deep(.stl-preview) {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 180px;
+  max-width: 100%;
+  max-height: 100%;
+  border: none !important;
+  border-radius: 8px;
+}
+
+.preview-wrapper :deep(.preview-image) {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.preview-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  background-color: #f5f7fa;
+  border-radius: 8px;
+}
+
+.placeholder-content {
+  width: 100%;
+  height: 100%;
+  background-color: #e4e7ed;
+  border-radius: 8px;
+}
+
+
+/* Quantity Display */
+.quantity-display-large {
+  text-align: right;
+  font-size: 24px;
+  font-weight: 700;
+  color: #303133;
+  margin: 8px 0;
+}
+
+.cost-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.cost-label {
+  text-align: right;
+  font-size: 16px;
+  font-weight: 500;
+  color: #909399;
+}
+
+.cost-value {
+  text-align: right;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .personal-calc-container {
@@ -577,6 +713,10 @@ watch(
   .image-placeholder {
     width: 100%;
     height: 200px;
+  }
+
+  .summary-card {
+    margin-top: 20px;
   }
 }
 </style>
