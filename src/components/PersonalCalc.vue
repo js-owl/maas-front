@@ -357,6 +357,9 @@ watch(
 
               <!-- Product Info Section -->
               <div class="product-info">
+                <!-- Order Number -->
+                <div style="font-size: 16px; font-weight: 500;">Заказ №{{ kitId }}</div>
+
                 <!-- Order Code -->
                 <InputEdit v-model="order_code"/>
 
@@ -369,9 +372,6 @@ watch(
             <div class="card-header-actions">
               <Button width="200px" type="secondary" @click="handleCalcInfo">
                 Калькуляция
-              </Button>
-              <Button width="200px" type="secondary" @click="handleEdit">
-                Редактировать
               </Button>
             </div>
           </div>
@@ -404,9 +404,14 @@ watch(
               <el-icon><ArrowLeft /></el-icon>
               Назад
             </Button>
-            <Button width="200px" :loading="isSaving" @click="saveOrder">
-              Сохранить
-            </Button>
+            <div style="display: flex; gap: 8px;">
+              <Button width="200px" type="secondary" @click="handleEdit">
+                Расчет
+              </Button>
+              <Button width="200px" :loading="isSaving" @click="saveOrder">
+                Сохранить
+              </Button>
+            </div>
           </div>
         </el-card>
       </el-col>
@@ -580,13 +585,15 @@ watch(
 }
 
 .property-label {
-  font-size: 14px;
+  font-size: 24px;
+  font-weight: 600;
   color: #606266;
   flex: 1;
 }
 
 .property-value {
-  font-size: 14px;
+  font-size: 24px;
+  font-weight: 400;
   color: #909399;
   text-align: right;
   min-width: 100px;
