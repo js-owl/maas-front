@@ -123,7 +123,7 @@ const submitOrder = async () => {
     try {
       const postPayload: IOrderPostPayload = {
         ...props.payload,
-        order_name: originalFilename || props.payload.order_name || '',
+        order_name: originalFilename || props.payload.order_name || 'Деталь',
         special_instructions: props.specialInstructions,
         document_ids: props.payload.document_ids,
       }

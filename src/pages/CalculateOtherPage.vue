@@ -39,7 +39,7 @@ const order_id = computed(() => Number(route.query.orderId) || 0)
 let order_name = ref('')
 let order_code = ref('3000.000.001')
 
-let file_id = ref(4)
+let file_id = ref<number | undefined>(undefined)
 let document_ids = ref<number[]>([])
 
 let length = ref(120)
