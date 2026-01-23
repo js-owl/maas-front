@@ -207,15 +207,15 @@ const handleDelete = async (row: IKit): Promise<void> => {
           </template>
         </el-table-column>
 
-        <el-table-column prop="quantity" label="Кол-во" width="100" align="center" />
+        <!-- <el-table-column prop="quantity" label="Кол-во" width="100" align="center" /> -->
 
         <!-- Дата создания / завершения -->
-        <el-table-column label="Дата созд." width="140">
+        <el-table-column label="Дата созд." width="150">
           <template #default="{ row }">
               {{ formatDate(row.created_at) }}
           </template>
         </el-table-column>
-        <el-table-column label="Дата завер." width="140">
+        <el-table-column label="Дата завер." width="150">
           <template #default="{ row }">
               {{ formatDate(row.updated_at) }}
           </template>

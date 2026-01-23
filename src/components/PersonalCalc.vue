@@ -626,10 +626,10 @@ watch(
 .image-wrapper {
   position: relative;
   width: 100%;
-  background-color: #fff;
+  /* background-color: #fff; */
   border-radius: 12px;
   padding: 12px;
-  min-height: 200px;
+  /* min-height: 200px; */
   display: flex;
   align-items: center;
   justify-content: center;
