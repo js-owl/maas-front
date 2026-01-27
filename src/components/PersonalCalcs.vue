@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import Button from './ui/Button.vue'
+import IconCalculate from '../icons/IconCalculate.vue'
 
 type CalculationOrderRow = {
   order_id: number
@@ -126,8 +127,8 @@ onMounted(() => {
 
     <el-table
       :data="calcRows"
-      style="width: 100%; margin-top: 16px; font-size: 16px; font-weight: 600"
-      :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold', fontSize: '13px' }"
+      style="width: 100%; margin-top: 16px; font-size: 16px; font-weight: 600; color: #000;"
+      :header-cell-style="{ background: '#f5f7fa', fontWeight: '500', fontSize: '12px', color: '#000' }"
       v-loading="isLoading"
       empty-text="Нет данных по деталям"
     >
@@ -147,7 +148,7 @@ onMounted(() => {
       </el-table-column>
       <el-table-column label="Калькуляция" width="110" align="center">
         <template #default>
-          <span class="calc-icon" />
+          <IconCalculate class="calc-icon" />
         </template>
       </el-table-column>
       <el-table-column label="Цена за ед. без НДС, руб." min-width="120" align="right">
@@ -235,8 +236,6 @@ onMounted(() => {
   display: inline-block;
   width: 24px;
   height: 24px;
-  border-radius: 4px;
-  background-color: #e4e7ed;
 }
 
 .summary-row {
