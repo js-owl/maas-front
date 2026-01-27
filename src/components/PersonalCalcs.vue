@@ -98,6 +98,14 @@ const handleOpenCalculation = (row: CalculationOrderRow): void => {
   })
 }
 
+const handleOpenCalcInfo = (row: CalculationOrderRow): void => {
+  if (!row?.order_id) return
+  router.push({
+    name: 'personal-calc-info',
+    query: { kitId: kitId.value?.toString() ?? '', orderId: row.order_id.toString() },
+  })
+}
+
 const handleBackToOrder = () => {
   router.push({
     name: 'personal-order',
@@ -147,8 +155,10 @@ onMounted(() => {
         </template>
       </el-table-column>
       <el-table-column label="Калькуляция" width="110" align="center">
-        <template #default>
-          <IconCalculate class="calc-icon" />
+        <template #default="{ row }">
+          <button type="button" class="calc-icon-button" @click="handleOpenCalcInfo(row)">
+            <IconCalculate class="calc-icon" />
+          </button>
         </template>
       </el-table-column>
       <el-table-column label="Цена за ед. без НДС, руб." min-width="120" align="right">
@@ -230,6 +240,14 @@ onMounted(() => {
 
 .order-code:hover {
   text-decoration: underline;
+}
+
+.calc-icon-button {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
 .calc-icon {
