@@ -340,9 +340,9 @@ const handleSave = async () => {
 }
 
 .document-number {
-  font-size: 18px;
-  font-weight: 500;
-  color: #303133;
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
 }
 
 /* Section styling - each main cost category */
@@ -354,9 +354,9 @@ const handleSave = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 16px;
-  font-weight: bold;
-  color: #303133;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
   margin-bottom: 12px;
 }
 
@@ -401,20 +401,19 @@ const handleSave = async () => {
 }
 
 .cost-label {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
   flex: 1;
-  color: #606266;
-  font-size: 14px;
-  text-align: left;
 }
 
 /* Cost value alignment - ensures values are right-aligned within the cost-item */
 .cost-value {
-  flex: 0 0 auto;
-  color: #303133;
-  font-size: 14px;
+  font-size: 24px;
+  font-weight: 400;
+  color: #000;
   text-align: right;
-  min-width: 80px;
-  margin-left: auto;
+  min-width: 100px;
 }
 
 /* Comment section styling */
