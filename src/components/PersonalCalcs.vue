@@ -3,17 +3,33 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
-import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import Button from './ui/Button.vue'
+
+type CalculationOrderRow = {
+  order_id: number
+  order_name: string
+  order_code: string
+  quantity: number
+  unit_price: number
+  total_price: number
+  taxes: number
+  total_kit_price_with_taxes: number
+}
+
+type CalculationSummary = {
+  kit_id: number
+  kit_name: string
+  kit_quantity: number
+  orders: CalculationOrderRow[]
+  total_kit_price_with_taxes: number
+}
 
 const route = useRoute()
 const router = useRouter()
 
 const isLoading = ref(false)
-const hasError = ref(false)
-
-const kit = ref<IKit | null>(null)
-const calcRows = ref<IOrderResponse[]>([])
+const summary = ref<CalculationSummary | null>(null)
+const calcRows = ref<CalculationOrderRow[]>([])
 
 const kitId = computed(() => {
   const fromQuery = route.query.kitId
@@ -31,85 +47,49 @@ const formatMoney = (value?: number | null): string => {
   }).format(n)
 }
 
-const getNetUnitPrice = (row: IOrderResponse): number => {
-  const breakdown = row.total_price_breakdown
-
-  if (breakdown?.net_cost != null) return breakdown.net_cost
-  if (breakdown?.cost != null) return breakdown.cost
-  if (row.detail_price_one != null) return row.detail_price_one
-  if (row.detail_price != null && row.quantity) return row.detail_price / row.quantity
-  if (row.total_price && row.quantity) return row.total_price / row.quantity
-
-  return 0
+const getNetUnitPrice = (row: CalculationOrderRow): number => {
+  return row.unit_price ?? 0
 }
 
-const getNetTotal = (row: IOrderResponse): number => {
+const getNetTotal = (row: CalculationOrderRow): number => {
   const quantity = row.quantity || 1
   return getNetUnitPrice(row) * quantity
 }
 
-const getVat = (row: IOrderResponse): number => {
-  return getNetTotal(row) * 0.2
+const getVat = (row: CalculationOrderRow): number => {
+  return row.taxes ?? 0
 }
 
-const getTotalWithVat = (row: IOrderResponse): number => {
-  return getNetTotal(row) * 1.2
+const getTotalWithVat = (row: CalculationOrderRow): number => {
+  return row.total_kit_price_with_taxes ?? getNetTotal(row) + getVat(row)
 }
 
 const totalWithVatAll = computed(() => {
+  if (summary.value) return summary.value.total_kit_price_with_taxes
   return calcRows.value.reduce((sum, row) => sum + getTotalWithVat(row), 0)
 })
 
-const loadCalcs = async () => {
-  if (!kit.value?.order_ids?.length) {
-    calcRows.value = []
-    return
-  }
-
-  try {
-    const ids = kit.value.order_ids
-
-    const responses = await Promise.all(
-      ids.map(async (id) => {
-        const res = await req_json_auth(`/orders/${id}`, 'GET')
-        if (!res?.ok) {
-          throw new Error(`Failed to load calc order ${id}`)
-        }
-        return (await res.json()) as IOrderResponse
-      })
-    )
-
-    calcRows.value = responses
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error)
-    ElMessage.error('Не удалось загрузить расчеты заказа')
-  }
-}
-
-const loadKit = async () => {
+const loadSummary = async () => {
   if (!kitId.value) return
 
   isLoading.value = true
-  hasError.value = false
 
   try {
-    const res = await req_json_auth(`/kits/${kitId.value}`, 'GET')
-    if (!res?.ok) throw new Error('Failed to load kit')
-    const data = (await res.json()) as IKit
-    kit.value = data
-    await loadCalcs()
+    const res = await req_json_auth(`/kits/${kitId.value}/calculation_summary`, 'GET')
+    if (!res?.ok) throw new Error('Failed to load calculation summary')
+    const data = (await res.json()) as CalculationSummary
+    summary.value = data
+    calcRows.value = data.orders ?? []
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error)
-    hasError.value = true
-    ElMessage.error('Не удалось загрузить данные заказа')
+    ElMessage.error('Не удалось загрузить итоговую калькуляцию заказа')
   } finally {
     isLoading.value = false
   }
 }
 
-const handleOpenCalculation = (row: IOrderResponse): void => {
+const handleOpenCalculation = (row: CalculationOrderRow): void => {
   if (!row?.order_id) return
   router.push({
     name: 'personal-calc',
@@ -131,7 +111,7 @@ const handleDownload = () => {
 }
 
 onMounted(() => {
-  void loadKit()
+  void loadSummary()
 })
 </script>
 
@@ -140,7 +120,7 @@ onMounted(() => {
     <div class="page-header">
       <div class="page-title">
         <div class="order-number">Заказ №{{ kitId }}</div>
-        <div class="order-name">Наименование заказа</div>
+        <div class="order-name">{{ summary?.kit_name || 'Наименование заказа' }}</div>
       </div>
     </div>
 
