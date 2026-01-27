@@ -70,6 +70,11 @@ const routes: RouteRecordRaw[] = [
         name: 'personal-order',
       },
       {
+        path: 'calcs',
+        component: () => import('./components/PersonalCalcs.vue'),
+        name: 'personal-calcs',
+      },
+      {
         path: 'calc-info',
         component: () => import('./components/PersonalCalcInfo.vue'),
         name: 'personal-calc-info',

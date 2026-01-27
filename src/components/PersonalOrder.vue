@@ -212,6 +212,14 @@ const updateKit = async (): Promise<Response | undefined> => {
   })
 }
 
+const handleOpenCalcs = (): void => {
+  if (!kitId.value) return
+  router.push({
+    name: 'personal-calcs',
+    query: { kitId: kitId.value.toString() },
+  })
+}
+
 const handleOpenCalculation = (row: any): void => {
   if (!row?.order_id) return
   router.push({
@@ -411,7 +419,7 @@ onMounted(() => {
           </div>
           <div class="order-quantity">
             <!-- <CoefficientQuantity v-model="quantity" /> -->
-            <Button class="calc-button">Калькуляция стоимости</Button>
+            <Button class="calc-button" @click="handleOpenCalcs">Калькуляция стоимости</Button>
           </div>
         </div>
 
