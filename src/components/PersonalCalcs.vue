@@ -126,7 +126,7 @@ onMounted(() => {
 
     <el-table
       :data="calcRows"
-      style="width: 100%; margin-top: 16px;"
+      style="width: 100%; margin-top: 16px; font-size: 16px; font-weight: 600"
       :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
       v-loading="isLoading"
       empty-text="Нет данных по деталям"
@@ -140,32 +140,32 @@ onMounted(() => {
         </template>
       </el-table-column>
       <el-table-column prop="order_name" label="Наименование" min-width="200" />
-      <el-table-column prop="quantity" label="Кол-во, шт" width="110" align="center">
+      <el-table-column prop="quantity" label="Кол-во, шт" width="60" align="center">
         <template #default="{ row }">
           {{ row.quantity || 1 }}
         </template>
       </el-table-column>
-      <el-table-column label="Калькуляция" width="130" align="center">
+      <el-table-column label="Калькуляция" width="100" align="center">
         <template #default>
           <span class="calc-icon" />
         </template>
       </el-table-column>
-      <el-table-column label="Цена за ед. без НДС, руб." min-width="180" align="right">
+      <el-table-column label="Цена за ед. без НДС, руб." min-width="100" align="right">
         <template #default="{ row }">
           {{ formatMoney(getNetUnitPrice(row)) }}
         </template>
       </el-table-column>
-      <el-table-column label="Стоимость без НДС, руб." min-width="180" align="right">
+      <el-table-column label="Стоимость без НДС, руб." min-width="100" align="right">
         <template #default="{ row }">
           {{ formatMoney(getNetTotal(row)) }}
         </template>
       </el-table-column>
-      <el-table-column label="НДС 20%, руб." min-width="160" align="right">
+      <el-table-column label="НДС 20%, руб." min-width="100" align="right">
         <template #default="{ row }">
           {{ formatMoney(getVat(row)) }}
         </template>
       </el-table-column>
-      <el-table-column label="Стоимость с НДС, руб." min-width="190" align="right">
+      <el-table-column label="Стоимость с НДС, руб." min-width="100" align="right">
         <template #default="{ row }">
           {{ formatMoney(getTotalWithVat(row)) }}
         </template>
