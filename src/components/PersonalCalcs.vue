@@ -127,11 +127,11 @@ onMounted(() => {
     <el-table
       :data="calcRows"
       style="width: 100%; margin-top: 16px; font-size: 16px; font-weight: 600"
-      :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
+      :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold', fontSize: '13px' }"
       v-loading="isLoading"
       empty-text="Нет данных по деталям"
     >
-      <el-table-column type="index" label="№" width="60" />
+      <el-table-column type="index" label="№" width="50" />
       <el-table-column prop="order_code" label="Обозначение" min-width="180">
         <template #default="{ row }">
           <span class="order-code" @click="handleOpenCalculation(row)">
@@ -140,32 +140,32 @@ onMounted(() => {
         </template>
       </el-table-column>
       <el-table-column prop="order_name" label="Наименование" min-width="200" />
-      <el-table-column prop="quantity" label="Кол-во, шт" width="60" align="center">
+      <el-table-column prop="quantity" label="Кол-во, шт" width="80" align="center">
         <template #default="{ row }">
           {{ row.quantity || 1 }}
         </template>
       </el-table-column>
-      <el-table-column label="Калькуляция" width="100" align="center">
+      <el-table-column label="Калькуляция" width="110" align="center">
         <template #default>
           <span class="calc-icon" />
         </template>
       </el-table-column>
-      <el-table-column label="Цена за ед. без НДС, руб." min-width="100" align="right">
+      <el-table-column label="Цена за ед. без НДС, руб." min-width="120" align="right">
         <template #default="{ row }">
           {{ formatMoney(getNetUnitPrice(row)) }}
         </template>
       </el-table-column>
-      <el-table-column label="Стоимость без НДС, руб." min-width="100" align="right">
+      <el-table-column label="Стоимость без НДС, руб." min-width="120" align="right">
         <template #default="{ row }">
           {{ formatMoney(getNetTotal(row)) }}
         </template>
       </el-table-column>
-      <el-table-column label="НДС 20%, руб." min-width="100" align="right">
+      <el-table-column label="НДС 20%, руб." min-width="120" align="right">
         <template #default="{ row }">
           {{ formatMoney(getVat(row)) }}
         </template>
       </el-table-column>
-      <el-table-column label="Стоимость с НДС, руб." min-width="100" align="right">
+      <el-table-column label="Стоимость с НДС, руб." min-width="120" align="right">
         <template #default="{ row }">
           {{ formatMoney(getTotalWithVat(row)) }}
         </template>
@@ -181,10 +181,10 @@ onMounted(() => {
     </div>
 
     <div class="actions">
-      <Button class="back-button" @click="handleBackToOrder">
+      <Button class="back-button" width="300px" @click="handleBackToOrder">
         &lt; Вернуться в Заказ
       </Button>
-      <Button class="download-button" @click="handleDownload">
+      <Button class="download-button" width="300px" @click="handleDownload">
         Скачать
       </Button>
     </div>
@@ -203,6 +203,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  padding-bottom: 20px;
 }
 
 .page-title {
@@ -253,9 +254,9 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 22px;
-  font-weight: 700;
-  color: #e53935;
+  font-size: 24px;
+  font-weight: 600;
+  color: #ce132f;
 }
 
 .summary-label {
