@@ -9,6 +9,7 @@ import router from '../router'
 const profileStore = useProfileStore()
 const profileForm = ref<IProfile>()
 const formRef = ref<FormInstance>()
+const isSaving = ref(false)
 const activeTab = ref('individual')
 
 onMounted(async () => {
@@ -86,18 +87,22 @@ function buildAddressString(): string {
 }
 
 async function onUpdate() {
-  if (!formRef.value || !profileForm.value) return
-  await formRef.value.validate(async (valid) => {
-    if (valid) {
-      const profile = profileForm.value
-      if (profile) {
-        profile.city = buildAddressString()
-        profile.user_type = activeTab.value
-        await profileStore.updateProfile(profile as IProfile)
-        router.push({ path: '/personal/profile' })
-      }
-    }
-  })
+  if (!formRef.value || !profileForm.value || isSaving.value) return
+
+  isSaving.value = true
+  try {
+    const valid = await formRef.value.validate()
+    if (!valid) return
+
+    const profile = profileForm.value
+    profile.city = buildAddressString()
+    profile.user_type = activeTab.value
+
+    await profileStore.updateProfile(profile as IProfile)
+    router.push({ path: '/personal/profile' })
+  } finally {
+    isSaving.value = false
+  }
 }
 
 const goToMain = () => {
@@ -276,7 +281,7 @@ const goToMain = () => {
             </Button>
           </div>
           <div class="profile-footer-right">
-            <Button width="220px" class="profile-update-button" @click="onUpdate">
+            <Button width="220px" class="profile-update-button" :loading="isSaving" @click="onUpdate">
               Сохранить изменения
             </Button>
           </div>

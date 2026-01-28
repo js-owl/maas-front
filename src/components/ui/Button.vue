@@ -6,11 +6,13 @@ const props = withDefaults(
     disabled?: boolean
     plain?: boolean
     width?: string
+    loading?: boolean
   }>(),
   {
     disabled: false,
     plain: false,
     width: '100%',
+    loading: false,
   }
 )
 
@@ -19,23 +21,20 @@ const emit = defineEmits<{
 }>()
 
 const buttonClasses = computed(() => ({
-  'is-disabled': props.disabled,
+  'is-disabled': props.disabled || props.loading,
+  'is-loading': props.loading,
 }))
 
 const handleClick = () => {
-  if (!props.disabled) {
+  if (!props.disabled && !props.loading) {
     emit('click')
   }
 }
 </script>
 
 <template>
-  <button
-    :class="['btn', buttonClasses]"
-    :disabled="disabled"
-    :style="{ width: props.width }"
-    @click="handleClick"
-  >
+  <button :class="['btn', buttonClasses]" :disabled="disabled || loading" :style="{ width: props.width }" @click="handleClick">
+    <span v-if="loading" class="btn-spinner" />
     <slot />
   </button>
 </template>
