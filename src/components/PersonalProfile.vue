@@ -99,6 +99,10 @@ async function onUpdate() {
     }
   })
 }
+
+const goToMain = () => {
+  router.push({ path: '/' })
+}
 </script>
 
 <template>
@@ -266,9 +270,16 @@ async function onUpdate() {
         </div>
 
         <div class="profile-footer">
-          <Button width="220px" class="profile-update-button" @click="onUpdate">
-            Сохранить изменения
-          </Button>
+          <div class="profile-footer-left">
+            <Button width="220px" class="profile-back-button" @click="goToMain">
+              &lt; К главной странице
+            </Button>
+          </div>
+          <div class="profile-footer-right">
+            <Button width="220px" class="profile-update-button" @click="onUpdate">
+              Сохранить изменения
+            </Button>
+          </div>
         </div>
       </el-col>
     </el-form>
@@ -300,9 +311,21 @@ async function onUpdate() {
 
 .profile-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-top: 24px;
   padding-bottom: 24px;
+}
+
+.profile-footer-left,
+.profile-footer-right {
+  display: flex;
+  align-items: center;
+}
+
+.profile-back-button :deep(.btn) {
+  --bgcolor: #e0e0e0;
+  border-radius: 24px;
+  font-weight: 500;
 }
 
 .profile-update-button :deep(.btn) {
