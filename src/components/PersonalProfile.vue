@@ -2,6 +2,7 @@
 import { type FormInstance, type FormRules } from 'element-plus'
 import { onMounted, ref, watch } from 'vue'
 import Input from './ui/Input.vue'
+import Button from './ui/Button.vue'
 import { useProfileStore, type IProfile } from '../stores/profile.store'
 import router from '../router'
 
@@ -101,22 +102,9 @@ async function onUpdate() {
 </script>
 
 <template>
-  <el-row
-    :gutter="20"
-    style="
-      display: flex;
-      align-items: center;
-      background-color: #fff;
-      padding-top: 10px;
-      min-height: 100px;
-      padding-left: 20px;
-    "
-  >
+  <el-row :gutter="20" class="profile-header">
     <el-col :offset="1" :span="4">
       <h1>Профиль</h1>
-    </el-col>
-    <el-col :span="6">
-      <el-button type="primary" @click="onUpdate"> Обновить профиль </el-button>
     </el-col>
   </el-row>
   <el-row :gutter="20" style="background-color: #fff; padding-top: 30px; min-height: 500px; padding-left: 20px">
@@ -276,6 +264,12 @@ async function onUpdate() {
             </el-row>
           </div>
         </div>
+
+        <div class="profile-footer">
+          <Button width="220px" class="profile-update-button" @click="onUpdate">
+            Сохранить изменения
+          </Button>
+        </div>
       </el-col>
     </el-form>
   </el-row>
@@ -294,6 +288,27 @@ async function onUpdate() {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 4px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px 20px 0;
+  min-height: 100px;
+}
+
+.profile-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-bottom: 24px;
+}
+
+.profile-update-button :deep(.btn) {
+  --bgcolor: #d0d4da;
+  border-radius: 24px;
+  font-weight: 500;
 }
 </style>
 
