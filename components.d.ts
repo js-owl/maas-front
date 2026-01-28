@@ -74,6 +74,7 @@ declare module 'vue' {
     HomeMilestones: typeof import('./src/components/sections/HomeMilestones.vue')['default']
     HomeModel: typeof import('./src/components/sections/HomeModel.vue')['default']
     HomeUslugi: typeof import('./src/components/sections/HomeUslugi.vue')['default']
+    Input: typeof import('./src/components/ui/Input.vue')['default']
     InputEdit: typeof import('./src/components/ui/InputEdit.vue')['default']
     Length: typeof import('./src/components/coefficients/Length.vue')['default']
     Loader: typeof import('./src/components/ui/Loader.vue')['default']

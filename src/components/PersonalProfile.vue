@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { type FormInstance, type FormRules } from 'element-plus'
 import { onMounted, ref, watch } from 'vue'
+import Input from './ui/Input.vue'
 import { useProfileStore, type IProfile } from '../stores/profile.store'
 import router from '../router'
 
@@ -134,7 +135,7 @@ async function onUpdate() {
               <div style="font-size: 24px; padding-bottom: 30px">Общая информация</div>
               <div v-if="profileForm">
                 <el-form-item label="Логин" prop="username">
-                  <el-input v-model="profileForm.username" placeholder="username" disabled />
+                  <Input v-model="profileForm.username" placeholder="username" disabled />
                 </el-form-item>
                 <el-form-item label="Email" prop="email">
                   <el-input v-model="profileForm.email" placeholder="Введите свой email" type="email" />
@@ -176,7 +177,7 @@ async function onUpdate() {
               <div style="font-size: 24px; padding-bottom: 30px">Общая информация</div>
               <div v-if="profileForm">
                 <el-form-item label="Логин" prop="username">
-                  <el-input v-model="profileForm.username" placeholder="username" disabled />
+                  <Input v-model="profileForm.username" placeholder="username" disabled />
                 </el-form-item>
                 <el-form-item label="Email" prop="email">
                   <el-input v-model="profileForm.email" placeholder="Введите свой email" type="email" />
