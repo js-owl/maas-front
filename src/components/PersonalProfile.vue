@@ -130,105 +130,151 @@ async function onUpdate() {
     >
       <el-col :offset="1" :span="22">
         <div v-if="activeTab === 'individual'" class="profile-content">
-          <el-row :gutter="20">
-            <el-col :span="11">
-              <div style="font-size: 24px; padding-bottom: 30px">Общая информация</div>
-              <div v-if="profileForm">
+          <div v-if="profileForm" class="profile-section">
+            <div class="section-title">Общая информация</div>
+            <el-row :gutter="20">
+              <el-col :span="8">
                 <el-form-item label="Логин" prop="username">
                   <Input v-model="profileForm.username" placeholder="username" disabled />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Email" prop="email">
-                  <el-input v-model="profileForm.email" placeholder="Введите свой email" type="email" />
+                  <Input v-model="profileForm.email" placeholder="Введите свой email" type="email" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Полное имя" prop="full_name">
-                  <el-input v-model="profileForm.full_name" placeholder="Введите полное имя" />
+                  <Input v-model="profileForm.full_name" placeholder="Введите полное имя" />
                 </el-form-item>
-              </div>
-            </el-col>
-            <el-col :offset="2" :span="11">
-              <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки по умолчанию</div>
-              <div v-if="profileForm">
+              </el-col>
+            </el-row>
+          </div>
+
+          <div v-if="profileForm" class="profile-section">
+            <div class="section-title">Адрес доставки по умолчанию</div>
+            <el-row :gutter="20">
+              <el-col :span="8">
                 <el-form-item label="Индекс" prop="postal">
-                  <el-input v-model="profileForm.postal" placeholder="Введите индекс" />
+                  <Input v-model="profileForm.postal" placeholder="Введите индекс" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Регион/Область" prop="region">
-                  <el-input v-model="profileForm.region" placeholder="Введите регион" />
+                  <Input v-model="profileForm.region" placeholder="Введите регион" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Город" prop="city_name">
-                  <el-input v-model="profileForm.city_name" placeholder="Введите город" />
+                  <Input v-model="profileForm.city_name" placeholder="Введите город" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Улица" prop="street">
-                  <el-input v-model="profileForm.street" placeholder="Введите улицу" />
+                  <Input v-model="profileForm.street" placeholder="Введите улицу" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Дом/Строение" prop="building">
-                  <el-input v-model="profileForm.building" placeholder="Введите номер дома" />
+                  <Input v-model="profileForm.building" placeholder="Введите номер дома" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Квартира/Офис" prop="apartment">
-                  <el-input v-model="profileForm.apartment" placeholder="Введите номер квартиры" />
+                  <Input v-model="profileForm.apartment" placeholder="Введите номер квартиры" />
                 </el-form-item>
-              </div>
-            </el-col>
-          </el-row>
+              </el-col>
+            </el-row>
+          </div>
         </div>
 
         <div v-if="activeTab === 'legal'" class="profile-content">
-          <el-row :gutter="20">
-            <el-col :span="11">
-              <div style="font-size: 24px; padding-bottom: 30px">Общая информация</div>
-              <div v-if="profileForm">
+          <div v-if="profileForm" class="profile-section">
+            <div class="section-title">Общая информация</div>
+            <el-row :gutter="20">
+              <el-col :span="8">
                 <el-form-item label="Логин" prop="username">
                   <Input v-model="profileForm.username" placeholder="username" disabled />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Email" prop="email">
-                  <el-input v-model="profileForm.email" placeholder="Введите свой email" type="email" />
+                  <Input v-model="profileForm.email" placeholder="Введите свой email" type="email" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Получатель" prop="payment_company_name">
-                  <el-input v-model="profileForm.payment_company_name" placeholder="Введите получателя" />
+                  <Input v-model="profileForm.payment_company_name" placeholder="Введите получателя" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Наименование банка" prop="payment_bank_name">
-                  <el-input v-model="profileForm.payment_bank_name" placeholder="Введите имя банка" />
+                  <Input v-model="profileForm.payment_bank_name" placeholder="Введите имя банка" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="ИНН" prop="payment_inn">
-                  <el-input v-model="profileForm.payment_inn" placeholder="Введите ИНН" />
+                  <Input v-model="profileForm.payment_inn" placeholder="Введите ИНН" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="КПП" prop="payment_kpp">
-                  <el-input v-model="profileForm.payment_kpp" placeholder="Введите КПП" />
+                  <Input v-model="profileForm.payment_kpp" placeholder="Введите КПП" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="БИК" prop="payment_bik">
-                  <el-input v-model="profileForm.payment_bik" placeholder="Введите БИК" />
+                  <Input v-model="profileForm.payment_bik" placeholder="Введите БИК" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Корр.счет" prop="payment_cor_account">
-                  <el-input v-model="profileForm.payment_cor_account" placeholder="Введите корреспондентский счет" />
+                  <Input v-model="profileForm.payment_cor_account" placeholder="Введите корреспондентский счет" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Расчетный счет" prop="payment_account">
-                  <el-input v-model="profileForm.payment_account" placeholder="Введите расчетный счет" />
+                  <Input v-model="profileForm.payment_account" placeholder="Введите расчетный счет" />
                 </el-form-item>
-              </div>
-            </el-col>
-            <el-col :offset="2" :span="11">
-              <div style="font-size: 24px; padding-bottom: 30px">Адрес доставки по умолчанию</div>
-              <div v-if="profileForm">
+              </el-col>
+            </el-row>
+          </div>
+
+          <div v-if="profileForm" class="profile-section">
+            <div class="section-title">Адрес доставки</div>
+            <el-row :gutter="20">
+              <el-col :span="8">
                 <el-form-item label="Индекс" prop="postal">
-                  <el-input v-model="profileForm.postal" placeholder="Введите индекс" />
+                  <Input v-model="profileForm.postal" placeholder="Введите индекс" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Регион/Область" prop="region">
-                  <el-input v-model="profileForm.region" placeholder="Введите регион" />
+                  <Input v-model="profileForm.region" placeholder="Введите регион" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Город" prop="city_name">
-                  <el-input v-model="profileForm.city_name" placeholder="Введите город" />
+                  <Input v-model="profileForm.city_name" placeholder="Введите город" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Улица" prop="street">
-                  <el-input v-model="profileForm.street" placeholder="Введите улицу" />
+                  <Input v-model="profileForm.street" placeholder="Введите улицу" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Дом/Строение" prop="building">
-                  <el-input v-model="profileForm.building" placeholder="Введите номер дома" />
+                  <Input v-model="profileForm.building" placeholder="Введите номер дома" />
                 </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="Квартира/Офис" prop="apartment">
-                  <el-input v-model="profileForm.apartment" placeholder="Введите номер квартиры" />
+                  <Input v-model="profileForm.apartment" placeholder="Введите номер квартиры" />
                 </el-form-item>
-              </div>
-            </el-col>
-          </el-row>
+              </el-col>
+            </el-row>
+          </div>
         </div>
       </el-col>
     </el-form>
@@ -238,6 +284,16 @@ async function onUpdate() {
 <style scoped>
 .profile-content {
   margin-top: 20px;
+}
+
+.profile-section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
 }
 </style>
 
