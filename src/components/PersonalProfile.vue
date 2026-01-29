@@ -67,6 +67,10 @@ const rules = ref<FormRules<IProfile>>({
     { required: true, message: 'Введите email', trigger: 'blur' },
     { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
   ],
+  phone: [{ required: false, message: 'Введите телефон', trigger: 'blur' }],
+  last_name: [{ required: false, message: 'Введите фамилию', trigger: 'blur' }],
+  first_name: [{ required: false, message: 'Введите имя', trigger: 'blur' }],
+  patronymic: [{ required: false, message: 'Введите отчество', trigger: 'blur' }],
   payment_inn: [{ validator: validatePaymentInn, trigger: ['blur', 'change'] }],
   payment_kpp: [{ validator: validatePaymentKpp, trigger: ['blur', 'change'] }],
   payment_bik: [{ validator: validatePaymentBik, trigger: ['blur', 'change'] }],
@@ -128,7 +132,24 @@ const goToMain = () => {
       <el-col :offset="1" :span="22">
         <div v-if="activeTab === 'individual'" class="profile-content">
           <div v-if="profileForm" class="profile-section">
-            <div class="section-title">Общая информация</div>
+            <div class="section-title">ПРОФИЛЬ</div>
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item prop="last_name">
+                  <Input v-model="profileForm.last_name" placeholder="Фамилия" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item prop="first_name">
+                  <Input v-model="profileForm.first_name" placeholder="Имя" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item prop="patronymic">
+                  <Input v-model="profileForm.patronymic" placeholder="Отчество" />
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="username">
@@ -137,19 +158,19 @@ const goToMain = () => {
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="email">
-                  <Input v-model="profileForm.email" placeholder="Email" type="email" />
+                  <Input v-model="profileForm.email" placeholder="E-mail" type="email" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="full_name">
-                  <Input v-model="profileForm.full_name" placeholder="Полное имя" />
+                <el-form-item prop="phone">
+                  <Input v-model="profileForm.phone" placeholder="Телефон" type="tel" />
                 </el-form-item>
               </el-col>
             </el-row>
           </div>
 
           <div v-if="profileForm" class="profile-section">
-            <div class="section-title">Адрес доставки по умолчанию</div>
+            <div class="section-title">Адрес доставки</div>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="postal">
@@ -173,12 +194,12 @@ const goToMain = () => {
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="building">
-                  <Input v-model="profileForm.building" placeholder="Дом/Строение" />
+                  <Input v-model="profileForm.building" placeholder="Строение" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="apartment">
-                  <Input v-model="profileForm.apartment" placeholder="Квартира/Офис" />
+                  <Input v-model="profileForm.apartment" placeholder="Офис/Помещение" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -197,6 +218,11 @@ const goToMain = () => {
               <el-col :span="8">
                 <el-form-item prop="email">
                   <Input v-model="profileForm.email" placeholder="Email" type="email" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item prop="phone">
+                  <Input v-model="profileForm.phone" placeholder="Телефон" type="tel" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">

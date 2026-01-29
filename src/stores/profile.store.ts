@@ -6,7 +6,11 @@ import { ElMessage } from "element-plus";
 export interface IProfile {
   username: string;
   email: string;
+  phone?: string;
   full_name: string;
+  last_name?: string;
+  first_name?: string;
+  patronymic?: string;
   user_type: string; // "individual" | "legal"
   city: string;
   postal: string;
@@ -37,9 +41,12 @@ export const useProfileStore = defineStore("user", () => {
 
       // Парсим адрес из поля city и заполняем отдельные поля
       const addressFields = parseAddressString(parsedProfile.city);
+      // Парсим full_name на отдельные поля
+      const nameFields = parseFullName(parsedProfile.full_name || "");
       profile.value = {
         ...parsedProfile,
         ...addressFields,
+        ...nameFields,
       };
     } catch (error) {
       console.error("Failed to parse saved profile:", error);
@@ -103,6 +110,40 @@ export const useProfileStore = defineStore("user", () => {
     }
   }
 
+  // Функция для разбора full_name на отдельные поля
+  function parseFullName(fullName: string): Partial<IProfile> {
+    if (!fullName || typeof fullName !== "string") {
+      return {
+        last_name: "",
+        first_name: "",
+        patronymic: "",
+      };
+    }
+
+    // Разбиваем строку по пробелам и убираем лишние пробелы
+    const parts = fullName
+      .split(/\s+/)
+      .map((part) => part.trim())
+      .filter((part) => part);
+
+    return {
+      last_name: parts[0] || "",
+      first_name: parts[1] || "",
+      patronymic: parts[2] || "",
+    };
+  }
+
+  // Функция для объединения отдельных полей в full_name
+  function buildFullName(profile: Partial<IProfile>): string {
+    const parts = [
+      profile.last_name,
+      profile.first_name,
+      profile.patronymic,
+    ].filter((part) => part && part.trim());
+
+    return parts.join(" ");
+  }
+
   async function getProfile() {
     const r = await req_json_auth(`/profile`, "GET");
     if (r) {
@@ -110,9 +151,12 @@ export const useProfileStore = defineStore("user", () => {
 
       // Парсим адрес из поля city и заполняем отдельные поля
       const addressFields = parseAddressString(profileData.city);
+      // Парсим full_name на отдельные поля
+      const nameFields = parseFullName(profileData.full_name || "");
       const enrichedProfileData = {
         ...profileData,
         ...addressFields,
+        ...nameFields,
       };
 
       profile.value = enrichedProfileData;
@@ -121,15 +165,25 @@ export const useProfileStore = defineStore("user", () => {
   }
 
   async function updateProfile(updated: IProfile) {
-    const r = await req_json_auth(`/profile`, "PUT", updated);
+    // Объединяем отдельные поля имени обратно в full_name для API
+    const fullName = buildFullName(updated);
+    const profileForApi = {
+      ...updated,
+      full_name: fullName || updated.full_name,
+    };
+
+    const r = await req_json_auth(`/profile`, "PUT", profileForApi);
     if (r) {
       const profileData = (await r.json()) as IProfile;
 
       // Парсим адрес из поля city и заполняем отдельные поля
       const addressFields = parseAddressString(profileData.city);
+      // Парсим full_name на отдельные поля
+      const nameFields = parseFullName(profileData.full_name || "");
       const enrichedProfileData = {
         ...profileData,
         ...addressFields,
+        ...nameFields,
       };
 
       profile.value = enrichedProfileData;
