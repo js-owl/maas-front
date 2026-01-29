@@ -26,6 +26,7 @@ export interface IProfile {
   payment_cor_account: string;
   payment_account: string;
   payment_company_name: string;
+  contact_phone?: string;
 }
 
 const PROFILE_STORE_KEY = "profile-store";
