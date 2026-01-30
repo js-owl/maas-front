@@ -127,9 +127,9 @@ const goToMain = () => {
   router.push({ path: '/' })
 }
 
-const goToOrders = () => {
-  router.push({ path: '/personal/orders' })
-}
+// const goToOrders = () => {
+//   router.push({ path: '/personal/orders' })
+// }
 
 const contactFio = computed({
   get: () => {
