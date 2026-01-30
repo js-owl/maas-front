@@ -45,3 +45,35 @@ export const createPhoneNumberValidator = (
  */
 export const normalizePhoneInput = (value: string): string =>
   (value || '').replace(/\D/g, '')
+
+/**
+ * Formats digits as Russian phone display: +7 (XXX) XXX-XX-XX.
+ * Use as el-input formatter for phone fields.
+ */
+export const formatPhoneDisplay = (value: string): string => {
+  if (!value) return value
+  const numbers = (value || '').replace(/\D/g, '')
+  let cleanNumber = numbers
+  if (numbers.startsWith('8') && numbers.length === 11) {
+    cleanNumber = '7' + numbers.slice(1)
+  } else if (numbers.startsWith('9') && numbers.length === 10) {
+    cleanNumber = '7' + numbers
+  }
+  if (cleanNumber.length <= 1) return cleanNumber
+  if (cleanNumber.length <= 4) return `+7 (${cleanNumber.slice(1)}`
+  if (cleanNumber.length <= 7) return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4)}`
+  if (cleanNumber.length <= 9) {
+    return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4, 7)}-${cleanNumber.slice(7)}`
+  }
+  return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4, 7)}-${cleanNumber.slice(7, 9)}-${cleanNumber.slice(9, 11)}`
+}
+
+/**
+ * Parses display value to digits only; normalizes 8 to 7 for Russian numbers.
+ * Use as el-input parser for phone fields.
+ */
+export const parsePhoneToDigits = (value: string): string => {
+  if (!value) return value
+  const numbers = (value || '').replace(/\D/g, '')
+  return numbers.startsWith('8') ? '7' + numbers.slice(1) : numbers
+}

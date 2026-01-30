@@ -9,6 +9,8 @@ const props = withDefaults(
     disabled?: boolean
     clearable?: boolean
     width?: string
+    formatter?: (value: string) => string
+    parser?: (value: string) => string
   }>(),
   {
     modelValue: '',
@@ -46,6 +48,8 @@ const handleChange = (value: string) => {
       :type="type"
       :disabled="disabled"
       :clearable="clearable"
+      :formatter="formatter"
+      :parser="parser"
       class="input"
       @update:model-value="handleUpdateModelValue"
       @change="handleChange"

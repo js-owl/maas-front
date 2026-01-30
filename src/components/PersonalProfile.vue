@@ -5,7 +5,11 @@ import Input from './ui/Input.vue'
 import Button from './ui/Button.vue'
 import { useProfileStore, type IProfile } from '../stores/profile.store'
 import router from '../router'
-import { createPhoneNumberValidator } from '../composables/usePhoneValidation'
+import {
+  createPhoneNumberValidator,
+  formatPhoneDisplay,
+  parsePhoneToDigits,
+} from '../composables/usePhoneValidation'
 
 const profileStore = useProfileStore()
 const profileForm = ref<IProfile>()
@@ -192,7 +196,13 @@ const contactFio = computed({
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="phone_number">
-                  <Input v-model="profileForm.phone_number" placeholder="Телефон" type="tel" />
+                  <Input
+                    v-model="profileForm.phone_number"
+                    placeholder="+7 (___) ___-__-__"
+                    type="tel"
+                    :formatter="formatPhoneDisplay"
+                    :parser="parsePhoneToDigits"
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -245,7 +255,13 @@ const contactFio = computed({
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="phone_number">
-                  <Input v-model="profileForm.phone_number" placeholder="Телефон" type="tel" />
+                  <Input
+                    v-model="profileForm.phone_number"
+                    placeholder="+7 (___) ___-__-__"
+                    type="tel"
+                    :formatter="formatPhoneDisplay"
+                    :parser="parsePhoneToDigits"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -266,7 +282,13 @@ const contactFio = computed({
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="personal_phone_number">
-                  <Input v-model="profileForm.personal_phone_number" placeholder="Личный телефон" type="tel" />
+                  <Input
+                    v-model="profileForm.personal_phone_number"
+                    placeholder="+7 (___) ___-__-__"
+                    type="tel"
+                    :formatter="formatPhoneDisplay"
+                    :parser="parsePhoneToDigits"
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
