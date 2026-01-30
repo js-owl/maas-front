@@ -5,6 +5,7 @@ import Input from './ui/Input.vue'
 import Button from './ui/Button.vue'
 import { useProfileStore, type IProfile } from '../stores/profile.store'
 import router from '../router'
+import { createPhoneNumberValidator } from '../composables/usePhoneValidation'
 
 const profileStore = useProfileStore()
 const profileForm = ref<IProfile>()
@@ -61,13 +62,22 @@ const validatePaymentBik = (_rule: any, value: string, callback: (error?: Error)
   else callback()
 }
 
+const phoneValidator = createPhoneNumberValidator({ allowEmpty: false })
+
 const rules = ref<FormRules<IProfile>>({
   username: [{ required: true, message: 'Введите имя', trigger: 'blur' }],
   email: [
     { required: true, message: 'Введите email', trigger: 'blur' },
     { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
   ],
-  phone_number: [{ required: false, message: 'Введите телефон', trigger: 'blur' }],
+  phone_number: [
+    { required: true, message: 'Введите телефон', trigger: 'blur' },
+    { validator: phoneValidator, trigger: ['blur', 'change'] },
+  ],
+  personal_phone_number: [
+    { required: true, message: 'Введите телефон', trigger: 'blur' },
+    { validator: phoneValidator, trigger: ['blur', 'change'] },
+  ],
   last_name: [{ required: false, message: 'Введите фамилию', trigger: 'blur' }],
   first_name: [{ required: false, message: 'Введите имя', trigger: 'blur' }],
   patronymic: [{ required: false, message: 'Введите отчество', trigger: 'blur' }],
