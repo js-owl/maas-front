@@ -3,10 +3,10 @@ import { ref } from "vue";
 import { req_json_auth } from "../api";
 import { ElMessage } from "element-plus";
 
-export interface IProfile {
+export type IProfile = {
   username: string;
   email: string;
-  phone?: string;
+  phone_number?: string;
   full_name: string;
   last_name?: string;
   first_name?: string;
@@ -27,7 +27,7 @@ export interface IProfile {
   payment_account: string;
   payment_company_name: string;
   contact_phone?: string;
-}
+};
 
 const PROFILE_STORE_KEY = "profile-store";
 

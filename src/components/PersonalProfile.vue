@@ -67,7 +67,7 @@ const rules = ref<FormRules<IProfile>>({
     { required: true, message: 'Введите email', trigger: 'blur' },
     { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
   ],
-  phone: [{ required: false, message: 'Введите телефон', trigger: 'blur' }],
+  phone_number: [{ required: false, message: 'Введите телефон', trigger: 'blur' }],
   last_name: [{ required: false, message: 'Введите фамилию', trigger: 'blur' }],
   first_name: [{ required: false, message: 'Введите имя', trigger: 'blur' }],
   patronymic: [{ required: false, message: 'Введите отчество', trigger: 'blur' }],
@@ -181,8 +181,8 @@ const contactFio = computed({
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="phone">
-                  <Input v-model="profileForm.phone" placeholder="Телефон" type="tel" />
+                <el-form-item prop="phone_number">
+                  <Input v-model="profileForm.phone_number" placeholder="Телефон" type="tel" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -234,8 +234,8 @@ const contactFio = computed({
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item prop="phone">
-                  <Input v-model="profileForm.phone" placeholder="Телефон" type="tel" />
+                <el-form-item prop="phone_number">
+                  <Input v-model="profileForm.phone_number" placeholder="Телефон" type="tel" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
