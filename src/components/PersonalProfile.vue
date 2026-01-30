@@ -255,8 +255,8 @@ const contactFio = computed({
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item prop="contact_phone">
-                  <Input v-model="profileForm.contact_phone" placeholder="Личный телефон" type="tel" />
+                <el-form-item prop="personal_phone_number">
+                  <Input v-model="profileForm.personal_phone_number" placeholder="Личный телефон" type="tel" />
                 </el-form-item>
               </el-col>
             </el-row>

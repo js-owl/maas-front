@@ -26,7 +26,7 @@ export type IProfile = {
   payment_cor_account: string;
   payment_account: string;
   payment_company_name: string;
-  contact_phone?: string;
+  personal_phone_number?: string;
 };
 
 const PROFILE_STORE_KEY = "profile-store";
