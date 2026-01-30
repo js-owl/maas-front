@@ -235,9 +235,9 @@ const submitForm = async () => {
         />
       </el-form-item>
 
-      <el-form-item v-if="form.user_type === 'legal'" prop="inn">
+      <!-- <el-form-item v-if="form.user_type === 'legal'" prop="inn">
         <el-input v-model="form.inn" placeholder="ИНН" />
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item prop="password">
         <el-input

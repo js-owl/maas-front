@@ -341,11 +341,11 @@ const contactFio = computed({
               &lt; К главной странице
             </Button>
           </div>
-          <div v-if="activeTab === 'legal'" class="profile-footer-center">
+          <!-- <div v-if="activeTab === 'legal'" class="profile-footer-center">
             <Button width="220px" class="profile-orders-button" @click="goToOrders">
               Заказы и расчеты
             </Button>
-          </div>
+          </div> -->
           <div class="profile-footer-right">
             <Button width="220px" class="profile-update-button" :loading="isSaving" @click="onUpdate">
               Сохранить изменения
