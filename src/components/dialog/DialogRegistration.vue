@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
+import { createPhoneNumberValidator, normalizePhoneInput } from '../../composables/usePhoneValidation'
 import { useRegStore } from '../../stores/reg.store'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
@@ -84,21 +85,8 @@ const validateEmailNoCyrillic = (_rule: any, value: string, callback: (error?: E
   }
 }
 
-const validatePhoneNumber = (_rule: any, value: string, callback: (error?: Error) => void) => {
-  if (!/^\d+$/.test(value)) {
-    callback(new Error('Телефон должен содержать только цифры'))
-    return
-  }
-  const length = value.length
-  if (length < 10 || length > 15) {
-    callback(new Error('Введите корректный номер телефона (10–15 цифр)'))
-    return
-  }
-  callback()
-}
-
 const onPhoneInput = (val: string) => {
-  form.value.phone_number = (val || '').replace(/\D/g, '')
+  form.value.phone_number = normalizePhoneInput(val)
 }
 
 const rules = ref<FormRules<FormData>>({
@@ -114,7 +102,7 @@ const rules = ref<FormRules<FormData>>({
   ],
   phone_number: [
     { required: true, message: 'Пожалуйста, введите телефон', trigger: 'blur' },
-    { validator: validatePhoneNumber, trigger: ['blur', 'change'] },
+    { validator: createPhoneNumberValidator(), trigger: ['blur', 'change'] },
   ],
   password: [
     { required: true, message: 'Пожалуйста, введите пароль', trigger: 'blur' },
