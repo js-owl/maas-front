@@ -37,32 +37,32 @@ const submit = () => {
     
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
-        <div class="section-title">РАСЧЕТ СТОИМОСТИ ПО ЧЕРТЕЖАМ</div>
+        <div class="section-title">Производство под вашу потребность</div>
         <p class="lead">
-          Проведем расчет стоимости детали по вашему чертежу в течение 5 рабочих дней, а также вы
+          Проведем расчет стоимости детали по 3D-модели в течении 5 рабочих дней, а также вы
           получите анализ и рекомендации по оптимизации процесса изготовления
         </p>
       </div>
 
       <div class="calc-right">
         <el-form :model="formModel" class="calc-form" label-position="top">
-          <el-form-item>
+          <!-- <el-form-item>
             <el-input v-model="formModel.name" placeholder="Имя" />
           </el-form-item>
           <el-form-item>
             <el-input v-model="formModel.phone" placeholder="Телефон" />
-          </el-form-item>
+          </el-form-item> -->
           <UploadDrawings2 color="#fff" />
 
-          <div class="formats">Форматы: TIF, PDF, JPG</div>
-
+          <!-- <div class="formats">Форматы: TIF, PDF, JPG</div>
+ -->
           <el-button type="primary" class="submit-btn" :loading="isSubmitting" @click="submit">
             Отправить
           </el-button>
 
-          <ul v-if="selectedFiles.length" class="files-list">
+          <!-- <ul v-if="selectedFiles.length" class="files-list">
             <li v-for="f in selectedFiles" :key="f.name">{{ f.name }}</li>
-          </ul>
+          </ul> -->
         </el-form>
       </div>
     </div>
