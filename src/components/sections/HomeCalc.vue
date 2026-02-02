@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
+import Select from '../ui/Select.vue'
 
 type UploadFile = {
   name: string
   size: number
 }
 
+const router = useRouter()
 const formModel = ref({
   name: '',
   phone: '',
@@ -14,9 +17,29 @@ const formModel = ref({
 
 const isSubmitting = ref(false)
 const selectedFiles = ref<UploadFile[]>([])
+const selectedOrderType = ref<string>('')
+
+const orderTypeOptions = [
+  { label: 'мехобработка', value: 'milling' },
+  { label: '3D-печать', value: 'printing' },
+  { label: 'прочее', value: 'other' },
+]
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
+
+const handleOrderTypeChange = (value: string | number | boolean | object) => {
+  if (!value) return
+  const valueStr = String(value)
+  const pathMap: Record<string, string> = {
+    other: '/other',
+    milling: '/milling',
+    printing: '/printing',
+  }
+  const path = pathMap[valueStr] || '/other'
+  router.push({ path })
+  selectedOrderType.value = ''
+}
 
 // const onFilesChange = (files: FileList | null) => {
 //   if (!files) return
@@ -53,6 +76,22 @@ const submit = () => {
             <el-input v-model="formModel.phone" placeholder="Телефон" />
           </el-form-item> -->
           <UploadDrawings2 color="#fff" />
+
+          <el-form-item>
+            <Select
+              v-model="selectedOrderType"
+              placeholder="Добавить деталь"
+              width="100%"
+              @change="handleOrderTypeChange"
+            >
+              <el-option
+                v-for="option in orderTypeOptions"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"
+              />
+            </Select>
+          </el-form-item>
 
           <!-- <div class="formats">Форматы: TIF, PDF, JPG</div>
  -->
