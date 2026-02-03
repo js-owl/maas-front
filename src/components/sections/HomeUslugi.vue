@@ -5,6 +5,7 @@ import Icon3DView from '../../icons/Icon3DView.vue'
 import IconPKM from '../../icons/IconPKM.vue'
 import IconLKM from '../../icons/IconLKM.vue'
 import IconIspitaniya from '../../icons/IconIspitaniya.vue'
+import IconLab from '../../icons/IconLab.vue'
 
 const abilities = ref([
   {
@@ -47,7 +48,7 @@ const abilities = ref([
     title: 'ЛАБОРАТОРНЫЕ ИССЛЕДОВАНИЯ',
     link: '/other',
     isDevelopment: false,
-    icon: IconLKM,
+    icon: IconLab,
   },
 ])
 </script>
