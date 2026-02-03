@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { Setting, Box } from '@element-plus/icons-vue'
 
 const abilities = ref([
   {
     id: 1,
-    title: 'Механическая обработка',
+    title: 'МЕХАНИЧЕСКАЯ ОБРАБОТКА',
     link: '/mechanical',
     isDevelopment: false,
-    imagePath: '/homePage/uslugi_machining.png',
+    icon: Setting,
   },
   {
     id: 2,
-    title: '3d-печать',
+    title: '3Д-ПЕЧАТЬ',
     link: '/print',
     isDevelopment: false,
-    imagePath: '/homePage/uslugi_printing.png',
+    icon: Box,
   },
 ])
 // {
@@ -60,14 +61,16 @@ const abilities = ref([
       >
         <component :is="ability.link ? 'RouterLink' : 'div'" :to="ability.link" class="card-link">
           <div class="card-content">
-            <h3 class="card-title">{{ ability.title }}</h3>
-
-            <div v-if="ability.isDevelopment" class="development-notice">
-              <span class="development-text">[Раздел в разработке]</span>
+            <div v-if="ability.icon" class="card-icon">
+              <el-icon :size="48" color="#fff">
+                <component :is="ability.icon" />
+              </el-icon>
             </div>
-
-            <div v-if="ability.imagePath" class="card-icon">
-              <el-image :src="ability.imagePath" fit="contain" class="icon-image" />
+            <div class="card-text">
+              <h3 class="card-title">{{ ability.title }}</h3>
+              <div v-if="ability.isDevelopment" class="development-notice">
+                <span class="development-text">[Раздел в разработке]</span>
+              </div>
             </div>
           </div>
         </component>
@@ -86,7 +89,7 @@ const abilities = ref([
 
 .services-grid {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 20px;
 }
@@ -96,7 +99,7 @@ const abilities = ref([
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  height: 240px;
+  height: 120px;
   width: 49%; /* 30% */
   position: relative;
   overflow: hidden;
@@ -112,33 +115,46 @@ const abilities = ref([
 }
 
 .card-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   height: 100%;
+  min-height: 100%;
   text-decoration: none;
   color: inherit;
 }
 
 .card-content {
-  padding: 20px;
-  height: 100%;
+  padding-left: 30px;
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+}
+
+.card-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-text {
+  min-width: 0;
+  text-align: left;
+  padding-left: 10px;
 }
 
 .card-title {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 700;
   color: #fff;
-  margin: 0 0 10px 0;
-  line-height: 1.4;
 }
 
 .development-notice {
-  position: absolute;
-  bottom: 45px;
-  left: 20px;
-  margin-top: 0;
+  margin-top: 4px;
 }
 
 .development-text {
@@ -152,18 +168,6 @@ const abilities = ref([
   border: 1px solid rgba(153, 153, 153, 0.3); */
 }
 
-.card-icon {
-  position: absolute;
-  bottom: 40px;
-  right: 40px;
-  /* width: 60px; */
-  height: 150px;
-}
-
-.icon-image {
-  width: 100%;
-  height: 100%;
-}
 
 @media (max-width: 768px) {
   .services-grid {
@@ -183,12 +187,6 @@ const abilities = ref([
 
   .development-text {
     font-size: 14px;
-  }
-
-  .card-icon {
-    bottom: 15px;
-    right: 15px;
-    height: 100px;
   }
 
   .card-content {
