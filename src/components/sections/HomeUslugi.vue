@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Box } from '@element-plus/icons-vue'
 import IconMech from '../../icons/IconMech.vue'
+import Icon3DView from '../../icons/Icon3DView.vue'
 
 const abilities = ref([
   {
@@ -16,7 +16,7 @@ const abilities = ref([
     title: '3Д-ПЕЧАТЬ',
     link: '/print',
     isDevelopment: false,
-    icon: Box,
+    icon: Icon3DView,
   },
 ])
 // {
