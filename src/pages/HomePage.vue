@@ -24,9 +24,9 @@ onMounted(() => {
         <el-col :offset="3" :span="18">
           <!-- <HomeModel /> -->
           <HomeUslugi />
+          <HomeCalc />
           <HomeMilestones />
           <!-- <HomeAbout /> -->
-          <HomeCalc />
           <HomeAdvantages />
         </el-col>
       </el-row>
@@ -36,9 +36,10 @@ onMounted(() => {
       <el-row>
         <el-col :offset="0" :span="24">
           <HomeUslugi />
+          <HomeCalc />
           <HomeMilestones />
           <!-- <HomeAbout /> -->
-          <HomeCalc />
+
           <HomeAdvantages />
         </el-col>
       </el-row>

@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
 import Select from '../ui/Select.vue'
+import Button from '../ui/Button.vue'
 
 type UploadFile = {
   name: string
@@ -60,7 +61,7 @@ const submit = () => {
     
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
-        <div class="section-title">Производство под вашу потребность</div>
+        <div style="font-size: 40px; font-weight: 700;">Производство под вашу потребность</div>
         <p class="lead">
           Проведем расчет стоимости детали по 3D-модели в течении 5 рабочих дней, а также вы
           получите анализ и рекомендации по оптимизации процесса изготовления
@@ -75,29 +76,31 @@ const submit = () => {
           <el-form-item>
             <el-input v-model="formModel.phone" placeholder="Телефон" />
           </el-form-item> -->
-          <UploadDrawings2 color="#fff" />
+          <UploadDrawings color="#000" />
+          <div style="margin-top: 10px;">
+            <el-form-item>
+              <Select
+                v-model="selectedOrderType"
+                placeholder="Добавить деталь"
+                width="100%"
+                @change="handleOrderTypeChange"
+              >
+                <el-option
+                  v-for="option in orderTypeOptions"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </Select>
+            </el-form-item>
+          </div>
 
-          <el-form-item>
-            <Select
-              v-model="selectedOrderType"
-              placeholder="Добавить деталь"
-              width="100%"
-              @change="handleOrderTypeChange"
-            >
-              <el-option
-                v-for="option in orderTypeOptions"
-                :key="option.value"
-                :label="option.label"
-                :value="option.value"
-              />
-            </Select>
-          </el-form-item>
 
           <!-- <div class="formats">Форматы: TIF, PDF, JPG</div>
  -->
-          <el-button type="primary" class="submit-btn" :loading="isSubmitting" @click="submit">
+          <Button :loading="isSubmitting" @click="submit">
             Отправить
-          </el-button>
+          </Button>
 
           <!-- <ul v-if="selectedFiles.length" class="files-list">
             <li v-for="f in selectedFiles" :key="f.name">{{ f.name }}</li>
