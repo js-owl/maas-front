@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import IconMech from '../../icons/IconMech.vue'
 import Icon3DView from '../../icons/Icon3DView.vue'
+import IconPKM from '../../icons/IconPKM.vue'
 
 const abilities = ref([
   {
@@ -18,14 +19,22 @@ const abilities = ref([
     isDevelopment: false,
     icon: Icon3DView,
   },
+  {
+    id: 3,
+    title: 'ПОЛИМЕРНО- КОМПОЗИТНЫЙ МАТЕРИАЛ',
+    link: '/other',
+    isDevelopment: false,
+    icon: IconPKM,
+  },
+  {
+    id: 4,
+    title: 'НАНЕСЕНИЕ ЛКМ',
+    link: '/other',
+    isDevelopment: false,
+    icon: IconPKM,
+  },
 ])
-// {
-//   id: 3,
-//   title: 'Нанесение покрытий',
-//   link: null,
-//   isDevelopment: true,
-//   imagePath: null,
-// },
+
 // {
 //   id: 4,
 //   title: 'Производство из композитных материалов',
