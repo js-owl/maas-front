@@ -4,6 +4,7 @@ import IconMech from '../../icons/IconMech.vue'
 import Icon3DView from '../../icons/Icon3DView.vue'
 import IconPKM from '../../icons/IconPKM.vue'
 import IconLKM from '../../icons/IconLKM.vue'
+import IconIspitaniya from '../../icons/IconIspitaniya.vue'
 
 const abilities = ref([
   {
@@ -34,29 +35,21 @@ const abilities = ref([
     isDevelopment: false,
     icon: IconLKM,
   },
+  {
+    id: 5,
+    title: 'ИСПЫТАТЕЛЬНЫЕ РЕСУРСЫ',
+    link: '/other',
+    isDevelopment: false,
+    icon: IconIspitaniya,
+  },
+  {
+    id: 6,
+    title: 'ЛАБОРАТОРНЫЕ ИССЛЕДОВАНИЯ',
+    link: '/other',
+    isDevelopment: false,
+    icon: IconLKM,
+  },
 ])
-
-// {
-//   id: 4,
-//   title: 'Производство из композитных материалов',
-//   link: null,
-//   isDevelopment: true,
-//   imagePath: null,
-// },
-// {
-//   id: 5,
-//   title: 'Сварочное производство',
-//   link: null,
-//   isDevelopment: true,
-//   imagePath: null,
-// },
-// {
-//   id: 6,
-//   title: 'Лабораторные исследования',
-//   link: null,
-//   isDevelopment: true,
-//   imagePath: null,
-// },
 </script>
 
 <template>
