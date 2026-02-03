@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import IconMech from '../../icons/IconMech.vue'
 import Icon3DView from '../../icons/Icon3DView.vue'
 import IconPKM from '../../icons/IconPKM.vue'
+import IconLKM from '../../icons/IconLKM.vue'
 
 const abilities = ref([
   {
@@ -31,7 +32,7 @@ const abilities = ref([
     title: 'НАНЕСЕНИЕ ЛКМ',
     link: '/other',
     isDevelopment: false,
-    icon: IconPKM,
+    icon: IconLKM,
   },
 ])
 
