@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Setting, Box } from '@element-plus/icons-vue'
+import { Box } from '@element-plus/icons-vue'
+import IconMech from '../../icons/IconMech.vue'
 
 const abilities = ref([
   {
@@ -8,7 +9,7 @@ const abilities = ref([
     title: 'МЕХАНИЧЕСКАЯ ОБРАБОТКА',
     link: '/mechanical',
     isDevelopment: false,
-    icon: Setting,
+    icon: IconMech,
   },
   {
     id: 2,
