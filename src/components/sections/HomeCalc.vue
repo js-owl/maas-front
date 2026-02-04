@@ -4,11 +4,7 @@ import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
 import Select from '../ui/Select.vue'
 import Button from '../ui/Button.vue'
-
-type UploadFile = {
-  name: string
-  size: number
-}
+import UploadFiles from '../UploadFiles.vue'
 
 const router = useRouter()
 const formModel = ref({
@@ -17,7 +13,7 @@ const formModel = ref({
 })
 
 const isSubmitting = ref(false)
-const selectedFiles = ref<UploadFile[]>([])
+let document_ids = ref<number[]>([])
 const selectedOrderType = ref<string>('')
 
 const orderTypeOptions = [
@@ -64,13 +60,7 @@ const submit = () => {
 
       <div class="calc-right">
         <el-form :model="formModel" class="calc-form" label-position="top">
-          <!-- <el-form-item>
-            <el-input v-model="formModel.name" placeholder="Имя" />
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="formModel.phone" placeholder="Телефон" />
-          </el-form-item> -->
-          <UploadFiles color="#000" />
+          <UploadFiles v-model="document_ids" color="#000" />
           <div style="margin-top: 10px;">
             <el-form-item>
               <Select
@@ -88,17 +78,9 @@ const submit = () => {
               </Select>
             </el-form-item>
           </div>
-
-
-          <!-- <div class="formats">Форматы: TIF, PDF, JPG</div>
- -->
           <Button :loading="isSubmitting" @click="submit">
             Отправить
           </Button>
-
-          <!-- <ul v-if="selectedFiles.length" class="files-list">
-            <li v-for="f in selectedFiles" :key="f.name">{{ f.name }}</li>
-          </ul> -->
         </el-form>
       </div>
     </div>
