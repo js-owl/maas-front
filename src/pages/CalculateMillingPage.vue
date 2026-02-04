@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { req_json, req_json_auth } from '../api'
+import { parseFilesQueryToIds } from '../helpers/parse-files'
 
 // import Length from "../components/coefficients/Length.vue";
 // import Width from "../components/coefficients/Width.vue";
@@ -119,36 +120,6 @@ const calculationPayload = computed(() => ({
   k_cert: payload.k_cert,
   manufacturing_cycle: payload.manufacturing_cycle,
 }))
-
-const parseFilesQueryToIds = (value: unknown): number[] => {
-  if (!value) return []
-
-  if (typeof value === 'string') {
-    const trimmed = value.trim()
-
-    // JSON-массив вида "[1,2]" или "[\"1\",\"2\"]"
-    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
-      try {
-        const parsed = JSON.parse(trimmed)
-        if (Array.isArray(parsed)) {
-          return parsed
-            .map((v) => Number(v))
-            .filter((id) => !Number.isNaN(id))
-        }
-      } catch {
-        // игнорируем ошибку и пойдём дальше
-      }
-    }
-  }
-
-  const parts: string[] = Array.isArray(value)
-    ? value.flatMap((v) => String(v).split(','))
-    : String(value).split(',')
-
-  return parts
-    .map((v) => Number(v.trim()))
-    .filter((id) => !Number.isNaN(id))
-}
 
 // Отправляем запрос на сервер при изменении значимых для расчета данных
 watch(
