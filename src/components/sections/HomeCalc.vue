@@ -21,9 +21,9 @@ const selectedFiles = ref<UploadFile[]>([])
 const selectedOrderType = ref<string>('')
 
 const orderTypeOptions = [
-  { label: 'мехобработка', value: 'milling' },
-  { label: '3D-печать', value: 'printing' },
-  { label: 'прочее', value: 'other' },
+  { label: 'мехобработка', value: '/milling' },
+  { label: '3D-печать', value: '/printing' },
+  { label: 'прочее', value: '/other' },
 ]
 
 const { width } = useWindowSize()
@@ -31,15 +31,7 @@ const isMobile = computed(() => width.value < 768)
 
 const handleOrderTypeChange = (value: string | number | boolean | object) => {
   if (!value) return
-  const valueStr = String(value)
-  const pathMap: Record<string, string> = {
-    other: '/other',
-    milling: '/milling',
-    printing: '/printing',
-  }
-  const path = pathMap[valueStr] || '/other'
-  router.push({ path })
-  selectedOrderType.value = ''
+  selectedOrderType.value = String(value)
 }
 
 // const onFilesChange = (files: FileList | null) => {
@@ -48,11 +40,13 @@ const handleOrderTypeChange = (value: string | number | boolean | object) => {
 // }
 
 const submit = () => {
-  if (!formModel.value.name || formModel.value.phone.length < 6) return
+  // if (!formModel.value.name || formModel.value.phone.length < 6) return
+  if (!selectedOrderType.value) return
+
   isSubmitting.value = true
-  setTimeout(() => {
+  router.push({ path: selectedOrderType.value }).finally(() => {
     isSubmitting.value = false
-  }, 1000)
+  })
 }
 </script>
 
@@ -81,7 +75,7 @@ const submit = () => {
             <el-form-item>
               <Select
                 v-model="selectedOrderType"
-                placeholder="Добавить деталь"
+                placeholder="Тип обработки"
                 width="100%"
                 @change="handleOrderTypeChange"
               >

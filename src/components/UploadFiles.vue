@@ -93,25 +93,31 @@ const handleCustomRequest = async (options: CustomUploadRequestOptions) => {
 
 <template>
   <div>
-    <el-upload
-      class="upload"
-      drag
-      :style="{ '--border-color': color }"
-      :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
-      :disabled="isDisabled() || isUploading"
-      :multiple="true"
-      :show-file-list="false"
-      :auto-upload="true"
-      :before-upload="handleBeforeUpload"
-      :http-request="handleCustomRequest"
+    <el-tooltip
+      content="Необходимо зарегистрироваться"
+      placement="top"
+      :disabled="!!authStore.getToken"
     >
-      <div class="custom">
-        <IconDrawing :color="color" style="display: block; width: 30px; height: 30px" />
-        <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
-          {{ isUploading ? "Загрузка..." : "Перетащите или выберите файлы для расчета" }}
+      <el-upload
+        class="upload"
+        drag
+        :style="{ '--border-color': color }"
+        :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
+        :disabled="isDisabled() || isUploading"
+        :multiple="true"
+        :show-file-list="false"
+        :auto-upload="true"
+        :before-upload="handleBeforeUpload"
+        :http-request="handleCustomRequest"
+      >
+        <div class="custom">
+          <IconDrawing :color="color" style="display: block; width: 30px; height: 30px" />
+          <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
+            {{ isUploading ? "Загрузка..." : "Перетащите или выберите файлы для расчета" }}
+          </div>
         </div>
-      </div>
-    </el-upload>
+      </el-upload>
+    </el-tooltip>
 
     <DialogLogin v-model="isLoginDialogVisible" />
   </div>
