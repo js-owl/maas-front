@@ -105,6 +105,7 @@ declare module 'vue' {
     SuitableMachines: typeof import('./src/components/SuitableMachines.vue')['default']
     UploadDrawings: typeof import('./src/components/UploadDrawings.vue')['default']
     UploadDrawings2: typeof import('./src/components/UploadDrawings2.vue')['default']
+    UploadFiles: typeof import('./src/components/UploadFiles.vue')['default']
     UploadModel: typeof import('./src/components/cad/UploadModel.vue')['default']
     UpperMenu: typeof import('./src/components/UpperMenu.vue')['default']
     VersionInfo: typeof import('./src/components/VersionInfo.vue')['default']

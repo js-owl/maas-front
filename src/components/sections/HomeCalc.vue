@@ -76,7 +76,7 @@ const submit = () => {
           <el-form-item>
             <el-input v-model="formModel.phone" placeholder="Телефон" />
           </el-form-item> -->
-          <UploadDrawings color="#000" />
+          <UploadFiles color="#000" />
           <div style="margin-top: 10px;">
             <el-form-item>
               <Select
