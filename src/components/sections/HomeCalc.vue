@@ -40,9 +40,16 @@ const submit = () => {
   if (!selectedOrderType.value) return
 
   isSubmitting.value = true
-  router.push({ path: selectedOrderType.value }).finally(() => {
-    isSubmitting.value = false
-  })
+  router
+    .push({
+      path: selectedOrderType.value,
+      query: {
+        files: JSON.stringify(document_ids.value ?? []),
+      },
+    })
+    .finally(() => {
+      isSubmitting.value = false
+    })
 }
 </script>
 
