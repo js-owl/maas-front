@@ -120,6 +120,36 @@ const calculationPayload = computed(() => ({
   manufacturing_cycle: payload.manufacturing_cycle,
 }))
 
+const parseFilesQueryToIds = (value: unknown): number[] => {
+  if (!value) return []
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+
+    // JSON-массив вида "[1,2]" или "[\"1\",\"2\"]"
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(trimmed)
+        if (Array.isArray(parsed)) {
+          return parsed
+            .map((v) => Number(v))
+            .filter((id) => !Number.isNaN(id))
+        }
+      } catch {
+        // игнорируем ошибку и пойдём дальше
+      }
+    }
+  }
+
+  const parts: string[] = Array.isArray(value)
+    ? value.flatMap((v) => String(v).split(','))
+    : String(value).split(',')
+
+  return parts
+    .map((v) => Number(v.trim()))
+    .filter((id) => !Number.isNaN(id))
+}
+
 // Отправляем запрос на сервер при изменении значимых для расчета данных
 watch(
   calculationPayload,
@@ -130,7 +160,14 @@ watch(
 )
 
 onMounted(() => {
-  if (order_id.value == 0) {
+  if (order_id.value === 0) {
+    const filesQuery = route.query.files
+
+    const ids = parseFilesQueryToIds(filesQuery)
+    if (ids.length > 0) {
+      document_ids.value = ids
+    }
+
     sendData(calculationPayload.value as unknown as IOrderPayload)
   } else {
     getOrder(order_id.value)
