@@ -133,10 +133,19 @@ watch(
 onMounted(() => {
   if (order_id.value === 0) {
     const filesQuery = route.query.files
+    const stpParam = route.query.stp
 
     const ids = parseFilesQueryToIds(filesQuery)
     if (ids.length > 0) {
       document_ids.value = ids
+    }
+
+    if (stpParam) {
+      const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
+      const parsedStpId = Number(stpId)
+      if (!Number.isNaN(parsedStpId)) {
+        file_id.value = parsedStpId
+      }
     }
 
     sendData(calculationPayload.value as unknown as IOrderPayload)
