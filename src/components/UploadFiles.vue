@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { uploadDocument, fileToBase64 } from "../api";
+import { uploadDocument, fileToBase64, uploadFile3D } from "../api";
 import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from "../stores/auth.store";
 import DialogLogin from "./dialog/DialogLogin.vue";
@@ -31,29 +31,36 @@ const isDisabled = () => {
 
 const processUploadedFile = async (file: File) => {
   const extension = file.name.split(".").pop()?.toLowerCase();
-  const base64Data = await fileToBase64(file);
-  const response = await uploadDocument(file.name, base64Data, "technical_spec");
-
-  if (!response?.ok) throw new Error("Upload failed");
-
-  const data = await response.json();
-  console.log("Document upload response:", data);
-  const id = Number(data.document_id);
-
-  if (!Array.isArray(document_ids.value)) document_ids.value = [];
-
-  if (!Number.isFinite(id)) return;
-
   const isStp = extension === "stp";
   const hasMainStp = props.stp_id != null;
 
-  // Первый STP-файл используем только как основной (stp_id)
+  const base64Data = await fileToBase64(file);
+
+  // Первый STP-файл отправляем в /files и сохраняем как основной stp_id
   if (isStp && !hasMainStp) {
+    const response = await uploadFile3D(file.name, base64Data, extension || "stp");
+    if (!response?.ok) throw new Error("Upload failed");
+
+    const data = await response.json();
+    console.log("STP upload response:", data);
+    const id = Number((data as any).id);
+    if (!Number.isFinite(id)) return;
+
     emit("update:stp_id", id);
     return;
   }
 
-  // Остальные файлы (включая последующие STP) кладём в document_ids
+  // Все остальные файлы (включая последующие STP) отправляем как документы
+  const response = await uploadDocument(file.name, base64Data, "technical_spec");
+  if (!response?.ok) throw new Error("Upload failed");
+
+  const data = await response.json();
+  console.log("Document upload response:", data);
+  const id = Number((data as any).document_id);
+
+  if (!Array.isArray(document_ids.value)) document_ids.value = [];
+  if (!Number.isFinite(id)) return;
+
   if (!document_ids.value.includes(id)) {
     document_ids.value.push(id);
   }
