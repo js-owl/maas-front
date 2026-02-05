@@ -25,6 +25,8 @@ const orderTypeOptions = [
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
 
+const hasToken = computed(() => Boolean(localStorage.getItem('token')))
+
 const handleOrderTypeChange = (value: string | number | boolean | object) => {
   if (!value) return
   selectedOrderType.value = String(value)
@@ -84,7 +86,7 @@ const submit = () => {
                 />
               </Select>
             </el-form-item>
-            <Button :loading="isSubmitting" @click="submit">
+            <Button :loading="isSubmitting" :disabled="!hasToken" @click="submit">
               Отправить
             </Button>
           </div>
