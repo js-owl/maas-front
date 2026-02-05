@@ -125,7 +125,7 @@ const handleCustomRequest = async (options: CustomUploadRequestOptions) => {
 
 <style scoped>
 .upload {
-  padding: 10px;
+  padding: 20px;
   border: 1px solid var(--bgcolor);
   background-color: var(--bgcolor) !important;
   border-radius: 6px;
