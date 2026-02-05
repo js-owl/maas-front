@@ -125,6 +125,10 @@ const submit = () => {
   margin-bottom: 12px;
 }
 
+.calc-form :deep(.el-form-item.asterisk-left.el-form-item--label-top) {
+  margin-bottom: 0;
+}
+
 .action-row {
   display: flex;
   gap: 12px;
@@ -163,15 +167,6 @@ const submit = () => {
   font-size: 20px;
   font-weight: 500;
   margin: 10px 0 14px 2px;
-}
-
-.submit-btn {
-  background: var(--bgcolor);
-  border: none;
-  padding: 20px 40px;
-  font-size: 20px;
-  font-weight: 500;
-  color: #000;
 }
 
 .files-list {
