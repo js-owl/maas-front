@@ -14,12 +14,13 @@ const { color = "white" } = defineProps({
 const authStore = useAuthStore();
 const isLoginDialogVisible = ref(false);
 const uploadingCount = ref(0);
+const fileInput = ref<HTMLInputElement>();
 
 const isUploading = computed(() => uploadingCount.value > 0);
 
 const isDisabled = () => {
   if (authStore.getToken) return false;
-  return true;
+  return isUploading.value;
 };
 
 const saveDocumentToLocalStorage = (id: number, fileName: string) => {
@@ -54,40 +55,61 @@ const processUploadedFile = async (file: File) => {
   }
 };
 
-type CustomUploadRequestOptions = {
-  file: File;
-  onSuccess?: (response: unknown, file: File) => void;
-  onError?: (error: unknown) => void;
-};
-
-const handleBeforeUpload = () => {
+const handleFilesUpload = async (files: FileList | File[]) => {
   if (!authStore.getToken) {
     isLoginDialogVisible.value = true;
-    return false;
-  }
-  return true;
-};
-
-const handleCustomRequest = async (options: CustomUploadRequestOptions) => {
-  if (!authStore.getToken) {
-    isLoginDialogVisible.value = true;
-    options.onError?.(new Error("Unauthorized"));
     return;
   }
 
-  uploadingCount.value += 1;
+  const list = Array.from(files);
 
-  try {
-    await processUploadedFile(options.file);
-    ElMessage.success("Документ успешно загружен!");
-    options.onSuccess?.({}, options.file);
-  } catch (error) {
-    console.error("Document upload error:", error);
-    ElMessage.error("Ошибка загрузки документа");
-    options.onError?.(error);
-  } finally {
-    uploadingCount.value -= 1;
+  for (const file of list) {
+    uploadingCount.value += 1;
+    try {
+      await processUploadedFile(file);
+      ElMessage.success("Документ успешно загружен!");
+    } catch (error) {
+      console.error("Document upload error:", error);
+      ElMessage.error("Ошибка загрузки документа");
+    } finally {
+      uploadingCount.value -= 1;
+    }
   }
+};
+
+const handleFileChange = (event: Event) => {
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true;
+    return;
+  }
+
+  const target = event.target as HTMLInputElement;
+  const files = target.files;
+  if (files && files.length) handleFilesUpload(files);
+  if (target) target.value = "";
+};
+
+const handleUploadClick = () => {
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true;
+    return;
+  }
+
+  fileInput.value?.click();
+};
+
+const handleDrop = (event: DragEvent) => {
+  event.preventDefault();
+  if (!authStore.getToken) {
+    isLoginDialogVisible.value = true;
+    return;
+  }
+  const files = event.dataTransfer?.files;
+  if (files && files.length) handleFilesUpload(files);
+};
+
+const handleDragOver = (event: DragEvent) => {
+  event.preventDefault();
 };
 </script>
 
@@ -98,25 +120,29 @@ const handleCustomRequest = async (options: CustomUploadRequestOptions) => {
       placement="top"
       :disabled="!!authStore.getToken"
     >
-      <el-upload
+      <div
         class="upload"
-        drag
         :style="{ '--border-color': color }"
         :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
-        :disabled="isDisabled() || isUploading"
-        :multiple="true"
-        :show-file-list="false"
-        :auto-upload="true"
-        :before-upload="handleBeforeUpload"
-        :http-request="handleCustomRequest"
+        @click="handleUploadClick"
+        @drop="handleDrop"
+        @dragover="handleDragOver"
       >
         <div class="custom">
           <IconDrawing :color="color" style="display: block; width: 30px; height: 30px" />
           <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
             {{ isUploading ? "Загрузка..." : "Перетащите или выберите файлы для расчета" }}
           </div>
+          <input
+            type="file"
+            @change="handleFileChange"
+            style="display: none"
+            ref="fileInput"
+            multiple
+            :disabled="isDisabled() || isUploading"
+          />
         </div>
-      </el-upload>
+      </div>
     </el-tooltip>
 
     <DialogLogin v-model="isLoginDialogVisible" />
