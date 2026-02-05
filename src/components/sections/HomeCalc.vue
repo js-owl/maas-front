@@ -68,7 +68,7 @@ const submit = () => {
       <div class="calc-right">
         <el-form :model="formModel" class="calc-form" label-position="top">
           <UploadFiles v-model="document_ids" color="#000" />
-          <div style="margin-top: 10px;">
+          <div class="action-row">
             <el-form-item>
               <Select
                 v-model="selectedOrderType"
@@ -84,10 +84,10 @@ const submit = () => {
                 />
               </Select>
             </el-form-item>
+            <Button :loading="isSubmitting" @click="submit">
+              Отправить
+            </Button>
           </div>
-          <Button :loading="isSubmitting" @click="submit">
-            Отправить
-          </Button>
         </el-form>
       </div>
     </div>
@@ -123,6 +123,16 @@ const submit = () => {
 
 .calc-form :deep(.el-form-item) {
   margin-bottom: 12px;
+}
+
+.action-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.action-row > * {
+  flex: 1 1 50%;
 }
 
 .upload-row {
@@ -184,6 +194,10 @@ const submit = () => {
 @media (max-width: 768px) {
   .calc-right {
     padding: 16px;
+  }
+
+  .action-row {
+    flex-direction: column;
   }
 }
 </style>
