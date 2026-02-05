@@ -5,8 +5,11 @@ import { useWindowSize } from '@vueuse/core'
 import Select from '../ui/Select.vue'
 import Button from '../ui/Button.vue'
 import UploadFiles from '../UploadFiles.vue'
+import { useAuthStore } from '../../stores/auth.store'
 
 const router = useRouter()
+const authStore = useAuthStore()
+
 const formModel = ref({
   name: '',
   phone: '',
@@ -25,7 +28,7 @@ const orderTypeOptions = [
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
 
-const hasToken = computed(() => Boolean(localStorage.getItem('token')))
+const hasToken = computed(() => Boolean(authStore.getToken))
 
 const handleOrderTypeChange = (value: string | number | boolean | object) => {
   if (!value) return
