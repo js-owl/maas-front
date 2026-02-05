@@ -42,12 +42,15 @@ const processUploadedFile = async (file: File) => {
 
   if (!Array.isArray(document_ids.value)) document_ids.value = [];
 
-  if (Number.isFinite(id)) {
-    if (!document_ids.value.includes(id)) {
-      document_ids.value.push(id);
-    }
+  if (!Number.isFinite(id)) return;
 
-    if (extension === "stp") emit("update:stp_id", id);
+  if (extension === "stp") {
+    emit("update:stp_id", id);
+    return;
+  }
+
+  if (!document_ids.value.includes(id)) {
+    document_ids.value.push(id);
   }
 };
 
