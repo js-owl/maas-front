@@ -7,9 +7,14 @@ import DialogLogin from "./dialog/DialogLogin.vue";
 import { ElMessage } from "element-plus";
 
 const document_ids = defineModel<number[]>({ default: [] });
-const { color = "white" } = defineProps({
-  color: String,
-});
+const props = defineProps<{
+  color?: string;
+  stp_id?: number | null;
+}>();
+
+const emit = defineEmits<{
+  (e: "update:stp_id", value: number | null): void;
+}>();
 
 const authStore = useAuthStore();
 const isLoginDialogVisible = ref(false);
@@ -23,21 +28,9 @@ const isDisabled = () => {
   return isUploading.value;
 };
 
-const saveDocumentToLocalStorage = (id: number, fileName: string) => {
-  const documentInfo = { id, original_filename: fileName };
-  try {
-    const stored = localStorage.getItem("uploaded_documents");
-    const documents = stored ? JSON.parse(stored) : [];
-    if (!documents.find((d: any) => d.id === id)) {
-      documents.push(documentInfo);
-      localStorage.setItem("uploaded_documents", JSON.stringify(documents));
-    }
-  } catch (e) {
-    console.error("Error saving document to storage:", e);
-  }
-};
 
 const processUploadedFile = async (file: File) => {
+  const extension = file.name.split(".").pop()?.toLowerCase();
   const base64Data = await fileToBase64(file);
   const response = await uploadDocument(file.name, base64Data, "technical_spec");
 
@@ -49,9 +42,12 @@ const processUploadedFile = async (file: File) => {
 
   if (!Array.isArray(document_ids.value)) document_ids.value = [];
 
-  if (Number.isFinite(id) && !document_ids.value.includes(id)) {
-    document_ids.value.push(id);
-    saveDocumentToLocalStorage(id, file.name);
+  if (Number.isFinite(id)) {
+    if (!document_ids.value.includes(id)) {
+      document_ids.value.push(id);
+    }
+
+    if (extension === "stp") emit("update:stp_id", id);
   }
 };
 

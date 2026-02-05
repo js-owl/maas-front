@@ -17,6 +17,7 @@ const formModel = ref({
 
 const isSubmitting = ref(false)
 let document_ids = ref<number[]>([])
+const stp_id = ref<number | null>(null)
 const selectedOrderType = ref<string>('')
 
 const orderTypeOptions = [
@@ -49,6 +50,7 @@ const submit = () => {
     .push({
       path: selectedOrderType.value,
       query: {
+        stp: stp_id.value != null ? String(stp_id.value) : undefined,
         files: JSON.stringify(document_ids.value ?? []),
       },
     })
@@ -72,7 +74,7 @@ const submit = () => {
 
       <div class="calc-right">
         <el-form :model="formModel" class="calc-form" label-position="top">
-          <UploadFiles v-model="document_ids" color="#000" />
+          <UploadFiles v-model="document_ids" color="#000" v-model:stp_id="stp_id" />
           <div class="action-row">
             <el-form-item>
               <Select
