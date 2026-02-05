@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { req_json, req_json_auth } from '../api'
+import { parseFilesQueryToIds } from '../helpers/parse-files'
 
 // import Length from "../components/coefficients/Length.vue";
 // import Width from "../components/coefficients/Width.vue";
@@ -164,7 +165,14 @@ watch(
 )
 
 onMounted(() => {
-  if (order_id.value == 0) {
+  if (order_id.value === 0) {
+    const filesQuery = route.query.files
+
+    const ids = parseFilesQueryToIds(filesQuery)
+    if (ids.length > 0) {
+      document_ids.value = ids
+    }
+
     sendData(calculationPayload.value as unknown as IOrderPayload)
   } else {
     getOrder(order_id.value)
