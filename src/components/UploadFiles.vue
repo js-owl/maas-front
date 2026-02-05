@@ -157,6 +157,10 @@ const handleDragOver = (event: DragEvent) => {
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .upload:hover:not(.is-disabled) {
