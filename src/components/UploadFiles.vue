@@ -44,11 +44,16 @@ const processUploadedFile = async (file: File) => {
 
   if (!Number.isFinite(id)) return;
 
-  if (extension === "stp") {
+  const isStp = extension === "stp";
+  const hasMainStp = props.stp_id != null;
+
+  // Первый STP-файл используем только как основной (stp_id)
+  if (isStp && !hasMainStp) {
     emit("update:stp_id", id);
     return;
   }
 
+  // Остальные файлы (включая последующие STP) кладём в document_ids
   if (!document_ids.value.includes(id)) {
     document_ids.value.push(id);
   }
