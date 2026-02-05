@@ -96,17 +96,19 @@ const submit = () => {
 
 <style scoped>
 .calc-wrap {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 24px;
-  align-items: start;
+  align-items: flex-start;
+  /* height: 500px; */
 }
 
 .calc-wrap.mobile {
-  grid-template-columns: 1fr;
+  flex-direction: column;
 }
+
 .calc-left{
   padding-right: 60px;
+  width: 60%;
 }
 .calc-left .lead {
   color: #4c4c4c;
@@ -118,7 +120,8 @@ const submit = () => {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  padding: 20px;
+  /* padding: 20px; */
+  /* flex: 1 1 50%; */
 }
 
 .calc-form :deep(.el-form-item) {
