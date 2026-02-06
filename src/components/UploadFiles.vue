@@ -190,9 +190,15 @@ const handleDragOver = (event: DragEvent) => {
 
 .custom {
   display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-wrap: wrap;
+}
+
+.custom .el-upload__text {
+  text-align: center;
 }
 </style>
 
