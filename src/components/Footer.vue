@@ -275,6 +275,7 @@ import VersionInfo from "./VersionInfo.vue";
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 4px;
+  color: #fff;
 }
 
 .footer-link {

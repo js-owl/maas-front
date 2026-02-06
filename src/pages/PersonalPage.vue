@@ -67,6 +67,11 @@ onMounted(async () => {
   border-right: 0;
 }
 
+:deep(.menu .el-menu-item) {
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .content {
   background: #fff;
   /* border: 1px solid var(--el-border-color); */
