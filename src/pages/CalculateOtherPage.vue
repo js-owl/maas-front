@@ -167,10 +167,19 @@ watch(
 onMounted(() => {
   if (order_id.value === 0) {
     const filesQuery = route.query.files
+    const stpParam = route.query.stp
 
     const ids = parseFilesQueryToIds(filesQuery)
     if (ids.length > 0) {
       document_ids.value = ids
+    }
+
+    if (stpParam) {
+      const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
+      const parsedStpId = Number(stpId)
+      if (!Number.isNaN(parsedStpId)) {
+        file_id.value = parsedStpId
+      }
     }
 
     sendData(calculationPayload.value as unknown as IOrderPayload)
@@ -286,7 +295,7 @@ async function getOrder(id: number) {
       </el-row> -->
       <el-row :gutter="5" class="upload-section">
         <el-col :span="24" class="upload-title"> Загрузите файлы для расчета </el-col>
-        <el-col :span="24" class="upload-model">
+        <el-col v-if="file_id === undefined" :span="24" class="upload-model">
           <UploadModel v-model="file_id" color="#000" />
         </el-col>
         <el-col :span="24" class="upload-drawings">
