@@ -1,67 +1,65 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
 import VersionInfo from "./VersionInfo.vue";
-
-// const store = useUserStore();
-
-const activeIndex = ref("1");
-const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath);
-};
-let color = ref("");
-onMounted(() => {
-  const rootStyles = getComputedStyle(document.documentElement);
-  color.value = rootStyles.getPropertyValue("--gray-footer").trim();
-});
 </script>
 
 <template>
   <el-row :gutter="0" class="footer-row">
     <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
       <div class="footer-container">
-        <div class="left-section">
-          <el-menu
-            :default-active="activeIndex"
-            class="el-menu-demo"
-            mode="horizontal"
-            :ellipsis="false"
-            :background-color="color"
-            text-color="#fff"
-            active-text-color="#fff"
-            :router="true"
-            @select="handleSelect"
-          >
-            <el-menu-item
-              index="/"
-              :route="{ path: '/' }"
-              class="first-element"
-            >
-              ЦКП
-            </el-menu-item>
-          </el-menu>
+        <div class="footer-logo-column">
+          <div class="footer-logo">
+            <span class="footer-logo-badge">АЭРОМАКС</span>
+          </div>
 
-          <div class="vertical-links">
-            <router-link to="/license" class="vertical-link">
-              Политика обработки персональных данных
+          <div class="footer-links-list">
+            <router-link to="/license" class="footer-link">
+              Политика конфиденциальности
             </router-link>
-            <router-link to="/offer-client" class="vertical-link">
-              Публичная оферта для клиентов
+            <router-link to="/license#cookies" class="footer-link">
+              Политика использования cookies и метрических программ
+            </router-link>
+            <router-link to="/offer-client#agreement" class="footer-link">
+              Пользовательское соглашение
             </router-link>
           </div>
         </div>
 
-        <div class="right-section">
-          <div class="calculator-links">
-            <router-link to="/machining2" class="vertical-link">
-              Калькулятор стоимости токарной обработки
+        <div class="footer-columns">
+          <div class="footer-column">
+            <div class="footer-column-title">Услуги</div>
+            <router-link to="/mechanical" class="footer-link">
+              Механообработка
             </router-link>
-            <router-link to="/milling2" class="vertical-link">
-              Калькулятор стоимости фрезерной обработки
+            <router-link to="/other" class="footer-link">
+              Листовая обработка
+            </router-link>
+            <router-link to="/print" class="footer-link">
+              3D-печать
             </router-link>
           </div>
-          
-          <div class="version-section">
-            <VersionInfo />
+
+          <div class="footer-column">
+            <div class="footer-column-title">Библиотека знаний</div>
+            <router-link to="/" class="footer-link">
+              Клиентам
+            </router-link>
+            <router-link to="/" class="footer-link">
+              FAQ
+            </router-link>
+          </div>
+
+          <div class="footer-column footer-column-contacts">
+            <div class="footer-column-title">Контакты</div>
+            <a href="mailto:Maas.mail@aeromax.ru" class="footer-link">
+              Maas.mail@aeromax.ru
+            </a>
+            <a href="tel:88005353535" class="footer-link">
+              8 800 535 35 35
+            </a>
+
+            <div class="version-section">
+              <VersionInfo />
+            </div>
           </div>
         </div>
       </div>
@@ -222,6 +220,117 @@ onMounted(() => {
   .first-element {
     font-size: 22px;
     margin-right: 0 !important;
+  }
+}
+
+/* New footer layout matching design */
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 60px;
+}
+
+.footer-logo-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 260px;
+}
+
+.footer-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 32px;
+  border-radius: 8px;
+  background-color: #70767b;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #fff;
+}
+
+.footer-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-columns {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.footer-column-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.footer-link {
+  color: #fff;
+  font-size: 16px;
+  text-decoration: none;
+  line-height: 1.5;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
+
+.version-section {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 1200px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+  }
+
+  .footer-columns {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 767px) {
+  .footer-container {
+    gap: 24px;
+  }
+
+  .footer-columns {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-logo-column {
+    min-width: 0;
+  }
+
+  .footer-link {
+    font-size: 14px;
+  }
+
+  .footer-logo-badge {
+    font-size: 20px;
+    padding-inline: 24px;
   }
 }
 </style>
