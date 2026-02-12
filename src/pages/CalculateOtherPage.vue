@@ -265,119 +265,120 @@ async function getOrder(id: number) {
 </script>
 
 <template>
-  <Loader
-    :loading="isLoading"
-    text="Расчет цены..."
-  >
+  <Loader :loading="isLoading" text="Расчет цены...">
     <el-row :gutter="0" class="main-container">
-    <!-- 1. Левая часть -->
-    <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
-      <div class="title-text">
-        <div v-if="order_id != 0" class="title-input-wrapper">
-          <el-input
-            v-model="order_code"
-            placeholder="Код заказа"
-            class="title-input code-input"
-            style="margin-top: 8px"
-          />
-          <el-input v-model="order_name" placeholder="Название заказа" class="title-input" />
-          {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
+      <!-- 1. Левая часть -->
+      <el-col :offset="3" :span="8" :xs="{ span: 24, offset: 0 }" class="left-section">
+        <div class="title-text">
+          <div v-if="order_id != 0" class="title-input-wrapper">
+            <el-input
+              v-model="order_code"
+              placeholder="Код заказа"
+              class="title-input code-input"
+              style="margin-top: 8px"
+            />
+            <el-input v-model="order_name" placeholder="Название заказа" class="title-input" />
+            {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
+          </div>
+          <div v-else style="font-size: 38px">ПРОЧЕЕ</div>
         </div>
-        <div v-else style="font-size: 38px;">ПРОЧЕЕ</div>
-      </div>
 
-      <CalculateResults :result="result" />
+        <CalculateResults :result="result" />
 
-      <!-- <el-row :gutter="20" class="component-section">
+        <!-- <el-row :gutter="20" class="component-section">
         <el-col :offset="0" :span="24" class="cad-section">
           <CadShowById v-model="file_id" />
         </el-col>
       </el-row> -->
-      <el-row :gutter="5" class="upload-section">
-        <el-col :span="24" class="upload-title"> Загрузите файлы для расчета </el-col>
-        <el-col v-if="file_id === undefined" :span="24" class="upload-model">
-          <UploadModel v-model="file_id" color="#000" />
-        </el-col>
-        <el-col :span="24" class="upload-drawings">
-          <UploadDrawings v-model="document_ids" color="#000" />
-        </el-col>
-        <el-col :span="24" class="upload-info"> Максимальный размер 100Мб </el-col>
-        <el-col :span="24">
-          <DocumentShowByIds v-model="document_ids" />
-        </el-col>
-      </el-row>
+        <el-row :gutter="5" class="upload-section">
+          <el-col :span="24" class="upload-title"> Загрузите файлы для расчета </el-col>
+          <el-col :span="24" class="upload-model">
+            <UploadModel v-model="file_id" color="#000" />
+          </el-col>
+          <el-col :span="24" class="upload-drawings">
+            <UploadDrawings v-model="document_ids" color="#000" />
+          </el-col>
+          <el-col :span="24" class="upload-info"> Максимальный размер 100Мб </el-col>
+          <el-col :span="24">
+            <DocumentShowByIds v-model="document_ids" />
+          </el-col>
+        </el-row>
 
-      <CalculateSubmit
-        :order-id="order_id"
-        :payload="{ ...payload } as unknown as IOrderPayload"
-        :special-instructions="special_instructions"
-        @updateResult="onUpdateResult"
-        @showInfo="isInfoVisible = true"
-      />
-    </el-col>
+        <CalculateSubmit
+          :order-id="order_id"
+          :payload="{ ...payload } as unknown as IOrderPayload"
+          :special-instructions="special_instructions"
+          @updateResult="onUpdateResult"
+          @showInfo="isInfoVisible = true"
+        />
+      </el-col>
 
-    <!-- 2. Правая часть -->
-    <el-col :span="10" :xs="{ span: 24, offset: 0 }" class="right-section">
-      <el-row :gutter="5">
-        <el-col :offset="0" :span="23" :xs="{ span: 24, offset: 0 }">
-          <MaterialMachining v-model="material_id" />
-        </el-col>
-        <el-col :offset="1" :span="5"> </el-col>
-      </el-row>
+      <!-- 2. Правая часть -->
+      <el-col :span="10" :xs="{ span: 24, offset: 0 }" class="right-section">
+        <el-row :gutter="5">
+          <el-col :offset="0" :span="23" :xs="{ span: 24, offset: 0 }">
+            <MaterialMachining v-model="material_id" />
+          </el-col>
+          <el-col :offset="1" :span="5"> </el-col>
+        </el-row>
 
-      <el-row :gutter="5">
-        <el-col :offset="0" :span="7" :xs="{ span: 24, offset: 0 }">
-          <!-- <div class="disabled-block"> -->
-          <div>
-            <CoefficientQuantity v-model="quantity" />
-          </div>
-        </el-col>
-      </el-row>
+        <el-row :gutter="5">
+          <el-col :offset="0" :span="7" :xs="{ span: 24, offset: 0 }">
+            <!-- <div class="disabled-block"> -->
+            <div>
+              <CoefficientQuantity v-model="quantity" />
+            </div>
+          </el-col>
+        </el-row>
 
-      <el-row :gutter="5">
-        <el-col :offset="0" :span="23" :xs="{ span: 24, offset: 0 }">
-          <ProcessSelect v-model="service_id" />
-        </el-col>
-        <el-col :offset="1" :span="5"> </el-col>
-      </el-row>
+        <el-row :gutter="5">
+          <el-col :offset="0" :span="23" :xs="{ span: 24, offset: 0 }">
+            <ProcessSelect v-model="service_id" />
+          </el-col>
+          <el-col :offset="1" :span="5"> </el-col>
+        </el-row>
 
-      <el-row :gutter="5" class="row-spacing-top">
-        <el-col :offset="0" :span="23">
-          <CoefficientCover v-model="cover_id" />
-        </el-col>
-      </el-row>
+        <el-row :gutter="5" class="row-spacing-top">
+          <el-col :offset="0" :span="23">
+            <CoefficientCover v-model="cover_id" />
+          </el-col>
+        </el-row>
 
-      <el-row :gutter="5" class="row-spacing-top" v-if="profileStore.profile?.username === 'admin'">
-        <el-col :offset="0" :span="23">
-          <SuitableMachines :machines="result?.suitable_machines || []" />
-        </el-col>
-      </el-row>
+        <el-row
+          :gutter="5"
+          class="row-spacing-top"
+          v-if="profileStore.profile?.username === 'admin'"
+        >
+          <el-col :offset="0" :span="23">
+            <SuitableMachines :machines="result?.suitable_machines || []" />
+          </el-col>
+        </el-row>
 
-      <el-row :gutter="5" class="row-spacing-top">
-        <el-col :offset="0" :span="23">
-          <CoefficientOtk v-model="k_otk" />
-        </el-col>
-      </el-row>
+        <el-row :gutter="5" class="row-spacing-top">
+          <el-col :offset="0" :span="23">
+            <CoefficientOtk v-model="k_otk" />
+          </el-col>
+        </el-row>
 
-      <el-row :gutter="5" class="row-spacing-both">
-        <el-col :offset="0" :span="23">
-          <CoefficientCertificate v-model="k_cert" />
-        </el-col>
-      </el-row>
-      <el-row :gutter="5" class="row-spacing-bottom">
-        <el-col :offset="0" :span="23">
-          <div class="coefficient-label">Комментарий</div>
-          <el-input
-            v-model="special_instructions"
-            type="textarea"
-            :rows="5"
-            placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
-            :input-style="{ backgroundColor: 'var(--whity)', color: 'black' }"
-          />
-        </el-col>
-      </el-row>
-    </el-col>
-    <DialogInfoPayment v-model="isInfoVisible" />
+        <el-row :gutter="5" class="row-spacing-both">
+          <el-col :offset="0" :span="23">
+            <CoefficientCertificate v-model="k_cert" />
+          </el-col>
+        </el-row>
+        <el-row :gutter="5" class="row-spacing-bottom">
+          <el-col :offset="0" :span="23">
+            <div class="coefficient-label">Комментарий</div>
+            <el-input
+              v-model="special_instructions"
+              type="textarea"
+              :rows="5"
+              placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
+              :input-style="{ backgroundColor: 'var(--whity)', color: 'black' }"
+            />
+          </el-col>
+        </el-row>
+      </el-col>
+      <DialogInfoPayment v-model="isInfoVisible" />
     </el-row>
   </Loader>
 </template>
@@ -633,4 +634,3 @@ async function getOrder(id: number) {
   }
 }
 </style>
-

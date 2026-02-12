@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { createPhoneNumberValidator, normalizePhoneInput } from '../../composables/usePhoneValidation'
+import {
+  createPhoneNumberValidator,
+  normalizePhoneInput,
+} from '../../composables/usePhoneValidation'
 import { useRegStore } from '../../stores/reg.store'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
@@ -179,8 +182,8 @@ const submitForm = async () => {
   >
     <template #header="{ titleId }">
       <div class="dialog-header">
-          <h3 :id="titleId" class="titleClass">Регистрация</h3>
-        </div>
+        <h3 :id="titleId" class="titleClass">Регистрация</h3>
+      </div>
     </template>
     <el-form
       :model="form"
@@ -192,17 +195,13 @@ const submitForm = async () => {
     >
       <el-form-item prop="user_type">
         <el-radio-group v-model="form.user_type" class="user-type-toggle">
-          <el-radio-button value="individual">Частное лицо</el-radio-button>
+          <!-- <el-radio-button value="individual">Частное лицо</el-radio-button> -->
           <el-radio-button value="legal">Компания</el-radio-button>
         </el-radio-group>
       </el-form-item>
 
       <el-form-item prop="username" :error="usernameError">
-        <el-input
-          v-model="form.username"
-          placeholder="Логин"
-          @input="usernameError = ''"
-        />
+        <el-input v-model="form.username" placeholder="Логин" @input="usernameError = ''" />
       </el-form-item>
 
       <el-form-item prop="email">
@@ -228,12 +227,7 @@ const submitForm = async () => {
       </el-form-item> -->
 
       <el-form-item prop="password">
-        <el-input
-          v-model="form.password"
-          placeholder="Пароль"
-          type="password"
-          show-password
-        />
+        <el-input v-model="form.password" placeholder="Пароль" type="password" show-password />
       </el-form-item>
 
       <el-form-item prop="confirmPassword">
@@ -246,7 +240,13 @@ const submitForm = async () => {
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" class="btn" native-type="submit" style="width: 100%; margin-top: 10px;" :loading="loading">
+        <el-button
+          type="primary"
+          class="btn"
+          native-type="submit"
+          style="width: 100%; margin-top: 10px"
+          :loading="loading"
+        >
           {{ loading ? 'Регистрация...' : 'Регистрация' }}
         </el-button>
       </el-form-item>
@@ -296,7 +296,11 @@ const submitForm = async () => {
   width: 100%;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
-:deep(.el-radio-button.is-active .el-radio-button__original-radio:not(:disabled)+.el-radio-button__inner) {
+:deep(
+    .el-radio-button.is-active
+      .el-radio-button__original-radio:not(:disabled)
+      + .el-radio-button__inner
+  ) {
   background-color: var(--gray-footer);
   border: none;
   border-radius: 5px;

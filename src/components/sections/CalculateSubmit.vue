@@ -5,7 +5,12 @@ import { ElMessage } from 'element-plus'
 import { useProfileStore, type IProfile } from '../../stores/profile.store'
 import { useAuthStore } from '../../stores/auth.store'
 import { req_json_auth } from '../../api'
-import type { IKit, IOrderPayload, IOrderPostPayload, IOrderResponse } from '../../interfaces/order.interface'
+import type {
+  IKit,
+  IOrderPayload,
+  IOrderPostPayload,
+  IOrderResponse,
+} from '../../interfaces/order.interface'
 import DialogLogin from '../dialog/DialogLogin.vue'
 import Button from '../ui/Button.vue'
 
@@ -110,7 +115,7 @@ const submitOrder = async () => {
   // Загружаем original_filename из файла
   const fileId = props.payload.file_id
   let originalFilename = fileId ? await fetchOriginalFilename(fileId) : null
-  
+
   // Отрезаем расширение (все, что после последней точки)
   if (originalFilename) {
     const lastDotIndex = originalFilename.lastIndexOf('.')
@@ -151,7 +156,7 @@ const submitOrder = async () => {
           kit_name: data.order_name || originalFilename || '',
           order_ids: [data.order_id],
           user_id: data.user_id,
-          quantity: data.quantity,
+          quantity: 1,
           status: 'pending',
           bitrix_deal_id: 1,
           location: data.total_price_breakdown?.location || '',
@@ -189,7 +194,7 @@ const submitOrder = async () => {
   }
 
   emit('showInfo')
-  
+
   const targetKitId = kitId.value
   if (targetKitId > 0) {
     router.push({
