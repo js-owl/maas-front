@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import MachLathe from '../sections/MachLathe.vue'
+import MachLathe from '../components/sections/uslugi/MachLathe.vue'
 </script>
 
 <template>

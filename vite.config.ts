@@ -1,4 +1,5 @@
 import { defineConfig, loadEnv } from 'vite'
+import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
@@ -25,6 +26,11 @@ export default defineConfig(({ mode }) => {
   }
   
   return {
+    resolve: {
+      alias: {
+        '@': path.resolve(process.cwd(), 'src'),
+      },
+    },
     base: mode === 'production' ? (env.VITE_BASE_PATH || '/') : (env.VITE_BASE_PATH || '/site-dev/'),
     define: {
       __VERSION__: JSON.stringify(process.env.npm_package_version || '3.0.0'),
