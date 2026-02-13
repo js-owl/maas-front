@@ -16,7 +16,7 @@
         </div>
 
         <div class="image-wrapper">
-          <img src="/lathe.png" alt="Токарная обработка" class="lathe-image" />
+          <img src="/uslugiPages/lathe.png" alt="Токарная обработка" class="lathe-image" />
         </div>
       </div>
 

@@ -77,7 +77,7 @@ declare module 'vue' {
     InputEdit: typeof import('./src/components/ui/InputEdit.vue')['default']
     Length: typeof import('./src/components/coefficients/Length.vue')['default']
     Loader: typeof import('./src/components/ui/Loader.vue')['default']
-    MachLathe: typeof import('./src/components/sections/uslugi/MachLathe.vue')['default']
+    MachLathe: typeof import('./src/components/sections/uslugi/UslugiLathe.vue')['default']
     MaterialMachining: typeof import('./src/components/materials/MaterialMachining.vue')['default']
     MaterialMilling: typeof import('./src/components/materials/MaterialMilling.vue')['default']
     MaterialPrinting: typeof import('./src/components/materials/MaterialPrinting.vue')['default']
@@ -108,6 +108,7 @@ declare module 'vue' {
     UploadFiles: typeof import('./src/components/UploadFiles.vue')['default']
     UploadModel: typeof import('./src/components/cad/UploadModel.vue')['default']
     UpperMenu: typeof import('./src/components/UpperMenu.vue')['default']
+    UslugiLathe: typeof import('./src/components/sections/uslugi/UslugiLathe.vue')['default']
     VersionInfo: typeof import('./src/components/VersionInfo.vue')['default']
     Width: typeof import('./src/components/coefficients/Width.vue')['default']
   }

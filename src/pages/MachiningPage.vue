@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import MachLathe from '../components/sections/uslugi/MachLathe.vue'
+import UslugiLathe from '../components/sections/uslugi/UslugiLathe.vue'
 </script>
 
 <template>
   <div class="main-container">
 
     <el-row>
-      <MachLathe />
+      <UslugiLathe />
       <!-- Фрезерная обработка -->
       <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
         <div class="content-wrapper">
