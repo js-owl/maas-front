@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/', component: HomePage, name: 'home' },
   {
     path: '/mechanical',
-    component: () => import('./pages/MachiningPage.vue'),
+    component: () => import('./pages/UslugiMechPage.vue'),
   },
   {
     path: '/print',
@@ -20,7 +20,7 @@ const routes: RouteRecordRaw[] = [
   },
   // {
   //   path: '/mach',
-  //   component: () => import('./pages/MachiningPage.vue'),
+  //   component: () => import('./pages/UslugiMechPage.vue'),
   //   name: 'mach',
   // },
   {
