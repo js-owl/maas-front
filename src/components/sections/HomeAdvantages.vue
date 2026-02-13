@@ -76,7 +76,7 @@ const isMobile = computed(() => width.value <= 767)
   /* align-items: center; */
   width: 100%;
   height: 100%;
-  background-color: #e1e4e6;
+  background-color: var(--bgcolor);
   border-radius: 10px;
   overflow: hidden;
 }

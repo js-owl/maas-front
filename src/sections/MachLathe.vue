@@ -131,7 +131,7 @@
 }
 
 .requirements-table thead {
-  background-color: #eef3fb;
+  background-color: var(--bgcolor);
 }
 .requirements-table th{
   font-size: 24px;

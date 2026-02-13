@@ -116,7 +116,7 @@ const abilities = ref([
 }
 
 .card-development {
-  background: #e1e4e6;
+  background: var(--bgcolor);
 }
 
 .card-link {
