@@ -15,34 +15,41 @@
           пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
         </div>
 
-        <div class="calculator-card" @click="$router.push('/other')">
-          <div class="calculator-text">Калькулятор стоимости токарной обработки</div>
-          <img src="/calc.webp" alt="calculator icon" class="calculator-icon" />
+        <div class="image-wrapper">
+          <img src="/lathe.png" alt="Токарная обработка" class="lathe-image" />
         </div>
       </div>
 
       <div class="technical-requirements">
-        <div class="requirements-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
+        <div class="main-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
 
-        <div class="requirements-grid">
-          <div class="requirement-column">
-            <div class="requirement-title">Оборудование</div>
-            <div class="requirement-item">Токарно-винторезные станки</div>
-            <div class="requirement-item">Станок с ЧПУ</div>
-          </div>
-
-          <div class="requirement-column">
-            <div class="requirement-title">Максимальный размер</div>
-            <div class="requirement-item">Длина до 1000 мм</div>
-            <div class="requirement-item">Диаметр до 600 мм</div>
-          </div>
-
-          <div class="requirement-column">
-            <div class="requirement-title">Материалы</div>
-            <div class="requirement-item">Нержавеющие, легированные стали</div>
-            <div class="requirement-item">Полиамиды, фторопласт</div>
-            <div class="requirement-item">Алюминиевые, бронзовые, медные сплавы</div>
-          </div>
+        <div class="requirements-table-wrapper">
+          <table class="requirements-table">
+            <thead>
+              <tr>
+                <th>Оборудование</th>
+                <th>Максимальный размер</th>
+                <th>Материалы</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Токарно-винторезные станки</td>
+                <td>Длина до 1000 мм</td>
+                <td rowspan="2">
+                  <ul class="materials-list">
+                    <li>Нержавеющие, легированные стали</li>
+                    <li>Полиамиды, фторопласт</li>
+                    <li>Алюминиевые, бронзовые, медные сплавы</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>Станок с ЧПУ</td>
+                <td>Диаметр до 600 мм</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -59,7 +66,7 @@
 }
 
 .main-title {
-  font-size: 48px;
+  font-size: 28px;
   font-weight: 700;
   color: #000;
   text-transform: uppercase;
@@ -69,7 +76,7 @@
 
 .description-section {
   display: flex;
-  gap: 120px;
+  gap: 80px;
   margin-bottom: 60px;
   align-items: flex-start;
 }
@@ -77,39 +84,24 @@
 .description-text {
   flex: 1;
   font-size: 22px;
+  font-weight: 400;
   line-height: 1.6;
   color: #000;
   text-align: justify;
 }
 
-.calculator-card {
+.image-wrapper {
+  flex: 0 0 420px;
   display: flex;
-  align-items: center;
-  background-color: var(--whity);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  width: 400px;
-  cursor: pointer;
-  transition: box-shadow 0.3s ease;
+  justify-content: flex-end;
 }
 
-.calculator-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.calculator-icon {
-  width: 80px;
-  height: 80px;
-  margin-right: 20px;
-  flex-shrink: 0;
-}
-
-.calculator-text {
-  font-size: 22px;
-  font-weight: 500;
-  color: #000;
-  line-height: 1.4;
+.lathe-image {
+  max-width: 600px;
+  /* height: 260px; */
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 .technical-requirements {
@@ -125,34 +117,60 @@
   text-align: left;
 }
 
-.requirements-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
+.requirements-table-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
 }
 
-.requirement-column {
-  display: flex;
-  flex-direction: column;
+.requirements-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
-.requirement-title {
-  font-size: 18px;
+.requirements-table thead {
+  background-color: #eef3fb;
+}
+.requirements-table th{
+  font-size: 24px;
+}
+
+.requirements-table th,
+.requirements-table td {
+  padding: 16px 20px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+
+.requirements-table th {
+  font-size: 24px;
   font-weight: 600;
-  color: #000;
-  margin-bottom: 20px;
-  background-color: #d1e5ff;
-  padding: 12px 16px;
-  border-radius: 6px;
-  width: fit-content;
 }
 
-.requirement-item {
-  height: 20px;
-  font-size: 16px;
-  color: #000;
-  margin-bottom: 12px;
-  line-height: 1.4;
+.requirements-table th:last-child,
+.requirements-table td:last-child {
+  border-right: none;
+}
+
+.requirements-table tr:last-child td {
+  border-bottom: none;
+}
+
+.materials-list {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.materials-list li + li {
+  margin-top: 4px;
 }
 
 @media (max-width: 768px) {
@@ -178,20 +196,14 @@
     text-align: left;
   }
 
-  .calculator-card {
-    min-width: auto;
-    width: 100%;
-    padding: 16px;
+  .image-wrapper {
+    flex: 1;
+    justify-content: center;
   }
 
-  .calculator-icon {
-    width: 60px;
-    height: 60px;
-    margin-right: 16px;
-  }
-
-  .calculator-text {
-    font-size: 16px;
+  .lathe-image {
+    max-width: 100%;
+    height: auto;
   }
 
   .requirements-title {
@@ -203,17 +215,6 @@
   .requirements-grid {
     grid-template-columns: 1fr;
     gap: 30px;
-  }
-
-  .requirement-title {
-    font-size: 16px;
-    padding: 10px 14px;
-    margin-bottom: 16px;
-  }
-
-  .requirement-item {
-    font-size: 15px;
-    margin-bottom: 10px;
   }
 }
 </style>
