@@ -1,60 +1,16 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import MachLathe from '../sections/MachLathe.vue'
+</script>
 
 <template>
   <div class="main-container">
-    <!-- Основной контент -->
+
     <el-row>
+      <MachLathe />
+      <!-- Фрезерная обработка -->
       <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
         <div class="content-wrapper">
-          <!-- Заголовок -->
-          <div class="main-title">ТОКАРНАЯ ОБРАБОТКА</div>
 
-          <!-- Описание и калькулятор -->
-          <div class="description-section">
-            <div class="description-text">
-              Токарная обработка представляет собой механическую операцию, при которой вращающаяся
-              деталь обрабатывается режущим инструментом, последовательно снимающим слои материала.
-              Технология позволяет создавать цилиндрические, конические и сложные профилированные
-              поверхности с высокой степенью точности. Применяется в производстве металлических,
-              пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
-            </div>
-
-            <div class="calculator-card" @click="$router.push('/other')">
-              <div class="calculator-text">Калькулятор стоимости токарной обработки</div>
-              <img src="/calc.webp" alt="calculator icon" class="calculator-icon" />
-            </div>
-          </div>
-
-          <!-- Технические требования -->
-          <div class="technical-requirements">
-            <div class="requirements-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
-
-            <div class="requirements-grid">
-              <div class="requirement-column">
-                <div class="requirement-title">Оборудование</div>
-                <div class="requirement-item">Токарно-винторезные станки</div>
-                <div class="requirement-item">Станок с ЧПУ</div>
-              </div>
-
-              <div class="requirement-column">
-                <div class="requirement-title">Максимальный размер</div>
-                <div class="requirement-item">Длина до 1000 мм</div>
-                <div class="requirement-item">Диаметр до 600 мм</div>
-              </div>
-
-              <div class="requirement-column">
-                <div class="requirement-title">Материалы</div>
-                <div class="requirement-item">Нержавеющие, легированные стали</div>
-                <div class="requirement-item">Полиамиды, фторопласт</div>
-                <div class="requirement-item">Алюминиевые, бронзовые, медные сплавы</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </el-col>
-      <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-        <div class="content-wrapper">
-          <!-- Фрезерная обработка -->
           <div class="main-title">ФРЕЗЕРНАЯ ОБРАБОТКА</div>
 
           <!-- Описание и калькулятор фрезерной обработки -->
