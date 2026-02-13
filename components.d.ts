@@ -112,6 +112,7 @@ declare module 'vue' {
     UslugiLaser: typeof import('./src/components/sections/uslugi/UslugiLaser.vue')['default']
     UslugiLathe: typeof import('./src/components/sections/uslugi/UslugiLathe.vue')['default']
     UslugiMilling: typeof import('./src/components/sections/uslugi/UslugiMilling.vue')['default']
+    UslugiTooling: typeof import('./src/components/sections/uslugi/UslugiTooling.vue')['default']
     VersionInfo: typeof import('./src/components/VersionInfo.vue')['default']
     Width: typeof import('./src/components/coefficients/Width.vue')['default']
   }
