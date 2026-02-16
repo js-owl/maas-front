@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import UslugiPrint from '@/components/sections/uslugi/UslugiPrint.vue'
+import UslugiPKM from '@/components/sections/uslugi/UslugiPKM.vue'
 </script>
 
 <template>
   <div class="main-container">
     <el-row>
-      <UslugiPrint />
+      <UslugiPKM />
     </el-row>
   </div>
 </template>
