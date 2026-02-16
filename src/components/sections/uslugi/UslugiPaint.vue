@@ -15,7 +15,7 @@
         </div>
 
         <div class="image-wrapper">
-          <img src="/uslugiPages/paint.png" alt="Порошковая покраска" class="lathe-image" />
+          <img src="/uslugiPages/paint.webp" alt="Порошковая покраска" class="lathe-image" />
         </div>
       </div>
 

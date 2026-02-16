@@ -15,7 +15,7 @@
         </div>
 
         <div class="image-wrapper">
-          <img src="/uslugiPages/pkm.png" alt="Полимерно-композитные материалы" class="lathe-image" />
+          <img src="/uslugiPages/pkm.webp" alt="Полимерно-композитные материалы" class="lathe-image" />
         </div>
       </div>
 

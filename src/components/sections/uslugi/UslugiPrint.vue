@@ -19,7 +19,7 @@
         </div>
 
         <div class="image-wrapper">
-          <img src="/uslugiPages/print.png" alt="3D-печать" class="lathe-image" />
+          <img src="/uslugiPages/print.webp" alt="3D-печать" class="lathe-image" />
         </div>
       </div>
 
