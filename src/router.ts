@@ -20,7 +20,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/painting',
-    component: () => import('./pages/PaintingPage.vue'),
+    component: () => import('./pages/UslugiPaintPage.vue'),
   },
   {
     path: '/other',

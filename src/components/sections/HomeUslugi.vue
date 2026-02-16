@@ -32,7 +32,7 @@ const abilities = ref([
   {
     id: 4,
     title: 'НАНЕСЕНИЕ ЛКМ',
-    link: '/other',
+    link: '/painting',
     isDevelopment: false,
     icon: IconLKM,
   },
