@@ -15,14 +15,13 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/UslugiPrintPage.vue'),
   },
   {
+    path: '/pkm',
+    component: () => import('./pages/UslugiPKMPage.vue'),
+  },
+  {
     path: '/painting',
     component: () => import('./pages/PaintingPage.vue'),
   },
-  // {
-  //   path: '/mach',
-  //   component: () => import('./pages/UslugiMechPage.vue'),
-  //   name: 'mach',
-  // },
   {
     path: '/other',
     component: () => import('./pages/CalculateOtherPage.vue'),

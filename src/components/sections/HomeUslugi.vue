@@ -25,7 +25,7 @@ const abilities = ref([
   {
     id: 3,
     title: 'ПОЛИМЕРНО- КОМПОЗИТНЫЙ МАТЕРИАЛ',
-    link: '/other',
+    link: '/pkm',
     isDevelopment: false,
     icon: IconPKM,
   },
