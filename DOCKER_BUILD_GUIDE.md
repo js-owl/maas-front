@@ -772,7 +772,7 @@ background-image: url('banner_composite.jpg');
 background-image: url('/banner_composite.jpg');
 ```
 
-**Files updated:** `src/pages/CompositePage.vue`, `src/pages/UslugiPaintPage.vue`
+**Files updated:** `src/pages/UslugiPaintPage.vue`
 
 #### 6. Module Externalization Warnings
 **Symptoms:** Build logs show `Module "path" has been externalized for browser compatibility`
