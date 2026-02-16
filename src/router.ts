@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/print',
-    component: () => import('./pages/PrintingPage.vue'),
+    component: () => import('./pages/UslugiPrintPage.vue'),
   },
   {
     path: '/painting',
