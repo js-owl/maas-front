@@ -27,9 +27,10 @@ const loadProcesses = async () => {
   try {
     const res = await req_json('/other_services', 'GET')
     const data = (await res?.json()) as OtherServicesResponse
+    console.log({data})
 
-    if (data?.other_services && Array.isArray(data.other_services)) {
-      processes.value = data.other_services.map((item) => ({
+    if (data && Array.isArray(data)) {
+      processes.value = data.map((item) => ({
         label: item.label,
         value: item.service,
       }))
