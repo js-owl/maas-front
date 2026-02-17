@@ -39,7 +39,7 @@ const abilities = ref([
   {
     id: 5,
     title: 'ИСПЫТАТЕЛЬНЫЕ РЕСУРСЫ',
-    link: '/other',
+    link: '/test',
     isDevelopment: false,
     icon: IconIspitaniya,
   },
