@@ -183,7 +183,7 @@ import IconOptical6 from '@/icons/IconOptical6.vue'
 
 .factor-card {
   background-color: #e1e4e6;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 20px 24px;
   display: flex;
   align-items: center;
