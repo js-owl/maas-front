@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import IconExternal1 from '@/icons/IconExternal1.vue';
 import IconIspitaniya from '@/icons/IconIspitaniya.vue'
 </script>
 
@@ -11,29 +12,29 @@ import IconIspitaniya from '@/icons/IconIspitaniya.vue'
       <div class="factors-grid">
         <div class="factors-column">
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <icon-external1 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">КЛИМАТИЧЕСКИЕ (ТЕМПЕРАТУРА, ВЛАЖНОСТЬ)</div>
           </div>
 
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">ЭЛЕКТРИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
           </div>
 
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">ВОЗДЕЙСТВИЕ ПЫЛИ И ПЕСКА</div>
           </div>
         </div>
 
         <div class="factors-column">
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">МЕХАНИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
           </div>
 
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">ВОЗДЕЙСТВИЕ ВЛАГИ И СОЛЯНОГО ТУМАНА</div>
           </div>
         </div>
@@ -188,8 +189,8 @@ import IconIspitaniya from '@/icons/IconIspitaniya.vue'
 }
 
 .factor-icon {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   margin-right: 16px;
 }
 
