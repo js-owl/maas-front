@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import IconExternal1 from '@/icons/IconExternal1.vue';
 import IconExternal2 from '@/icons/IconExternal2.vue';
+import IconExternal3 from '@/icons/IconExternal3.vue';
 </script>
 
 <template>
@@ -17,12 +18,12 @@ import IconExternal2 from '@/icons/IconExternal2.vue';
           </div>
 
           <div class="factor-card">
-            <IconExternal2 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
+            <IconExternal3 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">ЭЛЕКТРИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
           </div>
 
           <div class="factor-card">
-            <IconExternal2 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
+            <IconExternal3 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">ВОЗДЕЙСТВИЕ ПЫЛИ И ПЕСКА</div>
           </div>
         </div>
@@ -173,7 +174,7 @@ import IconExternal2 from '@/icons/IconExternal2.vue';
 }
 
 .factor-card {
-  background-color: #f3f4f6;
+  background-color: #e1e4e6;
   border-radius: 8px;
   padding: 20px 24px;
   display: flex;
