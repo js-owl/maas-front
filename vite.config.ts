@@ -90,6 +90,11 @@ export default defineConfig(({ mode }) => {
           rewrite: (path) => path.replace(/^\/api\/v3/, '')
         }
       }
+    },
+    test: {
+      environment: 'jsdom',
+      globals: true,
+      include: ['src/**/*.{test,spec}.{ts,vue}']
     }
   }
 })
