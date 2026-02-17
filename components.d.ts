@@ -109,6 +109,7 @@ declare module 'vue' {
     UploadModel: typeof import('./src/components/cad/UploadModel.vue')['default']
     UpperMenu: typeof import('./src/components/UpperMenu.vue')['default']
     UslugiBending: typeof import('./src/components/sections/uslugi/UslugiBending.vue')['default']
+    UslugiEquipment: typeof import('./src/components/sections/uslugi/UslugiEquipment.vue')['default']
     UslugiExternal: typeof import('./src/components/sections/uslugi/UslugiExternal.vue')['default']
     UslugiLaser: typeof import('./src/components/sections/uslugi/UslugiLaser.vue')['default']
     UslugiLathe: typeof import('./src/components/sections/uslugi/UslugiLathe.vue')['default']
