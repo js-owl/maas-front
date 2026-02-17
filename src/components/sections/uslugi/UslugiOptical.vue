@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import IconIspitaniya from '@/icons/IconIspitaniya.vue'
+import IconOptical1 from '@/icons/IconOptical1.vue'
+import IconOptical2 from '@/icons/IconOptical2.vue'
+import IconOptical3 from '@/icons/IconOptical3.vue'
+import IconOptical4 from '@/icons/IconOptical4.vue'
+import IconOptical5 from '@/icons/IconOptical5.vue'
+import IconOptical6 from '@/icons/IconOptical6.vue'
 </script>
 
 <template>
@@ -11,34 +16,34 @@ import IconIspitaniya from '@/icons/IconIspitaniya.vue'
       <div class="factors-grid">
         <div class="factors-column">
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <IconOptical1 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">ФОТОМЕТРИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
           </div>
 
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <IconOptical3 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">СПЕКТРАЛЬНЫЕ ИЗМЕРЕНИЯ</div>
           </div>
 
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <IconOptical5 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">КОЛОРИМЕТРИЧЕСКИЕ</div>
           </div>
         </div>
 
         <div class="factors-column">
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <IconOptical2 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">РАДИОМЕТРИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
           </div>
 
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <IconOptical4 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">ВОЗДЕЙСТВИЕ КЛИМАТИЧЕСКИХ УСЛОВИЙ</div>
           </div>
 
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
+            <IconOptical6 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">КОНТРОЛЬ ОПТИЧЕСКИХ СИСТЕМ</div>
           </div>
         </div>
@@ -177,7 +182,7 @@ import IconIspitaniya from '@/icons/IconIspitaniya.vue'
 }
 
 .factor-card {
-  background-color: #f3f4f6;
+  background-color: #e1e4e6;
   border-radius: 8px;
   padding: 20px 24px;
   display: flex;
