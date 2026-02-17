@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import IconExternal1 from '@/icons/IconExternal1.vue';
-import IconIspitaniya from '@/icons/IconIspitaniya.vue'
+import IconExternal2 from '@/icons/IconExternal2.vue';
 </script>
 
 <template>
@@ -17,24 +17,24 @@ import IconIspitaniya from '@/icons/IconIspitaniya.vue'
           </div>
 
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#7d8083" />
+            <IconExternal2 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">ЭЛЕКТРИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
           </div>
 
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#7d8083" />
+            <IconExternal2 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">ВОЗДЕЙСТВИЕ ПЫЛИ И ПЕСКА</div>
           </div>
         </div>
 
         <div class="factors-column">
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#7d8083" />
+            <IconExternal2 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">МЕХАНИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
           </div>
 
           <div class="factor-card">
-            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#7d8083" />
+            <IconExternal2 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">ВОЗДЕЙСТВИЕ ВЛАГИ И СОЛЯНОГО ТУМАНА</div>
           </div>
         </div>
