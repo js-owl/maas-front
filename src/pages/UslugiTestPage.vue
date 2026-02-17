@@ -6,9 +6,6 @@ import UslugiExternal from '@/components/sections/uslugi/UslugiExternal.vue'
 <template>
   <div class="main-container">
     <el-row>
-      <UslugiPKM />
-    </el-row>
-    <el-row>
       <UslugiExternal />
     </el-row>
   </div>

@@ -1,4 +1,6 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import IconIspitaniya from '@/icons/IconIspitaniya.vue'
+</script>
 
 <template>
   <!-- Внешние воздействующие факторы -->
@@ -9,24 +11,29 @@
       <div class="factors-grid">
         <div class="factors-column">
           <div class="factor-card">
+            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
             <div class="factor-title">КЛИМАТИЧЕСКИЕ (ТЕМПЕРАТУРА, ВЛАЖНОСТЬ)</div>
           </div>
 
           <div class="factor-card">
+            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
             <div class="factor-title">ЭЛЕКТРИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
           </div>
 
           <div class="factor-card">
+            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
             <div class="factor-title">ВОЗДЕЙСТВИЕ ПЫЛИ И ПЕСКА</div>
           </div>
         </div>
 
         <div class="factors-column">
           <div class="factor-card">
+            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
             <div class="factor-title">МЕХАНИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
           </div>
 
           <div class="factor-card">
+            <IconIspitaniya class="factor-icon" :stroke-width="2.5" color="#9ca3af" />
             <div class="factor-title">ВОЗДЕЙСТВИЕ ВЛАГИ И СОЛЯНОГО ТУМАНА</div>
           </div>
         </div>
@@ -178,6 +185,12 @@
   font-weight: 700;
   color: #000;
   text-transform: uppercase;
+}
+
+.factor-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 16px;
 }
 
 @media (max-width: 768px) {
