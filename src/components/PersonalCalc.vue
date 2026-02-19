@@ -7,7 +7,7 @@ import { req_json_auth, req_json } from '../api'
 import Button from './ui/Button.vue'
 import InputEdit from './ui/InputEdit.vue'
 import CadShowById from './cad/CadShowById.vue'
-import type { IOrderResponse } from '../interfaces/order.interface'
+import type { IOrderResponse, IKit } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
 import { useCoefficientsStore } from '../stores/coefficients.store'
 
@@ -43,6 +43,9 @@ const coefficientsStore = useCoefficientsStore()
 
 // Order data storage
 const orderData = ref<IOrderResponse | null>(null)
+
+// Kit data (for status check)
+const kitData = ref<IKit | null>(null)
 
 // File ID for CAD viewer (reactive variable for v-model)
 const fileId = ref<number | null>(null)
@@ -123,6 +126,13 @@ const handleCalcInfo = () => {
     query,
   })
 }
+
+// Block "Расчет" button when kit status is pending or New
+const isCalculationDisabled = computed(() => {
+  const status = kitData.value?.status
+  if (!status) return false
+  return status === 'pending' || status === 'New' || status.toLowerCase() === 'new'
+})
 
 // Handle edit button click - navigate to edit page based on service_id (same logic as in PersonalOrder.vue)
 const handleEdit = () => {
@@ -334,12 +344,43 @@ const saveOrder = async () => {
   }
 }
 
+// Load kit data (for status)
+const fetchKit = async (id: number) => {
+  if (!id || id === 0) {
+    kitData.value = null
+    return
+  }
+  try {
+    const res = await req_json_auth(`/kits/${id}`, 'GET')
+    if (res?.ok) {
+      kitData.value = (await res.json()) as IKit
+    } else {
+      kitData.value = null
+    }
+  } catch {
+    kitData.value = null
+  }
+}
+
 // Watch for orderId changes and fetch order data
 watch(
   orderId,
   (newId) => {
     if (newId && newId > 0) {
       fetchOrder(newId)
+    }
+  },
+  { immediate: true }
+)
+
+// Watch for kitId changes and fetch kit data
+watch(
+  kitId,
+  (newKitId) => {
+    if (newKitId && newKitId > 0) {
+      fetchKit(newKitId)
+    } else {
+      kitData.value = null
     }
   },
   { immediate: true }
@@ -411,7 +452,7 @@ watch(
               Назад
             </Button>
             <div style="display: flex; gap: 8px;">
-              <Button width="200px" type="secondary" @click="handleEdit">
+              <Button width="200px" type="secondary" :disabled="isCalculationDisabled" @click="handleEdit">
                 Расчет
               </Button>
               <Button width="200px" :loading="isSaving" @click="saveOrder">
