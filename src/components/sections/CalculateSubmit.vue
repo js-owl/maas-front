@@ -53,6 +53,7 @@ const existingOrderIds = computed<number[]>(() => {
 })
 
 const isLoginDialogVisible = ref(false)
+const isSubmitting = ref(false)
 
 const isDisabled = computed(() => !authStore.getToken)
 
@@ -105,6 +106,10 @@ const submitOrder = async () => {
     return
   }
 
+  if (isSubmitting.value) return
+  isSubmitting.value = true
+
+  try {
   await ensureProfileLoaded()
   if (!isProfileComplete(profileStore.profile)) {
     ElMessage.warning('Заполните профиль перед оформлением заказа')
@@ -204,6 +209,9 @@ const submitOrder = async () => {
   } else {
     router.push({ path: '/personal/orders' })
   }
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 const cancel = () => {
@@ -227,7 +235,12 @@ const cancel = () => {
   <div style="display: flex; justify-content: space-between; align-self: flex-start">
     <Button width="250px" :disabled="isDisabled" @click="cancel"> Отменить </Button>
 
-    <Button width="250px" :disabled="isDisabled" @click="submitOrder">
+    <Button
+      width="250px"
+      :disabled="isDisabled || isSubmitting"
+      :loading="isSubmitting"
+      @click="submitOrder"
+    >
       {{ isNewOrder ? 'Оформить расчет' : 'Сохранить расчет' }}
     </Button>
   </div>
