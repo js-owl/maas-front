@@ -78,3 +78,19 @@ body {
   font-weight: 900;
   letter-spacing: -0.02em;
 }
+
+/* Обёртка контента для страниц услуг и секций */
+.uslugi-wrapper {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+  padding: 60px 80px;
+}
+
+@media (max-width: 768px) {
+  .uslugi-wrapper {
+    padding: 30px 40px;
+    margin: 0 0 40px 0;
+  }
+}

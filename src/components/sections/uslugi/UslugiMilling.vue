@@ -3,7 +3,7 @@
 <template>
   <!-- Фрезерная обработка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="content-wrapper">
+    <div class="uslugi-wrapper">
       <div class="main-title">ФРЕЗЕРНАЯ ОБРАБОТКА</div>
 
       <div class="description-section">
@@ -72,14 +72,6 @@
 </template>
 
 <style scoped>
-.content-wrapper {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
-  padding: 60px 80px;
-}
-
 .main-title {
   font-size: 28px;
   font-weight: 700;
@@ -189,11 +181,6 @@
 }
 
 @media (max-width: 768px) {
-  .content-wrapper {
-    padding: 30px 40px;
-    margin: 0 0 40px 0;
-  }
-
   .main-title {
     font-size: 28px;
     text-align: center;
