@@ -6,7 +6,7 @@
     <div class="uslugi-wrapper">
       <div class="uslugi-title">ФРЕЗЕРНАЯ ОБРАБОТКА</div>
 
-      <div class="description-section">
+      <div class="uslugi-section">
         <div class="description-text">
           Фрезерная обработка представляет собой технологический процесс, при котором специальный
           режущий инструмент (фреза) вращается и удаляет материал, создавая изделия заданной
@@ -72,13 +72,6 @@
 </template>
 
 <style scoped>
-.description-section {
-  display: flex;
-  gap: 80px;
-  margin-bottom: 60px;
-  align-items: flex-start;
-}
-
 .description-text {
   flex: 1;
   font-size: 22px;
@@ -172,12 +165,6 @@
 }
 
 @media (max-width: 768px) {
-  .description-section {
-    flex-direction: column;
-    gap: 30px;
-    margin-bottom: 40px;
-  }
-
   .description-text {
     font-size: 16px;
     text-align: left;

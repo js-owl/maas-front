@@ -6,7 +6,7 @@
     <div class="uslugi-wrapper">
       <div class="uslugi-title">ТОКАРНАЯ ОБРАБОТКА</div>
 
-      <div class="description-section">
+      <div class="uslugi-section">
         <div class="description-text">
           Токарная обработка представляет собой механическую операцию, при которой вращающаяся
           деталь обрабатывается режущим инструментом, последовательно снимающим слои материала.
@@ -57,13 +57,6 @@
 </template>
 
 <style scoped>
-.description-section {
-  display: flex;
-  gap: 80px;
-  margin-bottom: 60px;
-  align-items: flex-start;
-}
-
 .description-text {
   flex: 1;
   font-size: 22px;
@@ -157,12 +150,6 @@
 }
 
 @media (max-width: 768px) {
-  .description-section {
-    flex-direction: column;
-    gap: 30px;
-    margin-bottom: 40px;
-  }
-
   .description-text {
     font-size: 16px;
     text-align: left;

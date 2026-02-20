@@ -6,7 +6,7 @@
     <div class="uslugi-wrapper">
       <div class="uslugi-title">3D-ПЕЧАТЬ</div>
 
-      <div class="description-section">
+      <div class="uslugi-section">
         <div class="description-text">
           SLS - технология наращивания модели из полимерного материала при помощи лазера (метод
           селективного лазерного спекания). Идеально подходит для массового производства, изделия
@@ -72,13 +72,6 @@
 </template>
 
 <style scoped>
-.description-section {
-  display: flex;
-  gap: 80px;
-  margin-bottom: 60px;
-  align-items: flex-start;
-}
-
 .description-text {
   flex: 1;
   font-size: 22px;
@@ -171,12 +164,6 @@
 }
 
 @media (max-width: 768px) {
-  .description-section {
-    flex-direction: column;
-    gap: 30px;
-    margin-bottom: 40px;
-  }
-
   .description-text {
     font-size: 16px;
     text-align: left;

@@ -6,7 +6,7 @@
     <div class="uslugi-wrapper">
       <div class="uslugi-title">ЦЕХ МОДЕЛЬНОЙ ОСНАСТКИ</div>
 
-      <div class="description-section">
+      <div class="uslugi-section">
         <div class="description-text">
           Станки предназначены для обработки МДФ, дерева, фанеры, модельного пластика, композитных
           материалов.
@@ -60,13 +60,6 @@
 </template>
 
 <style scoped>
-.description-section {
-  display: flex;
-  gap: 80px;
-  margin-bottom: 60px;
-  align-items: flex-start;
-}
-
 .description-text {
   flex: 1;
   font-size: 22px;
@@ -160,12 +153,6 @@
 }
 
 @media (max-width: 768px) {
-  .description-section {
-    flex-direction: column;
-    gap: 30px;
-    margin-bottom: 40px;
-  }
-
   .description-text {
     font-size: 16px;
     text-align: left;

@@ -47,13 +47,6 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
 </template>
 
 <style scoped>
-.description-section {
-  display: flex;
-  gap: 80px;
-  margin-bottom: 60px;
-  align-items: flex-start;
-}
-
 .description-text {
   flex: 1;
   font-size: 22px;
@@ -181,12 +174,6 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
 }
 
 @media (max-width: 768px) {
-  .description-section {
-    flex-direction: column;
-    gap: 30px;
-    margin-bottom: 40px;
-  }
-
   .description-text {
     font-size: 16px;
     text-align: left;
