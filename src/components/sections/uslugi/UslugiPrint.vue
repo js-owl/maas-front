@@ -18,7 +18,7 @@
           температуры, что позволяет добиться высокого качества изделий.
         </div>
 
-        <div class="image-wrapper">
+        <div class="uslugi-image-wrapper">
           <img src="/uslugiPages/print.webp" alt="3D-печать" class="lathe-image" />
         </div>
       </div>
@@ -72,12 +72,6 @@
 </template>
 
 <style scoped>
-.image-wrapper {
-  flex: 0 0 420px;
-  display: flex;
-  justify-content: flex-end;
-}
-
 .lathe-image {
   max-width: 600px;
   object-fit: cover;
@@ -155,11 +149,6 @@
 }
 
 @media (max-width: 768px) {
-  .image-wrapper {
-    flex: 1;
-    justify-content: center;
-  }
-
   .lathe-image {
     max-width: 100%;
     height: auto;

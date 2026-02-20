@@ -47,12 +47,6 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
 </template>
 
 <style scoped>
-.image-wrapper {
-  flex: 0 0 420px;
-  display: flex;
-  justify-content: flex-end;
-}
-
 .lathe-image {
   max-width: 600px;
   /* height: 260px; */
@@ -165,11 +159,6 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
 }
 
 @media (max-width: 768px) {
-  .image-wrapper {
-    flex: 1;
-    justify-content: center;
-  }
-
   .lathe-image {
     max-width: 100%;
     height: auto;

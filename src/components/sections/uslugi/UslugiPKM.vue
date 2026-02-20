@@ -14,7 +14,7 @@
           распределением смолы.
         </div>
 
-        <div class="image-wrapper">
+        <div class="uslugi-image-wrapper">
           <img src="/uslugiPages/pkm.webp" alt="Полимерно-композитные материалы" class="lathe-image" />
         </div>
       </div>
@@ -68,12 +68,6 @@
 </template>
 
 <style scoped>
-.image-wrapper {
-  flex: 0 0 420px;
-  display: flex;
-  justify-content: flex-end;
-}
-
 .lathe-image {
   max-width: 600px;
   /* height: 260px; */
@@ -152,11 +146,6 @@
 }
 
 @media (max-width: 768px) {
-  .image-wrapper {
-    flex: 1;
-    justify-content: center;
-  }
-
   .lathe-image {
     max-width: 100%;
     height: auto;

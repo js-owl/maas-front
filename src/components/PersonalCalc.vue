@@ -470,7 +470,7 @@ watch(
         <div class="summary-card">
           <!-- Image Container -->
           <div class="image-container">
-            <div class="image-wrapper">
+            <div class="personal-wrapper">
               <div v-if="fileId" class="preview-wrapper">
                 <CadShowById v-model="fileId" />
               </div>
@@ -666,7 +666,7 @@ watch(
   justify-content: center;
 }
 
-.image-wrapper {
+.personal-wrapper {
   position: relative;
   width: 100%;
   /* background-color: #fff; */
