@@ -49,7 +49,7 @@ import VersionInfo from "./VersionInfo.vue";
           </div>
 
           <div class="footer-column footer-column-contacts">
-            <div class="footer-column-title">Контакты</div>
+            <!-- <div class="footer-column-title">Контакты</div> -->
             <!-- <a href="mailto:Maas.mail@aeromax.ru" class="footer-link">
               Maas.mail@aeromax.ru
             </a>
