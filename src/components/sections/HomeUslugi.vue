@@ -173,6 +173,39 @@ const abilities = ref([
   border: 1px solid rgba(153, 153, 153, 0.3); */
 }
 
+/* Планшет: 769px — 1024px */
+@media (min-width: 769px) and (max-width: 1500px) {
+  .section-basic {
+    margin-top: 32px !important;
+  }
+
+  .services-grid {
+    gap: 16px;
+  }
+
+  .service-card {
+    width: 100%;
+    height: 100px;
+  }
+
+  .card-content {
+    padding-left: 20px;
+    gap: 12px;
+  }
+
+  .card-icon :deep(svg) {
+    width: 40px;
+    height: 40px;
+  }
+
+  .card-title {
+    font-size: 18px;
+  }
+
+  .development-text {
+    font-size: 14px;
+  }
+}
 
 @media (max-width: 768px) {
   .services-grid {
