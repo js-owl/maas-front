@@ -274,24 +274,24 @@ function onLogout() {
         <el-menu-item index="/" :route="{ path: '/' }">Главная</el-menu-item>
         <el-sub-menu index="m1">
           <template #title>Услуги</template>
-          <el-sub-menu index="m1-1">
+          <!-- <el-sub-menu index="m1-1">
             <template #title>Мех. производство ></template>
             <el-menu-item index="/other" :route="{ path: '/other' }"
               >Токарные работы</el-menu-item
             >
             <el-menu-item index="/milling" :route="{ path: '/milling' }"
               >Фрезерные работы</el-menu-item
-            >
+            > -->
             <!-- <el-menu-item index="m1-1-5" disabled>Раскрой металла / заготовительный участок</el-menu-item> -->
             <!-- <el-menu-item index="m1-1-1" disabled>Сверлильные работы</el-menu-item> -->
             <!-- <el-menu-item index="m1-1-2" disabled>Шлифовка</el-menu-item> -->
-          </el-sub-menu>
+          <!-- </el-sub-menu> -->
           <!-- <el-menu-item index="/plastic" :route="{ path: '/plastic' }" disabled>Производство из композитных материалов</el-menu-item> -->
           <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Нанесение лакокрасочных покрытий</el-menu-item> -->
-          <el-menu-item index="/printing" :route="{ path: '/printing' }">3D печать</el-menu-item>
           <el-menu-item index="/milling" :route="{ path: '/milling' }" class="mech-menu-item"
-            >Механообработка</el-menu-item
+          >Механообработка</el-menu-item
           >
+          <el-menu-item index="/printing" :route="{ path: '/printing' }">3D печать</el-menu-item>
           <el-menu-item index="/other" :route="{ path: '/other' }">Прочее</el-menu-item>
           <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Лабораторные исследования</el-menu-item> -->
           <!-- <el-sub-menu index="m1-2" disabled>
