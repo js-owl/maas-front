@@ -50,12 +50,12 @@ import VersionInfo from "./VersionInfo.vue";
 
           <div class="footer-column footer-column-contacts">
             <div class="footer-column-title">Контакты</div>
-            <a href="mailto:Maas.mail@aeromax.ru" class="footer-link">
+            <!-- <a href="mailto:Maas.mail@aeromax.ru" class="footer-link">
               Maas.mail@aeromax.ru
             </a>
             <a href="tel:88005353535" class="footer-link">
               8 800 535 35 35
-            </a>
+            </a> -->
 
             <div class="version-section">
               <VersionInfo />
