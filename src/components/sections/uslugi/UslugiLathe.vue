@@ -16,7 +16,7 @@
         </div>
 
         <div class="uslugi-image-wrapper">
-          <img src="/uslugiPages/lathe.png" alt="Токарная обработка" class="lathe-image" />
+          <img src="/uslugiPages/lathe.png" alt="Токарная обработка" class="uslugi-image" />
         </div>
       </div>
 
@@ -57,14 +57,6 @@
 </template>
 
 <style scoped>
-.lathe-image {
-  max-width: 600px;
-  /* height: 260px; */
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
 .technical-requirements {
   margin-top: 40px;
 }
@@ -135,11 +127,6 @@
 }
 
 @media (max-width: 768px) {
-  .lathe-image {
-    max-width: 100%;
-    height: auto;
-  }
-
   .requirements-title {
     font-size: 22px;
     text-align: center;

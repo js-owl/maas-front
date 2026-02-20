@@ -114,6 +114,12 @@ body {
   display: flex;
   justify-content: flex-end;
 }
+.uslugi-image {
+  max-width: 600px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
 
 @media (max-width: 768px) {
   .uslugi-wrapper {
@@ -137,5 +143,9 @@ body {
   .uslugi-image-wrapper {
     flex: 1;
     justify-content: center;
+  }
+  .uslugi-image {
+    max-width: 100%;
+    height: auto;
   }
 }
