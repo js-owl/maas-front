@@ -11,7 +11,7 @@ import IconOptical6 from '@/icons/IconOptical6.vue'
   <!-- Оптические измерения -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="main-title">ОПТИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
+      <div class="uslugi-title">ОПТИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
 
       <div class="factors-grid">
         <div class="factors-column">
@@ -53,15 +53,6 @@ import IconOptical6 from '@/icons/IconOptical6.vue'
 </template>
 
 <style scoped>
-.main-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #000;
-  text-transform: uppercase;
-  margin-bottom: 40px;
-  text-align: left;
-}
-
 .description-section {
   display: flex;
   gap: 80px;
@@ -196,12 +187,6 @@ import IconOptical6 from '@/icons/IconOptical6.vue'
 }
 
 @media (max-width: 768px) {
-  .main-title {
-    font-size: 28px;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
   .description-section {
     flex-direction: column;
     gap: 30px;

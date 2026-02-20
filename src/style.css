@@ -79,7 +79,7 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* Обёртка контента для страниц услуг и секций */
+/* Uslugi */
 .uslugi-wrapper {
   background-color: #fff;
   border-radius: 8px;
@@ -87,10 +87,23 @@ body {
   margin-bottom: 40px;
   padding: 60px 80px;
 }
+.uslugi-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  text-align: left;
+}
 
 @media (max-width: 768px) {
   .uslugi-wrapper {
     padding: 30px 40px;
     margin: 0 0 40px 0;
+  }
+  .uslugi-title {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 30px;
   }
 }

@@ -4,7 +4,7 @@
   <!-- 3D-печать -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="main-title">3D-ПЕЧАТЬ</div>
+      <div class="uslugi-title">3D-ПЕЧАТЬ</div>
 
       <div class="description-section">
         <div class="description-text">
@@ -24,7 +24,7 @@
       </div>
 
       <div class="technical-requirements">
-        <div class="main-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
+        <div class="uslugi-title">ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ</div>
 
         <div class="requirements-table-wrapper">
           <table class="requirements-table">
@@ -72,15 +72,6 @@
 </template>
 
 <style scoped>
-.main-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #000;
-  text-transform: uppercase;
-  margin-bottom: 40px;
-  text-align: left;
-}
-
 .description-section {
   display: flex;
   gap: 80px;
@@ -180,12 +171,6 @@
 }
 
 @media (max-width: 768px) {
-  .main-title {
-    font-size: 28px;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
   .description-section {
     flex-direction: column;
     gap: 30px;
