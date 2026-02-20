@@ -127,11 +127,13 @@ const handleCalcInfo = () => {
   })
 }
 
-// Block "Расчет" button when kit status is pending or New
+// Block "Расчет" button when kit status is NOT pending and NOT New
 const isCalculationDisabled = computed(() => {
   const status = kitData.value?.status
   if (!status) return false
-  return status === 'pending' || status === 'New' || status.toLowerCase() === 'new'
+  const isPending = status === 'pending'
+  const isNew = status === 'New' || status.toLowerCase() === 'new'
+  return !isPending && !isNew
 })
 
 // Handle edit button click - navigate to edit page based on service_id (same logic as in PersonalOrder.vue)
