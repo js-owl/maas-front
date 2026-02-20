@@ -27,14 +27,14 @@ import VersionInfo from "./VersionInfo.vue";
         <div class="footer-columns">
           <div class="footer-column">
             <div class="footer-column-title">Услуги</div>
-            <router-link to="/mechanical" class="footer-link">
+            <router-link to="/milling" class="footer-link">
               Механообработка
             </router-link>
-            <router-link to="/other" class="footer-link">
-              Листовая обработка
-            </router-link>
-            <router-link to="/print" class="footer-link">
+            <router-link to="/printing" class="footer-link">
               3D-печать
+            </router-link>
+            <router-link to="/other" class="footer-link">
+              Прочее
             </router-link>
           </div>
 
