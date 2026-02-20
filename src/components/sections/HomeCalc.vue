@@ -197,6 +197,11 @@ const submit = () => {
 }
 
 @media (max-width: 768px) {
+  .calc-left{
+    padding-right: 0px;
+    width: 100%;
+  }
+
   .calc-right {
     padding: 16px;
   }

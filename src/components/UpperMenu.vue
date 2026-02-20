@@ -111,9 +111,9 @@ function onLogout() {
   router.push({ name: 'home' })
 }
 
-function onCallRequest() {
-  isCallVisible.value = true
-}
+// function onCallRequest() {
+//   isCallVisible.value = true
+// }
 
 // function scrollToAbout() {
 //   const aboutElement = document.getElementById("about");
@@ -720,7 +720,7 @@ function onCallRequest() {
   }
 
   .hero-content {
-    padding: 40px 20px 60px;
+    padding: 40px 20px 20px;
   }
 
   .hero-title {

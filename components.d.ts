@@ -77,7 +77,6 @@ declare module 'vue' {
     InputEdit: typeof import('./src/components/ui/InputEdit.vue')['default']
     Length: typeof import('./src/components/coefficients/Length.vue')['default']
     Loader: typeof import('./src/components/ui/Loader.vue')['default']
-    MachLathe: typeof import('./src/components/sections/uslugi/UslugiLathe.vue')['default']
     MaterialMachining: typeof import('./src/components/materials/MaterialMachining.vue')['default']
     MaterialMilling: typeof import('./src/components/materials/MaterialMilling.vue')['default']
     MaterialPrinting: typeof import('./src/components/materials/MaterialPrinting.vue')['default']
