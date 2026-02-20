@@ -204,7 +204,7 @@ function onCallRequest() {
                 </el-sub-menu>
               </el-menu>
 
-              <el-button class="call-btn" @click="onCallRequest"> Заказать звонок </el-button>
+              <!-- <el-button class="call-btn" @click="onCallRequest"> Заказать звонок </el-button> -->
             </div>
           </div>
 
