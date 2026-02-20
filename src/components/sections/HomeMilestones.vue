@@ -1,31 +1,39 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useWindowSize } from '@vueuse/core'
+import DialogLogin from '@/components/dialog/DialogLogin.vue'
 
-const steps = [
+type Step = {
+  number: string
+  title: string
+  description: string
+  highlightWord?: string
+  highlightLink?: 'registration'
+}
+
+const isLoginVisible = ref(false)
+
+const steps: Step[] = [
   {
     number: '1',
     title: 'РЕГИСТРАЦИЯ',
     description: 'Быстрая регистрация позволит вам сохранять историю расчетов цены и оформлять заказы',
+    highlightWord: 'регистрация',
+    highlightLink: 'registration',
   },
   {
     number: '2',
-    title: 'ЗАГРУЗИТЕ 3D-МОДЕЛЬ',
+    title: 'ЗАГРУЗИТЕ ФАЙЛЫ',
     description:
       'Сервис работает с форматами STEP, STP, STL. Если у вас нет модели, но готов чертеж - вы можете прислать его и с вами свяжется специалист.',
   },
   {
     number: '3',
-    title: 'ПОЛУЧИТЕ РАСЧЕТ',
-    description: 'Мы ценим ваше время и мгновенно рассчитываем стоимость изготовления детали',
+    title: 'РАЗМЕСТИТЕ ЗАЯВКУ НА РАСЧЕТ',
+    description: 'Мы ценим ваше время и быстро рассчитываем стоимость изготовления детали',
   },
   {
     number: '4',
-    title: 'РАЗМЕСТИТЕ ЗАЯВКУ',
-    description: 'При оформлении заявки на производство свяжемся с вами в течение 1 рабочего дня.',
-  },
-  {
-    number: '5',
     title: 'ОБРАТНАЯ СВЯЗЬ',
     description: 'Финальный этап - подтверждение стоимости выполнения заказа и доставки.',
   },
@@ -38,25 +46,35 @@ const isMobile = computed(() => width.value < 1024)
 <template>
   <section class="section-basic home-milestones">
     <div class="milestones-container" :class="{ mobile: isMobile }">
-      <div class="milestones-wrap">
-        <div class="left-column">
-          <div class="steps-title">КАК СОЗДАТЬ ЗАКАЗ?</div>
-          <div class="illustration" aria-hidden="true">
-            <div class="illustration-placeholder" />
-          </div>
-        </div>
-
+        <div class="milestones-wrap">
+        <div class="steps-title">КАК СОЗДАТЬ ЗАКАЗ?</div>
         <div class="steps">
           <div v-for="step in steps" :key="step.number" class="step-card">
             <div class="step-number">{{ step.number }}</div>
             <div class="step-content">
               <div class="step-title">{{ step.title }}</div>
-              <p class="step-description">{{ step.description }}</p>
+              <p class="step-description">
+                <template v-if="step.highlightWord">
+                  {{ step.description.split(step.highlightWord)[0] }}
+                  <button
+                    v-if="step.highlightLink === 'registration'"
+                    type="button"
+                    class="step-description-highlight step-description-link"
+                    @click="isLoginVisible = true"
+                  >
+                    {{ step.highlightWord }}
+                  </button>
+                  <span v-else class="step-description-highlight">{{ step.highlightWord }}</span>
+                  {{ step.description.split(step.highlightWord)[1] }}
+                </template>
+                <template v-else>{{ step.description }}</template>
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <DialogLogin v-model="isLoginVisible" />
   </section>
 </template>
 
@@ -71,42 +89,16 @@ const isMobile = computed(() => width.value < 1024)
 
 .milestones-wrap {
   background: #ffffff;
-  /* border: 1px solid #e5e5e5; */
   border-radius: 16px;
   padding: 40px;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 40px;
-  align-items: start;
-}
-
-.milestones-wrap.mobile {
-  grid-template-columns: 1fr;
-  padding: 24px;
-  gap: 24px;
-}
-
-.left-column {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.illustration {
-  width: 100%;
-  background: #f5f5f5;
-  border-radius: 12px;
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.illustration-placeholder {
-  width: 90%;
-  height: 85%;
-  background: #e8e8e8;
-  border-radius: 8px;
+.milestones-wrap.mobile {
+  padding: 24px;
+  gap: 24px;
 }
 
 .steps {
@@ -116,7 +108,7 @@ const isMobile = computed(() => width.value < 1024)
 }
 
 .steps-title {
-  font-size: 48px;
+  font-size: 28px;
   font-weight: 700;
   color: #000000;
   line-height: 1.1;
@@ -164,10 +156,29 @@ const isMobile = computed(() => width.value < 1024)
 
 .step-description {
   margin: 0;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 500;
   color: #000000;
   line-height: 1.4;
+}
+
+.step-description-highlight {
+  color: #c45c5c;
+  font-weight: 700;
+}
+
+.step-description-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.step-description-link:hover {
+  text-decoration: none;
 }
 
 @media (max-width: 1199px) {
@@ -198,13 +209,8 @@ const isMobile = computed(() => width.value < 1024)
   }
 
   .milestones-wrap {
-    grid-template-columns: 1fr;
     padding: 24px;
     gap: 24px;
-  }
-
-  .illustration {
-    min-height: 280px;
   }
 
   .steps-title {
@@ -244,10 +250,6 @@ const isMobile = computed(() => width.value < 1024)
 
   .step-description {
     font-size: 13px;
-  }
-
-  .illustration {
-    min-height: 220px;
   }
 }
 </style>
