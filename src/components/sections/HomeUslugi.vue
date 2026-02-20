@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, markRaw } from 'vue'
 import IconMech from '../../icons/IconMech.vue'
 import Icon3DView from '../../icons/Icon3DView.vue'
 import IconPKM from '../../icons/IconPKM.vue'
@@ -13,42 +13,42 @@ const abilities = ref([
     title: 'МЕХАНИЧЕСКАЯ ОБРАБОТКА',
     link: '/mechanical',
     isDevelopment: false,
-    icon: IconMech,
+    icon: markRaw(IconMech),
   },
   {
     id: 2,
     title: '3Д-ПЕЧАТЬ',
     link: '/print',
     isDevelopment: false,
-    icon: Icon3DView,
+    icon: markRaw(Icon3DView),
   },
   {
     id: 3,
     title: 'ПОЛИМЕРНО- КОМПОЗИТНЫЙ МАТЕРИАЛ',
     link: '/pkm',
     isDevelopment: false,
-    icon: IconPKM,
+    icon: markRaw(IconPKM),
   },
   {
     id: 4,
     title: 'НАНЕСЕНИЕ ЛКМ',
     link: '/painting',
     isDevelopment: false,
-    icon: IconLKM,
+    icon: markRaw(IconLKM),
   },
   {
     id: 5,
     title: 'ИСПЫТАТЕЛЬНЫЕ РЕСУРСЫ',
     link: '/test',
     isDevelopment: false,
-    icon: IconIspitaniya,
+    icon: markRaw(IconIspitaniya),
   },
   {
     id: 6,
     title: 'ЛАБОРАТОРНЫЕ ИССЛЕДОВАНИЯ',
     link: '/other',
     isDevelopment: false,
-    icon: IconLab,
+    icon: markRaw(IconLab),
   },
 ])
 </script>
