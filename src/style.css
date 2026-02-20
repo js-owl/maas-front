@@ -101,6 +101,14 @@ body {
   margin-bottom: 60px;
   align-items: flex-start;
 }
+.uslugi-text {
+  flex: 1;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #000;
+  text-align: justify;
+}
 
 @media (max-width: 768px) {
   .uslugi-wrapper {
@@ -116,5 +124,9 @@ body {
     flex-direction: column;
     gap: 30px;
     margin-bottom: 40px;
+  }
+  .uslugi-text {
+    font-size: 16px;
+    text-align: left;
   }
 }

@@ -7,7 +7,7 @@
       <div class="uslugi-title">ГИБКА МЕТАЛЛА</div>
 
       <div class="uslugi-section">
-        <div class="description-text">
+        <div class="uslugi-text">
           Проводится на гибочных станках с числовым программным управлением (ЧПУ) и кооперационных
           линиях.
           <br /><br />
@@ -54,15 +54,6 @@
 </template>
 
 <style scoped>
-.description-text {
-  flex: 1;
-  font-size: 22px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: #000;
-  text-align: justify;
-}
-
 .image-wrapper {
   flex: 0 0 420px;
   display: flex;
@@ -147,11 +138,6 @@
 }
 
 @media (max-width: 768px) {
-  .description-text {
-    font-size: 16px;
-    text-align: left;
-  }
-
   .image-wrapper {
     flex: 1;
     justify-content: center;
