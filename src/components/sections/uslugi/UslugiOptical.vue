@@ -2,7 +2,7 @@
 import IconOptical1 from '@/icons/IconOptical1.vue'
 import IconOptical2 from '@/icons/IconOptical2.vue'
 import IconOptical3 from '@/icons/IconOptical3.vue'
-import IconOptical4 from '@/icons/IconOptical4.vue'
+// import IconOptical4 from '@/icons/IconOptical4.vue'
 import IconOptical5 from '@/icons/IconOptical5.vue'
 import IconOptical6 from '@/icons/IconOptical6.vue'
 </script>
@@ -11,40 +11,35 @@ import IconOptical6 from '@/icons/IconOptical6.vue'
   <!-- Оптические измерения -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">ОПТИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
+      <div class="uslugi-title">Оптические измерения</div>
 
       <div class="factors-grid">
         <div class="factors-column">
           <div class="factor-card">
             <IconOptical1 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">ФОТОМЕТРИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
+            <div class="factor-title">Фотометрические измерения</div>
           </div>
 
           <div class="factor-card">
             <IconOptical3 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">СПЕКТРАЛЬНЫЕ ИЗМЕРЕНИЯ</div>
+            <div class="factor-title">Спектральные измерения</div>
           </div>
 
           <div class="factor-card">
             <IconOptical5 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">КОЛОРИМЕТРИЧЕСКИЕ</div>
+            <div class="factor-title">Колориметрические измерения</div>
           </div>
         </div>
 
         <div class="factors-column">
           <div class="factor-card">
             <IconOptical2 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">РАДИОМЕТРИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
-          </div>
-
-          <div class="factor-card">
-            <IconOptical4 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">ВОЗДЕЙСТВИЕ КЛИМАТИЧЕСКИХ УСЛОВИЙ</div>
+            <div class="factor-title">Радиометрические измерения</div>
           </div>
 
           <div class="factor-card">
             <IconOptical6 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">КОНТРОЛЬ ОПТИЧЕСКИХ СИСТЕМ</div>
+            <div class="factor-title">Контроль оптических систем</div>
           </div>
         </div>
       </div>
@@ -137,17 +132,16 @@ import IconOptical6 from '@/icons/IconOptical6.vue'
 .factor-card {
   background-color: #e1e4e6;
   border-radius: 10px;
-  padding: 20px 24px;
+  padding: 10px 24px;
   display: flex;
   align-items: center;
   min-height: 80px;
 }
 
 .factor-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 600;
   color: #000;
-  text-transform: uppercase;
 }
 
 .factor-icon {

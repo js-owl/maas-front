@@ -131,7 +131,7 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
 .factor-card {
   background-color: #e1e4e6;
   border-radius: 10px;
-  padding: 20px 24px;
+  padding: 10px 24px;
   display: flex;
   align-items: center;
   min-height: 80px;
