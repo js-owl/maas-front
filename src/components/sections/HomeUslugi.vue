@@ -10,42 +10,42 @@ import IconLab from '../../icons/IconLab.vue'
 const abilities = ref([
   {
     id: 1,
-    title: 'МЕХАНИЧЕСКАЯ ОБРАБОТКА',
+    title: 'Механическая обработка',
     link: '/mechanical',
     isDevelopment: false,
     icon: markRaw(IconMech),
   },
   {
     id: 2,
-    title: '3Д-ПЕЧАТЬ',
+    title: '3Д-печать',
     link: '/print',
     isDevelopment: false,
     icon: markRaw(Icon3DView),
   },
   {
     id: 3,
-    title: 'ПОЛИМЕРНО- КОМПОЗИТНЫЙ МАТЕРИАЛ',
+    title: 'Полимерно-композитный материал',
     link: '/pkm',
     isDevelopment: false,
     icon: markRaw(IconPKM),
   },
   {
     id: 4,
-    title: 'НАНЕСЕНИЕ ЛКМ',
+    title: 'Нанесение ЛКМ',
     link: '/painting',
     isDevelopment: false,
     icon: markRaw(IconLKM),
   },
   {
     id: 5,
-    title: 'ИСПЫТАТЕЛЬНЫЕ РЕСУРСЫ',
+    title: 'Испытательные ресурсы',
     link: '/test',
     isDevelopment: false,
     icon: markRaw(IconIspitaniya),
   },
   {
     id: 6,
-    title: 'ЛАБОРАТОРНЫЕ ИССЛЕДОВАНИЯ',
+    title: 'Лабораторные исследования',
     link: '/other',
     isDevelopment: false,
     icon: markRaw(IconLab),
@@ -67,7 +67,7 @@ const abilities = ref([
         <component :is="ability.link ? 'RouterLink' : 'div'" :to="ability.link" class="card-link">
           <div class="card-content">
             <div v-if="ability.icon" class="card-icon">
-              <el-icon :size="48" color="#fff">
+              <el-icon :size="48">
                 <component :is="ability.icon" />
               </el-icon>
             </div>
@@ -100,7 +100,7 @@ const abilities = ref([
 }
 
 .service-card {
-  background: var(--custom-red);
+  background: #cbd1d5;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -153,8 +153,8 @@ const abilities = ref([
 }
 
 .card-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 600;
   color: #fff;
 }
 
