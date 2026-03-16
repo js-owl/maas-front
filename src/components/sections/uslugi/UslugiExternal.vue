@@ -10,35 +10,35 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
   <!-- Внешние воздействующие факторы -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">ВНЕШНИЕ ВОЗДЕЙСТВУЮЩИЕ ФАКТОРЫ</div>
+      <div class="uslugi-title">Испытания на внешние воздействующие факторы (ВВФ)</div>
 
       <div class="factors-grid">
         <div class="factors-column">
           <div class="factor-card">
             <icon-external1 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">КЛИМАТИЧЕСКИЕ (ТЕМПЕРАТУРА, ВЛАЖНОСТЬ)</div>
+            <div class="factor-title">Климатические испытания (температура, влажность)</div>
           </div>
 
           <div class="factor-card">
             <IconExternal3 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">ЭЛЕКТРИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
+            <div class="factor-title">Электрические испытания</div>
           </div>
 
           <div class="factor-card">
             <IconExternal5 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">ВОЗДЕЙСТВИЕ ПЫЛИ И ПЕСКА</div>
+            <div class="factor-title">Воздействие статической и динамической пыли</div>
           </div>
         </div>
 
         <div class="factors-column">
           <div class="factor-card">
             <IconExternal2 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">МЕХАНИЧЕСКИЕ ИЗМЕРЕНИЯ</div>
+            <div class="factor-title">Механические испытания (вибрация, удар)</div>
           </div>
 
           <div class="factor-card">
             <IconExternal4 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">ВОЗДЕЙСТВИЕ ВЛАГИ И СОЛЯНОГО ТУМАНА</div>
+            <div class="factor-title">Воздействие влаги и соляного тумана</div>
           </div>
         </div>
       </div>
@@ -138,10 +138,9 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
 }
 
 .factor-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 600;
   color: #000;
-  text-transform: uppercase;
 }
 
 .factor-icon {
