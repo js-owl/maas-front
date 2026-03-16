@@ -6,7 +6,7 @@ const selectedMaterial = defineModel<string | null>()
 const materialStore = useMaterialStore()
 
 onMounted(async () => {
-  await materialStore.loadMaterials('cnc-lathe')
+  await materialStore.loadMaterials()
   if (!selectedMaterial.value && materialStore.materials.length > 0) {
     selectedMaterial.value = materialStore.materials[0].value
   }

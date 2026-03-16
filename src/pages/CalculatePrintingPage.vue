@@ -50,7 +50,7 @@ let material_id = ref('PA11')
 let material_form = ref('powder')
 
 let cover_id = ref<string[]>(['1'])
-let k_otk = ref('1')
+let k_otk = ref('1.0')
 let k_cert = ref(['a', 'f'])
 // Длительность изготовления (в днях)
 let manufacturing_cycle = ref<number>(0)

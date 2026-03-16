@@ -87,11 +87,11 @@ export const useMaterialStore = defineStore('material', () => {
     return (payload?.materials ?? []).map((x: any) => ({ value: x.id, label: x.label }))
   }
 
-  const loadMaterials = async (process: string = 'cnc-lathe') => {
+  const loadMaterials = async (process: string = '') => {
     isLoading.value = true
     hasError.value = false
     try {
-      const response = await req_json_auth(`/materials?process=${process}`, 'GET')
+      const response = await req_json_auth(process ? `/materials?process=${process}` : '/materials', 'GET')
       if (response?.ok) {
         const backendMaterials = await response.json()
         materials.value = transformMaterials(backendMaterials)

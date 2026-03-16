@@ -58,7 +58,7 @@ let height = ref(30)
 let material_id = ref('alum_D16')
 let material_form = ref('sheet')
 
-let k_otk = ref('1')
+let k_otk = ref('1.0')
 let k_cert = ref(['a', 'f'])
 let manufacturing_cycle = ref<number>(0)
 let special_instructions = ref('')

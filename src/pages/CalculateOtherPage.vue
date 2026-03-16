@@ -77,7 +77,7 @@ let cover_id = ref<string[]>(['1'])
 let service_id = ref('bending')
 let n_dimensions = ref(55)
 
-let k_otk = ref('1')
+let k_otk = ref('1.0')
 let k_cert = ref(['a', 'f'])
 // Длительность изготовления (в днях)
 let manufacturing_cycle = ref<number>(0)

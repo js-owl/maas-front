@@ -2,7 +2,7 @@
 const selected = defineModel({ type: String, required: true })
 
 const otks = [
-  { value: '1', label: 'Изготовителя' },
+  { value: '1.0', label: 'Изготовителя' },
   { value: '1.2', label: 'Заказчика на площадке изготовителя' },
   { value: '1.15', label: 'Независимой приемкой' },
 ]
