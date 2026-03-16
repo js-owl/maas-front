@@ -155,7 +155,7 @@ const abilities = ref([
 .card-title {
   font-size: 28px;
   font-weight: 600;
-  color: #fff;
+  color: #000;
 }
 
 .development-notice {
