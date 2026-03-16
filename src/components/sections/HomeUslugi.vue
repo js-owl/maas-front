@@ -54,8 +54,8 @@ const abilities = ref([
 </script>
 
 <template>
-  <section class="section-basic" style="margin-top: 40px;">
-    <div class="section-title">УСЛУГИ</div>
+  <section class="section-basic uslugi-section">
+    <div style="font-size: 38px; font-weight: 600; color: #000; text-align: left; padding-bottom: 20px;">Услуги</div>
 
     <div class="services-grid">
       <div
@@ -104,7 +104,7 @@ const abilities = ref([
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  height: 120px;
+  height: 100px;
   width: 49%; /* 30% */
   position: relative;
   overflow: hidden;
@@ -208,6 +208,10 @@ const abilities = ref([
 }
 
 @media (max-width: 768px) {
+  .uslugi-section {
+    margin-top: 24px;
+  }
+
   .services-grid {
     flex-direction: column;
     gap: 16px;
@@ -230,5 +234,12 @@ const abilities = ref([
   .card-content {
     padding: 16px;
   }
+}
+
+.uslugi-section {
+  margin-top: -60px;
+  position: relative;
+  z-index: 3;
+  display: block;
 }
 </style>

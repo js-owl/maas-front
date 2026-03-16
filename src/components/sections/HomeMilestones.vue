@@ -47,7 +47,7 @@ const isMobile = computed(() => width.value < 1024)
   <section class="section-basic home-milestones">
     <div class="milestones-container" :class="{ mobile: isMobile }">
         <div class="milestones-wrap">
-        <div class="steps-title">КАК СОЗДАТЬ ЗАКАЗ?</div>
+        <div style="font-size: 38px; font-weight: 600; color: #000; text-align: left; padding-bottom: 10px;">Как создать заказ?</div>
         <div class="steps">
           <div v-for="step in steps" :key="step.number" class="step-card">
             <div class="step-number">{{ step.number }}</div>

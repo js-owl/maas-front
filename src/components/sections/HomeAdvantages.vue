@@ -35,7 +35,7 @@ const isMobile = computed(() => width.value <= 767)
 
 <template>
   <section class="section-basic">
-    <div class="section-title">НАШИ ПРЕИМУЩЕСТВА</div>
+    <div style="font-size: 38px; font-weight: 600; color: #000; text-align: left; padding-bottom: 20px;">Наши преимущества</div>
 
     <div class="items">
       <div class="item" v-for="advantage in advantages" :key="advantage.id">

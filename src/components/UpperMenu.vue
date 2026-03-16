@@ -315,7 +315,7 @@ function onLogout() {
 }
 
 .uppermenu-wrapper.fullscreen-bg {
-  height: 573px;
+  height: 650px;
   background-image: url('/homePage/about.webp');
   background-size: cover;
   background-position: center;
