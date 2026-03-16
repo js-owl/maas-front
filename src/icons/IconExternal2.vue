@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-const { color = '#7D8083', strokeWidth = 3 } = defineProps<{
+const { color = '#7D8083' } = defineProps<{
   color?: string
-  strokeWidth?: number
 }>()
 </script>
 
