@@ -653,8 +653,8 @@ function onLogout() {
 }
 
 .hero-title {
-  font-size: 64px;
-  font-weight: 700;
+  font-size: 52px;
+  font-weight: 800;
   color: #fff;
   text-transform: uppercase;
   line-height: 1.2;
@@ -664,7 +664,8 @@ function onLogout() {
 }
 
 .hero-description {
-  font-size: 24px;
+  font-size: 28px;
+  font-weight: 600;
   color: #fff;
   line-height: 1.6;
   margin: 0 0 30px 0;
@@ -672,9 +673,9 @@ function onLogout() {
 }
 
 .hero-slogan {
-  font-size: 20px;
+  font-size: 28px;
+  font-weight: 600;
   color: #fff;
-  font-weight: 500;
   margin: 0;
   text-align: left;
 }

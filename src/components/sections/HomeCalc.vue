@@ -114,8 +114,8 @@ const submit = () => {
 }
 
 .calc-left{
-  padding-right: 60px;
-  width: 60%;
+  padding-right: 10px;
+  width: 50%;
 }
 .calc-left .lead {
   color: #4c4c4c;
@@ -127,6 +127,7 @@ const submit = () => {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  width: 50%;
   /* padding: 20px; */
   /* flex: 1 1 50%; */
 }
