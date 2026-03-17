@@ -54,7 +54,7 @@ const abilities = ref([
 </script>
 
 <template>
-  <section class="section-basic uslugi-section">
+  <section class="section-basic uslugi-section2">
     <div style="font-size: 38px; font-weight: 600; color: #000; text-align: left; padding-bottom: 20px;">Услуги</div>
 
     <div class="services-grid">
@@ -208,7 +208,7 @@ const abilities = ref([
 }
 
 @media (max-width: 768px) {
-  .uslugi-section {
+  .uslugi-section2 {
     margin-top: 24px;
   }
 
@@ -236,7 +236,7 @@ const abilities = ref([
   }
 }
 
-.uslugi-section {
+.uslugi-section2 {
   margin-top: -60px;
   position: relative;
   z-index: 3;
