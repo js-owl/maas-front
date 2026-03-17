@@ -74,7 +74,12 @@ const submit = () => {
 
       <div class="calc-right">
         <el-form :model="formModel" class="calc-form" label-position="top">
-          <UploadFiles v-model="document_ids" color="#000" v-model:stp_id="stp_id" />
+          <UploadFiles
+            v-model="document_ids"
+            color="#000"
+            v-model:stp_id="stp_id"
+            class="upload-files-bordered"
+          />
           <div class="action-row">
             <el-form-item>
               <Select
@@ -184,6 +189,10 @@ const submit = () => {
   margin-top: 12px;
   font-size: 12px;
   color: #666;
+}
+.upload-files-bordered {
+  border: 2px dashed #7d8083;
+  border-radius: 10px;
 }
 :deep(.el-input__wrapper) {
   padding: 0;

@@ -16,25 +16,25 @@ const isLoginVisible = ref(false)
 const steps: Step[] = [
   {
     number: '1',
-    title: 'РЕГИСТРАЦИЯ',
+    title: 'Регистрация',
     description: 'Быстрая регистрация позволит вам сохранять историю расчетов цены и оформлять заказы',
     highlightWord: 'регистрация',
     highlightLink: 'registration',
   },
   {
     number: '2',
-    title: 'ЗАГРУЗИТЕ ФАЙЛЫ',
+    title: 'Загрузите файлы',
     description:
       'Сервис работает с форматами STEP, STP, STL. Если у вас нет модели, но готов чертеж - вы можете прислать его и с вами свяжется специалист.',
   },
   {
     number: '3',
-    title: 'РАЗМЕСТИТЕ ЗАЯВКУ НА РАСЧЕТ',
+    title: 'Разместите заявку на расчет',
     description: 'Мы ценим ваше время и быстро рассчитываем стоимость изготовления детали',
   },
   {
     number: '4',
-    title: 'ОБРАТНАЯ СВЯЗЬ',
+    title: 'Обратная связь',
     description: 'Финальный этап - подтверждение стоимости выполнения заказа и доставки.',
   },
 ]
@@ -148,8 +148,8 @@ const isMobile = computed(() => width.value < 1024)
 }
 
 .step-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 600;
   color: #000000;
   line-height: 1.2;
 }
