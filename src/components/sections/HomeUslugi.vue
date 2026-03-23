@@ -6,6 +6,7 @@ import IconPKM from '../../icons/IconPKM.vue'
 import IconLKM from '../../icons/IconLKM.vue'
 import IconIspitaniya from '../../icons/IconIspitaniya.vue'
 import IconGalv from '@/icons/IconGalv.vue'
+import IconWelding from '@/icons/IconWelding.vue'
 
 const abilities = ref([
   {
@@ -49,6 +50,13 @@ const abilities = ref([
     link: '/other',
     isDevelopment: false,
     icon: markRaw(IconGalv),
+  },
+  {
+    id: 7,
+    title: 'Сварка',
+    link: '/other',
+    isDevelopment: false,
+    icon: markRaw(IconWelding),
   },
 ])
 </script>
