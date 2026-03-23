@@ -67,7 +67,7 @@ const abilities = ref([
         <component :is="ability.link ? 'RouterLink' : 'div'" :to="ability.link" class="card-link">
           <div class="card-content">
             <div v-if="ability.icon" class="card-icon">
-              <el-icon :size="48">
+              <el-icon :size="60">
                 <component :is="ability.icon" color="#7d8083" />
               </el-icon>
             </div>
