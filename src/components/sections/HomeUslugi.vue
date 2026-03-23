@@ -5,7 +5,7 @@ import Icon3DView from '../../icons/Icon3DView.vue'
 import IconPKM from '../../icons/IconPKM.vue'
 import IconLKM from '../../icons/IconLKM.vue'
 import IconIspitaniya from '../../icons/IconIspitaniya.vue'
-import IconLab from '../../icons/IconLab.vue'
+import IconGalv from '@/icons/IconGalv.vue'
 
 const abilities = ref([
   {
@@ -45,10 +45,10 @@ const abilities = ref([
   },
   {
     id: 6,
-    title: 'Лабораторные исследования',
+    title: 'Гальваника',
     link: '/other',
     isDevelopment: false,
-    icon: markRaw(IconLab),
+    icon: markRaw(IconGalv),
   },
 ])
 </script>
@@ -153,7 +153,7 @@ const abilities = ref([
 }
 
 .card-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   color: #000;
 }
