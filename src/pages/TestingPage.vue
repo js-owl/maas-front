@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import TestClimate from '@/components/sections/TestClimate.vue'
+import TestClimate from '@/components/sections/testing/TestClimate.vue'
 </script>
 
 <template>

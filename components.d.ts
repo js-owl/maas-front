@@ -104,7 +104,7 @@ declare module 'vue' {
     STLViewer: typeof import('./src/components/cad/STLViewer.vue')['default']
     STPViewer: typeof import('./src/components/cad/STPViewer.vue')['default']
     SuitableMachines: typeof import('./src/components/SuitableMachines.vue')['default']
-    TestClimate: typeof import('./src/components/sections/TestClimate.vue')['default']
+    TestClimate: typeof import('./src/components/sections/testing/TestClimate.vue')['default']
     UploadDrawings: typeof import('./src/components/UploadDrawings.vue')['default']
     UploadDrawings2: typeof import('./src/components/UploadDrawings2.vue')['default']
     UploadFiles: typeof import('./src/components/UploadFiles.vue')['default']
