@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const isNormativeOpen = ref<string[]>(['normative'])
+const isNormativeOpen = ref<boolean>(false)
 
 const normativeDocuments = [
   'ГОСТ РВ 20.57.306-98',

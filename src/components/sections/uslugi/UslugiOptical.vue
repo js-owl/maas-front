@@ -139,7 +139,7 @@ import IconOptical6 from '@/icons/IconOptical6.vue'
 }
 
 .factor-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   color: #000;
 }
