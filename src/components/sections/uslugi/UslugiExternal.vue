@@ -31,7 +31,7 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
         </div>
 
         <div class="factors-column">
-          <router-link class="factor-card factor-card-link" to="/testing">
+          <router-link class="factor-card factor-card-link" to="/testing#vibration">
             <IconExternal2 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">Механические испытания (вибрация, удар)</div>
           </router-link>
