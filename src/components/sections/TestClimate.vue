@@ -32,7 +32,7 @@ const normativeDocuments = [
 <template>
   <section class="section-basic climate-section">
     <div class="technical-requirements">
-      <div>
+      <div class="temperature-section">
         <div class="uslugi-title-table">Испытание на воздействие температуры среды</div>
 
         <div class="requirements-table-wrapper">
@@ -59,7 +59,7 @@ const normativeDocuments = [
         </div>
       </div>
 
-      <div>
+      <div class="humidity-section">
         <div class="uslugi-title-table">Испытание на воздействие влажности</div>
 
         <div class="requirements-table-wrapper">
@@ -114,7 +114,15 @@ const normativeDocuments = [
 
 <style scoped>
 .technical-requirements {
-  margin-top: 40px;
+  margin-top: 20px;
+}
+
+/* .temperature-section {
+  padding-top: 30px;
+} */
+
+.humidity-section {
+  margin-top: 30px;
 }
 
 .requirements-table-wrapper {
