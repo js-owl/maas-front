@@ -155,7 +155,7 @@ const normativeDocuments = [
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
   border-right: 1px solid #e5e7eb;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .requirements-table th {
