@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, markRaw, ref } from 'vue'
-import { useWindowSize } from '@vueuse/core'
+import { markRaw, ref } from 'vue'
 import DialogLogin from '@/components/dialog/DialogLogin.vue'
 import IconOne from '@/icons/IconOne.vue'
 import IconTwo from '@/icons/IconTwo.vue'
@@ -48,15 +47,13 @@ const steps: Step[] = [
   },
 ]
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 1024)
 </script>
 
 <template>
   <section class="section-basic home-milestones">
-    <div class="milestones-container" :class="{ mobile: isMobile }">
-        <div class="milestones-wrap">
-        <div style="font-size: 38px; font-weight: 600; color: #000; text-align: left; padding-bottom: 10px;">Как создать заказ?</div>
+    <div class="milestones-container">
+      <div class="milestones-wrap">
+        <div class="steps-title">Как создать заказ?</div>
         <div class="steps">
           <div v-for="step in steps" :key="step.id" class="step-card">
             <div class="step-number">
@@ -107,24 +104,18 @@ const isMobile = computed(() => width.value < 1024)
   gap: 24px;
 }
 
-.milestones-wrap.mobile {
-  padding: 24px;
-  gap: 24px;
-}
-
 .steps {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
 .steps-title {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 38px;
+  font-weight: 600;
   color: #000000;
   line-height: 1.1;
-  letter-spacing: -0.5px;
-  margin-bottom: 8px;
+  text-align: left;
 }
 
 .step-card {
@@ -195,11 +186,11 @@ const isMobile = computed(() => width.value < 1024)
 @media (max-width: 1199px) {
   .milestones-wrap {
     padding: 32px;
-    gap: 32px;
+    gap: 24px;
   }
 
   .steps-title {
-    font-size: 36px;
+    font-size: 32px;
   }
 
   .step-card {
@@ -219,13 +210,17 @@ const isMobile = computed(() => width.value < 1024)
     padding: 32px 0;
   }
 
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
   .milestones-wrap {
     padding: 24px;
     gap: 24px;
   }
 
   .steps-title {
-    font-size: 32px;
+    font-size: 28px;
   }
 }
 
@@ -240,7 +235,7 @@ const isMobile = computed(() => width.value < 1024)
   }
 
   .steps-title {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .step-card {
