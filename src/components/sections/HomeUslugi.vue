@@ -84,7 +84,7 @@ const abilities = ref([
           <div class="card-content">
             <div v-if="ability.icon" class="card-icon">
               <el-icon :size="60">
-                <component :is="ability.icon" color="#7d8083" />
+                <component :is="ability.icon" :color="'#7d8083'" :backgroundColor="'#cbd1d5'" />
               </el-icon>
             </div>
             <div class="card-text">
