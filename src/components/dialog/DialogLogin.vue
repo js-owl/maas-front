@@ -51,7 +51,15 @@ const onRestore = async () => {
 </script>
 
 <template>
-  <el-dialog v-model="dialogFormVisible" title="Вход в аккаунт" width="500" :fullscreen="isMobile">
+  <el-dialog
+    v-model="dialogFormVisible"
+    title="Вход в аккаунт"
+    width="500"
+    :fullscreen="isMobile"
+    :append-to-body="true"
+    :modal-append-to-body="true"
+    :z-index="4000"
+  >
     <template #header="{ titleId }">
       <div class="dialog-header">
         <h3 :id="titleId" class="titleClass">Вход в аккаунт</h3>
