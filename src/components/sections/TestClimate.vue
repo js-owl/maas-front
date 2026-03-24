@@ -176,10 +176,20 @@ const normativeDocuments = [
 .normative-collapse :deep(.el-collapse-item__header) {
   min-height: 56px;
   padding: 12px 18px;
+  margin: 0;
+  box-sizing: border-box;
   border: none;
   border-radius: 8px 8px 0 0;
   background-color: #cbd1d5;
   line-height: 1.3;
+}
+
+.normative-collapse :deep([id^='el-collapse-head-']) {
+  margin: 0;
+}
+
+.normative-collapse :deep(.el-collapse-item__arrow) {
+  margin: 0 0 0 auto;
 }
 
 .normative-collapse :deep(.el-collapse-item__wrap) {
