@@ -3,6 +3,9 @@ import { computed, markRaw, ref } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import DialogLogin from '@/components/dialog/DialogLogin.vue'
 import IconOne from '@/icons/IconOne.vue'
+import IconTwo from '@/icons/IconTwo.vue'
+import IconThree from '@/icons/IconThree.vue'
+import IconFour from '@/icons/IconFour.vue'
 
 type Step = {
   id: number
@@ -26,20 +29,20 @@ const steps: Step[] = [
   },
   {
     id: 2,
-    icon: markRaw(IconOne),
+    icon: markRaw(IconTwo),
     title: 'Загрузите файлы',
     description:
       'Сервис работает с форматами STEP, STP, STL. Если у вас нет модели, но готов чертеж - вы можете прислать его и с вами свяжется специалист.',
   },
   {
     id: 3,
-    icon: markRaw(IconOne),
+    icon: markRaw(IconThree),
     title: 'Разместите заявку на расчет',
     description: 'Мы ценим ваше время и быстро рассчитываем стоимость изготовления детали',
   },
   {
     id: 4,
-    icon: markRaw(IconOne),
+    icon: markRaw(IconFour),
     title: 'Обратная связь',
     description: 'Финальный этап - подтверждение стоимости выполнения заказа и доставки.',
   },
@@ -156,7 +159,7 @@ const isMobile = computed(() => width.value < 1024)
 }
 
 .step-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   color: #000000;
   line-height: 1.2;
@@ -164,7 +167,7 @@ const isMobile = computed(() => width.value < 1024)
 
 .step-description {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   color: #000000;
   line-height: 1.4;
