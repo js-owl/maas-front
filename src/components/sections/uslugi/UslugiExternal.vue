@@ -135,6 +135,13 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
   display: flex;
   align-items: center;
   min-height: 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.factor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .factor-card-link {
