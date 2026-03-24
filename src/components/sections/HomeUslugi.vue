@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, markRaw } from 'vue'
-import IconMech from '../../icons/IconMech.vue'
-import Icon3DView from '../../icons/Icon3DView.vue'
-import IconPKM from '../../icons/IconPKM.vue'
-import IconLKM from '../../icons/IconLKM.vue'
-import IconIspitaniya from '../../icons/IconIspitaniya.vue'
-import IconGalv from '@/icons/IconGalv.vue'
-import IconWelding from '@/icons/IconWelding.vue'
-import IconRubber from '@/icons/IconRubber.vue'
+import IconMech from '@/icons/home/IconMech.vue'
+import Icon3DView from '@/icons/home/Icon3DView.vue'
+import IconPKM from '@/icons/home/IconPKM.vue'
+import IconLKM from '@/icons/home/IconLKM.vue'
+import IconIspitaniya from '@/icons/home/IconIspitaniya.vue'
+import IconGalv from '@/icons/home/IconGalv.vue'
+import IconWelding from '@/icons/home/IconWelding.vue'
+import IconRubber from '@/icons/home/IconRubber.vue'
 
 const abilities = ref([
   {
