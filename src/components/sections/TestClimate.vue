@@ -1,110 +1,64 @@
 <template>
   <section class="section-basic climate-section">
     <div class="technical-requirements">
-        <div class="uslugi-title-table">Технические требования</div>
+      <div>
+        <div class="uslugi-title-table">Испытание на воздействие температуры среды</div>
 
         <div class="requirements-table-wrapper">
           <table class="requirements-table">
             <colgroup>
               <col class="col-type" />
               <col />
-              <col />
             </colgroup>
             <tbody>
               <tr>
-                <td>Оксидирование анодное алюминиевых сплавов</td>
-                <td>5 ... 8</td>
-                <td>5800 x 600 x 1350</td>
+                <td>Диапазон температур</td>
+                <td>t от -65 &deg;C до +180 &deg;C</td>
               </tr>
               <tr>
-                <td>Оксидирование химическое алюминиевых сплавов</td>
-                <td>5 ... 8</td>
-                <td>5800 x 700 x 1450</td>
-              </tr>
-              <tr>
-                <td>Оксидирование твердое анодное алюминиевых сплавов</td>
-                <td>10 ... 40</td>
-                <td>5800 x 600 x 1350</td>
-              </tr>
-              <tr>
-                <td>Фосфатирование сталей</td>
-                <td>10 ... 40</td>
-                <td>1800 x 600 x 750</td>
-              </tr>
-              <tr>
-                <td>Цинкование</td>
-                <td>1 ... 12</td>
-                <td>2800 x 300 x 850</td>
-              </tr>
-              <tr>
-                <td>Кадмирование хлористоаммонийное</td>
-                <td>1 ... 15</td>
-                <td>2800 x 300 x 850</td>
-              </tr>
-              <tr>
-                <td>Оксидирование магниевых сплавов</td>
-                <td>-</td>
-                <td>1700 x 600 x 900</td>
-              </tr>
-              <tr>
-                <td>Химическая обработка нержавеющих сталей</td>
-                <td>-</td>
-                <td>2800 x 850 x 950</td>
-              </tr>
-              <tr>
-                <td>Фосфатирование сталей</td>
-                <td>-</td>
-                <td>1800 x 600 x 750</td>
-              </tr>
-              <tr>
-                <td>Кадмирование сернокислое</td>
-                <td>1 ... 15</td>
-                <td>1000 x 190 x 350</td>
-              </tr>
-              <tr>
-                <td>Никелирование сернокислое</td>
-                <td>2 ... 3</td>
-                <td>1000 x 190 x 350</td>
-              </tr>
-              <tr>
-                <td>Никелирование хлористое</td>
-                <td>5 ... 15</td>
-                <td>1000 x 190 x 350</td>
-              </tr>
-              <tr>
-                <td>Покрытие гальвано термический никель-кадмий</td>
-                <td>1 ... 18</td>
-                <td>1000 x 190 x 350</td>
-              </tr>
-              <tr>
-                <td>Олово-висмут</td>
-                <td>1 ... 20</td>
-                <td>1000 x 190 x 350</td>
-              </tr>
-              <tr>
-                <td>Химическая обработка титановых сплавов</td>
-                <td>-</td>
-                <td>2800 x 800 x 850</td>
-              </tr>
-              <tr>
-                <td>Химическая обработка нержавеющих сталей (трубы)</td>
-                <td>-</td>
-                <td>тр.8x1 x 3900</td>
-              </tr>
-              <tr>
-                <td>Хромирование</td>
-                <td>10 ... 60</td>
-                <td>1400 x 200 x 550</td>
-              </tr>
-              <tr>
-                <td>Серебрение</td>
-                <td>0,5 .. 15</td>
-                <td>1500 x 150 x 30</td>
+                <td>Массо-габаритные характеристики испытываемой продукции</td>
+                <td>
+                  150 кг
+                  <br />
+                  800 x 700 x 800 мм
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+
+      <div>
+        <div class="uslugi-title-table">Испытание на воздействие влажности</div>
+
+        <div class="requirements-table-wrapper">
+          <table class="requirements-table">
+            <colgroup>
+              <col class="col-type" />
+              <col />
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>Диапазон рабочих частот</td>
+                <td>
+                  от 20% до 98%
+                  <br />
+                  t от -85 &deg;C до +20 &deg;C
+                </td>
+              </tr>
+              <tr>
+                <td>Массо-габаритные характеристики испытываемой продукции</td>
+                <td>
+                  150 кг
+                  <br />
+                  800 x 700 x 800 мм
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
     <el-collapse v-model="isNormativeOpen" class="normative-collapse">
       <el-collapse-item name="normative">
@@ -146,7 +100,7 @@ const isNormativeOpen = ref<string[]>([])
 }
 
 .col-type {
-  width: 600px;
+  width: 900px;
 }
 
 .requirements-table thead {
