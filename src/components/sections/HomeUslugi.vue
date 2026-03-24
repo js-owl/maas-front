@@ -48,7 +48,7 @@ const abilities = ref([
   {
     id: 6,
     title: 'Гальваника',
-    link: '/other',
+    link: '/galv',
     isDevelopment: false,
     icon: markRaw(IconGalv),
   },
