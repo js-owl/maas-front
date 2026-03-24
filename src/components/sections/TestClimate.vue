@@ -90,7 +90,7 @@ const isNormativeOpen = ref<string[]>([])
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  background-color: #f4f6f8;
 }
 
 .requirements-table {
