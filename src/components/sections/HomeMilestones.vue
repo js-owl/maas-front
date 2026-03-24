@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, markRaw, ref } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import DialogLogin from '@/components/dialog/DialogLogin.vue'
+import IconOne from '@/icons/IconOne.vue'
 
 type Step = {
-  number: string
+  id: number
+  icon: unknown
   title: string
   description: string
   highlightWord?: string
@@ -15,25 +17,29 @@ const isLoginVisible = ref(false)
 
 const steps: Step[] = [
   {
-    number: '1',
+    id: 1,
+    icon: markRaw(IconOne),
     title: 'Регистрация',
     description: 'Быстрая регистрация позволит вам сохранять историю расчетов цены и оформлять заказы',
     highlightWord: 'регистрация',
     highlightLink: 'registration',
   },
   {
-    number: '2',
+    id: 2,
+    icon: markRaw(IconOne),
     title: 'Загрузите файлы',
     description:
       'Сервис работает с форматами STEP, STP, STL. Если у вас нет модели, но готов чертеж - вы можете прислать его и с вами свяжется специалист.',
   },
   {
-    number: '3',
+    id: 3,
+    icon: markRaw(IconOne),
     title: 'Разместите заявку на расчет',
     description: 'Мы ценим ваше время и быстро рассчитываем стоимость изготовления детали',
   },
   {
-    number: '4',
+    id: 4,
+    icon: markRaw(IconOne),
     title: 'Обратная связь',
     description: 'Финальный этап - подтверждение стоимости выполнения заказа и доставки.',
   },
@@ -49,8 +55,10 @@ const isMobile = computed(() => width.value < 1024)
         <div class="milestones-wrap">
         <div style="font-size: 38px; font-weight: 600; color: #000; text-align: left; padding-bottom: 10px;">Как создать заказ?</div>
         <div class="steps">
-          <div v-for="step in steps" :key="step.number" class="step-card">
-            <div class="step-number">{{ step.number }}</div>
+          <div v-for="step in steps" :key="step.id" class="step-card">
+            <div class="step-number">
+              <component :is="step.icon" />
+            </div>
             <div class="step-content">
               <div class="step-title">{{ step.title }}</div>
               <p class="step-description">
