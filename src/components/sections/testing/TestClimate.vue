@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const isNormativeOpen = ref<boolean>(false)
+const openedNormativeItems = ref<string[]>([])
 
 const normativeDocuments = [
   'ГОСТ РВ 20.57.306-98',
@@ -91,7 +91,7 @@ const normativeDocuments = [
       </div>
     </div>
 
-    <el-collapse v-model="isNormativeOpen" class="normative-collapse">
+    <el-collapse v-model="openedNormativeItems" class="normative-collapse">
       <el-collapse-item name="normative">
         <template #title>
           <span class="normative-title">
