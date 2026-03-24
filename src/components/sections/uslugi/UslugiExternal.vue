@@ -14,10 +14,10 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
 
       <div class="factors-grid">
         <div class="factors-column">
-          <div class="factor-card">
+          <router-link class="factor-card factor-card-link" to="/testing">
             <icon-external1 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">Климатические испытания (температура, влажность)</div>
-          </div>
+          </router-link>
 
           <div class="factor-card">
             <IconExternal3 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
@@ -135,6 +135,11 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
   display: flex;
   align-items: center;
   min-height: 80px;
+}
+
+.factor-card-link {
+  text-decoration: none;
+  color: inherit;
 }
 
 .factor-title {
