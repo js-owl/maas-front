@@ -249,12 +249,12 @@ function onLogout() {
             КОМПЛЕКС ПРЕДПРИЯТИЙ<br />
             ПОЛНОГО ЦИКЛА
           </h1>
-          <p class="hero-description">
+          <!-- <p class="hero-description">
             АЭРОМАКС - комплекс предприятий для выполнения<br />
             задач в области механообработки, работы<br />
             с полимерными и композиционными материалами.
           </p>
-          <p class="hero-slogan">Оптимизируйте, развивайте и производите.</p>
+          <p class="hero-slogan">Оптимизируйте, развивайте и производите.</p> -->
         </el-col>
       </el-row>
     </div>
@@ -315,7 +315,7 @@ function onLogout() {
 }
 
 .uppermenu-wrapper.fullscreen-bg {
-  height: 650px;
+  height: 1000px;
   background-image: url('/homePage/about.webp');
   background-size: cover;
   background-position: center;
@@ -653,7 +653,7 @@ function onLogout() {
 }
 
 .hero-title {
-  font-size: 52px;
+  font-size: 64px;
   font-weight: 800;
   color: #fff;
   text-transform: uppercase;

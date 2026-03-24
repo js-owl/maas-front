@@ -124,8 +124,10 @@ const submit = () => {
 }
 .calc-left .lead {
   color: #4c4c4c;
-  font-size: 24px;
+  font-size: 18px;
+  font-weight: 500;
   margin-bottom: 0;
+  padding-top: 10px;
 }
 
 .calc-right {

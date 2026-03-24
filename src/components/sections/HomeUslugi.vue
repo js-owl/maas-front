@@ -253,7 +253,7 @@ const abilities = ref([
 }
 
 .uslugi-section2 {
-  margin-top: -60px;
+  margin-top: -615px;
   position: relative;
   z-index: 3;
   display: block;
