@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import HomeCalc from '@/components/sections/HomeCalc.vue'
+import TestClimate from '@/components/sections/TestClimate.vue'
 </script>
 
 <template>
   <div class="main-container">
     <el-row>
         <el-col :offset="3" :span="18">
-          <HomeCalc />
+          <TestClimate />
         </el-col>
       </el-row>
   </div>
