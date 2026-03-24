@@ -1,3 +1,34 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const isNormativeOpen = ref<string[]>(['normative'])
+
+const normativeDocuments = [
+  'ГОСТ РВ 20.57.306-98',
+  'ЕНГЛ-С',
+  'ГОСТ 15543-70',
+  'ГОСТ 28216-89',
+  'IEC60068',
+  'ГОСТ РВ 0020-57.306-2019',
+  'НЛГВ-2',
+  'ГОСТ 15543.1-89',
+  'ГОСТ 28224-89',
+  'IEC60945',
+  'ГОСТ РВ 20.39.414.1-97',
+  'КТ-160',
+  'ГОСТ 16962.1-90',
+  'ГОСТ Р 51369-99',
+  'ГОСТ РВ 20.57.416-97',
+  'ГОСТ 11478-88',
+  'ГОСТ 16019-2001',
+  'DO-160',
+  'MIL-STD-810',
+  'ГОСТ РВ 0020-57.416-2020',
+  'ГОСТ 15150-69',
+  'ГОСТ 28201-89',
+]
+</script>
+
 <template>
   <section class="section-basic climate-section">
     <div class="technical-requirements">
@@ -46,7 +77,7 @@
                   t от -85 &deg;C до +20 &deg;C
                 </td>
               </tr>
-              <tr>
+              <tr style="margin-top: 10px;">
                 <td>Массо-габаритные характеристики испытываемой продукции</td>
                 <td>
                   150 кг
@@ -67,19 +98,19 @@
             Обозначение НД, устанавливающих нормы испытаний и измерений
           </span>
         </template>
-        <p class="normative-content">
-          Содержание блока можно заполнить после утверждения полного перечня нормативных документов.
-        </p>
+        <div class="normative-content">
+          <span
+            v-for="item in normativeDocuments"
+            :key="item"
+            class="normative-chip"
+          >
+            {{ item }}
+          </span>
+        </div>
       </el-collapse-item>
     </el-collapse>
   </section>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
-const isNormativeOpen = ref<string[]>([])
-</script>
 
 <style scoped>
 .technical-requirements {
@@ -133,6 +164,60 @@ const isNormativeOpen = ref<string[]>([])
   border-bottom: none;
 }
 
+.normative-collapse {
+  margin-top: 28px;
+}
+
+.normative-collapse :deep(.el-collapse) {
+  border-top: none;
+  border-bottom: none;
+}
+
+.normative-collapse :deep(.el-collapse-item__header) {
+  min-height: 56px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  background-color: #cbd1d5;
+  line-height: 1.3;
+}
+
+.normative-collapse :deep(.el-collapse-item__wrap) {
+  border-bottom: none;
+  border-radius: 0 0 8px 8px;
+  background-color: #cbd1d5;
+}
+
+.normative-collapse :deep(.el-collapse-item__content) {
+  padding: 0 18px 16px;
+}
+
+.normative-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.normative-content {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.normative-chip {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: #b9c0c5;
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+  line-height: 1.2;
+}
+
 @media (max-width: 768px) {
   .requirements-table th,
   .requirements-table td {
@@ -142,6 +227,28 @@ const isNormativeOpen = ref<string[]>([])
 
   .requirements-table th {
     font-size: 16px;
+  }
+
+  .normative-collapse :deep(.el-collapse-item__header) {
+    padding: 10px 12px;
+  }
+
+  .normative-collapse :deep(.el-collapse-item__content) {
+    padding: 0 12px 12px;
+  }
+
+  .normative-title {
+    font-size: 20px;
+  }
+
+  .normative-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .normative-chip {
+    font-size: 14px;
+    padding: 5px 10px;
   }
 }
 </style>
