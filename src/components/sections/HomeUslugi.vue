@@ -55,7 +55,7 @@ const abilities = ref([
   {
     id: 7,
     title: 'Сварка',
-    link: '/other',
+    link: '/weld',
     isDevelopment: false,
     icon: markRaw(IconWelding),
   },
