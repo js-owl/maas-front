@@ -1,22 +1,31 @@
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 const { color = '#7D8083', strokeWidth = 3 } = defineProps<{
   color?: string
   strokeWidth?: number
 }>()
-</script>
+</script> -->
 
 <template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 60 61"
-  >
-    <path
-      d="M24.6053 38.0185L22.4474 59.5L50.5 29.4259L35.3947 20.8333L37.5526 1.5L9.5 31.5741L24.6053 38.0185Z"
-      fill="none"
-      :stroke="color"
-      :stroke-width="strokeWidth"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </svg>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 60 60" style="enable-background:new 0 0 60 60;" xml:space="preserve">
+<g id="Layer_1">
+	<path class="st0" d="M50,60H10C4.5,60,0,55.5,0,50V10C0,4.5,4.5,0,10,0h40c5.5,0,10,4.5,10,10v40C60,55.5,55.5,60,50,60z"/>
+</g>
+<g id="Layer_3">
+	<g>
+		<path class="st1" d="M25.5,22.6c-0.4-0.4-1-0.4-1.4,0l-4.7,4.7c-0.4,0.4-0.4,1,0,1.4c0.2,0.2,0.5,0.3,0.7,0.3
+			c0.3,0,0.5-0.1,0.7-0.3l4.7-4.7C25.9,23.7,25.9,23,25.5,22.6z"/>
+		<path class="st1" d="M48.9,29.9c-0.1-0.3-0.3-0.6-0.6-0.7l-11.1-4.5L39,9.7c0.1-0.5-0.2-0.9-0.7-1.1l-4.1-1.4l0,0
+			c-0.4-0.1-0.8,0-1,0.2L11.3,29.2c-0.2,0.2-0.3,0.6-0.3,0.9s0.3,0.6,0.6,0.7l11.2,4.5L21,50.3c-0.1,0.4,0.2,0.8,0.6,1
+			c0,0,0.1,0,0.1,0l0,0l4.1,1.4c0.1,0,0.2,0.1,0.3,0.1c0.3,0,0.5-0.1,0.7-0.3l21.8-21.8C48.9,30.5,49,30.2,48.9,29.9z M34.7,9.5
+			l2.2,0.8l-1.7,13.8l-2.2-0.9L34.7,9.5z M24.3,33.8l-10.5-4.3l18.7-18.7L31,23.7c-0.1,0.4,0.2,0.9,0.6,1L42.1,29L23.4,47.7
+			l1.5-12.8C25,34.4,24.7,34,24.3,33.8z M25.9,50.7l-2-0.7l20.4-20.4l1.9,0.8L25.9,50.7z"/>
+	</g>
+</g>
+</svg>
 </template>
+
+<style type="text/css">
+	.st0{fill:#CBD1D5;}
+	.st1{fill:#7D8083;}
+</style>
