@@ -121,6 +121,12 @@
   vertical-align: top;
 }
 
+.requirements-table th:first-child,
+.requirements-table td:first-child {
+  width: 500px;
+  max-width: 500px;
+}
+
 .requirements-table th {
   font-size: 24px;
   font-weight: 600;
