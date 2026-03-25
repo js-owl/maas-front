@@ -19,10 +19,10 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
             <div class="factor-title">Климатические испытания (температура, влажность)</div>
           </router-link>
 
-          <div class="factor-card">
+          <router-link class="factor-card factor-card-link" to="/testing#electric">
             <IconExternal3 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">Электрические испытания</div>
-          </div>
+          </router-link>
 
           <div class="factor-card">
             <IconExternal5 class="factor-icon" :stroke-width="2.5" color="#7d8083" />

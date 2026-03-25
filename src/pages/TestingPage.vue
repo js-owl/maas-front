@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TestClimate from '@/components/sections/testing/TestClimate.vue'
 import TestVibration from '@/components/sections/testing/TestVibration.vue'
+import TestElectric from '@/components/sections/testing/TestElectric.vue'
 </script>
 
 <template>
@@ -10,6 +11,9 @@ import TestVibration from '@/components/sections/testing/TestVibration.vue'
           <TestClimate />
           <section id="vibration">
             <TestVibration />
+          </section>
+          <section id="electric">
+            <TestElectric />
           </section>
         </el-col>
       </el-row>
