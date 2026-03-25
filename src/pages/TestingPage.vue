@@ -2,6 +2,7 @@
 import TestClimate from '@/components/sections/testing/TestClimate.vue'
 import TestVibration from '@/components/sections/testing/TestVibration.vue'
 import TestElectric from '@/components/sections/testing/TestElectric.vue'
+import TestHumidity from '@/components/sections/testing/TestHumidity.vue'
 </script>
 
 <template>
@@ -14,6 +15,9 @@ import TestElectric from '@/components/sections/testing/TestElectric.vue'
           </section>
           <section id="electric">
             <TestElectric />
+          </section>
+          <section id="humidity">
+            <TestHumidity />
           </section>
         </el-col>
       </el-row>

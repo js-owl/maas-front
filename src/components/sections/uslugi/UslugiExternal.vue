@@ -36,10 +36,10 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
             <div class="factor-title">Механические испытания (вибрация, удар)</div>
           </router-link>
 
-          <div class="factor-card">
+          <router-link class="factor-card factor-card-link" to="/testing#humidity">
             <IconExternal4 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">Воздействие влаги и соляного тумана</div>
-          </div>
+          </router-link>
         </div>
       </div>
     </div>

@@ -106,6 +106,7 @@ declare module 'vue' {
     SuitableMachines: typeof import('./src/components/SuitableMachines.vue')['default']
     TestClimate: typeof import('./src/components/sections/testing/TestClimate.vue')['default']
     TestElectric: typeof import('./src/components/sections/testing/TestElectric.vue')['default']
+    TestHumidity: typeof import('./src/components/sections/testing/TestHumidity.vue')['default']
     TestVibration: typeof import('./src/components/sections/testing/TestVibration.vue')['default']
     UploadDrawings: typeof import('./src/components/UploadDrawings.vue')['default']
     UploadDrawings2: typeof import('./src/components/UploadDrawings2.vue')['default']
