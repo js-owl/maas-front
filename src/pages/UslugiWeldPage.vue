@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import UslugiRubber from '@/components/sections/uslugi/UslugiRubber.vue'
+import UslugiWeld from '@/components/sections/uslugi/UslugiWeld.vue'
 </script>
 
 <template>
   <div class="main-container">
     <el-row>
-      <UslugiRubber />
+      <UslugiWeld />
     </el-row>
   </div>
 </template>
