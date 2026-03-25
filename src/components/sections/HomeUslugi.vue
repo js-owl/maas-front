@@ -62,7 +62,7 @@ const abilities = ref([
   {
     id: 8,
     title: 'Производство из резины',
-    link: '/other',
+    link: '/rubber',
     isDevelopment: false,
     icon: markRaw(IconRubber),
   },
