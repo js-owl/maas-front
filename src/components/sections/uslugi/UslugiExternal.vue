@@ -24,10 +24,10 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
             <div class="factor-title">Электрические испытания</div>
           </router-link>
 
-          <div class="factor-card">
+          <router-link class="factor-card factor-card-link" to="/testing#dust">
             <IconExternal5 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
             <div class="factor-title">Воздействие статической и динамической пыли</div>
-          </div>
+          </router-link>
         </div>
 
         <div class="factors-column">

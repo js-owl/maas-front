@@ -105,6 +105,7 @@ declare module 'vue' {
     STPViewer: typeof import('./src/components/cad/STPViewer.vue')['default']
     SuitableMachines: typeof import('./src/components/SuitableMachines.vue')['default']
     TestClimate: typeof import('./src/components/sections/testing/TestClimate.vue')['default']
+    TestDust: typeof import('./src/components/sections/testing/TestDust.vue')['default']
     TestElectric: typeof import('./src/components/sections/testing/TestElectric.vue')['default']
     TestHumidity: typeof import('./src/components/sections/testing/TestHumidity.vue')['default']
     TestVibration: typeof import('./src/components/sections/testing/TestVibration.vue')['default']
