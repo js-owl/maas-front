@@ -192,9 +192,15 @@ const submit = () => {
   font-size: 12px;
   color: #666;
 }
-.upload-files-bordered {
+.upload-files-bordered :deep(.upload) {
   border: 2px dashed #7d8083;
   border-radius: 10px;
+  background-color: transparent !important;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url('/homePage/about.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 :deep(.el-input__wrapper) {
   padding: 0;
