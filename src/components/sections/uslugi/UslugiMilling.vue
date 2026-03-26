@@ -4,7 +4,7 @@
   <!-- Фрезерная обработка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">ФРЕЗЕРНАЯ ОБРАБОТКА</div>
+      <div class="uslugi-title">Фрезерная обработка</div>
 
       <div class="uslugi-section">
         <div class="uslugi-text">

@@ -4,7 +4,7 @@
   <!-- Лакокрасочные материалы -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">ЛАКОКРАСОЧНЫЕ МАТЕРИАЛЫ</div>
+      <div class="uslugi-title">Лакокрасочные материалы</div>
 
       <div class="uslugi-section">
         <div class="uslugi-text">

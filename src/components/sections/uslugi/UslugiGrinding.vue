@@ -4,7 +4,7 @@
   <!-- Шлифовка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">ШЛИФОВКА</div>
+      <div class="uslugi-title">Шлифовка</div>
 
       <div class="uslugi-section">
         <div class="uslugi-text">

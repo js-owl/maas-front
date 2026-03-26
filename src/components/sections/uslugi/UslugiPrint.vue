@@ -4,7 +4,7 @@
   <!-- 3D-печать -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">3D-ПЕЧАТЬ</div>
+      <div class="uslugi-title">3D-печать</div>
 
       <div class="uslugi-section">
         <div class="uslugi-text">

@@ -4,7 +4,7 @@
   <!-- Лазерная резка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">ЛАЗЕРНАЯ РЕЗКА</div>
+      <div class="uslugi-title">Лазерная резка</div>
 
       <div class="uslugi-section">
         <div class="uslugi-text">

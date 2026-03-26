@@ -4,7 +4,7 @@
   <!-- Полимерно-композитные материалы -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">ПОЛИМЕРНО-КОМПОЗИТНЫЕ МАТЕРИАЛЫ</div>
+      <div class="uslugi-title">Полимерно-композитные материалы</div> 
 
       <div class="uslugi-section">
         <div class="uslugi-text">

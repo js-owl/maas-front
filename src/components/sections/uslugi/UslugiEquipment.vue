@@ -3,7 +3,7 @@
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">ОБОРУДОВАНИЕ</div>
+      <div class="uslugi-title">Оборудование</div>
 
       <div class="technical-requirements">
         <div class="requirements-table-wrapper">

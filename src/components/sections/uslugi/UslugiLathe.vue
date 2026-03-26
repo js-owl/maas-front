@@ -4,7 +4,7 @@
   <!-- Токарная обработка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">ТОКАРНАЯ ОБРАБОТКА</div>
+      <div class="uslugi-title">Токарная обработка</div>
 
       <div class="uslugi-section">
         <div class="uslugi-text">

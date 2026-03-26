@@ -4,7 +4,7 @@
   <!-- Гибка металла -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">ГИБКА МЕТАЛЛА</div>
+      <div class="uslugi-title">Гибка металла</div>
 
       <div class="uslugi-section">
         <div class="uslugi-text">
