@@ -86,16 +86,6 @@
   table-layout: fixed;
 }
 
-
-.uslugi-table-thead {
-  font-size: 18px;
-  font-weight: 500;
-  padding: 16px 20px;
-  color: #000;
-  background-color: var(--bgcolor);
-  text-align: left;
-}
-
 .requirements-table td {
   padding: 16px 20px;
   font-size: 18px;
