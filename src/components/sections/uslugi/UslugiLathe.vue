@@ -73,15 +73,6 @@
   margin-top: 40px;
 }
 
-.requirements-title {
-  font-size: 36px;
-  font-weight: 700;
-  color: #000;
-  text-transform: uppercase;
-  margin-bottom: 40px;
-  text-align: left;
-}
-
 .requirements-table-wrapper {
   border-radius: 12px;
   overflow: hidden;
@@ -133,18 +124,5 @@
 
 .materials-list li + li {
   margin-top: 4px;
-}
-
-@media (max-width: 768px) {
-  .requirements-title {
-    font-size: 22px;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .requirements-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
 }
 </style>
