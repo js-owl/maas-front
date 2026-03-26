@@ -35,9 +35,9 @@
             </colgroup>
             <thead>
               <tr>
-                <th>Вид покрытия</th>
-                <th>Толщина нанесения покрытия, мкм</th>
-                <th>Макс. габ. деталей, мм</th>
+                <th class="uslugi-table-thead">Вид покрытия</th>
+                <th class="uslugi-table-thead">Толщина нанесения покрытия, мкм</th>
+                <th class="uslugi-table-thead">Макс. габ. деталей, мм</th>
               </tr>
             </thead>
             <tbody>
@@ -161,11 +161,6 @@
   width: 600px;
 }
 
-.requirements-table thead {
-  background-color: var(--bgcolor);
-}
-
-.requirements-table th,
 .requirements-table td {
   padding: 16px 20px;
   font-size: 18px;
@@ -177,29 +172,11 @@
   vertical-align: top;
 }
 
-.requirements-table th {
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.requirements-table th:last-child,
 .requirements-table td:last-child {
   border-right: none;
 }
 
 .requirements-table tr:last-child td {
   border-bottom: none;
-}
-
-@media (max-width: 768px) {
-  .requirements-table th,
-  .requirements-table td {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
-
-  .requirements-table th {
-    font-size: 16px;
-  }
 }
 </style>
