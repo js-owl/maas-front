@@ -30,8 +30,8 @@
           <table class="requirements-table">
             <thead>
               <tr>
-                <th>Применение</th>
-                <th>Материалы</th>
+                <th class="uslugi-table-thead">Применение</th>
+                <th class="uslugi-table-thead">Материалы</th>
               </tr>
             </thead>
             <tbody>
@@ -76,15 +76,6 @@
   margin-top: 40px;
 }
 
-.requirements-title {
-  font-size: 36px;
-  font-weight: 700;
-  color: #000;
-  text-transform: uppercase;
-  margin-bottom: 40px;
-  text-align: left;
-}
-
 .requirements-table-wrapper {
   border-radius: 12px;
   overflow: hidden;
@@ -98,17 +89,9 @@
   table-layout: fixed;
 }
 
-.requirements-table thead {
-  background-color: var(--bgcolor);
-}
-.requirements-table th {
-  font-size: 24px;
-}
-
-.requirements-table th,
 .requirements-table td {
   padding: 16px 20px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   color: #000;
   text-align: left;
@@ -117,12 +100,6 @@
   vertical-align: top;
 }
 
-.requirements-table th {
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.requirements-table th:last-child,
 .requirements-table td:last-child {
   border-right: none;
 }
@@ -139,18 +116,5 @@
 
 .materials-list li + li {
   margin-top: 4px;
-}
-
-@media (max-width: 768px) {
-  .requirements-title {
-    font-size: 22px;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .requirements-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
 }
 </style>
