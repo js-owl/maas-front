@@ -101,11 +101,12 @@ body {
   margin-bottom: 30px;
   text-align: left;
 }
-.uslugi-title-table {
+.uslugi-table-title {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 20px;
   text-align: left;
+  color: #000;
 }
 
 .uslugi-table-thead {

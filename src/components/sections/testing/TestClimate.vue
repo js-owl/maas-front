@@ -33,7 +33,7 @@ const normativeDocuments = [
   <section class="section-basic climate-section">
     <div class="technical-requirements">
       <div class="temperature-section">
-        <div class="uslugi-title-table">Испытание на воздействие температуры среды</div>
+        <div class="uslugi-table-title">Испытание на воздействие температуры среды</div>
 
         <div class="requirements-table-wrapper">
           <table class="requirements-table">
@@ -60,7 +60,7 @@ const normativeDocuments = [
       </div>
 
       <div class="humidity-section">
-        <div class="uslugi-title-table">Испытание на воздействие влажности</div>
+        <div class="uslugi-table-title">Испытание на воздействие влажности</div>
 
         <div class="requirements-table-wrapper">
           <table class="requirements-table">

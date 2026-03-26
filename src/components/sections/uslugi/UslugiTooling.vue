@@ -25,7 +25,7 @@
       </div>
 
       <div class="technical-requirements">
-        <div class="uslugi-title-table">Технические требования</div>
+        <div class="uslugi-table-title">Технические требования</div>
 
         <div class="requirements-table-wrapper">
           <table class="requirements-table">

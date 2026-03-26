@@ -17,7 +17,7 @@ const normativeDocuments = [
 <template>
   <section class="section-basic electric-section">
     <div class="technical-requirements">
-      <div class="uslugi-title-table">Испытание приемников электрической энергии</div>
+      <div class="uslugi-table-title">Испытание приемников электрической энергии</div>
 
       <div class="requirements-table-wrapper">
         <table class="requirements-table">

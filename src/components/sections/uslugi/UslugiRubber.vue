@@ -25,7 +25,7 @@
       </div>
 
       <div class="technical-requirements">
-        <div class="uslugi-title-table">Виды резины*</div>
+        <div class="uslugi-table-title">Виды резины*</div>
 
         <div class="requirements-table-wrapper">
           <table class="requirements-table">
@@ -85,7 +85,7 @@
       </div>
 
       <div class="technical-requirements">
-        <div class="uslugi-title-table">Примеры изделий</div>
+        <div class="uslugi-table-title">Примеры изделий</div>
 
         <div class="requirements-table-wrapper">
           <table class="requirements-table">

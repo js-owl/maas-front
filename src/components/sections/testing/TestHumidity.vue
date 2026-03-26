@@ -20,7 +20,7 @@ const normativeDocuments = [
 <template>
   <section class="section-basic humidity-section">
     <div class="technical-requirements">
-      <div class="uslugi-title-table">Испытание на воздействие соляного тумана и влаги</div>
+      <div class="uslugi-table-title">Испытание на воздействие соляного тумана и влаги</div>
 
       <div class="requirements-table-wrapper">
         <table class="requirements-table">

@@ -21,7 +21,7 @@ const normativeDocuments = [
 <template>
   <section class="section-basic dust-section">
     <div class="technical-requirements">
-      <div class="uslugi-title-table">Испытание на статическое и динамическое воздействие пыли и песка</div>
+      <div class="uslugi-table-title">Испытание на статическое и динамическое воздействие пыли и песка</div>
 
       <div class="subsection">
         <div class="uslugi-title-table2">Статическое воздействие</div>

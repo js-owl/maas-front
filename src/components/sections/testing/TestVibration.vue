@@ -40,7 +40,7 @@ const normativeDocuments = [
 <template>
   <section class="section-basic vibration-section">
     <div class="technical-requirements">
-      <div class="uslugi-title-table">
+      <div class="uslugi-table-title">
         <div>1. Испытание на воздействие синусоидальной вибрации одной частоты</div>
         <div>2. Испытание на воздействие синусоидальной вибрации с изменяемой частотой</div>
         <div>3. Испытание на воздействие широкополосной случайной вибрации</div>
@@ -86,7 +86,7 @@ const normativeDocuments = [
       </div>
 
       <div class="subsection">
-        <div class="uslugi-title-table">
+        <div class="uslugi-table-title">
           Испытание на воздействие широкополосной случайной вибрации с наложением
           полигармонической вибрации
         </div>
@@ -132,7 +132,7 @@ const normativeDocuments = [
       </div>
 
       <div class="subsection">
-        <div class="uslugi-title-table">Испытание на воздействие ударов многократного и одиночного действия</div>
+        <div class="uslugi-table-title">Испытание на воздействие ударов многократного и одиночного действия</div>
 
         <div class="requirements-table-wrapper">
           <table class="requirements-table">

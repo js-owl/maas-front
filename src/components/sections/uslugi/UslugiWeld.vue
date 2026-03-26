@@ -20,7 +20,7 @@
       </div>
 
       <div class="technical-requirements">
-        <div class="uslugi-title-table">Виды сварки</div>
+        <div class="uslugi-table-title">Виды сварки</div>
 
         <div class="requirements-table-wrapper">
           <table class="requirements-table">
