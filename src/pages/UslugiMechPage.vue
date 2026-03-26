@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import UslugiLathe from '../components/sections/uslugi/UslugiLathe.vue'
 import UslugiBending from '../components/sections/uslugi/UslugiBending.vue'
-import UslugiLaser from '../components/sections/uslugi/UslugiLaser.vue'
+// import UslugiLaser from '../components/sections/uslugi/UslugiLaser.vue'
 import UslugiMilling from '../components/sections/uslugi/UslugiMilling.vue'
 import UslugiTooling from '../components/sections/uslugi/UslugiTooling.vue'
 import UslugiGrinding from '../components/sections/uslugi/UslugiGrinding.vue'
@@ -12,7 +12,7 @@ import UslugiGrinding from '../components/sections/uslugi/UslugiGrinding.vue'
     <el-row>
       <UslugiLathe />
       <UslugiMilling />
-      <UslugiLaser />
+      <!-- <UslugiLaser /> -->
       <UslugiBending />
       <UslugiTooling />
       <UslugiGrinding />
