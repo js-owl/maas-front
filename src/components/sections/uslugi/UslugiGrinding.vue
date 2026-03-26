@@ -26,11 +26,16 @@
 
         <div class="requirements-table-wrapper">
           <table class="requirements-table">
+            <colgroup>
+              <col style="width: 500px" />
+              <col />
+              <col />
+            </colgroup>
             <thead>
               <tr>
-                <th>Тип сварки</th>
-                <th>Рабочая зона, мм</th>
-                <th>Макс. вес</th>
+                <th class="uslugi-table-thead">Тип сварки</th>
+                <th class="uslugi-table-thead">Рабочая зона, мм</th>
+                <th class="uslugi-table-thead">Макс. вес</th>
               </tr>
             </thead>
             <tbody>
@@ -80,15 +85,6 @@
   margin-top: 40px;
 }
 
-.requirements-title {
-  font-size: 36px;
-  font-weight: 700;
-  color: #000;
-  text-transform: uppercase;
-  margin-bottom: 40px;
-  text-align: left;
-}
-
 .requirements-table-wrapper {
   border-radius: 12px;
   overflow: hidden;
@@ -105,14 +101,10 @@
 .requirements-table thead {
   background-color: var(--bgcolor);
 }
-.requirements-table th{
-  font-size: 24px;
-}
 
-.requirements-table th,
 .requirements-table td {
   padding: 16px 20px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   color: #000;
   text-align: left;
@@ -121,47 +113,12 @@
   vertical-align: top;
 }
 
-.requirements-table th:first-child,
-.requirements-table td:first-child {
-  width: 500px;
-  max-width: 500px;
-}
-
-.requirements-table th {
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.requirements-table th:last-child,
 .requirements-table td:last-child {
   border-right: none;
 }
 
 .requirements-table tr:last-child td {
   border-bottom: none;
-}
-
-.materials-list {
-  margin: 0;
-  padding-left: 20px;
-  list-style-type: disc;
-}
-
-.materials-list li + li {
-  margin-top: 4px;
-}
-
-@media (max-width: 768px) {
-  .requirements-title {
-    font-size: 22px;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .requirements-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
 }
 </style>
 
