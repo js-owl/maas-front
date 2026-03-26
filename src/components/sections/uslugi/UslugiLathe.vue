@@ -32,9 +32,9 @@
             </colgroup>
             <thead>
               <tr>
-                <th>Оборудование</th>
-                <th>Габариты</th>
-                <th>Материалы</th>
+                <th class="uslugi-table-thead">Оборудование</th>
+                <th class="uslugi-table-thead">Габариты</th>
+                <th class="uslugi-table-thead">Материалы</th>
               </tr>
             </thead>
             <tbody>
@@ -95,17 +95,19 @@
   table-layout: fixed;
 }
 
-.requirements-table thead {
+
+.uslugi-table-thead {
+  font-size: 18px;
+  font-weight: 500;
+  padding: 16px 20px;
+  color: #000;
   background-color: var(--bgcolor);
-}
-.requirements-table th{
-  font-size: 24px;
+  text-align: left;
 }
 
-.requirements-table th,
 .requirements-table td {
   padding: 16px 20px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   color: #000;
   text-align: left;
@@ -114,12 +116,7 @@
   vertical-align: top;
 }
 
-.requirements-table th {
-  font-size: 24px;
-  font-weight: 600;
-}
 
-.requirements-table th:last-child,
 .requirements-table td:last-child {
   border-right: none;
 }
