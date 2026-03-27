@@ -210,7 +210,7 @@ function onLogout() {
 
           <div class="right-wrap">
             <template v-if="!authStore.getToken">
-              <el-button v-if="!isMobile" class="auth-btn" @click="isLoginVisible = true">
+              <el-button v-if="!isMobile" class="auth-btn montserrat-semibold" @click="isLoginVisible = true">
                 Войти / Регистрация
               </el-button>
               <el-button
@@ -463,8 +463,7 @@ function onLogout() {
   background-color: transparent;
   color: #333;
   border: none;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 24px;
   padding: 8px 16px;
   margin-right: 8px;
   height: auto;
