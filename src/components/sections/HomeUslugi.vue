@@ -88,7 +88,7 @@ const abilities = ref([
               </el-icon>
             </div>
             <div class="card-text">
-              <h3 class="card-title">{{ ability.title }}</h3>
+              <h3 class="card-title montserrat-semibold">{{ ability.title }}</h3>
               <div v-if="ability.isDevelopment" class="development-notice">
                 <span class="development-text">[Раздел в разработке]</span>
               </div>
@@ -170,7 +170,6 @@ const abilities = ref([
 
 .card-title {
   font-size: 24px;
-  font-weight: 600;
   color: #000;
 }
 
