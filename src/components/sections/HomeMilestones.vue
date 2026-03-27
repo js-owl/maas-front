@@ -60,8 +60,8 @@ const steps: Step[] = [
               <component :is="step.icon" />
             </div>
             <div class="step-content">
-              <div class="step-title">{{ step.title }}</div>
-              <p class="step-description">
+              <div class="step-title montserrat-semibold">{{ step.title }}</div>
+              <p class="step-description montserrat-medium">
                 <template v-if="step.highlightWord">
                   {{ step.description.split(step.highlightWord)[0] }}
                   <button
@@ -151,7 +151,6 @@ const steps: Step[] = [
 
 .step-title {
   font-size: 24px;
-  font-weight: 600;
   color: #000000;
   line-height: 1.2;
 }
@@ -159,13 +158,12 @@ const steps: Step[] = [
 .step-description {
   margin: 0;
   font-size: 18px;
-  font-weight: 500;
   color: #000000;
   line-height: 1.4;
 }
 
 .step-description-highlight {
-  color: #c45c5c;
+  color: #ce132f;
   font-weight: 700;
 }
 

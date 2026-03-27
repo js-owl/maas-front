@@ -41,8 +41,8 @@ const isMobile = computed(() => width.value <= 767)
       <div class="item" v-for="advantage in advantages" :key="advantage.id">
         <div class="item-wrap">
           <div class="item-text-content">
-            <div class="item-title">{{ advantage.title }}</div>
-            <p class="item-text">{{ advantage.text }}</p>
+            <div class="item-title montserrat-semibold">{{ advantage.title }}</div>
+            <p class="item-text montserrat-medium">{{ advantage.text }}</p>
           </div>
           <div class="item-image-container">
             <el-image
@@ -106,7 +106,6 @@ const isMobile = computed(() => width.value <= 767)
 
 .item-title {
   font-size: 24px;
-  font-weight: 600;
   color: black;
   font-weight: bold;
   margin-bottom: 40px;
