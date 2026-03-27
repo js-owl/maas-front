@@ -154,7 +154,7 @@ function onLogout() {
               >
                 <el-sub-menu index="1" class="services-menu">
                   <template #title>
-                    <span class="services-title">Услуги</span>
+                    <span class="services-title montserrat-semibold">Услуги</span>
                     <el-icon class="dropdown-icon">
                       <ArrowDown />
                     </el-icon>
@@ -408,9 +408,8 @@ function onLogout() {
 }
 
 .services-title {
-  font-size: 18px;
+  font-size: 24px;
   color: #333;
-  font-weight: 500;
 }
 
 .fullscreen-bg .services-title {
