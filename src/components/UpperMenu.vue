@@ -383,7 +383,7 @@ function onLogout() {
   background-color: #d61e3c;
   color: white;
   border: none;
-  font-size: 18px;
+  font-size: 32px;
   font-weight: 700;
   padding: 12px 24px;
   border-radius: 4px;
