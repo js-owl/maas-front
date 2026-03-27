@@ -12,6 +12,13 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Montserrat-Medium';
+  src: url('/fonts/Montserrat-Medium.ttf') format('truetype');
+  /* font-weight: 500; */
+  font-display: swap;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 
@@ -93,6 +100,11 @@ body {
 .montserrat-semibold {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-weight: 600;
+}
+
+.montserrat-medium {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-weight: 500;
 }
 
 /* Uslugi */
