@@ -35,7 +35,7 @@ const isMobile = computed(() => width.value <= 767)
 
 <template>
   <section class="section-basic">
-    <div style="font-size: 38px; font-weight: 600; color: #000; text-align: left; padding-bottom: 20px;">Наши преимущества</div>
+    <div class="home-title montserrat-semibold">Наши преимущества</div>
 
     <div class="items">
       <div class="item" v-for="advantage in advantages" :key="advantage.id">
@@ -62,6 +62,7 @@ const isMobile = computed(() => width.value <= 767)
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 .item {

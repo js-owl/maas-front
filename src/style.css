@@ -60,7 +60,11 @@ body {
     padding-bottom: 10px;
   }
 }
-
+.home-title {
+  font-size: 32px;
+  color: #000000;
+  line-height: 1.2;
+}
 .coefficient-title {
   color: black;
   font-weight: 500;

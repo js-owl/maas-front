@@ -53,7 +53,7 @@ const steps: Step[] = [
   <section class="section-basic home-milestones">
     <div class="milestones-container">
       <div class="milestones-wrap">
-        <div class="steps-title">Как создать заказ?</div>
+        <div class="home-title montserrat-semibold">Как создать заказ?</div>
         <div class="steps">
           <div v-for="step in steps" :key="step.id" class="step-card">
             <div class="step-number">
