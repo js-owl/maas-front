@@ -84,6 +84,7 @@ const submit = () => {
             <el-form-item>
               <Select
                 v-model="selectedOrderType"
+                class="order-type-select"
                 placeholder="Тип обработки"
                 width="100%"
                 @change="handleOrderTypeChange"
@@ -202,16 +203,12 @@ const submit = () => {
   background-position: center;
   background-repeat: no-repeat;
 }
-:deep(.el-input__wrapper) {
-  padding: 0;
-}
-:deep(.el-input__inner) {
-  background-color: var(--bgcolor);
-  border-radius: 5px;
-  font-size: 16px;
+.order-type-select :deep(.el-select__wrapper),
+.order-type-select :deep(.el-select__placeholder),
+.order-type-select :deep(.el-select__selection-text) {
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px;
   font-weight: 600;
-  /* color: black; */
-  padding: 20px;
 }
 
 @media (max-width: 768px) {
