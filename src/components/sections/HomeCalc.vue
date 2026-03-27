@@ -65,7 +65,7 @@ const submit = () => {
     
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
-        <div style="font-size: 38px; font-weight: 600;">Производство под вашу потребность</div>
+        <div class="montserrat-semibold" style="font-size: 32px;">Производство под вашу потребность</div>
         <p class="lead">
           Проведем расчет стоимости детали по 3D-модели в течении 5 рабочих дней, а также вы
           получите анализ и рекомендации по оптимизации процесса изготовления
