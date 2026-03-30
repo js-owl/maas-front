@@ -77,10 +77,6 @@
   table-layout: fixed;
 }
 
-.requirements-table thead {
-  background-color: var(--bgcolor);
-}
-
 .requirements-table td {
   padding: 16px 20px;
   font-size: 18px;

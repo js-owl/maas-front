@@ -74,9 +74,6 @@
   table-layout: fixed;
 }
 
-.requirements-table thead {
-  background-color: var(--bgcolor);
-}
 .uslugi-table-thead {
   font-size: 18px;
   font-weight: 500;

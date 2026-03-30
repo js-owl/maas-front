@@ -74,9 +74,6 @@ import IconOptical6 from '@/icons/IconOptical6.vue'
   table-layout: fixed;
 }
 
-.requirements-table thead {
-  background-color: var(--bgcolor);
-}
 .requirements-table th{
   font-size: 24px;
 }

@@ -118,10 +118,6 @@
   width: 900px;
 }
 
-.requirements-table thead {
-  background-color: var(--bgcolor);
-}
-
 .requirements-table th,
 .requirements-table td {
   padding: 16px 20px;
