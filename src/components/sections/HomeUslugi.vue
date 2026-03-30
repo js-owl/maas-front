@@ -71,7 +71,7 @@ const abilities = ref([
 
 <template>
   <section class="section-basic uslugi-section2">
-    <div style="font-size: 38px; font-weight: 600; color: #000; text-align: left; padding-bottom: 20px;">Услуги</div>
+    <div class="uslugi-title montserrat-semibold">Услуги</div>
 
     <div class="services-grid">
       <div
@@ -177,6 +177,12 @@ const abilities = ref([
   margin-top: 4px;
 }
 
+.uslugi-title {
+  font-size: 38px;
+  color: #000;
+  text-align: left;
+  padding-bottom: 10px;
+}
 .development-text {
   font-size: 18px;
   color: #999;
