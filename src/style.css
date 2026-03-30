@@ -190,10 +190,6 @@ body {
   vertical-align: middle;
 }
 
-.requirements-table--large td {
-  font-size: 20px;
-}
-
 @media (max-width: 768px) {
   .requirements-table--compact td {
     font-size: 14px;

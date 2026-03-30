@@ -7,7 +7,7 @@
 
       <div class="technical-requirements">
         <div class="requirements-table-wrapper">
-          <table class="requirements-table requirements-table--large">
+          <table class="requirements-table">
             <thead>
               <tr>
                 <th>Оборудование</th>
