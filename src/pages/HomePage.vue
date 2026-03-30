@@ -18,6 +18,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- https://www.figma.com/design/Ptb80TGgpGXXHPGVWOKhdH/MaaS?node-id=1641-91&t=wkAQmWBg5peO3d60-0 -->
   <div style="background-color: var(--bgcolor)">
     <div v-if="!isMobile">
       <el-row>
