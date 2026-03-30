@@ -97,7 +97,7 @@ const submit = () => {
                 />
               </Select>
             </el-form-item>
-            <Button :loading="isSubmitting" :disabled="!hasToken" @click="submit">
+            <Button :loading="isSubmitting" :disabled="!hasToken" @click="submit" class="calc-submit-button">
               Отправить
             </Button>
           </div>
@@ -205,6 +205,12 @@ const submit = () => {
 .order-type-select :deep(.el-select__wrapper),
 .order-type-select :deep(.el-select__placeholder),
 .order-type-select :deep(.el-select__selection-text) {
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.calc-submit-button {
   font-family: 'Montserrat-SemiBold', sans-serif !important;
   font-size: 20px;
   font-weight: 600;

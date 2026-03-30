@@ -140,7 +140,7 @@ const handleDragOver = (event: DragEvent) => {
       >
         <div class="custom">
           <!-- <IconDrawing :color="color" style="display: block; width: 30px; height: 30px" /> -->
-          <div class="el-upload__text" :style="{ color }" style="font-size: 20px; font-weight: 600">
+          <div class="el-upload__text montserrat-semibold" :style="{ color }" style="font-size: 20px; font-weight: 600">
             {{ isUploading ? 'Загрузка...' : 'Перетащите или выберите файлы' }}
           </div>
           <input
