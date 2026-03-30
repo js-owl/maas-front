@@ -77,8 +77,7 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
   font-size: 24px;
 }
 
-.requirements-table th,
-.requirements-table td {
+.requirements-table th {
   padding: 16px 20px;
   font-size: 20px;
   font-weight: 500;
@@ -94,13 +93,8 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
   font-weight: 600;
 }
 
-.requirements-table th:last-child,
-.requirements-table td:last-child {
+.requirements-table th:last-child {
   border-right: none;
-}
-
-.requirements-table tr:last-child td {
-  border-bottom: none;
 }
 
 .materials-list {

@@ -23,7 +23,7 @@ const normativeDocuments = [
       <div class="uslugi-table-title">Испытание на воздействие соляного тумана и влаги</div>
 
       <div class="requirements-table-wrapper">
-        <table class="requirements-table">
+        <table class="requirements-table requirements-table--middle requirements-table--compact">
           <colgroup>
             <col class="col-type" />
             <col />
@@ -121,8 +121,7 @@ const normativeDocuments = [
   width: 900px;
 }
 
-.requirements-table th,
-.requirements-table td {
+.requirements-table th {
   padding: 16px 20px;
   font-size: 18px;
   font-weight: 500;
@@ -138,8 +137,7 @@ const normativeDocuments = [
   font-weight: 500;
 }
 
-.requirements-table th:last-child,
-.requirements-table td:last-child {
+.requirements-table th:last-child {
   border-right: none;
 }
 
@@ -214,12 +212,6 @@ const normativeDocuments = [
 @media (max-width: 768px) {
   .tests-list {
     font-size: 22px;
-  }
-
-  .requirements-table th,
-  .requirements-table td {
-    font-size: 14px;
-    padding: 10px 12px;
   }
 
   .requirements-table th {

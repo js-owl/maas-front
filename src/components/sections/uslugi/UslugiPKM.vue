@@ -85,25 +85,6 @@
   table-layout: fixed;
 }
 
-.requirements-table td {
-  padding: 16px 20px;
-  font-size: 18px;
-  font-weight: 500;
-  color: #000;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  border-right: 1px solid #e5e7eb;
-  vertical-align: top;
-}
-
-.requirements-table td:last-child {
-  border-right: none;
-}
-
-.requirements-table tr:last-child td {
-  border-bottom: none;
-}
-
 .materials-list {
   margin: 0;
   padding-left: 20px;

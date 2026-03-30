@@ -167,6 +167,40 @@ body {
   text-align: left;
 }
 
+.requirements-table td {
+  font-family: 'Montserrat-Medium', sans-serif;
+  padding: 16px 20px;
+  font-size: 18px;
+  color: #000;
+  text-align: left;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+
+.requirements-table td:last-child {
+  border-right: none;
+}
+
+.requirements-table tr:last-child td {
+  border-bottom: none;
+}
+
+.requirements-table--middle td {
+  vertical-align: middle;
+}
+
+.requirements-table--large td {
+  font-size: 20px;
+}
+
+@media (max-width: 768px) {
+  .requirements-table--compact td {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+}
+
 @media (max-width: 768px) {
   .uslugi-wrapper {
     padding: 30px 40px;

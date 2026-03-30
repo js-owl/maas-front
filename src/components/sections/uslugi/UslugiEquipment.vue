@@ -7,7 +7,7 @@
 
       <div class="technical-requirements">
         <div class="requirements-table-wrapper">
-          <table class="requirements-table">
+          <table class="requirements-table requirements-table--large">
             <thead>
               <tr>
                 <th>Оборудование</th>
@@ -77,8 +77,7 @@
   font-size: 24px;
 }
 
-.requirements-table th,
-.requirements-table td {
+.requirements-table th {
   padding: 16px 20px;
   font-size: 20px;
   font-weight: 500;
@@ -94,13 +93,8 @@
   font-weight: 600;
 }
 
-.requirements-table th:last-child,
-.requirements-table td:last-child {
+.requirements-table th:last-child {
   border-right: none;
-}
-
-.requirements-table tr:last-child td {
-  border-bottom: none;
 }
 
 .materials-list {

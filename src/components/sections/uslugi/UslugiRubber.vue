@@ -28,7 +28,7 @@
         <div class="uslugi-table-title">Виды резины*</div>
 
         <div class="requirements-table-wrapper">
-          <table class="requirements-table">
+          <table class="requirements-table requirements-table--compact">
             <colgroup>
               <col class="col-type" />
               <col />
@@ -88,7 +88,7 @@
         <div class="uslugi-table-title">Примеры изделий</div>
 
         <div class="requirements-table-wrapper">
-          <table class="requirements-table">
+          <table class="requirements-table requirements-table--compact">
             <colgroup>
               <col class="col-product" />
               <col />
@@ -167,8 +167,7 @@
   width: 520px;
 }
 
-.requirements-table th,
-.requirements-table td {
+.requirements-table th {
   padding: 16px 20px;
   font-size: 18px;
   font-weight: 500;
@@ -184,22 +183,11 @@
   font-weight: 500;
 }
 
-.requirements-table th:last-child,
-.requirements-table td:last-child {
+.requirements-table th:last-child {
   border-right: none;
 }
 
-.requirements-table tr:last-child td {
-  border-bottom: none;
-}
-
 @media (max-width: 768px) {
-  .requirements-table th,
-  .requirements-table td {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
-
   .requirements-table th {
     font-size: 16px;
   }
