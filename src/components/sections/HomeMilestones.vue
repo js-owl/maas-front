@@ -122,10 +122,10 @@ const steps: Step[] = [
   display: grid;
   grid-template-columns: 80px 1fr;
   gap: 20px;
-  background: #f5f5f5;
+  background: #f4f6f8;
   border-radius: 12px;
   padding: 20px 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); */
   align-items: center;
 }
 
