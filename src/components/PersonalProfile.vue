@@ -116,8 +116,12 @@ async function onUpdate() {
     profile.city = buildAddressString()
     profile.user_type = activeTab.value
 
-    await profileStore.updateProfile(profile as IProfile)
-    router.push({ path: '/personal/profile' })
+    const isUpdated = await profileStore.updateProfile(profile as IProfile)
+
+    if (isUpdated && profileStore.profile) {
+      profileForm.value = { ...profileStore.profile }
+      router.push({ path: '/personal/profile' })
+    }
   } finally {
     isSaving.value = false
   }

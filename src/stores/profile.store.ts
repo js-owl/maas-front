@@ -145,20 +145,22 @@ export const useProfileStore = defineStore("user", () => {
     return parts.join(" ");
   }
 
+  function enrichProfile(profileData: IProfile): IProfile {
+    const addressFields = parseAddressString(profileData.city);
+    const nameFields = parseFullName(profileData.full_name || "");
+
+    return {
+      ...profileData,
+      ...addressFields,
+      ...nameFields,
+    };
+  }
+
   async function getProfile() {
     const r = await req_json_auth(`/profile`, "GET");
     if (r) {
       const profileData = (await r.json()) as IProfile;
-
-      // Парсим адрес из поля city и заполняем отдельные поля
-      const addressFields = parseAddressString(profileData.city);
-      // Парсим full_name на отдельные поля
-      const nameFields = parseFullName(profileData.full_name || "");
-      const enrichedProfileData = {
-        ...profileData,
-        ...addressFields,
-        ...nameFields,
-      };
+      const enrichedProfileData = enrichProfile(profileData);
 
       profile.value = enrichedProfileData;
       saveProfileToStorage(enrichedProfileData);
@@ -174,26 +176,28 @@ export const useProfileStore = defineStore("user", () => {
     };
 
     const r = await req_json_auth(`/profile`, "PUT", profileForApi);
-    if (r) {
-      const profileData = (await r.json()) as IProfile;
+    if (!r) return false;
 
-      // Парсим адрес из поля city и заполняем отдельные поля
-      const addressFields = parseAddressString(profileData.city);
-      // Парсим full_name на отдельные поля
-      const nameFields = parseFullName(profileData.full_name || "");
-      const enrichedProfileData = {
-        ...profileData,
-        ...addressFields,
-        ...nameFields,
-      };
+    let profileData = profileForApi as IProfile;
 
-      profile.value = enrichedProfileData;
-      saveProfileToStorage(enrichedProfileData);
-      ElMessage({
-        type: "success",
-        message: "Профиль успешно обновлен!",
-      });
+    if (r.status !== 204) {
+      const responseText = await r.text();
+
+      if (responseText.trim()) {
+        profileData = JSON.parse(responseText) as IProfile;
+      }
     }
+
+    const enrichedProfileData = enrichProfile(profileData);
+
+    profile.value = enrichedProfileData;
+    saveProfileToStorage(enrichedProfileData);
+    ElMessage({
+      type: "success",
+      message: "Профиль успешно обновлен!",
+    });
+
+    return true;
   }
 
   function clearProfile() {
