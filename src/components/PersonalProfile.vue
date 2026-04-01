@@ -85,6 +85,24 @@ const validatePaymentAccount = (_rule: any, value: string, callback: (error?: Er
   else callback()
 }
 
+const validatePaymentCorAccount = (_rule: any, value: string, callback: (error?: Error) => void) => {
+  const normalizedValue = value?.trim() ?? ''
+
+  if (profileForm.value?.user_type === 'legal' && !normalizedValue)
+    callback(new Error('Введите корреспондентский счет'))
+  else if (profileForm.value?.user_type === 'legal' && normalizedValue.length < 10)
+    callback(new Error('Корреспондентский счет должен содержать минимум 10 символов'))
+  else callback()
+}
+
+const validatePaymentBankName = (_rule: any, value: string, callback: (error?: Error) => void) => {
+  const normalizedValue = value?.trim() ?? ''
+
+  if (profileForm.value?.user_type === 'legal' && !normalizedValue)
+    callback(new Error('Введите наименование банка'))
+  else callback()
+}
+
 const phoneValidator = createPhoneNumberValidator({ allowEmpty: false })
 
 const rules = ref<FormRules<IProfile>>({
@@ -108,6 +126,8 @@ const rules = ref<FormRules<IProfile>>({
   payment_kpp: [{ validator: validatePaymentKpp, trigger: ['blur', 'change'] }],
   payment_bik: [{ validator: validatePaymentBik, trigger: ['blur', 'change'] }],
   payment_account: [{ validator: validatePaymentAccount, trigger: ['blur', 'change'] }],
+  payment_cor_account: [{ validator: validatePaymentCorAccount, trigger: ['blur', 'change'] }],
+  payment_bank_name: [{ validator: validatePaymentBankName, trigger: ['blur', 'change'] }],
 })
 
 function buildAddressString(): string {
