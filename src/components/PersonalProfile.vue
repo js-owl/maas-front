@@ -51,7 +51,7 @@ const validatePaymentInn = (_rule: any, value: string, callback: (error?: Error)
   if (profileForm.value?.user_type === 'legal' && !normalizedValue)
     callback(new Error('Введите ИНН'))
   else if (profileForm.value?.user_type === 'legal' && normalizedValue.length < 10)
-    callback(new Error('ИНН должен содержать минимум 10 символов для юридических лиц'))
+    callback(new Error('ИНН должен содержать минимум 10 символов'))
   else callback()
 }
 
@@ -61,7 +61,7 @@ const validatePaymentKpp = (_rule: any, value: string, callback: (error?: Error)
   if (profileForm.value?.user_type === 'legal' && !normalizedValue)
     callback(new Error('Введите КПП'))
   else if (profileForm.value?.user_type === 'legal' && normalizedValue.length < 9)
-    callback(new Error('КПП должен содержать минимум 9 символов для юридических лиц'))
+    callback(new Error('КПП должен содержать минимум 9 символов'))
   else callback()
 }
 
@@ -71,7 +71,7 @@ const validatePaymentBik = (_rule: any, value: string, callback: (error?: Error)
   if (profileForm.value?.user_type === 'legal' && !normalizedValue)
     callback(new Error('Введите БИК'))
   else if (profileForm.value?.user_type === 'legal' && normalizedValue.length < 9)
-    callback(new Error('БИК должен содержать минимум 9 символов для юридических лиц'))
+    callback(new Error('БИК должен содержать минимум 9 символов'))
   else callback()
 }
 
