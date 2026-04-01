@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type FormInstance, type FormRules } from 'element-plus'
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { computed, onMounted, ref, watch } from 'vue'
 import Input from './ui/Input.vue'
 import Button from './ui/Button.vue'
@@ -122,6 +122,9 @@ async function onUpdate() {
       profileForm.value = { ...profileStore.profile }
       router.push({ path: '/personal/profile' })
     }
+  } catch (error) {
+    console.error('Error updating profile:', error)
+    ElMessage.error('Заполните все поля')
   } finally {
     isSaving.value = false
   }
