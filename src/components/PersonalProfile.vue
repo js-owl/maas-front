@@ -75,6 +75,16 @@ const validatePaymentBik = (_rule: any, value: string, callback: (error?: Error)
   else callback()
 }
 
+const validatePaymentAccount = (_rule: any, value: string, callback: (error?: Error) => void) => {
+  const normalizedValue = value?.trim() ?? ''
+
+  if (profileForm.value?.user_type === 'legal' && !normalizedValue)
+    callback(new Error('Введите расчетный счет'))
+  else if (profileForm.value?.user_type === 'legal' && normalizedValue.length < 10)
+    callback(new Error('Расчетный счет должен содержать минимум 10 символов'))
+  else callback()
+}
+
 const phoneValidator = createPhoneNumberValidator({ allowEmpty: false })
 
 const rules = ref<FormRules<IProfile>>({
@@ -97,6 +107,7 @@ const rules = ref<FormRules<IProfile>>({
   payment_inn: [{ validator: validatePaymentInn, trigger: ['blur', 'change'] }],
   payment_kpp: [{ validator: validatePaymentKpp, trigger: ['blur', 'change'] }],
   payment_bik: [{ validator: validatePaymentBik, trigger: ['blur', 'change'] }],
+  payment_account: [{ validator: validatePaymentAccount, trigger: ['blur', 'change'] }],
 })
 
 function buildAddressString(): string {
