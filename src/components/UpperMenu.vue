@@ -215,7 +215,7 @@ function onLogout() {
               </el-button>
               <el-button
                 v-else
-                class="auth-btn"
+                class="auth-btn  montserrat-semibold"
                 @click="isLoginVisible = true"
                 circle
                 :aria-label="'Войти или зарегистрироваться'"
@@ -226,13 +226,13 @@ function onLogout() {
               </el-button>
             </template>
             <template v-else>
-              <span class="username" @click="router.push({ path: '/personal' })">
+              <span class="username montserrat-semibold" @click="router.push({ path: '/personal' })">
                 {{ profileStore.profile?.username }}
               </span>
               <el-icon :size="30" class="user-icon" @click="router.push({ path: '/personal' })">
                 <User />
               </el-icon>
-              <el-button class="auth-btn" @click="onLogout"> Выйти </el-button>
+              <el-button class="auth-btn  montserrat-semibold" @click="onLogout"> Выйти </el-button>
             </template>
           </div>
         </el-header>
@@ -491,8 +491,8 @@ function onLogout() {
   color: #333;
   padding-right: 5px;
   cursor: pointer;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 24px;
+
 }
 
 .fullscreen-bg .username {
