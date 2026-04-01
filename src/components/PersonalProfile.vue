@@ -166,6 +166,7 @@ const contactFio = computed({
       label-width="0"
       label-position="top"
       style="width: 100%"
+      @submit.prevent
     >
       <el-col :offset="1" :span="22">
         <div v-if="activeTab === 'individual'" class="profile-content">
