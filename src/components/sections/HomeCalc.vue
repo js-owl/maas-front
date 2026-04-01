@@ -211,11 +211,16 @@ const submit = () => {
   font-weight: 600;
 }
 
+.order-type-select {
+  --bgcolor: #cbd1d5;
+}
+
 .order-type-select :deep(.el-select__wrapper) {
   min-height: 56px;
 }
 
 .calc-submit-button {
+  --bgcolor: #cbd1d5;
   font-family: 'Montserrat-SemiBold', sans-serif !important;
   font-size: 20px;
   font-weight: 600;
