@@ -151,6 +151,7 @@ const submit = () => {
   display: flex;
   gap: 12px;
   margin-top: 10px;
+  align-items: stretch;
 }
 
 .action-row > * {
@@ -210,10 +211,15 @@ const submit = () => {
   font-weight: 600;
 }
 
+.order-type-select :deep(.el-select__wrapper) {
+  min-height: 56px;
+}
+
 .calc-submit-button {
   font-family: 'Montserrat-SemiBold', sans-serif !important;
   font-size: 20px;
   font-weight: 600;
+  min-height: 56px;
 }
 
 @media (max-width: 768px) {
