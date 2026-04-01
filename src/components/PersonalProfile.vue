@@ -124,7 +124,7 @@ async function onUpdate() {
     }
   } catch (error) {
     console.error('Error updating profile:', error)
-    ElMessage.error('Заполните все поля')
+    ElMessage.error('Необходимо заполнить поля')
   } finally {
     isSaving.value = false
   }

@@ -175,8 +175,15 @@ export const useProfileStore = defineStore("user", () => {
       full_name: fullName || updated.full_name,
     };
 
-    const r = await req_json_auth(`/profile`, "PUT", profileForApi);
+    const r = await req_json_auth(`/profile`, "PUT", profileForApi, [422]);
     if (!r) return false;
+    if (r.status === 422) {
+      ElMessage({
+        type: "warning",
+        message: "Необходимо заполнить поля",
+      });
+      return false;
+    }
 
     let profileData = profileForApi as IProfile;
 

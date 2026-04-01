@@ -95,7 +95,8 @@ export async function req_urlencoded_auth(
 export async function req_json_auth(
   endpoint: string,
   method: string = 'POST',
-  data?: any
+  data?: any,
+  allowErrorStatuses: number[] = []
 ): Promise<Response | undefined> {
   try {
     const authStore = useAuthStore()
@@ -123,6 +124,9 @@ export async function req_json_auth(
       console.log('req_urlencoded', res.status)
       ElMessage.error('Ошибка сервера 500')
       throw new Error('Server error')
+    }
+    if (allowErrorStatuses.includes(res.status)) {
+      return res
     }
     if (!res.ok) {
       throw new Error('http error')
