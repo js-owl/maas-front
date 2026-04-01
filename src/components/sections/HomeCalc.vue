@@ -222,6 +222,7 @@ const submit = () => {
 
 .calc-submit-button {
   --bgcolor: #cbd1d5;
+  flex: 0 1 calc(50% - 90px);
   font-family: 'Montserrat-SemiBold', sans-serif !important;
   font-size: 20px;
   font-weight: 600;
@@ -241,6 +242,10 @@ const submit = () => {
 
   .action-row {
     flex-direction: column;
+  }
+
+  .calc-submit-button {
+    flex-basis: auto;
   }
 }
 </style>
