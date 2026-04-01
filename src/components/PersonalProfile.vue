@@ -46,22 +46,31 @@ watch(activeTab, (newTab) => {
 })
 
 const validatePaymentInn = (_rule: any, value: string, callback: (error?: Error) => void) => {
-  if (!value) callback()
-  else if (profileForm.value?.user_type === 'legal' && value.length < 10)
+  const normalizedValue = value?.trim() ?? ''
+
+  if (profileForm.value?.user_type === 'legal' && !normalizedValue)
+    callback(new Error('Введите ИНН'))
+  else if (profileForm.value?.user_type === 'legal' && normalizedValue.length < 10)
     callback(new Error('ИНН должен содержать минимум 10 символов для юридических лиц'))
   else callback()
 }
 
 const validatePaymentKpp = (_rule: any, value: string, callback: (error?: Error) => void) => {
-  if (!value) callback()
-  else if (profileForm.value?.user_type === 'legal' && value.length < 9)
+  const normalizedValue = value?.trim() ?? ''
+
+  if (profileForm.value?.user_type === 'legal' && !normalizedValue)
+    callback(new Error('Введите КПП'))
+  else if (profileForm.value?.user_type === 'legal' && normalizedValue.length < 9)
     callback(new Error('КПП должен содержать минимум 9 символов для юридических лиц'))
   else callback()
 }
 
 const validatePaymentBik = (_rule: any, value: string, callback: (error?: Error) => void) => {
-  if (!value) callback()
-  else if (profileForm.value?.user_type === 'legal' && value.length < 9)
+  const normalizedValue = value?.trim() ?? ''
+
+  if (profileForm.value?.user_type === 'legal' && !normalizedValue)
+    callback(new Error('Введите БИК'))
+  else if (profileForm.value?.user_type === 'legal' && normalizedValue.length < 9)
     callback(new Error('БИК должен содержать минимум 9 символов для юридических лиц'))
   else callback()
 }
@@ -124,7 +133,7 @@ async function onUpdate() {
     }
   } catch (error) {
     console.error('Error updating profile:', error)
-    ElMessage.error('Необходимо заполнить поля')
+    ElMessage.warning('Необходимо заполнить поля')
   } finally {
     isSaving.value = false
   }
