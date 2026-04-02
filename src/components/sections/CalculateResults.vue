@@ -38,7 +38,7 @@ const formatNumber = (value: number | string | null | undefined) => {
     <template v-else>
       <div class="price-section">
         <div class="card">
-          <div class="card-title">Стоимость</div>
+          <div class="coefficient-label">Стоимость</div>
           <div class="price-line">
             <span class="price">{{ formatNumber(props.result?.total_price) }} ₽</span>
             <span v-if="props.result && props.result.quantity > 1" class="per-item">
@@ -48,7 +48,7 @@ const formatNumber = (value: number | string | null | undefined) => {
         </div>
 
         <div class="card">
-          <div class="card-title">Время изготовления (дни)</div>
+          <div class="coefficient-label">Время изготовления</div>
           <div class="price">{{ props.result?.manufacturing_cycle ?? '—' }}</div>
         </div>
       </div>
@@ -134,13 +134,6 @@ const formatNumber = (value: number | string | null | undefined) => {
   margin-bottom: 10px;
 }
 
-.card-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #666;
-  margin-bottom: 4px;
-}
-
 .price-line {
   display: flex;
   align-items: baseline;
@@ -148,8 +141,9 @@ const formatNumber = (value: number | string | null | undefined) => {
 }
 
 .price {
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .currency {
@@ -159,9 +153,11 @@ const formatNumber = (value: number | string | null | undefined) => {
 
 .per-item {
   margin-top: 4px;
+  font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
-  font-weight: 600;
-  color: #666;
+  font-weight: 500;
+  color: black;
+
 }
 
 @media (max-width: 767px) {

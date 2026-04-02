@@ -20,6 +20,6 @@ const quantity = defineModel()
   font-weight: 500;
   color: black;
   /* margin-top: 10px; */
-  padding: 1px 10px;
+  /* padding: 1px 10px; */
 }
 </style>

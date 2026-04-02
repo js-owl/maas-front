@@ -39,7 +39,7 @@ onMounted(async () => {
         :value="item.value"
         class="checkbox-item"
       >
-        <div style="font-size: 18px">{{ item.label }}</div>
+        <div class="coefficient-value">{{ item.label }}</div>
       </el-checkbox>
     </el-checkbox-group>
   </div>

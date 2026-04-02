@@ -13,7 +13,7 @@ const otks = [
     <div class="coefficient-label">Вид контроля</div>
     <el-radio-group v-model="selected">
       <el-radio class="radio-item" v-for="option in otks" :key="option.label" :value="option.value">
-        <div style="font-size: 18px">{{ option.label }}</div>
+        <div class="coefficient-value">{{ option.label }}</div>
       </el-radio>
     </el-radio-group>
   </div>

@@ -233,12 +233,12 @@ async function getOrder(id: number) {
 <template>
   <section class="personal-order">
     <el-row :gutter="0" style="padding-top: 30px; min-height: 300px; background-color: var(--bgcolor);">
-      <el-col :offset="3" :span="18" style="background-color: white; border-radius: 20px; padding: 20px;">
+      <el-col :offset="3" :span="18" style="background-color: white; border-radius: 20px; margin-bottom: 40px; padding: 20px 20px;">
         <el-row :gutter="20">
           <!-- 1. Левая часть -->
           <el-col :span="17" style="background-color: white; border-radius: 20px;">
             <el-row :gutter="5">
-              <el-col :offset="0" :span="16" :xs="{ span: 24, offset: 0 }">
+              <el-col :offset="0" :span="15" :xs="{ span: 24, offset: 0 }">
                 <MaterialMilling v-model="material_id" />
               </el-col>
               <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
@@ -300,6 +300,18 @@ async function getOrder(id: number) {
                 />
               </el-col>
             </el-row>
+            <el-row :gutter="5">
+              <el-col :offset="0" :span="23" :xs="{ span: 24, offset: 0 }">
+            <CalculateSubmit
+              :order-id="order_id"
+              :payload="{ ...payload } as unknown as IOrderPayload"
+              :special-instructions="special_instructions"
+              @updateResult="onUpdateResult"
+              @showInfo="isInfoVisible = true"
+            />
+              </el-col>
+            </el-row>
+
           </el-col>
 
            <!-- 2. Правая часть -->
@@ -326,13 +338,7 @@ async function getOrder(id: number) {
               </el-col>
             </el-row>
 
-            <CalculateSubmit
-              :order-id="order_id"
-              :payload="{ ...payload } as unknown as IOrderPayload"
-              :special-instructions="special_instructions"
-              @updateResult="onUpdateResult"
-              @showInfo="isInfoVisible = true"
-            />
+
             </div>
   
           </el-col>
@@ -346,7 +352,6 @@ async function getOrder(id: number) {
 .personal-order {
   min-height: 100vh;
   background-color: white;
-  /* margin: 0px 0 40px;*/
   border-radius: 20px;
   /* box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12); */
 }

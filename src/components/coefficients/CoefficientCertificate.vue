@@ -19,7 +19,7 @@ const certificates = [
         class="checkbox-item"
         disabled
       >
-        <div style="font-size: 18px">{{ option.label }}</div>
+        <div class="coefficient-value">{{ option.label }}</div>
       </el-checkbox>
     </el-checkbox-group>
   </div>
