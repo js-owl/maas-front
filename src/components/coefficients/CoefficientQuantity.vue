@@ -4,7 +4,7 @@ const quantity = defineModel()
 
 <template>
   <div>
-    <p class="coefficient-title">Количество, шт</p>
+    <p class="coefficient-title">Кол-во, шт</p>
     <el-input-number v-model="quantity" :min="1" :max="1000" size="large" class="full" />
   </div>
 </template>
