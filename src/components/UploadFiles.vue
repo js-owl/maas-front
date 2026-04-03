@@ -140,8 +140,18 @@ const handleDragOver = (event: DragEvent) => {
       >
         <div class="custom">
           <!-- <IconDrawing :color="color" style="display: block; width: 30px; height: 30px" /> -->
-          <div class="el-upload__text montserrat-semibold" :style="{ color }" style="font-size: 20px; font-weight: 600">
-            {{ isUploading ? 'Загрузка...' : 'Перетащите или выберите файлы' }}
+          <div
+            class="el-upload__text montserrat-semibold"
+            :style="{ color }"
+            style="font-size: 20px; font-weight: 600"
+          >
+            {{ isUploading ? 'Загрузка...' : 'Перетащите или выберите файл' }}
+          </div>
+          <div class="upload-subtitle">
+            Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
+          </div>
+          <div class="upload-subtitle">
+            Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
           </div>
           <input
             type="file"
@@ -198,5 +208,13 @@ const handleDragOver = (event: DragEvent) => {
 
 .custom .el-upload__text {
   text-align: center;
+}
+
+.upload-subtitle {
+  font-family: 'Montserrat-Medium', sans-serif;
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #7d8083;
 }
 </style>
