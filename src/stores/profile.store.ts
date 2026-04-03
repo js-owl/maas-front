@@ -18,7 +18,7 @@ export type IProfile = {
   city_name: string;
   street: string;
   building: string;
-  apartment: string;
+  office: string;
   payment_bank_name: string;
   payment_inn: string;
   payment_kpp: string;
@@ -38,7 +38,8 @@ export const useProfileStore = defineStore("user", () => {
   const savedProfile = localStorage.getItem(PROFILE_STORE_KEY);
   if (savedProfile) {
     try {
-      const parsedProfile = JSON.parse(savedProfile) as IProfile;
+      const parsed = JSON.parse(savedProfile) as IProfile & { apartment?: string };
+      const { apartment: _omitStorage, ...parsedProfile } = parsed;
 
       // Парсим адрес из поля city и заполняем отдельные поля
       const addressFields = parseAddressString(parsedProfile.city);
@@ -46,6 +47,7 @@ export const useProfileStore = defineStore("user", () => {
       const nameFields = parseFullName(parsedProfile.full_name || "");
       profile.value = {
         ...parsedProfile,
+        office: parsedProfile.office ?? parsed.apartment ?? "",
         ...addressFields,
         ...nameFields,
       };
@@ -78,7 +80,7 @@ export const useProfileStore = defineStore("user", () => {
         city_name: parts[2],
         street: parts[3],
         building: parts[4],
-        apartment: parts[5],
+        office: parts[5],
       };
     }
 
@@ -89,7 +91,7 @@ export const useProfileStore = defineStore("user", () => {
         city_name: parts[1],
         street: parts[2],
         building: parts[3],
-        apartment: parts[4],
+        office: parts[4],
       };
     }
 
@@ -99,7 +101,7 @@ export const useProfileStore = defineStore("user", () => {
         city_name: parts[0],
         street: parts[1],
         building: parts[2],
-        apartment: parts[3],
+        office: parts[3],
       };
     }
 
@@ -172,12 +174,14 @@ export const useProfileStore = defineStore("user", () => {
     return parts.join(" ");
   }
 
-  function enrichProfile(profileData: IProfile): IProfile {
-    const addressFields = parseAddressString(profileData.city);
-    const nameFields = parseFullName(profileData.full_name || "");
+  function enrichProfile(profileData: IProfile & { apartment?: string }): IProfile {
+    const { apartment: _omit, ...rest } = profileData;
+    const addressFields = parseAddressString(rest.city);
+    const nameFields = parseFullName(rest.full_name || "");
 
     return {
-      ...profileData,
+      ...rest,
+      office: rest.office ?? profileData.apartment ?? "",
       ...addressFields,
       ...nameFields,
     };
@@ -197,8 +201,11 @@ export const useProfileStore = defineStore("user", () => {
   async function updateProfile(updated: IProfile) {
     // Объединяем отдельные поля имени обратно в full_name для API
     const fullName = buildFullName(updated);
+    const { apartment: _omitApartment, ...rest } = updated as IProfile & {
+      apartment?: string;
+    };
     const profileForApi = {
-      ...updated,
+      ...rest,
       full_name: fullName || updated.full_name,
     };
 

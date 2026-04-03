@@ -277,8 +277,8 @@ const contactFio = computed({
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="apartment">
-                  <Input v-model="profileForm.apartment" placeholder="Офис/Помещение" />
+                <el-form-item prop="office">
+                  <Input v-model="profileForm.office" placeholder="Офис/Помещение" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -399,8 +399,8 @@ const contactFio = computed({
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item prop="apartment">
-                  <Input v-model="profileForm.apartment" placeholder="Офис/Помещение" />
+                <el-form-item prop="office">
+                  <Input v-model="profileForm.office" placeholder="Офис/Помещение" />
                 </el-form-item>
               </el-col>
             </el-row>
