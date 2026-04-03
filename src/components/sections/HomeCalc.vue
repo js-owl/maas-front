@@ -198,7 +198,7 @@ const submit = () => {
 .upload-files-bordered :deep(.upload) {
   border: 2px dashed #7d8083;
   border-radius: 10px;
-  background-color: transparent !important;
+  /* background-color: transparent !important; */
   /* background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
     url('/homePage/about.webp'); */
   background-size: cover;

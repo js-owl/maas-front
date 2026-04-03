@@ -173,11 +173,11 @@ const handleDragOver = (event: DragEvent) => {
 .upload {
   padding: 20px;
   border: 1px solid var(--bgcolor);
-  background-color: var(--bgcolor) !important;
+  background-color: #e1e4e6 !important;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;
-  height: 150px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
