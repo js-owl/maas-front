@@ -60,16 +60,16 @@ const isMobile = computed(() => width.value <= 767)
 <style scoped>
 .items {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
+  gap: 22px 20px;
   margin-top: 20px;
 }
 
 .item {
-  width: 49%;
+  width: calc((100% - 20px) / 2);
+  box-sizing: border-box;
   border-radius: 5px;
   height: 300px;
-  margin-bottom: 22px;
 }
 
 .item-wrap {
@@ -119,9 +119,14 @@ const isMobile = computed(() => width.value <= 767)
 }
 
 @media (max-width: 767px) {
+  .items {
+    row-gap: 10px;
+    column-gap: 0;
+  }
+
   .item {
     width: 100%;
-    margin: 5px 0;
+    margin: 0;
     height: 175px;
   }
 
