@@ -170,6 +170,7 @@ const goToMain = () => {
 //   router.push({ path: '/personal/orders' })
 // }
 
+/** Юр. лицо: одно поле ФИО — храним строку целиком в last_name, чтобы не терять пробелы внутри части ФИО. */
 const contactFio = computed({
   get: () => {
     if (!profileForm.value) return ''
@@ -179,10 +180,9 @@ const contactFio = computed({
   },
   set: (v: string) => {
     if (!profileForm.value) return
-    const parts = (v || '').split(/\s+/).map((s) => s.trim()).filter(Boolean)
-    profileForm.value.last_name = parts[0] ?? ''
-    profileForm.value.first_name = parts[1] ?? ''
-    profileForm.value.patronymic = parts[2] ?? ''
+    profileForm.value.last_name = v ?? ''
+    profileForm.value.first_name = ''
+    profileForm.value.patronymic = ''
   },
 })
 </script>
