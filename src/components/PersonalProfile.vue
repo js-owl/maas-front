@@ -133,15 +133,7 @@ const rules = ref<FormRules<IProfile>>({
 function buildAddressString(): string {
   const profile = profileForm.value
   if (!profile) return ''
-  const addressParts = [
-    profile.postal || '',
-    profile.region || '',
-    profile.city_name || '',
-    profile.street || '',
-    profile.building || '',
-    profile.apartment || '',
-  ].filter((part) => part && part.trim())
-  return addressParts.join(', ')
+  return (profile.city_name || '').trim()
 }
 
 async function onUpdate() {

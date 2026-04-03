@@ -58,41 +58,68 @@ export const useProfileStore = defineStore("user", () => {
   // Функция для разбора адреса из поля city на отдельные поля
   function parseAddressString(cityString: string): Partial<IProfile> {
     if (!cityString || typeof cityString !== "string") {
-      return {
-        postal: "",
-        region: "",
-        city_name: "",
-        street: "",
-        building: "",
-        apartment: "",
-      };
+      return {};
     }
 
-    // Разбиваем строку по запятой и убираем лишние пробелы
     const parts = cityString
       .split(",")
       .map((part) => part.trim())
       .filter((part) => part);
 
-    // Инициализируем поля пустыми строками
-    const addressFields: Partial<IProfile> = {
-      postal: "",
-      region: "",
-      city_name: "",
-      street: "",
-      building: "",
-      apartment: "",
-    };
+    if (parts.length === 0) {
+      return {};
+    }
 
-    // Заполняем поля в зависимости от количества частей
-    if (parts.length >= 1) addressFields.postal = parts[0];
-    if (parts.length >= 2) addressFields.region = parts[1];
-    if (parts.length >= 3) addressFields.city_name = parts[2];
-    if (parts.length >= 4) addressFields.street = parts[3];
-    if (parts.length >= 5) addressFields.building = parts[4];
-    if (parts.length >= 6) addressFields.apartment = parts[5];
+    // Устаревший: индекс, регион, город, улица, строение, помещение
+    if (parts.length >= 6) {
+      return {
+        postal: parts[0],
+        region: parts[1],
+        city_name: parts[2],
+        street: parts[3],
+        building: parts[4],
+        apartment: parts[5],
+      };
+    }
 
-    return addressFields;
+    // Промежуточный: индекс, город, улица, строение, помещение
+    if (parts.length === 5) {
+      return {
+        postal: parts[0],
+        city_name: parts[1],
+        street: parts[2],
+        building: parts[3],
+        apartment: parts[4],
+      };
+    }
+
+    // Промежуточный: город, улица, строение, помещение
+    if (parts.length === 4) {
+      return {
+        city_name: parts[0],
+        street: parts[1],
+        building: parts[2],
+        apartment: parts[3],
+      };
+    }
+
+    if (parts.length === 3) {
+      return {
+        city_name: parts[0],
+        street: parts[1],
+        building: parts[2],
+      };
+    }
+
+    if (parts.length === 2) {
+      return {
+        city_name: parts[0],
+        street: parts[1],
+      };
+    }
+
+    // Текущий: в city только город; остальное — отдельные поля API
+    return { city_name: parts[0] };
   }
 
   function saveProfileToStorage(profileData: IProfile) {
