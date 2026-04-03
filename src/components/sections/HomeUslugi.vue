@@ -121,7 +121,8 @@ const abilities = ref([
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   height: 100px;
-  width: 49%; /* 30% */
+  width: calc((100% - 20px) / 2);
+  box-sizing: border-box;
   position: relative;
   overflow: hidden;
 }
