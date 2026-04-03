@@ -386,7 +386,7 @@ function onLogout() {
   font-size: 32px;
   font-weight: 700;
   padding: 12px 24px;
-  border-radius: 4px;
+  border-radius: 20px;
   height: auto;
 }
 
