@@ -57,6 +57,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/CalculateMillingPage.vue'),
     name: 'milling',
   },
+  {
+    path: '/milling2',
+    component: () => import('./pages/CalculateMillingPage2.vue'),
+    name: 'milling2',
+  },
   // {
   //   path: '/milling2',
   //   component: () => import('./pages/CalculateMillingPage.vue'),
