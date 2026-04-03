@@ -38,7 +38,7 @@ import VersionInfo from "./VersionInfo.vue";
             </router-link>
           </div>
 
-          <div class="footer-column">
+          <!-- <div class="footer-column">
             <div class="footer-column-title">Библиотека знаний</div>
             <router-link to="/" class="footer-link">
               Клиентам
@@ -46,11 +46,21 @@ import VersionInfo from "./VersionInfo.vue";
             <router-link to="/" class="footer-link">
               FAQ
             </router-link>
+          </div> -->
+
+          <div class="footer-column">
+            <div class="footer-column-title">Контакты</div>
+            <a href="mailto:Maas.mail@aeromax.ru" class="footer-link">
+              info@aeromax-group.ru
+            </a>
+            <a href="tel:88005353535" class="footer-link">
+              +7 (495) 921-42-42
+            </a>
           </div>
 
           <div class="footer-column footer-column-contacts">
-            <!-- <div class="footer-column-title">Контакты</div> -->
-            <!-- <a href="mailto:Maas.mail@aeromax.ru" class="footer-link">
+            <!-- <div class="footer-column-title">Контакты</div>
+            <a href="mailto:Maas.mail@aeromax.ru" class="footer-link">
               Maas.mail@aeromax.ru
             </a>
             <a href="tel:88005353535" class="footer-link">
@@ -272,18 +282,20 @@ import VersionInfo from "./VersionInfo.vue";
 }
 
 .footer-column-title {
-  font-size: 18px;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
   font-weight: 600;
   margin-bottom: 4px;
   color: #fff;
 }
 
 .footer-link {
-  color: #fff;
+  font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
   text-decoration: none;
   line-height: 1.5;
   transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  color: #fff;
 }
 
 .footer-link:hover {
