@@ -43,8 +43,10 @@ export const useProfileStore = defineStore("user", () => {
 
       // Парсим адрес из поля city и заполняем отдельные поля
       const addressFields = parseAddressString(parsedProfile.city);
-      // Парсим full_name на отдельные поля
-      const nameFields = parseFullName(parsedProfile.full_name || "");
+      const nameFields = nameFieldsFromFullName(
+        parsedProfile.full_name || "",
+        parsedProfile.user_type
+      );
       profile.value = {
         ...parsedProfile,
         office: parsedProfile.office ?? parsed.apartment ?? "",
@@ -163,6 +165,21 @@ export const useProfileStore = defineStore("user", () => {
     };
   }
 
+  /** Юр. лицо: контактное лицо хранится как одна строка в full_name — не дробим по пробелам. */
+  function nameFieldsFromFullName(
+    fullName: string,
+    userType: string | undefined
+  ): Partial<IProfile> {
+    if (userType === "legal") {
+      return {
+        last_name: typeof fullName === "string" ? fullName : "",
+        first_name: "",
+        patronymic: "",
+      };
+    }
+    return parseFullName(fullName || "");
+  }
+
   // Функция для объединения отдельных полей в full_name
   function buildFullName(profile: Partial<IProfile>): string {
     const parts = [
@@ -177,7 +194,7 @@ export const useProfileStore = defineStore("user", () => {
   function enrichProfile(profileData: IProfile & { apartment?: string }): IProfile {
     const { apartment: _omit, ...rest } = profileData;
     const addressFields = parseAddressString(rest.city);
-    const nameFields = parseFullName(rest.full_name || "");
+    const nameFields = nameFieldsFromFullName(rest.full_name || "", rest.user_type);
 
     return {
       ...rest,
@@ -206,7 +223,8 @@ export const useProfileStore = defineStore("user", () => {
     };
     const profileForApi = {
       ...rest,
-      full_name: fullName || updated.full_name,
+      // Не использовать fullName || updated.full_name: пустая строка должна очищать full_name в API
+      full_name: fullName,
     };
 
     const r = await req_json_auth(`/profile`, "PUT", profileForApi, [422]);
@@ -229,7 +247,17 @@ export const useProfileStore = defineStore("user", () => {
       }
     }
 
-    const enrichedProfileData = enrichProfile(profileData);
+    // Ответ API может вернуть устаревший full_name при очистке поля — берём фактически отправленные ФИО
+    const mergedAfterPut: IProfile & { apartment?: string } = {
+      ...profileData,
+      full_name: fullName,
+      last_name: updated.last_name ?? "",
+      first_name: updated.first_name ?? "",
+      patronymic: updated.patronymic ?? "",
+      user_type: updated.user_type,
+    };
+
+    const enrichedProfileData = enrichProfile(mergedAfterPut);
 
     profile.value = enrichedProfileData;
     saveProfileToStorage(enrichedProfileData);
