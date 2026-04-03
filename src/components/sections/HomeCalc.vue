@@ -199,8 +199,8 @@ const submit = () => {
   border: 2px dashed #7d8083;
   border-radius: 10px;
   background-color: transparent !important;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-    url('/homePage/about.webp');
+  /* background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url('/homePage/about.webp'); */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
