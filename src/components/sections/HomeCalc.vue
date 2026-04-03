@@ -110,7 +110,7 @@ const submit = () => {
 <style scoped>
 .calc-wrap {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   align-items: flex-start;
   /* height: 500px; */
 }
@@ -119,9 +119,10 @@ const submit = () => {
   flex-direction: column;
 }
 
-.calc-left{
+.calc-left {
   padding-right: 10px;
-  width: 50%;
+  width: calc((100% - 20px) / 2);
+  box-sizing: border-box;
 }
 .calc-left .lead {
   color: #4c4c4c;
@@ -134,7 +135,8 @@ const submit = () => {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  width: 50%;
+  width: calc((100% - 20px) / 2);
+  box-sizing: border-box;
   /* padding: 20px; */
   /* flex: 1 1 50%; */
 }
@@ -237,6 +239,7 @@ const submit = () => {
   }
 
   .calc-right {
+    width: 100%;
     padding: 16px;
   }
 
