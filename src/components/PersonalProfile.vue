@@ -38,6 +38,8 @@ watch(activeTab, (newTab) => {
   if (profileForm.value) {
     profileForm.value.user_type = newTab
     if (formRef.value) {
+      formRef.value.validateField('last_name')
+      formRef.value.validateField('first_name')
       formRef.value.validateField('payment_inn')
       formRef.value.validateField('payment_kpp')
       formRef.value.validateField('payment_bik')
@@ -105,6 +107,23 @@ const validatePaymentBankName = (_rule: any, value: string, callback: (error?: E
 
 const phoneValidator = createPhoneNumberValidator({ allowEmpty: false })
 
+const validateLastNameRequired = (_rule: any, value: string, callback: (error?: Error) => void) => {
+  const normalizedValue = value?.trim() ?? ''
+  if (!normalizedValue) callback(new Error('Введите фамилию'))
+  else callback()
+}
+
+/** Для физлица имя обязательно; для юр. лица ФИО целиком в last_name, first_name не используется. */
+const validateFirstNameRequired = (_rule: any, value: string, callback: (error?: Error) => void) => {
+  if (profileForm.value?.user_type === 'legal') {
+    callback()
+    return
+  }
+  const normalizedValue = value?.trim() ?? ''
+  if (!normalizedValue) callback(new Error('Введите имя'))
+  else callback()
+}
+
 const rules = ref<FormRules<IProfile>>({
   username: [{ required: true, message: 'Введите имя', trigger: 'blur' }],
   email: [
@@ -119,8 +138,8 @@ const rules = ref<FormRules<IProfile>>({
     { required: true, message: 'Введите телефон', trigger: 'blur' },
     { validator: phoneValidator, trigger: ['blur', 'change'] },
   ],
-  last_name: [{ required: false, message: 'Введите фамилию', trigger: 'blur' }],
-  first_name: [{ required: false, message: 'Введите имя', trigger: 'blur' }],
+  last_name: [{ validator: validateLastNameRequired, trigger: ['blur', 'change'] }],
+  first_name: [{ validator: validateFirstNameRequired, trigger: ['blur', 'change'] }],
   patronymic: [{ required: false, message: 'Введите отчество', trigger: 'blur' }],
   payment_inn: [{ validator: validatePaymentInn, trigger: ['blur', 'change'] }],
   payment_kpp: [{ validator: validatePaymentKpp, trigger: ['blur', 'change'] }],
