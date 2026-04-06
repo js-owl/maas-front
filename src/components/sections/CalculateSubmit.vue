@@ -162,7 +162,6 @@ const submitOrder = async () => {
           order_ids: [data.order_id],
           user_id: data.user_id,
           quantity: 1,
-          status: 'pending',
           bitrix_deal_id: 1,
           location: data.total_price_breakdown?.location || '',
           kit_price: 0,
