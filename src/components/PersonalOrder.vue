@@ -400,6 +400,22 @@ const saveOrder = async () => {
   }
 }
 
+const confirmOrder = async () => {
+  if (!kitId.value) return
+
+  try {
+    const res = await req_json_auth(`/kits/${kitId.value}/confirm`, 'PUT')
+    if (!res?.ok) throw new Error('Failed to confirm order')
+
+    await loadOrder()
+    ElMessage.success('Заказ подтверждён')
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+    ElMessage.error('Не удалось подтвердить заказ')
+  }
+}
+
 onMounted(() => {
   void loadOrder()
 })
@@ -579,7 +595,10 @@ onMounted(() => {
               {{ totalWithDelivery }} <span class="rub">руб.</span>
             </div>
           </div>
-
+          <!-- Кнопка оплаты -->
+          <div class="summary-actions" style="margin-bottom: 20px;">
+            <Button @click="confirmOrder" class="pay-order-button">Подтвердить</Button>
+          </div>
           <!-- Кнопка оплаты -->
           <div class="summary-actions">
             <Button @click="cancel" class="pay-order-button">Оплатить заказ</Button>
