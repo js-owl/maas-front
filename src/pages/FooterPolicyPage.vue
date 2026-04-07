@@ -127,66 +127,10 @@ const policyText = `
   font-weight: 700;
 }
 
-.offer-subtitle {
-  font-size: 24px;
-  color: var(--left-section-bg);
-  text-align: center;
-  margin-bottom: 30px;
-  font-weight: 600;
-}
-
-.offer-intro {
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 40px;
-  border-left: 4px solid var(--left-section-bg);
-}
-
-.offer-intro p {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.6;
-  color: #333;
-}
-
 .offer-content {
   font-size: 16px;
   line-height: 1.8;
   color: #333;
-}
-
-.offer-section {
-  margin-bottom: 40px;
-}
-
-.offer-section h2 {
-  font-size: 24px;
-  color: var(--left-section-bg);
-  margin-bottom: 20px;
-  font-weight: 600;
-}
-
-.offer-section p {
-  margin-bottom: 16px;
-  text-align: justify;
-}
-
-.offer-section ul {
-  margin-left: 20px;
-  margin-bottom: 16px;
-}
-
-.offer-section li {
-  margin-bottom: 8px;
-}
-
-/* Normalize section 1 typography to match other sections */
-.terms-list .term-definition {
-  font-size: 16px;
-  line-height: 1.8;
-  color: #333;
-  margin-bottom: 16px;
 }
 
 .policy-text {
@@ -206,18 +150,6 @@ const policyText = `
 
   .offer-title {
     font-size: 24px;
-  }
-
-  .offer-subtitle {
-    font-size: 18px;
-  }
-
-  .offer-intro {
-    padding: 15px;
-  }
-
-  .offer-section h2 {
-    font-size: 20px;
   }
 
   .offer-content {
