@@ -15,6 +15,9 @@ import VersionInfo from "./VersionInfo.vue";
             <router-link to="/license" class="footer-link">
               Политика конфиденциальности
             </router-link>
+            <router-link to="/policy" class="footer-link">
+              Политика
+            </router-link>
             <router-link to="/license#cookies" class="footer-link">
               Политика использования cookies и метрических программ
             </router-link>

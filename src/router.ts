@@ -126,6 +126,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/OfferClientPage.vue'),
     name: 'offer-client',
   },
+  {
+    path: '/policy',
+    component: () => import('./pages/FooterPolicyPage.vue'),
+    name: 'policy',
+  },
 
   { path: '/:patchMatch(.*)*', component: NotFoundPage },
 ]
