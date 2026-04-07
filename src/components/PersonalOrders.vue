@@ -20,7 +20,7 @@ const deleteLoading = ref<number | null>(null)
 const excludedStatuses = ['cancelled', 'C3:LOSE']
 
 const filteredOrders = computed(() => {
-  let result = allOrders.value.filter((order) => !excludedStatuses.includes(order.status))
+  let result = allOrders.value.filter((order) => !excludedStatuses.includes(order.status ?? ''))
 
   // Фильтрация по вкладкам
   if (activeTab.value === 'paid') {
