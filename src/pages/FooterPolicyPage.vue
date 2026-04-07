@@ -103,8 +103,8 @@ const policyText = `
       <div class="offer-container">
         <h1 class="offer-title">Политика в отношении обработки персональных данных ООО «Аэромакс»</h1>
 
-        <div class="offer-content">
-          <pre class="policy-text">{{ policyText }}</pre>
+        <div>
+          <pre class="footer-text">{{ policyText }}</pre>
         </div>
       </div>
     </el-col>
@@ -120,27 +120,22 @@ const policyText = `
 }
 
 .offer-title {
-  font-size: 48px;
-  color: var(--left-section-bg);
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 32px;
+  color: #000000;
+  line-height: 1.2;
   text-align: center;
   margin-bottom: 20px;
-  font-weight: 700;
 }
 
-.offer-content {
-  font-size: 16px;
+.footer-text {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
   line-height: 1.8;
-  color: #333;
-}
-
-.policy-text {
-  margin: 0;
-  font-family: inherit;
-  font-size: 16px;
-  line-height: 1.8;
-  color: #333;
+  color: #000000;
   white-space: pre-wrap;
   word-break: break-word;
+  margin: 0;
 }
 
 @media (max-width: 768px) {

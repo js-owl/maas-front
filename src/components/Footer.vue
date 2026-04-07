@@ -12,14 +12,11 @@ import VersionInfo from "./VersionInfo.vue";
           </div>
 
           <div class="footer-links-list">
-            <router-link to="/license" class="footer-link">
+            <router-link to="/policy" class="footer-link">
               Политика конфиденциальности
             </router-link>
-            <router-link to="/policy" class="footer-link">
-              Политика
-            </router-link>
-            <router-link to="/license#cookies" class="footer-link">
-              Политика использования cookies и метрических программ
+            <router-link to="/license" class="footer-link">
+              Договор публичной оферты
             </router-link>
             <router-link to="/offer-client#agreement" class="footer-link">
               Пользовательское соглашение
