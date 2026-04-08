@@ -118,7 +118,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/license',
-    component: () => import('./pages/LicensePage.vue'),
+    component: () => import('./pages/FooterLicensePage.vue'),
     name: 'license',
   },
   {
