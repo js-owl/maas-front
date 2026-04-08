@@ -123,7 +123,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/offer-client',
-    component: () => import('./pages/OfferClientPage.vue'),
+    component: () => import('./pages/FooterOfferPage.vue'),
     name: 'offer-client',
   },
   {
