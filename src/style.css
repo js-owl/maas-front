@@ -196,13 +196,14 @@ body {
 .requirements-table--middle td {
   vertical-align: middle;
 }
-
-@media (max-width: 768px) {
-  .requirements-table--compact td {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
+/* Footer */
+.footer-wrapper {
+  background-color: white;
+  border-radius: 8px;
+  padding: 40px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
+
 
 @media (max-width: 768px) {
   .uslugi-wrapper {
@@ -231,5 +232,12 @@ body {
   .uslugi-image {
     max-width: 100%;
     height: auto;
+  }
+  .requirements-table--compact td {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+  .footer-wrapper {
+    padding: 20px;
   }
 }

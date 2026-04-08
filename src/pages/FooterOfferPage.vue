@@ -10,7 +10,7 @@
     "
   >
     <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-      <div class="offer-container">
+      <div class="footer-wrapper">
         <h1 class="offer-title">ПУБЛИЧНАЯ ОФЕРТА</h1>
         <h2 class="offer-subtitle">На заключение договора об использовании инженерно-производственной платформы ООО «Аэромакс»</h2>
         
@@ -300,13 +300,6 @@
 </template>
 
 <style scoped>
-.offer-container {
-  background-color: white;
-  border-radius: 8px;
-  padding: 40px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
-
 .offer-title {
   font-size: 48px;
   color: var(--left-section-bg);
@@ -370,10 +363,6 @@
 }
 
 @media (max-width: 768px) {
-  .offer-container {
-    padding: 20px;
-  }
-
   .offer-title {
     font-size: 24px;
   }

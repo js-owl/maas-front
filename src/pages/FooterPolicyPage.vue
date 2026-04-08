@@ -100,7 +100,7 @@ const policyText = `
     "
   >
     <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-      <div class="offer-container">
+      <div class="footer-wrapper">
         <h1 class="offer-title">Политика в отношении обработки персональных данных ООО «Аэромакс»</h1>
 
         <div>
@@ -112,13 +112,6 @@ const policyText = `
 </template>
 
 <style scoped>
-.offer-container {
-  background-color: white;
-  border-radius: 8px;
-  padding: 40px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
-
 .offer-title {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 32px;
@@ -139,10 +132,6 @@ const policyText = `
 }
 
 @media (max-width: 768px) {
-  .offer-container {
-    padding: 20px;
-  }
-
   .offer-title {
     font-size: 24px;
   }
