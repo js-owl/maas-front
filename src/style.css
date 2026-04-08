@@ -203,6 +203,14 @@ body {
   padding: 40px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
+.footer-title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 32px;
+  color: #000000;
+  line-height: 1.2;
+  text-align: center;
+  margin-bottom: 20px;
+}
 
 
 @media (max-width: 768px) {
@@ -237,7 +245,11 @@ body {
     font-size: 14px;
     padding: 10px 12px;
   }
+  /* Footer mobile*/
   .footer-wrapper {
     padding: 20px;
+  }
+  .footer-title {
+    font-size: 24px;
   }
 }

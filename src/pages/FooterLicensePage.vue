@@ -11,7 +11,7 @@
   >
     <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
       <div class="footer-wrapper">
-        <h1 class="offer-title">Договор публичной оферты на выполнение работ по изготовлению продукции</h1>
+        <div class="footer-title">Договор публичной оферты на выполнение работ по изготовлению продукции</div>
 
         <div class="offer-content">
           <!-- ТЕРМИНЫ И ОПРЕДЕЛЕНИЯ -->
@@ -529,14 +529,6 @@
 </template>
 
 <style scoped>
-.offer-title {
-  font-size: 48px;
-  color: var(--left-section-bg);
-  text-align: center;
-  margin-bottom: 20px;
-  font-weight: 700;
-}
-
 .offer-subtitle {
   font-size: 24px;
   color: var(--left-section-bg);
@@ -600,10 +592,6 @@
 }
 
 @media (max-width: 768px) {
-  .offer-title {
-    font-size: 24px;
-  }
-
   .offer-subtitle {
     font-size: 18px;
   }

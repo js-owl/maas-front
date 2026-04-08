@@ -11,9 +11,9 @@
   >
     <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
       <div class="footer-wrapper">
-        <h1 class="offer-title">ПУБЛИЧНАЯ ОФЕРТА</h1>
-        <h2 class="offer-subtitle">На заключение договора об использовании инженерно-производственной платформы ООО «Аэромакс»</h2>
-        
+        <div class="footer-title">ПУБЛИЧНАЯ ОФЕРТА<br>
+          На заключение договора об использовании инженерно-производственной платформы ООО «Аэромакс»
+        </div>
         <div class="offer-intro">
           <p>ООО «Аэромакс» публикует настоящую публичную оферту на заключение договора об использовании инженерно-производственной платформы, представленную на официальном интернет-сайте: https://maas.aeromax-group.ru/ (далее — сайт)</p>
         </div>
@@ -300,14 +300,6 @@
 </template>
 
 <style scoped>
-.offer-title {
-  font-size: 48px;
-  color: var(--left-section-bg);
-  text-align: center;
-  margin-bottom: 20px;
-  font-weight: 700;
-}
-
 .offer-subtitle {
   font-size: 24px;
   color: var(--left-section-bg);
@@ -363,10 +355,6 @@
 }
 
 @media (max-width: 768px) {
-  .offer-title {
-    font-size: 24px;
-  }
-
   .offer-subtitle {
     font-size: 18px;
   }
