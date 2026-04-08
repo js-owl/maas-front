@@ -94,6 +94,16 @@ const policyParagraphs = policyText
   .split(/\r?\n/)
   .map((line) => line.trim())
   .filter(Boolean)
+
+type PolicyBlock =
+  | { kind: 'subtitle'; text: string }
+  | { kind: 'paragraph'; text: string }
+
+const policyBlocks: PolicyBlock[] = policyParagraphs.map((text) => {
+  const isTopLevelSection = /^\d+\s+\S/.test(text)
+  if (isTopLevelSection) return { kind: 'subtitle', text }
+  return { kind: 'paragraph', text }
+})
 </script>
 
 <template>
@@ -109,9 +119,15 @@ const policyParagraphs = policyText
         <h1 class="footer-title">Политика в отношении обработки персональных данных ООО «Аэромакс»</h1>
 
         <div class="footer-text">
-          <p v-for="(paragraph, idx) in policyParagraphs" :key="idx">
-            {{ paragraph }}
-          </p>
+          <template v-for="(block, idx) in policyBlocks" :key="idx">
+            <div v-if="block.kind === 'subtitle'" class="footer-subtitle">
+              {{ block.text }}
+            </div>
+
+            <p v-else>
+              {{ block.text }}
+            </p>
+          </template>
         </div>
       </div>
     </el-col>
