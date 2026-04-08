@@ -88,6 +88,12 @@ const policyText = `
 9.1. Субъект персональных данных вправе получить разъяснения по вопросам обработки данных, обратившись к ООО «Аэромакс» через электронную почту или иными способами, указанными в разделе «Контакты».
 9.2. Политика может быть изменена или прекращена ООО «Аэромакс» в одностороннем порядке без предварительного уведомления. Новая редакция вступает в силу с момента размещения, если не указано иное.
 9.3. Политика действует бессрочно до её замены новой редакцией.`
+
+const policyParagraphs = policyText
+  .trim()
+  .split(/\r?\n/)
+  .map((line) => line.trim())
+  .filter(Boolean)
 </script>
 
 <template>
@@ -102,13 +108,12 @@ const policyText = `
       <div class="footer-wrapper">
         <h1 class="footer-title">Политика в отношении обработки персональных данных ООО «Аэромакс»</h1>
 
-        <div>
-          <pre class="footer-text">{{ policyText }}</pre>
+        <div class="footer-text">
+          <p v-for="(paragraph, idx) in policyParagraphs" :key="idx">
+            {{ paragraph }}
+          </p>
         </div>
       </div>
     </el-col>
   </el-row>
 </template>
-
-<style scoped>
-</style>
