@@ -18,7 +18,7 @@ import VersionInfo from "./VersionInfo.vue";
             <router-link to="/license" class="footer-link">
               Договор публичной оферты
             </router-link>
-            <router-link to="/offer-client#agreement" class="footer-link">
+            <router-link to="/offer-client" class="footer-link">
               Пользовательское соглашение
             </router-link>
           </div>
