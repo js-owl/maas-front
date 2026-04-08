@@ -111,19 +111,4 @@ const policyText = `
 </template>
 
 <style scoped>
-.footer-text {
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 18px;
-  line-height: 1.8;
-  color: #000000;
-  white-space: pre-wrap;
-  word-break: break-word;
-  margin: 0;
-}
-
-@media (max-width: 768px) {
-  .footer-text {
-    font-size: 14px;
-  }
-}
 </style>
