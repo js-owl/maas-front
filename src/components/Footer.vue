@@ -103,7 +103,7 @@ import VersionInfo from "./VersionInfo.vue";
 .footer-bottom {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  align-items: center;
+  align-items: start;
   gap: 24px;
 }
 
@@ -119,8 +119,8 @@ import VersionInfo from "./VersionInfo.vue";
 
 .footer-legal {
   font-family: "Montserrat-Medium", sans-serif;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  color: #aeb2b5;
   text-align: left;
 }
 
