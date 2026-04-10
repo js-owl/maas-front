@@ -66,156 +66,7 @@ import VersionInfo from "./VersionInfo.vue";
 
 .footer-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 40px;
-}
-
-.left-section {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 40px;
-}
-
-.right-section {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.vertical-links {
-  display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.vertical-link {
-  color: #fff;
-  font-size: 16px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  padding: 8px 12px;
-  border-radius: 4px;
-  text-align: left;
-}
-
-.vertical-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  text-decoration: underline;
-}
-
-.el-menu.el-menu--horizontal {
-  border-bottom: none;
-}
-
-.el-menu-item {
-  font-size: 20px;
-}
-
-.el-menu-item.is-active {
-  border-bottom: none !important;
-}
-
-:deep(.el-header) {
-  padding-left: 0px;
-}
-
-:deep(.el-sub-menu__title) {
-  font-size: 20px;
-}
-
-:deep(.el-sub-menu) {
-  font-size: 20px;
-}
-
-.first-element {
-  font-size: 30px;
-  color: white !important;
-  text-decoration: none;
-  font-weight: 700;
-  margin-right: 50px !important;
-}
-
-.first-element.is-active {
-  color: white !important;
-  border-bottom: none !important;
-}
-
-.calculator-links {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.version-section {
-  display: flex;
-  align-items: center;
-}
-
-@media (max-width: 1200px) {
-  .footer-container {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .right-section {
-    align-items: flex-start;
-    width: 100%;
-  }
-
-  .left-section {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .vertical-link {
-    text-align: left;
-  }
-}
-
-@media (max-width: 767px) {
-  .footer-row {
-    min-height: auto;
-    padding: 12px 0;
-  }
-
-  .footer-container {
-    gap: 16px;
-  }
-
-  .left-section {
-    gap: 12px;
-  }
-
-  /* hide top footer menu on mobile */
-  .el-menu.el-menu--horizontal {
-    display: none;
-  }
-
-  .vertical-links,
-  .calculator-links {
-    gap: 8px;
-  }
-
-  .vertical-link {
-    font-size: 14px;
-    padding: 6px 8px;
-  }
-
-  .first-element {
-    font-size: 22px;
-    margin-right: 0 !important;
-  }
-}
-
-/* New footer layout matching design */
-.footer-container--layout {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   align-items: stretch;
   gap: 18px;
 }
@@ -225,35 +76,6 @@ import VersionInfo from "./VersionInfo.vue";
   align-items: flex-start;
   justify-content: space-between;
   gap: 150px;
-}
-
-.footer-top-left {
-  /* flex: 1;
-  min-width: 0; */
-}
-
-.footer-top-right {
-  flex: 0 0 auto;
-}
-
-.footer-logo-column {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  min-width: 260px;
-}
-
-.footer-logo-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 32px;
-  border-radius: 8px;
-  background-color: #70767b;
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: #fff;
 }
 
 .footer-logo-icon {
@@ -330,10 +152,6 @@ import VersionInfo from "./VersionInfo.vue";
   color: #fff;
 }
 
-.footer-column--contacts {
-  min-width: 260px;
-}
-
 .footer-link {
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
@@ -345,12 +163,6 @@ import VersionInfo from "./VersionInfo.vue";
 
 .footer-link:hover {
   text-decoration: underline;
-}
-
-.version-section {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
 }
 
 @media (max-width: 1200px) {
@@ -379,6 +191,11 @@ import VersionInfo from "./VersionInfo.vue";
 }
 
 @media (max-width: 767px) {
+  .footer-row {
+    min-height: auto;
+    padding: 12px 0;
+  }
+
   .footer-container {
     gap: 24px;
   }
@@ -388,17 +205,8 @@ import VersionInfo from "./VersionInfo.vue";
     gap: 16px;
   }
 
-  .footer-logo-column {
-    min-width: 0;
-  }
-
   .footer-link {
     font-size: 14px;
-  }
-
-  .footer-logo-badge {
-    font-size: 20px;
-    padding-inline: 24px;
   }
 
   .footer-top {
