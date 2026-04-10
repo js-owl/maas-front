@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import IconLogo from "../icons/IconLogo.vue";
 import VersionInfo from "./VersionInfo.vue";
 </script>
 
@@ -8,7 +9,7 @@ import VersionInfo from "./VersionInfo.vue";
       <div class="footer-container">
         <div class="footer-logo-column">
           <div class="footer-logo">
-            <span class="footer-logo-badge">АЭРОМАКС</span>
+            <IconLogo class="footer-logo-icon" />
           </div>
 
           <div class="footer-links-list">
@@ -259,6 +260,12 @@ import VersionInfo from "./VersionInfo.vue";
   font-weight: 700;
   letter-spacing: 0.12em;
   color: #fff;
+}
+
+.footer-logo-icon {
+  display: block;
+  width: 200px;
+  height: auto;
 }
 
 .footer-links-list {
