@@ -833,7 +833,7 @@ watch(
 
 
 .summary-actions {
-  margin-top: auto;
+  margin-top: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
