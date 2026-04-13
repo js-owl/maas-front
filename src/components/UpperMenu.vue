@@ -8,6 +8,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useProfileStore } from '../stores/profile.store'
 import { ArrowDown, Menu, User } from '@element-plus/icons-vue'
+import IconLogoHeader from './icons/IconLogoHeader.vue'
 
 const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
@@ -137,8 +138,9 @@ function onLogout() {
             </el-button>
 
             <div v-if="!isMobile" class="menu-container">
-              <!-- Красная кнопка АЭРОМАКС -->
-              <el-button class="logo-btn" @click="router.push({ path: '/' })"> АЭРОМАКС </el-button>
+              <el-button class="logo-btn" @click="router.push({ path: '/' })" aria-label="Перейти на главную">
+                <IconLogoHeader class="logo-icon" />
+              </el-button>
 
               <!-- Меню с выпадающим списком -->
               <el-menu
@@ -380,22 +382,21 @@ function onLogout() {
 }
 
 .logo-btn {
-  background-color: #d61e3c;
-  color: white;
+  background-color: transparent;
   border: none;
-  font-size: 32px;
-  font-weight: 700;
-  padding: 12px 24px;
-  border-radius: 20px;
+  padding: 0;
   height: auto;
 }
 
 .logo-btn:hover,
 .logo-btn:focus,
 .logo-btn:active {
-  background-color: #c01a35 !important;
-  border-color: #c01a35 !important;
-  color: white !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+
+.logo-icon {
+  width: 240px;
 }
 
 .main-menu {
@@ -706,8 +707,11 @@ function onLogout() {
   }
 
   .logo-btn {
-    font-size: 16px;
-    padding: 8px 16px;
+    padding: 0;
+  }
+
+  .logo-icon {
+    width: 140px;
   }
 
   .menu-container {
