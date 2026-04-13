@@ -573,7 +573,8 @@ watch(
 
 <style scoped>
 .personal-order {
-  min-height: 100vh;
+  min-height: 130vh;
+  box-sizing: border-box;
   background-color: white;
   padding: 20px 10px;
   border-radius: 20px;
@@ -740,7 +741,7 @@ watch(
 .files-header {
   height: 52px;
   border-radius: 10px;
-  background-color: #c9ced4;
+  background-color: #cbd1d5;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -770,7 +771,7 @@ watch(
 
 .file-row {
   min-height: 54px;
-  background: #f2f4f7;
+  background: #f4f6f8;
   border-radius: 10px;
   padding: 0 16px;
   display: flex;
