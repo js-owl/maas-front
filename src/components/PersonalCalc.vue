@@ -600,15 +600,6 @@ watch(
   border: none;
 }
 
-/* Product Header - Image and Info Section */
-.product-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
 .toolbar-row {
   display: flex;
   justify-content: space-between;
@@ -621,30 +612,6 @@ watch(
   font-size: 24px;
   font-weight: 600;
   color: #000000;
-}
-
-.product-header {
-  display: flex;
-  gap: 20px;
-}
-
-.card-header-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-/* Image Placeholder */
-.image-placeholder {
-  width: 120px;
-  height: 120px;
-  background-color: #f5f7fa;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
 }
 
 .placeholder-content {
@@ -663,19 +630,6 @@ watch(
   margin-bottom: 24px;
 }
 
-.filename {
-  font-size: 16px;
-  font-weight: 500;
-  color: #303133;
-}
-
-/* Cost Section */
-.cost-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .cost-label {
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 18px;
@@ -689,11 +643,6 @@ watch(
   font-size: 24px;
   font-weight: 600;
   color: #000000;
-}
-
-.quantity-display {
-  font-size: 14px;
-  color: #909399;
 }
 
 /* Properties Section */
@@ -875,23 +824,6 @@ watch(
   border-radius: 8px;
 }
 
-.placeholder-content {
-  width: 100%;
-  height: 100%;
-  background-color: #e4e7ed;
-  border-radius: 8px;
-}
-
-
-/* Quantity Display */
-.quantity-display-large {
-  text-align: right;
-  font-size: 24px;
-  font-weight: 700;
-  color: #303133;
-  margin: 8px 0;
-}
-
 .cost-item {
   display: flex;
   flex-direction: column;
@@ -911,15 +843,6 @@ watch(
 @media (max-width: 1024px) {
   .personal-calc-container {
     padding: 16px;
-  }
-
-  .product-header {
-    flex-direction: column;
-  }
-
-  .image-placeholder {
-    width: 100%;
-    height: 200px;
   }
 
   .summary-card {
