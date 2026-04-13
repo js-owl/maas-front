@@ -453,9 +453,8 @@ watch(
       <el-col :span="16">
         <el-card class="product-card" shadow="never">
           <div class="toolbar-row">
-            <Button width="200px" @click="handleBack">
-              <el-icon><ArrowLeft /></el-icon>
-              Вернуться в Заказ
+            <Button width="250px" @click="handleBack">
+               < Вернуться в Заказ
             </Button>
             <Button width="200px" type="secondary" @click="handleCalcInfo">
               Калькуляция
@@ -515,7 +514,7 @@ watch(
               <div v-if="!uploadedDocuments.length" class="file-row file-row-empty">Файлы отсутствуют</div>
               <div v-for="item in uploadedDocuments" :key="item.id" class="file-row">
                 <span class="file-name">{{ item.original_filename }}</span>
-                <span class="file-date">{{ formatDocumentDate(item.created_at) }}</span>
+                <span class="file-date">{{ formatDocumentDate(item.uploaded_at) }}</span>
                 <span class="file-menu">⋮</span>
               </div>
             </div>
@@ -617,9 +616,10 @@ watch(
 }
 
 .order-number {
-  font-size: 32px;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
   font-weight: 600;
-  color: #101828;
+  color: #000000;
 }
 
 .product-header {
@@ -676,15 +676,18 @@ watch(
 }
 
 .cost-label {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #000000;
   padding-top: 10px;
-  font-size: 14px;
-  color: #606266;
 }
 
 .cost-value {
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
-  font-weight: bold;
-  color: #303133;
+  font-weight: 600;
+  color: #000000;
 }
 
 .quantity-display {
@@ -708,9 +711,10 @@ watch(
 }
 
 .property-label {
-  font-size: 28px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
   font-weight: 500;
-  color: #111827;
+  color: #000000;
   white-space: nowrap;
 }
 
@@ -721,9 +725,10 @@ watch(
 }
 
 .property-value {
-  font-size: 28px;
-  font-weight: 400;
-  color: #111827;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #000000;
   text-align: right;
   white-space: nowrap;
 }
@@ -740,9 +745,10 @@ watch(
   align-items: center;
   justify-content: space-between;
   padding: 0 18px;
-  font-size: 32px;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
   font-weight: 600;
-  color: #101828;
+  color: #000000;
   cursor: pointer;
 }
 
@@ -778,15 +784,18 @@ watch(
 }
 
 .file-name {
-  font-size: 30px;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 20px;
   font-weight: 600;
-  color: #101828;
+  color: #000000;
 }
 
 .file-date {
+  font-family: 'Montserrat-Medium', sans-serif;
   margin-left: auto;
-  font-size: 24px;
-  color: #98a2b3;
+  font-size: 16px;
+  font-weight: 500;
+  color: #7d8083;
 }
 
 .file-menu {
@@ -889,20 +898,6 @@ watch(
   margin-bottom: 20px;
 }
 
-.cost-label {
-  text-align: left;
-  font-size: 18px;
-  font-weight: 500;
-  color: #344054;
-}
-
-.cost-value {
-  text-align: left;
-  font-size: 44px;
-  font-weight: 600;
-  line-height: 1.1;
-  color: #101828;
-}
 
 .summary-actions {
   margin-top: auto;

@@ -85,7 +85,10 @@ watch(
 }
 
 .input-edit-value {
-  font-weight: 500;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000000;
 }
 
 .input-edit-btn {
