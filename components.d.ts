@@ -76,6 +76,7 @@ declare module 'vue' {
     HomeModel: typeof import('./src/components/sections/HomeModel.vue')['default']
     HomeUslugi: typeof import('./src/components/sections/HomeUslugi.vue')['default']
     IconLogoHeader: typeof import('./src/components/icons/IconLogoHeader.vue')['default']
+    IconLogoHeader2: typeof import('./src/components/icons/IconLogoHeader2.vue')['default']
     Input: typeof import('./src/components/ui/Input.vue')['default']
     InputEdit: typeof import('./src/components/ui/InputEdit.vue')['default']
     Length: typeof import('./src/components/coefficients/Length.vue')['default']

@@ -9,6 +9,7 @@ import { ElMessage } from 'element-plus'
 import { useProfileStore } from '../stores/profile.store'
 import { ArrowDown, Menu, User } from '@element-plus/icons-vue'
 import IconLogoHeader from './icons/IconLogoHeader.vue'
+import IconLogoHeader2 from './icons/IconLogoHeader2.vue'
 
 const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
@@ -139,7 +140,8 @@ function onLogout() {
 
             <div v-if="!isMobile" class="menu-container">
               <el-button class="logo-btn" @click="router.push({ path: '/' })" aria-label="Перейти на главную">
-                <IconLogoHeader class="logo-icon" />
+                <IconLogoHeader v-if="isHomePage" class="logo-icon" />
+                <IconLogoHeader2 v-else class="logo-icon" />
               </el-button>
 
               <!-- Меню с выпадающим списком -->
