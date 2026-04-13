@@ -24,7 +24,7 @@ type OtherServicesResponse = {
 type UploadedDocument = {
   id: number
   original_filename: string
-  created_at?: string
+  uploaded_at?: string
 }
 
 // Get orderId and kitId from route query
@@ -129,7 +129,7 @@ const loadUploadedDocuments = async (documentIds: number[]) => {
         return {
           id: data.id,
           original_filename: data.original_filename,
-          created_at: data.created_at,
+          uploaded_at: data.uploaded_at,
         }
       } catch {
         return null
