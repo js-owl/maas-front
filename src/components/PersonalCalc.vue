@@ -21,6 +21,12 @@ type OtherServicesResponse = {
   other_services: OtherService[]
 }
 
+type UploadedDocument = {
+  id: number
+  original_filename: string
+  created_at?: string
+}
+
 // Get orderId and kitId from route query
 const route = useRoute()
 const router = useRouter()
@@ -52,6 +58,8 @@ const fileId = ref<number | null>(null)
 
 // Other services storage
 const otherServices = ref<OtherService[]>([])
+const uploadedDocuments = ref<UploadedDocument[]>([])
+const isFilesExpanded = ref(true)
 
 // Order name - represents the order name
 const order_name = ref('')
@@ -93,6 +101,48 @@ const totalCostFormatted = computed(() => {
   return manufacturingCost.value * quantity.value
 })
 
+const formatDocumentDate = (value?: string): string => {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  return date.toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+const loadUploadedDocuments = async (documentIds: number[]) => {
+  if (!Array.isArray(documentIds) || !documentIds.length) {
+    uploadedDocuments.value = []
+    return
+  }
+
+  const responses = await Promise.all(
+    documentIds.map(async (documentId) => {
+      try {
+        const response = await req_json_auth(`/documents/${documentId}`, 'GET')
+        if (!response?.ok) return null
+        const data = (await response.json()) as UploadedDocument
+        return {
+          id: data.id,
+          original_filename: data.original_filename,
+          created_at: data.created_at,
+        }
+      } catch {
+        return null
+      }
+    })
+  )
+
+  uploadedDocuments.value = responses.reduce<UploadedDocument[]>((acc, item) => {
+    if (item?.id && item.original_filename) acc.push(item)
+    return acc
+  }, [])
+}
+
 
 
 // Handle back button click - navigate to order page with current kitId
@@ -129,11 +179,11 @@ const handleCalcInfo = () => {
 
 // Block "Расчет" button when kit status is NOT pending and NOT New
 const isCalculationDisabled = computed(() => {
-  const status = kitData.value?.status
-  if (!status) return false
-  const isPending = status === 'pending'
-  const isNew = status === 'New' || status.toLowerCase() === 'new'
-  return !isPending && !isNew
+  // const status = kitData.value?.status
+  // if (!status) return false
+  // const isPending = status === 'pending'
+  // const isNew = status === 'New' || status.toLowerCase() === 'new'
+  return false // !isPending && !isNew
 })
 
 // Handle edit button click - navigate to edit page based on service_id (same logic as in PersonalOrder.vue)
@@ -302,6 +352,8 @@ const fetchOrder = async (id: number) => {
       if (fetchedOrderData.order_code) {
         order_code.value = fetchedOrderData.order_code
       }
+
+      await loadUploadedDocuments(fetchedOrderData.document_ids)
     } else {
       ElMessage.error('Не удалось загрузить данные заказа')
     }
@@ -400,66 +452,72 @@ watch(
     <el-row :gutter="20">
       <el-col :span="16">
         <el-card class="product-card" shadow="never">
-          <!-- Top Section: Image, Filename, Cost, Quantity + Actions -->
-          <div class="product-header-row">
-            <div class="product-header">
-
-              <!-- Product Info Section -->
-              <div class="product-info">
-                <!-- Order Number -->
-                <div style="font-size: 16px; font-weight: 500;">Заказ №{{ kitId }}</div>
-
-                <!-- Order Code -->
-                <InputEdit v-model="order_code"/>
-
-                <!-- Order Name -->
-                <InputEdit v-model="order_name" />
-              </div>
-            </div>
-
-            <!-- Top Right Actions -->
-            <div class="card-header-actions">
-              <Button width="200px" type="secondary" @click="handleCalcInfo">
-                Калькуляция
-              </Button>
-            </div>
+          <div class="toolbar-row">
+            <Button width="200px" @click="handleBack">
+              <el-icon><ArrowLeft /></el-icon>
+              Вернуться в Заказ
+            </Button>
+            <Button width="200px" type="secondary" @click="handleCalcInfo">
+              Калькуляция
+            </Button>
           </div>
 
-          <!-- Bottom Section: Product Properties -->
+          <div class="product-info">
+            <div class="order-number">Заказ №{{ kitId }}</div>
+            <InputEdit v-model="order_code" />
+            <InputEdit v-model="order_name" />
+          </div>
+
           <div class="properties-section">
             <div class="property-item">
               <span class="property-label">Услуга</span>
+              <span class="property-divider" />
               <span class="property-value">{{ productProperties.serviceId || '-' }}</span>
             </div>
             <div class="property-item">
-              <span class="property-label">Размеры</span>
+              <span class="property-label">Размер, мм</span>
+              <span class="property-divider" />
               <span class="property-value">{{ productProperties.dimensions || '-' }}</span>
             </div>
             <div class="property-item">
-              <span class="property-label">Объем детали</span>
+              <span class="property-label">Объем детали, см²</span>
+              <span class="property-divider" />
               <span class="property-value">{{ productProperties.partVolume || '-' }}</span>
             </div>
             <div class="property-item">
               <span class="property-label">Материал</span>
+              <span class="property-divider" />
               <span class="property-value">{{ productProperties.material || '-' }}</span>
             </div>
             <div class="property-item">
-              <span class="property-label">Покрытие</span>
+              <span class="property-label">Постобработка</span>
+              <span class="property-divider" />
               <span class="property-value">{{ productProperties.coating || '-' }}</span>
             </div>
+            <div class="property-item">
+              <span class="property-label">Материал покрытия</span>
+              <span class="property-divider" />
+              <span class="property-value">{{ productProperties.coating || '-' }}</span>
+            </div>
+            <div class="property-item">
+              <span class="property-label">Площадь покраски, см²</span>
+              <span class="property-divider" />
+              <span class="property-value">-</span>
+            </div>
           </div>
-          <div style="padding-top: 20px; display: flex; justify-content: space-between; align-items: center;">
-            <Button width="200px" @click="handleBack">
-              <el-icon><ArrowLeft /></el-icon>
-              Назад
-            </Button>
-            <div style="display: flex; gap: 8px;">
-              <Button width="200px" type="secondary" :disabled="isCalculationDisabled" @click="handleEdit">
-                Расчет
-              </Button>
-              <Button width="200px" :loading="isSaving" @click="saveOrder">
-                Сохранить
-              </Button>
+
+          <div class="files-section">
+            <div class="files-header" @click="isFilesExpanded = !isFilesExpanded">
+              <span>Загруженные файлы</span>
+              <el-icon class="files-arrow" :class="{ expanded: isFilesExpanded }"><ArrowLeft /></el-icon>
+            </div>
+            <div v-if="isFilesExpanded" class="files-list">
+              <div v-if="!uploadedDocuments.length" class="file-row file-row-empty">Файлы отсутствуют</div>
+              <div v-for="item in uploadedDocuments" :key="item.id" class="file-row">
+                <span class="file-name">{{ item.original_filename }}</span>
+                <span class="file-date">{{ formatDocumentDate(item.created_at) }}</span>
+                <span class="file-menu">⋮</span>
+              </div>
             </div>
           </div>
         </el-card>
@@ -498,6 +556,14 @@ watch(
             <div class="cost-value">
               {{ formatPrice(totalCostFormatted) }}
             </div>
+          </div>
+          <div class="summary-actions">
+            <Button width="100%" type="secondary" :disabled="isCalculationDisabled" @click="handleEdit">
+              Расчет
+            </Button>
+            <Button width="100%" :loading="isSaving" @click="saveOrder">
+              Сохранить
+            </Button>
           </div>
         </div>
       </el-col>
@@ -543,6 +609,19 @@ watch(
   margin-bottom: 24px;
 }
 
+.toolbar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.order-number {
+  font-size: 32px;
+  font-weight: 600;
+  color: #101828;
+}
+
 .product-header {
   display: flex;
   gap: 20px;
@@ -580,6 +659,7 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-bottom: 24px;
 }
 
 .filename {
@@ -614,38 +694,104 @@ watch(
 
 /* Properties Section */
 .properties-section {
-  border-top: 1px solid #e4e7ed;
-  padding-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
+  margin-bottom: 28px;
 }
 
 .property-item {
   display: flex;
-  justify-content: space-between;
+  gap: 12px;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px dashed #e4e7ed;
-}
-
-.property-item:last-child {
-  border-bottom: none;
+  padding: 4px 0;
 }
 
 .property-label {
-  font-size: 24px;
-  font-weight: 600;
-  color: #606266;
+  font-size: 28px;
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.property-divider {
   flex: 1;
+  border-bottom: 1px dashed #d0d5dd;
+  transform: translateY(4px);
 }
 
 .property-value {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 400;
-  color: #909399;
+  color: #111827;
   text-align: right;
-  min-width: 100px;
+  white-space: nowrap;
+}
+
+.files-section {
+  margin-top: 8px;
+}
+
+.files-header {
+  height: 52px;
+  border-radius: 10px;
+  background-color: #c9ced4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  font-size: 32px;
+  font-weight: 600;
+  color: #101828;
+  cursor: pointer;
+}
+
+.files-arrow {
+  transition: transform 0.2s ease;
+  transform: rotate(-90deg);
+}
+
+.files-arrow.expanded {
+  transform: rotate(-180deg);
+}
+
+.files-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.file-row {
+  min-height: 54px;
+  background: #f2f4f7;
+  border-radius: 10px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.file-row-empty {
+  justify-content: center;
+  color: #98a2b3;
+}
+
+.file-name {
+  font-size: 30px;
+  font-weight: 600;
+  color: #101828;
+}
+
+.file-date {
+  margin-left: auto;
+  font-size: 24px;
+  color: #98a2b3;
+}
+
+.file-menu {
+  font-size: 28px;
+  color: #667085;
 }
 
 /* Right Summary Card */
@@ -655,8 +801,9 @@ watch(
   border: none;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 10px;
   padding: 20px;
+  min-height: 100%;
 }
 
 /* Image Container */
@@ -743,17 +890,25 @@ watch(
 }
 
 .cost-label {
-  text-align: right;
-  font-size: 16px;
+  text-align: left;
+  font-size: 18px;
   font-weight: 500;
-  color: #909399;
+  color: #344054;
 }
 
 .cost-value {
-  text-align: right;
-  font-size: 24px;
+  text-align: left;
+  font-size: 44px;
   font-weight: 600;
-  color: #000;
+  line-height: 1.1;
+  color: #101828;
+}
+
+.summary-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /* Responsive Design */
