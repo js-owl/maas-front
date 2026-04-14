@@ -153,16 +153,39 @@ const downloadUploadedDocument = async (uploadedDocument: UploadedDocument) => {
   }
 }
 
-const removeUploadedDocument = (uploadedDocument: UploadedDocument) => {
-  if (Array.isArray(orderData.value?.document_ids)) {
-    const idx = orderData.value.document_ids.indexOf(uploadedDocument.id)
-    if (idx >= 0) orderData.value.document_ids.splice(idx, 1)
+const removeUploadedDocument = async (uploadedDocument: UploadedDocument) => {
+  const targetOrderId = orderData.value?.order_id || orderId.value
+  const currentDocumentIds = Array.isArray(orderData.value?.document_ids)
+    ? orderData.value.document_ids
+    : []
+  const updatedDocumentIds = currentDocumentIds.filter((id) => id !== uploadedDocument.id)
+
+  if (!targetOrderId || targetOrderId <= 0) {
+    ElMessage.error('Не удалось определить заказ для удаления документа')
+    return
   }
 
-  const docIdx = uploadedDocuments.value.findIndex((item) => item.id === uploadedDocument.id)
-  if (docIdx >= 0) {
-    uploadedDocuments.value.splice(docIdx, 1)
+  try {
+    const response = await req_json_auth(`/orders/${targetOrderId}`, 'PUT', {
+      document_ids: updatedDocumentIds,
+    })
+
+    if (!response?.ok) {
+      ElMessage.error('Не удалось удалить документ')
+      return
+    }
+
+    if (orderData.value) {
+      orderData.value.document_ids = updatedDocumentIds
+    }
+    uploadedDocuments.value = uploadedDocuments.value.filter(
+      (item) => item.id !== uploadedDocument.id
+    )
+
     ElMessage.success('Документ удален')
+  } catch (error) {
+    console.error('Ошибка при удалении документа:', error)
+    ElMessage.error('Ошибка при удалении документа')
   }
 }
 
