@@ -153,26 +153,16 @@ const downloadUploadedDocument = async (uploadedDocument: UploadedDocument) => {
   }
 }
 
-const removeUploadedDocument = async (uploadedDocument: UploadedDocument) => {
-  try {
-    const response = await req_json_auth(`/documents/${uploadedDocument.id}`, 'DELETE')
-    if (!response?.ok) {
-      ElMessage.error('Не удалось удалить документ')
-      return
-    }
+const removeUploadedDocument = (uploadedDocument: UploadedDocument) => {
+  if (Array.isArray(orderData.value?.document_ids)) {
+    const idx = orderData.value.document_ids.indexOf(uploadedDocument.id)
+    if (idx >= 0) orderData.value.document_ids.splice(idx, 1)
+  }
 
-    uploadedDocuments.value = uploadedDocuments.value.filter((item) => item.id !== uploadedDocument.id)
-
-    if (Array.isArray(orderData.value?.document_ids)) {
-      orderData.value.document_ids = orderData.value.document_ids.filter(
-        (documentId) => documentId !== uploadedDocument.id
-      )
-    }
-
+  const docIdx = uploadedDocuments.value.findIndex((item) => item.id === uploadedDocument.id)
+  if (docIdx >= 0) {
+    uploadedDocuments.value.splice(docIdx, 1)
     ElMessage.success('Документ удален')
-  } catch (error) {
-    console.error('Ошибка при удалении документа:', error)
-    ElMessage.error('Ошибка при удалении документа')
   }
 }
 

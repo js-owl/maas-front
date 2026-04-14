@@ -49,30 +49,30 @@ async function loadUserDocuments() {
   } catch (e) {
     console.error('Error loading user documents:', e);
     // If API fails, try to load from localStorage as fallback
-    loadDocumentsFromStorage();
+    // loadDocumentsFromStorage();
   }
   isLoading.value = false;
 }
 
-function loadDocumentsFromStorage() {
-  try {
-    const stored = localStorage.getItem('uploaded_documents');
-    if (stored) {
-      const documents = JSON.parse(stored);
-      allDocuments.value = documents;
-    }
-  } catch (e) {
-    console.error('Error loading documents from storage:', e);
-  }
-}
+// function loadDocumentsFromStorage() {
+//   try {
+//     const stored = localStorage.getItem('uploaded_documents');
+//     if (stored) {
+//       const documents = JSON.parse(stored);
+//       allDocuments.value = documents;
+//     }
+//   } catch (e) {
+//     console.error('Error loading documents from storage:', e);
+//   }
+// }
 
-function saveDocumentsToStorage() {
-  try {
-    localStorage.setItem('uploaded_documents', JSON.stringify(allDocuments.value));
-  } catch (e) {
-    console.error('Error saving documents to storage:', e);
-  }
-}
+// function saveDocumentsToStorage() {
+//   try {
+//     localStorage.setItem('uploaded_documents', JSON.stringify(allDocuments.value));
+//   } catch (e) {
+//     console.error('Error saving documents to storage:', e);
+//   }
+// }
 
 async function downloadDoc(id: number) {
   try {
@@ -123,7 +123,7 @@ function removeDocument(id: number) {
     const docIdx = allDocuments.value.findIndex(d => d.id === id);
     if (docIdx >= 0) {
       allDocuments.value.splice(docIdx, 1);
-      saveDocumentsToStorage();
+      // saveDocumentsToStorage();
     }
   }
 }
@@ -133,7 +133,7 @@ onMounted(() => {
     loadUserDocuments();
   } else {
     // Try to load from localStorage as fallback
-    loadDocumentsFromStorage();
+    // loadDocumentsFromStorage();
   }
 });
 watch(
