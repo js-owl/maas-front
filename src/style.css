@@ -40,6 +40,17 @@ body {
 }
 
 /* Общие стили для секций */
+.maas-subtitle {
+  font-family: 'Montserrat-Semibold', sans-serif;
+  font-size: 24px;
+  color: #000000;
+}
+.maas-text {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
+  color: #000000;
+}
+
 .section-basic {
   min-height: 200px;
   background-color: white;

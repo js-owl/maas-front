@@ -428,7 +428,7 @@ onMounted(() => {
         <!-- <el-card shadow="never" class="order-card"> -->
         <div class="order-header">
           <div class="order-title">
-            <div style="font-size: 16px; font-weight: 500;">Заказ №{{ kitId }}</div>
+            <div class="maas-subtitle">Заказ №{{ kitId }}</div>
             <div class="order-name-wrapper">
               <InputEdit v-model="filename" :font-size="'24px'" @update:model-value="handleFilenameUpdate" />
             </div>
@@ -559,39 +559,39 @@ onMounted(() => {
           <!-- Статус и даты -->
           <div class="status-section">
             <div class="status-row">
-              <span class="status-label">Статус</span>
+              <span class="maas-text">Статус</span>
               <span class="status-badge">{{ orderStatus }}</span>
             </div>
             <div class="date-row">
-              <span class="date-label">Дата создания</span>
-              <span class="date-value">{{ createdDate }}</span>
+              <span class="maas-text">Дата создания</span>
+              <span class="maas-text">{{ createdDate }}</span>
             </div>
             <div class="date-row">
-              <span class="date-label">Дата завершения</span>
-              <span class="date-value">{{ completionDate }}</span>
+              <span class="maas-text">Дата завершения</span>
+              <span class="maas-text">{{ completionDate }}</span>
             </div>
           </div>
 
           <!-- Стоимость изготовления -->
           <div class="cost-item">
-            <div class="cost-label">Стоимость изготовления</div>
-            <div class="cost-value">
+            <div class="maas-text">Стоимость изготовления</div>
+            <div class="maas-subtitle">
               {{ manufacturingCost }} <span class="rub">руб.</span>
             </div>
           </div>
 
           <!-- Доставка -->
           <div class="cost-item">
-            <div class="cost-label">Доставка</div>
-            <div class="cost-value">
+            <div class="maas-text">Доставка</div>
+            <div class="maas-subtitle">
               {{ deliveryCost }} <span class="rub">руб.</span>
             </div>
           </div>
 
           <!-- Итого -->
           <div class="cost-item total">
-            <div class="cost-label">Стоимость с учетом доставки</div>
-            <div class="cost-value total-value">
+            <div class="maas-text">Стоимость с учетом доставки</div>
+            <div class="maas-subtitle">
               {{ totalWithDelivery }} <span class="rub">руб.</span>
             </div>
           </div>
