@@ -12,6 +12,11 @@ const props = defineProps<{
   uploadedDocuments: UploadedDocument[]
 }>()
 
+const emit = defineEmits<{
+  (event: 'view-document', document: UploadedDocument): void
+  (event: 'remove-document', document: UploadedDocument): void
+}>()
+
 const isFilesExpanded = ref(true)
 
 const formatDocumentDate = (value?: string): string => {
@@ -39,7 +44,15 @@ const formatDocumentDate = (value?: string): string => {
       <div v-for="item in props.uploadedDocuments" :key="item.id" class="file-row">
         <span class="file-name">{{ item.original_filename }}</span>
         <span class="file-date">{{ formatDocumentDate(item.uploaded_at) }}</span>
-        <span class="file-menu">⋮</span>
+        <el-dropdown trigger="click" placement="bottom-end">
+          <span class="file-menu">⋮</span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="emit('view-document', item)">Просмотр</el-dropdown-item>
+              <el-dropdown-item @click="emit('remove-document', item)">Удаление</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
     </div>
   </div>
@@ -114,5 +127,7 @@ const formatDocumentDate = (value?: string): string => {
 .file-menu {
   font-size: 28px;
   color: #667085;
+  cursor: pointer;
+  user-select: none;
 }
 </style>
