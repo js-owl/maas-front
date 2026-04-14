@@ -618,9 +618,6 @@ onMounted(() => {
   border-radius: 20px;
   /* box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12); */
 }
-.order-page {
-  padding: 20px;
-}
 
 /* .order-card {
   background-color: #f7f8fa;
@@ -647,21 +644,6 @@ onMounted(() => {
   gap: 8px;
 }
 
-.order-subtitle {
-  font-size: 12px;
-  color: #909399;
-}
-
-.order-price {
-  font-size: 26px;
-  font-weight: 700;
-}
-
-.order-price-currency {
-  margin-left: 4px;
-  font-size: 14px;
-}
-
 .order-quantity {
   display: flex;
   flex-direction: column;
@@ -669,41 +651,8 @@ onMounted(() => {
   gap: 8px;
 }
 
-.quantity-label {
-  font-size: 16px;
-  font-weight: 500;
-  color: #909399;
-}
-
-.quantity-controls {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.quantity-btn {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.quantity-input-simple {
-  width: 80px;
-}
-
-.quantity-input-simple :deep(.el-input__inner) {
-  text-align: center;
-}
-
 .calc-button {
   margin-top: 4px;
-}
-
-.details-table {
-  margin-top: 10px;
 }
 
 .model-preview {
@@ -721,23 +670,10 @@ onMounted(() => {
   margin: 4px auto;
 }
 
-.icon-placeholder {
-  font-size: 14px;
-}
-
 .order-footer {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
-}
-
-.back-button {
-  border-radius: 24px;
-}
-
-.pay-button {
-  border-radius: 24px;
-  width: 100%;
 }
 
 .summary-card {
@@ -763,12 +699,6 @@ onMounted(() => {
   align-items: center;
 }
 
-.status-label {
-  font-size: 20px;
-  font-weight: 500;
-  color: #000;
-}
-
 .status-badge {
   display: inline-block;
   padding: 4px 12px;
@@ -788,15 +718,6 @@ onMounted(() => {
   color: #909399;
 }
 
-.date-label {
-  color: #909399;
-}
-
-.date-value {
-  font-weight: 500;
-  color: #606266;
-}
-
 .cost-item {
   display: flex;
   flex-direction: column;
@@ -806,25 +727,6 @@ onMounted(() => {
 
 .cost-item.total {
   margin-bottom: 32px;
-}
-
-.cost-label {
-  text-align: right;
-  font-size: 16px;
-  font-weight: 500;
-  color: #909399;
-}
-
-.cost-value {
-  text-align: right;
-  font-size: 24px;
-  font-weight: 600;
-  color: #000;
-}
-
-.cost-value.total-value {
-  font-size: 24px;
-  font-weight: 700;
 }
 
 .rub {
