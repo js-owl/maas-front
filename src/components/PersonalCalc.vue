@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowLeft } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { req_json_auth, req_json } from '../api'
 import Button from './ui/Button.vue'
 import InputEdit from './ui/InputEdit.vue'
+import SelectFiles from './ui/SelectFiles.vue'
 import CadShowById from './cad/CadShowById.vue'
 import type { IOrderResponse, IKit } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
@@ -59,7 +59,6 @@ const fileId = ref<number | null>(null)
 // Other services storage
 const otherServices = ref<OtherService[]>([])
 const uploadedDocuments = ref<UploadedDocument[]>([])
-const isFilesExpanded = ref(true)
 
 // Order name - represents the order name
 const order_name = ref('')
@@ -100,19 +99,6 @@ const costPerItem = computed(() => {
 const totalCostFormatted = computed(() => {
   return manufacturingCost.value * quantity.value
 })
-
-const formatDocumentDate = (value?: string): string => {
-  if (!value) return ''
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ''
-  return date.toLocaleString('ru-RU', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
 
 const loadUploadedDocuments = async (documentIds: number[]) => {
   if (!Array.isArray(documentIds) || !documentIds.length) {
@@ -505,20 +491,7 @@ watch(
             </div>
           </div>
 
-          <div class="files-section">
-            <div class="files-header" @click="isFilesExpanded = !isFilesExpanded">
-              <span>Загруженные файлы</span>
-              <el-icon class="files-arrow" :class="{ expanded: isFilesExpanded }"><ArrowLeft /></el-icon>
-            </div>
-            <div v-if="isFilesExpanded" class="files-list">
-              <div v-if="!uploadedDocuments.length" class="file-row file-row-empty">Файлы отсутствуют</div>
-              <div v-for="item in uploadedDocuments" :key="item.id" class="file-row">
-                <span class="file-name">{{ item.original_filename }}</span>
-                <span class="file-date">{{ formatDocumentDate(item.uploaded_at) }}</span>
-                <span class="file-menu">⋮</span>
-              </div>
-            </div>
-          </div>
+          <SelectFiles :uploaded-documents="uploadedDocuments" />
         </el-card>
       </el-col>
 
@@ -681,76 +654,6 @@ watch(
   color: #000000;
   text-align: right;
   white-space: nowrap;
-}
-
-.files-section {
-  margin-top: 8px;
-}
-
-.files-header {
-  height: 52px;
-  border-radius: 10px;
-  background-color: #cbd1d5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 18px;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  color: #000000;
-  cursor: pointer;
-}
-
-.files-arrow {
-  transition: transform 0.2s ease;
-  transform: rotate(-90deg);
-}
-
-.files-arrow.expanded {
-  transform: rotate(-180deg);
-}
-
-.files-list {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.file-row {
-  min-height: 54px;
-  background: #f4f6f8;
-  border-radius: 10px;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.file-row-empty {
-  justify-content: center;
-  color: #98a2b3;
-}
-
-.file-name {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 20px;
-  font-weight: 600;
-  color: #000000;
-}
-
-.file-date {
-  font-family: 'Montserrat-Medium', sans-serif;
-  margin-left: auto;
-  font-size: 16px;
-  font-weight: 500;
-  color: #7d8083;
-}
-
-.file-menu {
-  font-size: 28px;
-  color: #667085;
 }
 
 /* Right Summary Card */
