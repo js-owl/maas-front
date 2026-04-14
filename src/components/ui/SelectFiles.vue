@@ -19,6 +19,14 @@ const emit = defineEmits<{
 
 const isFilesExpanded = ref(true)
 
+const handleMenuCommand = (command: string, document: UploadedDocument): void => {
+  if (command === 'download') {
+    emit('view-document', document)
+    return
+  }
+  emit('remove-document', document)
+}
+
 const formatDocumentDate = (value?: string): string => {
   if (!value) return ''
   const date = new Date(value)
@@ -44,12 +52,16 @@ const formatDocumentDate = (value?: string): string => {
       <div v-for="item in props.uploadedDocuments" :key="item.id" class="file-row">
         <span class="file-name">{{ item.original_filename }}</span>
         <span class="file-date">{{ formatDocumentDate(item.uploaded_at) }}</span>
-        <el-dropdown trigger="click" placement="bottom-end">
+        <el-dropdown
+          trigger="click"
+          placement="bottom-end"
+          @command="(command: string) => handleMenuCommand(command, item)"
+        >
           <span class="file-menu">⋮</span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="emit('view-document', item)">Просмотр</el-dropdown-item>
-              <el-dropdown-item @click="emit('remove-document', item)">Удаление</el-dropdown-item>
+              <el-dropdown-item command="download">Скачать</el-dropdown-item>
+              <el-dropdown-item command="remove">Удалить</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>

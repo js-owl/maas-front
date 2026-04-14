@@ -129,6 +129,53 @@ const loadUploadedDocuments = async (documentIds: number[]) => {
   }, [])
 }
 
+const downloadUploadedDocument = async (uploadedDocument: UploadedDocument) => {
+  try {
+    const response = await req_json_auth(`/documents/${uploadedDocument.id}/download`, 'GET')
+    if (!response?.ok) {
+      ElMessage.error('Ошибка загрузки документа')
+      return
+    }
+
+    const blob = await response.blob()
+    const fileUrl = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = fileUrl
+    link.download = uploadedDocument.original_filename
+    link.target = '_blank'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    setTimeout(() => URL.revokeObjectURL(fileUrl), 1000)
+  } catch (error) {
+    console.error('Ошибка при скачивании документа:', error)
+    ElMessage.error('Ошибка при скачивании документа')
+  }
+}
+
+const removeUploadedDocument = async (uploadedDocument: UploadedDocument) => {
+  try {
+    const response = await req_json_auth(`/documents/${uploadedDocument.id}`, 'DELETE')
+    if (!response?.ok) {
+      ElMessage.error('Не удалось удалить документ')
+      return
+    }
+
+    uploadedDocuments.value = uploadedDocuments.value.filter((item) => item.id !== uploadedDocument.id)
+
+    if (Array.isArray(orderData.value?.document_ids)) {
+      orderData.value.document_ids = orderData.value.document_ids.filter(
+        (documentId) => documentId !== uploadedDocument.id
+      )
+    }
+
+    ElMessage.success('Документ удален')
+  } catch (error) {
+    console.error('Ошибка при удалении документа:', error)
+    ElMessage.error('Ошибка при удалении документа')
+  }
+}
+
 
 
 // Handle back button click - navigate to order page with current kitId
@@ -491,7 +538,11 @@ watch(
             </div>
           </div>
 
-          <SelectFiles :uploaded-documents="uploadedDocuments" />
+          <SelectFiles
+            :uploaded-documents="uploadedDocuments"
+            @view-document="downloadUploadedDocument"
+            @remove-document="removeUploadedDocument"
+          />
         </el-card>
       </el-col>
 
