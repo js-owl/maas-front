@@ -237,6 +237,9 @@ async function createMeshesFromOCCTResult(result, file) {
       color = new THREE.Color(meshInfo.color[0], meshInfo.color[1], meshInfo.color[2])
       colorHex = '#' + color.getHexString()
     }
+    // затемнение модели
+    color.multiplyScalar(0.4)
+    colorHex = '#' + color.getHexString()
     const material = new THREE.MeshPhysicalMaterial({
       color,
       metalness: 0.9,
