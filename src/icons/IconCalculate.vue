@@ -1,8 +1,16 @@
 <script lang="ts" setup>
-const { color = '#1d1d1b' } = defineProps({
+const { color = '#1d1d1b', width = 20, height = 20 } = defineProps({
   color: {
     type: String,
     default: '#1d1d1b',
+  },
+  width: {
+    type: [String, Number],
+    default: 111.05,
+  },
+  height: {
+    type: [String, Number],
+    default: 122.39,
   },
 })
 </script>
@@ -13,6 +21,8 @@ const { color = '#1d1d1b' } = defineProps({
     data-name="Layer 1"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 111.05 122.39"
+    :width="width"
+    :height="height"
     :style="{ color }"
   >
     <path
