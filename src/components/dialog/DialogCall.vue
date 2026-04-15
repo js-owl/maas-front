@@ -177,6 +177,9 @@ const submitForm = async () => {
   <el-dialog
     v-model="dialogFormVisible"
     width="500"
+    :z-index="4000"
+    append-to-body
+    modal-class="dialog-call-overlay"
     :close-on-click-modal="false"
     :close-on-press-escape="true"
     :fullscreen="isMobile"
@@ -319,5 +322,11 @@ const submitForm = async () => {
   .agreement {
     font-size: 12px;
   }
+}
+</style>
+
+<style>
+.dialog-call-overlay {
+  z-index: 4000 !important;
 }
 </style>
