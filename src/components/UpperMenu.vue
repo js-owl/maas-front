@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import DialogLogin from './dialog/DialogLogin.vue'
 import DialogCall from './dialog/DialogCall.vue'
+import DialogRegistration from './dialog/DialogRegistration.vue'
 import { useAuthStore } from '../stores/auth.store'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -25,6 +26,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
 
 const isLoginVisible = ref(false)
 const isCallVisible = ref(false)
+const isRegistrationVisible = ref(false)
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -36,6 +38,7 @@ const isMobile = computed(() => width.value < 768)
 const isDrawerOpen = ref(false)
 const isHomePage = computed(() => route.path === '/')
 const isCabinetMenuVisible = ref(false)
+const isGuestCabinetMenuVisible = ref(false)
 
 // Check token on component mount
 onMounted(() => {
@@ -138,7 +141,18 @@ function openChatPage() {
 
 function requestCall() {
   isCabinetMenuVisible.value = false
+  isGuestCabinetMenuVisible.value = false
   isCallVisible.value = true
+}
+
+function openGuestRegistration() {
+  isGuestCabinetMenuVisible.value = false
+  isRegistrationVisible.value = true
+}
+
+function openGuestLogin() {
+  isGuestCabinetMenuVisible.value = false
+  isLoginVisible.value = true
 }
 
 // function onCallRequest() {
@@ -243,9 +257,46 @@ function requestCall() {
           <div class="right-wrap">
             <!-- Незарегистрированный пользователь -->
             <template v-if="!authStore.getToken">
-              <el-button v-if="!isMobile" class="cabinet-btn montserrat-semibold" @click="isLoginVisible = true">
-                Личный кабинет
-              </el-button>
+              <el-popover
+                v-if="!isMobile"
+                v-model:visible="isGuestCabinetMenuVisible"
+                trigger="click"
+                placement="bottom-end"
+                width="auto"
+                :show-arrow="false"
+                popper-class="cabinet-menu-popper"
+                :offset="12"
+              >
+                <template #reference>
+                  <el-button class="cabinet-btn montserrat-semibold">Личный кабинет</el-button>
+                </template>
+                <div class="cabinet-menu">
+                  <button
+                    type="button"
+                    class="cabinet-menu-item montserrat-medium"
+                    @click="openGuestRegistration"
+                  >
+                    <el-icon :size="22" class="cabinet-menu-icon"><User /></el-icon>
+                    <span>Регистрация</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="cabinet-menu-item montserrat-medium"
+                    @click="requestCall"
+                  >
+                    <el-icon :size="22" class="cabinet-menu-icon"><Phone /></el-icon>
+                    <span>Заказать звонок</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="cabinet-menu-item montserrat-medium"
+                    @click="openGuestLogin"
+                  >
+                    <el-icon :size="22" class="cabinet-menu-icon"><SwitchButton /></el-icon>
+                    <span>Вход в аккаунт</span>
+                  </button>
+                </div>
+              </el-popover>
               <el-button
                 v-else
                 class="auth-btn  montserrat-semibold"
@@ -307,6 +358,7 @@ function requestCall() {
         </el-header>
       </el-col>
       <DialogLogin v-model="isLoginVisible" />
+      <DialogRegistration v-model="isRegistrationVisible" />
       <DialogCall v-model="isCallVisible" />
     </el-row>
 
@@ -597,6 +649,7 @@ function requestCall() {
   box-shadow: 0 14px 34px rgba(30, 35, 44, 0.18);
   padding: 0;
 }
+
 
 .fullscreen-bg .auth-btn {
   color: #fff;
