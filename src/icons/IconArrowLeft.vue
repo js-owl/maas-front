@@ -14,6 +14,7 @@ const { color = '#333333' } = defineProps<{
   >
     <path
       d="M7 13L1 7L7 1"
+      fill="none"
       :stroke="color"
       stroke-width="0.1"
       stroke-linejoin="round"
