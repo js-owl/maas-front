@@ -27,7 +27,7 @@ const form = ref<FormData>({
   username: '',
   password: '',
   confirmPassword: '',
-  user_type: 'individual',
+  user_type: 'legal',
   email: '',
   full_name: '',
   phone_number: '',
