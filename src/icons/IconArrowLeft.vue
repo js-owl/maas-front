@@ -13,10 +13,10 @@ const { color = '#333333' } = defineProps<{
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M7 13L1 7L7 1"
-      fill="none"
+      d="M7 13L1 7L7 1L7 13Z"
       :stroke="color"
-      stroke-width="0.1"
+      fill="none"
+      stroke-width="2"
       stroke-linejoin="round"
     />
   </svg>
