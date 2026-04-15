@@ -35,6 +35,9 @@ const handleClick = () => {
 <template>
   <button :class="['btn', buttonClasses]" :disabled="disabled || loading" :style="{ width: props.width }" @click="handleClick">
     <span v-if="loading" class="btn-spinner" />
+    <span v-if="$slots['icon-left']" class="btn-icon-left">
+      <slot name="icon-left" />
+    </span>
     <slot />
   </button>
 </template>
@@ -42,6 +45,10 @@ const handleClick = () => {
 <style scoped>
 .btn {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   background: var(--button-bg);
   /* background-size: 200% 200%; */
   /* background-position: 0% 50%; */
@@ -66,6 +73,21 @@ const handleClick = () => {
   transform: translateY(0);
   
   overflow: hidden;
+}
+
+.btn-icon-left {
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-icon-left :deep(svg) {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.btn-icon-left :deep(path) {
+  fill: currentColor;
 }
 
 .btn::before {

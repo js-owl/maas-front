@@ -11,6 +11,7 @@ import CadShowById from './cad/CadShowById.vue'
 import type { IOrderResponse, IKit } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
 import { useCoefficientsStore } from '../stores/coefficients.store'
+import IconLab from '@/icons/IconLab.vue'
 
 type OtherService = {
   id: string
@@ -500,8 +501,11 @@ watch(
       <el-col :span="16">
         <el-card class="product-card" shadow="never">
           <div class="toolbar-row">
-            <ButtonRound width="300px" @click="handleBack">
-               < Вернуться в Заказ
+            <ButtonRound width="280px" @click="handleBack">
+              <template #icon-left>
+                 <IconLab />
+              </template>
+               Вернуться в Заказ
             </ButtonRound>
             <ButtonRound width="200px" type="secondary" @click="handleCalcInfo">
               Калькуляция
