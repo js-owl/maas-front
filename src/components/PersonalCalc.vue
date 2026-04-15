@@ -11,7 +11,7 @@ import CadShowById from './cad/CadShowById.vue'
 import type { IOrderResponse, IKit } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
 import { useCoefficientsStore } from '../stores/coefficients.store'
-import IconLab from '@/icons/IconLab.vue'
+import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 import IconCalculate from '@/icons/IconCalculate.vue'
 
 type OtherService = {
@@ -504,7 +504,7 @@ watch(
           <div class="toolbar-row">
             <ButtonRound width="280px" @click="handleBack">
               <template #icon-left>
-                 <IconLab />
+                 <IconArrowLeft />
               </template>
                Вернуться в Заказ
             </ButtonRound>
