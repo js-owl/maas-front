@@ -266,6 +266,7 @@ function requestCall() {
                 v-model:visible="isCabinetMenuVisible"
                 trigger="click"
                 placement="bottom-end"
+                width="auto"
                 :show-arrow="false"
                 popper-class="cabinet-menu-popper"
                 :offset="12"
