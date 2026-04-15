@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { req_json_auth, req_json } from '../api'
 import Button from './ui/Button.vue'
+import ButtonRound from './ui/ButtonRound.vue'
 import InputEdit from './ui/InputEdit.vue'
 import SelectFiles from './ui/SelectFiles.vue'
 import CadShowById from './cad/CadShowById.vue'
@@ -499,12 +500,12 @@ watch(
       <el-col :span="16">
         <el-card class="product-card" shadow="never">
           <div class="toolbar-row">
-            <Button width="250px" @click="handleBack">
+            <ButtonRound width="300px" @click="handleBack">
                < Вернуться в Заказ
-            </Button>
-            <Button width="200px" type="secondary" @click="handleCalcInfo">
+            </ButtonRound>
+            <ButtonRound width="200px" type="secondary" @click="handleCalcInfo">
               Калькуляция
-            </Button>
+            </ButtonRound>
           </div>
 
           <div class="product-info">

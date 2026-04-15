@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Button: typeof import('./src/components/ui/Button.vue')['default']
+    ButtonRound: typeof import('./src/components/ui/ButtonRound.vue')['default']
     CadPreview: typeof import('./src/components/cad/CadPreview.vue')['default']
     CadShowById: typeof import('./src/components/cad/CadShowById.vue')['default']
     CalculateBasePage: typeof import('./src/components/CalculateBasePage.vue')['default']
@@ -24,6 +25,7 @@ declare module 'vue' {
     CoefficientTolerance: typeof import('./src/components/coefficients/CoefficientTolerance.vue')['default']
     CoefficientTooling: typeof import('./src/components/coefficients/CoefficientTooling.vue')['default']
     CoefficientType: typeof import('./src/components/coefficients/CoefficientType.vue')['default']
+    copy: typeof import('./src/components/ui/Button copy.vue')['default']
     DialogCall: typeof import('./src/components/dialog/DialogCall.vue')['default']
     DialogEditUser: typeof import('./src/components/dialog/DialogEditUser.vue')['default']
     DialogInfoPayment: typeof import('./src/components/dialog/DialogInfoPayment.vue')['default']
