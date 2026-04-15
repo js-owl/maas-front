@@ -510,7 +510,7 @@ watch(
             </ButtonRound>
             <ButtonRound width="220px" @click="handleCalcInfo">
               <template #icon-left>
-                <IconCalculate color="#0FF" />
+                <IconCalculate color="#7d8083" />
               </template>
               Калькуляция
             </ButtonRound>
