@@ -6,8 +6,15 @@ import DialogCall from './dialog/DialogCall.vue'
 import { useAuthStore } from '../stores/auth.store'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { useProfileStore } from '../stores/profile.store'
-import { ArrowDown, Menu, User } from '@element-plus/icons-vue'
+import {
+  ArrowDown,
+  Menu,
+  User,
+  Document,
+  ChatDotRound,
+  Phone,
+  SwitchButton,
+} from '@element-plus/icons-vue'
 import IconLogoHeader from './icons/IconLogoHeader.vue'
 import IconLogoHeader2 from './icons/IconLogoHeader2.vue'
 
@@ -20,7 +27,6 @@ const isLoginVisible = ref(false)
 const isCallVisible = ref(false)
 
 const authStore = useAuthStore()
-const profileStore = useProfileStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -29,6 +35,7 @@ const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
 const isDrawerOpen = ref(false)
 const isHomePage = computed(() => route.path === '/')
+const isCabinetMenuVisible = ref(false)
 
 // Check token on component mount
 onMounted(() => {
@@ -110,7 +117,28 @@ function checkTokenValidity() {
 
 function onLogout() {
   authStore.clearToken()
+  isCabinetMenuVisible.value = false
   router.push({ name: 'home' })
+}
+
+function openCabinetPage() {
+  isCabinetMenuVisible.value = false
+  router.push({ path: '/personal' })
+}
+
+function openOrdersPage() {
+  isCabinetMenuVisible.value = false
+  router.push({ path: '/personal' })
+}
+
+function openChatPage() {
+  isCabinetMenuVisible.value = false
+  router.push({ path: '/personal' })
+}
+
+function requestCall() {
+  isCabinetMenuVisible.value = false
+  isCallVisible.value = true
 }
 
 // function onCallRequest() {
@@ -215,7 +243,7 @@ function onLogout() {
           <div class="right-wrap">
             <template v-if="!authStore.getToken">
               <el-button v-if="!isMobile" class="auth-btn montserrat-semibold" @click="isLoginVisible = true">
-                Войти / Регистрация
+                Личный кабинет
               </el-button>
               <el-button
                 v-else
@@ -230,13 +258,46 @@ function onLogout() {
               </el-button>
             </template>
             <template v-else>
-              <span class="username montserrat-semibold" @click="router.push({ path: '/personal' })">
-                {{ profileStore.profile?.username }}
-              </span>
-              <el-icon :size="30" class="user-icon" @click="router.push({ path: '/personal' })">
-                <User />
-              </el-icon>
-              <el-button class="auth-btn  montserrat-semibold" @click="onLogout"> Выйти </el-button>
+              <el-popover
+                v-if="!isMobile"
+                v-model:visible="isCabinetMenuVisible"
+                trigger="click"
+                placement="bottom-end"
+                :show-arrow="false"
+                popper-class="cabinet-menu-popper"
+                :offset="12"
+              >
+                <template #reference>
+                  <el-button class="cabinet-btn montserrat-semibold">Личный кабинет</el-button>
+                </template>
+                <div class="cabinet-menu">
+                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="openCabinetPage">
+                    <el-icon :size="22" class="cabinet-menu-icon"><User /></el-icon>
+                    <span>Профиль</span>
+                  </button>
+                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="openOrdersPage">
+                    <el-icon :size="22" class="cabinet-menu-icon"><Document /></el-icon>
+                    <span>Расчеты и заказы</span>
+                  </button>
+                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="openChatPage">
+                    <el-icon :size="22" class="cabinet-menu-icon"><ChatDotRound /></el-icon>
+                    <span>Чат</span>
+                  </button>
+                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="requestCall">
+                    <el-icon :size="22" class="cabinet-menu-icon"><Phone /></el-icon>
+                    <span>Заказать звонок</span>
+                  </button>
+                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="onLogout">
+                    <el-icon :size="22" class="cabinet-menu-icon"><SwitchButton /></el-icon>
+                    <span>Выход из аккаунта</span>
+                  </button>
+                </div>
+              </el-popover>
+              <el-button v-else class="auth-btn montserrat-semibold" @click="openCabinetPage" circle>
+                <el-icon :size="22">
+                  <User />
+                </el-icon>
+              </el-button>
             </template>
           </div>
         </el-header>
@@ -471,6 +532,65 @@ function onLogout() {
   height: auto;
 }
 
+.cabinet-btn {
+  background-color: #fff;
+  color: #5f646c;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  font-size: 24px;
+  padding: 10px 24px;
+  height: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.cabinet-btn:hover,
+.cabinet-btn:focus,
+.cabinet-btn:active {
+  color: #5f646c !important;
+  background-color: #fff !important;
+  border-color: transparent !important;
+}
+
+.cabinet-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* min-width: 280px; */
+  padding: 10px;
+}
+
+.cabinet-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  color: #14161a;
+  font-size: 18px;
+  line-height: 1.2;
+  text-align: left;
+  padding: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.cabinet-menu-item:hover {
+  background-color: #f3f4f6;
+}
+
+.cabinet-menu-icon {
+  color: #8b9098;
+  flex-shrink: 0;
+}
+
+:deep(.cabinet-menu-popper.el-popper) {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 14px 34px rgba(30, 35, 44, 0.18);
+  padding: 0;
+}
+
 .fullscreen-bg .auth-btn {
   color: #fff;
 }
@@ -698,6 +818,12 @@ function onLogout() {
     height: 40px;
     margin-left: 8px;
     padding: 0 8px;
+  }
+
+  .cabinet-btn {
+    font-size: 14px;
+    padding: 0 8px;
+    height: 40px;
   }
 
   .username {
