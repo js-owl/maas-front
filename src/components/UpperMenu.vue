@@ -427,7 +427,8 @@ function requestCall() {
   justify-content: space-between;
   align-items: center;
   height: 100px;
-  margin-right: -40px;
+  width: 100%;
+  margin-right: 0;
   padding: 0 20px;
 }
 
@@ -439,6 +440,8 @@ function requestCall() {
 .right-wrap {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
   gap: 20px;
 }
 
@@ -646,6 +649,7 @@ function requestCall() {
 
 :deep(.el-header) {
   padding-left: 0px;
+  padding-right: 0px;
 }
 
 :deep(.el-sub-menu__title) {
