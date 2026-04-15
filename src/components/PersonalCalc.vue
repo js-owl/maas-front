@@ -12,6 +12,7 @@ import type { IOrderResponse, IKit } from '../interfaces/order.interface'
 import { useMaterialStore } from '../stores/material.store'
 import { useCoefficientsStore } from '../stores/coefficients.store'
 import IconLab from '@/icons/IconLab.vue'
+import IconCalculate from '@/icons/IconCalculate.vue'
 
 type OtherService = {
   id: string
@@ -507,7 +508,10 @@ watch(
               </template>
                Вернуться в Заказ
             </ButtonRound>
-            <ButtonRound width="200px" type="secondary" @click="handleCalcInfo">
+            <ButtonRound width="220px" @click="handleCalcInfo">
+              <template #icon-left>
+                <IconCalculate color="#0FF" />
+              </template>
               Калькуляция
             </ButtonRound>
           </div>
