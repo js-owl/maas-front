@@ -131,7 +131,7 @@ function openCabinetPage() {
 
 function openOrdersPage() {
   isCabinetMenuVisible.value = false
-  router.push({ path: '/personal' })
+  router.push({ path: '/personal/orders' })
 }
 
 function openChatPage() {
@@ -334,7 +334,7 @@ function openGuestLogin() {
                     <el-icon :size="22" class="cabinet-menu-icon"><Document /></el-icon>
                     <span>Расчеты и заказы</span>
                   </button>
-                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="openChatPage">
+                  <button type="button" disabled class="cabinet-menu-item montserrat-medium" @click="openChatPage">
                     <el-icon :size="22" class="cabinet-menu-icon"><ChatDotRound /></el-icon>
                     <span>Чат</span>
                   </button>
