@@ -504,7 +504,7 @@ watch(
           <div class="toolbar-row">
             <ButtonRound width="280px" @click="handleBack">
               <template #icon-left>
-                 <IconArrowLeft color="red" />
+                 <IconArrowLeft color="#333" />
               </template>
                Вернуться в Заказ
             </ButtonRound>

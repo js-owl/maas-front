@@ -16,7 +16,7 @@ const { color = '#333333' } = defineProps<{
       d="M7 13L1 7L7 1L7 13Z"
       :stroke="color"
       fill="none"
-      stroke-width="2"
+      stroke-width="1"
       stroke-linejoin="round"
     />
   </svg>

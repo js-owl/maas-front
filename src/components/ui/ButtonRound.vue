@@ -81,13 +81,9 @@ const handleClick = () => {
 }
 
 .btn-icon-left :deep(svg) {
-  width: 20px;
-  height: 20px;
+  /* width: 20px;
+  height: 20px; */
   display: block;
-}
-
-.btn-icon-left :deep(path) {
-  fill: currentColor;
 }
 
 .btn::before {
