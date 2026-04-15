@@ -241,8 +241,9 @@ function requestCall() {
           </div>
 
           <div class="right-wrap">
+            <!-- Незарегистрированный пользователь -->
             <template v-if="!authStore.getToken">
-              <el-button v-if="!isMobile" class="auth-btn montserrat-semibold" @click="isLoginVisible = true">
+              <el-button v-if="!isMobile" class="cabinet-btn montserrat-semibold" @click="isLoginVisible = true">
                 Личный кабинет
               </el-button>
               <el-button
@@ -257,6 +258,8 @@ function requestCall() {
                 </el-icon>
               </el-button>
             </template>
+
+            <!-- Зарегистрированный пользователь -->
             <template v-else>
               <el-popover
                 v-if="!isMobile"
