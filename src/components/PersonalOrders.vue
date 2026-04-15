@@ -78,9 +78,9 @@ const formatDate = (cellValue: string | null | undefined): string => {
   return `${day} ${month} ${year}`
 }
 
-const formatPrice = (row: any, _column: any, cellValue: number | string) => {
+const formatPrice = (cellValue: number | string | null | undefined, status?: string) => {
   const username = profileStore.profile?.username
-  if (hidePrice(username, row?.status)) return 'скрыто'
+  if (hidePrice(username, status)) return 'скрыто'
   if (cellValue == null || cellValue === '') return ''
   const value = Number(cellValue)
   if (Number.isNaN(value)) return String(cellValue)
@@ -157,10 +157,10 @@ const handleDelete = async (row: IKit): Promise<void> => {
 <template>
   <el-row
     :gutter="20"
-    style="background-color: #fff; padding: 10px 20px 10px 20px; min-height: 100px"
+    style="background-color: #fff; padding: 10px 20px 0px 20px; min-height: 100px"
   >
     <el-col :span="18">
-      <h1>Мои заказы</h1>
+      <!-- <h1>Мои заказы</h1> -->
     </el-col>
     <el-col :span="6" class="search-col">
       <el-input
@@ -172,7 +172,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
       />
     </el-col>
   </el-row>
-  <el-row :gutter="20" style="background-color: #fff; padding: 20px; min-height: 500px">
+  <el-row :gutter="20" style="background-color: #fff; padding: 0px 20px 20px 20px; min-height: 500px">
     <el-col :offset="0" :span="24">
       <div class="table-header">
         <el-tabs v-model="activeTab" class="filter-tabs">
@@ -193,7 +193,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
         <!-- Наименование -->
         <el-table-column prop="kit_name" label="Наименование">
           <template #default="{ row }">
-            <span v-if="row.kit_name" class="filename-text" @click="handleView(row)">{{
+            <span v-if="row.kit_name" class="filename-text" style="cursor: pointer;" @click="handleView(row)">{{
               row.kit_name
             }}</span>
             <span
@@ -212,12 +212,12 @@ const handleDelete = async (row: IKit): Promise<void> => {
         <!-- Дата создания / завершения -->
         <el-table-column label="Дата созд." width="150">
           <template #default="{ row }">
-              {{ formatDate(row.created_at) }}
+            <span class="filename-text">{{ formatDate(row.created_at) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="Дата завер." width="150">
           <template #default="{ row }">
-              {{ formatDate(row.updated_at) }}
+            <span class="filename-text">{{ formatDate(row.updated_at) }}</span>
           </template>
         </el-table-column>
 
@@ -225,13 +225,17 @@ const handleDelete = async (row: IKit): Promise<void> => {
         <el-table-column prop="status" label="Статус" width="160">
           <template #default="{ row }">
             <el-tag :type="getStatusColor(row.status)" size="small">
-              {{ getStatusText(row.status) }}
+              <span class="filename-text">{{ getStatusText(row.status) }}</span>
             </el-tag>
           </template>
         </el-table-column>
 
         <!-- Цена -->
-        <el-table-column prop="total_kit_price" label="Цена" width="110" :formatter="formatPrice" />
+        <el-table-column prop="total_kit_price" label="Цена" width="110">
+          <template #default="{ row }">
+            <span class="filename-text">{{ formatPrice(row.total_kit_price, row.status) }}</span>
+          </template>
+        </el-table-column>
 
         <!-- Действия -->
         <el-table-column label="" width="100" align="center">
@@ -329,11 +333,14 @@ const handleDelete = async (row: IKit): Promise<void> => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  cursor: pointer;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #000000;
 }
-.filename-text:hover {
+/* .filename-text:hover {
   text-decoration: underline;
-}
+} */
 
 .no-filename {
   color: #909399;

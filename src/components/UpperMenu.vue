@@ -595,7 +595,7 @@ function openGuestLogin() {
   background-color: #fff;
   color: #5f646c;
   border: 1px solid transparent;
-  border-radius: 14px;
+  border-radius: 10px;
   font-size: 24px;
   padding: 10px 24px;
   height: auto;
