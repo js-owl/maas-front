@@ -563,7 +563,7 @@ function requestCall() {
   flex-direction: column;
   gap: 2px;
   /* min-width: 280px; */
-  padding: 10px;
+  padding: 3px;
 }
 
 .cabinet-menu-item {
