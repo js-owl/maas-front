@@ -2,6 +2,7 @@
 import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { API_BASE } from '../../api'
 import { useAuthStore } from '../../stores/auth.store'
 
@@ -26,6 +27,8 @@ let camera = null
 let renderer = null
 let controls = null
 let isDestroyed = false
+let envMapTexture = null
+let pmremGenerator = null
 
 // OCCT
 let occt = null
@@ -98,8 +101,17 @@ function initThreeJS() {
   renderer.setSize(width, height)
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.toneMappingExposure = 1.0
   renderer.outputColorSpace = THREE.SRGBColorSpace
   container.appendChild(renderer.domElement)
+
+  pmremGenerator = new THREE.PMREMGenerator(renderer)
+  const environment = new RoomEnvironment()
+  envMapTexture = pmremGenerator.fromScene(environment, 0.04).texture
+  scene.environment = envMapTexture
+  pmremGenerator.dispose()
+  pmremGenerator = null
 
   controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
@@ -225,8 +237,15 @@ async function createMeshesFromOCCTResult(result, file) {
       color = new THREE.Color(meshInfo.color[0], meshInfo.color[1], meshInfo.color[2])
       colorHex = '#' + color.getHexString()
     }
-    const material = new THREE.MeshPhongMaterial({
-      color: color,
+    const material = new THREE.MeshPhysicalMaterial({
+      color,
+      metalness: 0.9,
+      roughness: 0.1,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.1,
+      reflectivity: 1.0,
+      envMapIntensity: 1.0,
+      envMap: envMapTexture,
       side: THREE.DoubleSide,
     })
     const mesh = new THREE.Mesh(geometry, material)
