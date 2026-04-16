@@ -79,6 +79,21 @@ const handleChange = (value: string) => {
   color: #55585B;
 }
 
+.input :deep(.el-input__inner:-webkit-autofill),
+.input :deep(.el-input__inner:-webkit-autofill:hover),
+.input :deep(.el-input__inner:-webkit-autofill:focus),
+.input :deep(.el-input__inner:-webkit-autofill:active),
+.input :deep(.el-textarea__inner:-webkit-autofill),
+.input :deep(.el-textarea__inner:-webkit-autofill:hover),
+.input :deep(.el-textarea__inner:-webkit-autofill:focus),
+.input :deep(.el-textarea__inner:-webkit-autofill:active) {
+  -webkit-text-fill-color: #55585B;
+  caret-color: #55585B;
+  -webkit-box-shadow: 0 0 0px 1000px #f5f7fa inset;
+  box-shadow: 0 0 0px 1000px #f5f7fa inset;
+  transition: background-color 999999s ease-out 0s;
+}
+
 .input :deep(.el-input__placeholder) {
   color: #606266;
 }
