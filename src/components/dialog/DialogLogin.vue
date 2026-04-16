@@ -2,6 +2,7 @@
 import { reactive, ref, computed } from 'vue'
 import { useAuthStore } from '../../stores/auth.store'
 import DialogRegistration from './DialogRegistration.vue'
+import Button from '../ui/Button.vue'
 import { useWindowSize } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
 // import { useRouter } from 'vue-router'
@@ -84,18 +85,10 @@ const onRestore = async () => {
     <template #footer>
       <div class="dialog-footer">
         <div class="buttons">
-          <el-button type="primary" class="btn" style="width: 27%" @click="onSubmit">
-            Войти
-          </el-button>
-          <el-button
-            v-if="true"
-            type="primary"
-            class="btn"
-            style="width: 67%"
-            @click="onRegistration"
-          >
+          <Button width="27%" @click="onSubmit">Войти</Button>
+          <Button v-if="true" width="67%" @click="onRegistration">
             Регистрация
-          </el-button>
+          </Button>
         </div>
         <div class="restore" @click="onRestore">Восстановить пароль</div>
       </div>
@@ -108,14 +101,6 @@ const onRestore = async () => {
 .buttons {
   display: flex;
   justify-content: space-between;
-}
-.btn {
-  background-color: var(--gray-footer);
-  border: 1px solid var(--gray-footer);
-  padding: 18px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
 }
 .dialog-header {
   text-align: center;
