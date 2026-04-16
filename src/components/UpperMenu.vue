@@ -20,9 +20,6 @@ import IconLogoHeader from './icons/IconLogoHeader.vue'
 import IconLogoHeader2 from './icons/IconLogoHeader2.vue'
 
 const activeIndex = ref('1')
-const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
 
 const isLoginVisible = ref(false)
 const isCallVisible = ref(false)
@@ -39,6 +36,7 @@ const isDrawerOpen = ref(false)
 const isHomePage = computed(() => route.path === '/')
 const isCabinetMenuVisible = ref(false)
 const isGuestCabinetMenuVisible = ref(false)
+const isServicesMenuVisible = ref(false)
 
 // Check token on component mount
 onMounted(() => {
@@ -155,6 +153,11 @@ function openGuestLogin() {
   isLoginVisible.value = true
 }
 
+function openServicePage(path: string) {
+  isServicesMenuVisible.value = false
+  router.push({ path })
+}
+
 // function onCallRequest() {
 //   isCallVisible.value = true
 // }
@@ -186,69 +189,44 @@ function openGuestLogin() {
                 <IconLogoHeader2 v-else class="logo-icon" />
               </el-button>
 
-              <!-- Меню с выпадающим списком -->
-              <el-menu
-                :default-active="activeIndex"
-                class="main-menu"
-                mode="horizontal"
-                :ellipsis="false"
-                background-color="transparent"
-                :text-color="isHomePage ? '#fff' : '#333'"
-                :active-text-color="isHomePage ? '#fff' : '#333'"
-                :router="true"
-                @select="handleSelect"
+              <el-popover
+                v-model:visible="isServicesMenuVisible"
+                trigger="click"
+                placement="bottom-start"
+                width="auto"
+                :show-arrow="false"
+                popper-class="cabinet-menu-popper"
+                :offset="12"
               >
-                <el-sub-menu index="1" class="services-menu">
-                  <template #title>
-                    <span class="services-title montserrat-semibold">Услуги</span>
-                    <el-icon class="dropdown-icon">
-                      <ArrowDown />
-                    </el-icon>
-                  </template>
-                  <!-- <el-sub-menu index="1-1">
-                    <template #title>Механообрабатывающее производство ></template>
-                    <el-menu-item index="/other" :route="{ path: '/other' }">
-                      Токарные работы
-                    </el-menu-item>
-                    <el-menu-item index="/milling" :route="{ path: '/milling' }">
-                      Фрезерные работы
-                    </el-menu-item>
-                  </el-sub-menu> -->
-                  <el-menu-item
-                    index="/milling"
-                    :route="{ path: '/milling' }"
-                    class="mech-menu-item"
+                <template #reference>
+                  <el-button class="cabinet-btn services-title montserrat-semibold">
+                    Услуги
+                  </el-button>
+                </template>
+                <div class="cabinet-menu">
+                  <button
+                    type="button"
+                    class="cabinet-menu-item mech-menu-item montserrat-medium"
+                    @click="openServicePage('/milling')"
                   >
-                    Механообработка
-                  </el-menu-item>
-                  <el-menu-item
-                    index="/printing"
-                    :route="{ path: '/printing' }"
-                    class="printing-menu-item"
+                    <span>Механообработка</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="cabinet-menu-item printing-menu-item montserrat-medium"
+                    @click="openServicePage('/printing')"
                   >
                     <span class="printing-text">3D печать</span>
-                  </el-menu-item>
-                  <el-menu-item
-                    index="/other"
-                    :route="{ path: '/other' }"
-                    class="other-menu-item"
+                  </button>
+                  <button
+                    type="button"
+                    class="cabinet-menu-item other-menu-item montserrat-medium"
+                    @click="openServicePage('/other')"
                   >
-                    Прочее
-                  </el-menu-item>
-
-                  <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>
-                    Лабораторные исследования
-                  </el-menu-item> -->
-                  <!-- <el-sub-menu index="1-2" disabled>
-                    <template #title>Сварочное производство</template>
-                    <el-menu-item index="1-2-1">Аргонодуговая сварка</el-menu-item>
-                    <el-menu-item index="1-2-2">
-                      Сварка в углекислом газе
-                    </el-menu-item>
-                    <el-menu-item index="1-2-3">Контактная сварка</el-menu-item>
-                  </el-sub-menu>  -->
-                </el-sub-menu>
-              </el-menu>
+                    <span>Прочее</span>
+                  </button>
+                </div>
+              </el-popover>
 
               <!-- <el-button class="call-btn" @click="onCallRequest"> Заказать звонок </el-button> -->
             </div>
@@ -531,12 +509,8 @@ function openGuestLogin() {
 }
 
 .services-title {
-  font-size: 24px;
-  color: #333;
-}
-
-.fullscreen-bg .services-title {
-  color: #fff;
+  display: inline-flex;
+  align-items: center;
 }
 
 .dropdown-icon {
