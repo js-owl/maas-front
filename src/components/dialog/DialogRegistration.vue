@@ -321,7 +321,7 @@ const onHaveAccount = () => {
 }
 
 .dialog-footer {
-  padding: 5px 30px 0px;
+  padding: 0px 30px 15px;
 }
 
 .buttons {
