@@ -188,8 +188,8 @@ const onHaveAccount = () => {
 <template>
   <el-dialog
     v-model="dialogFormVisible"
-    title="Регистрация"
-    width="500"
+    title="Регистрация клиента"
+    width="600"
     :append-to-body="true"
     :modal-append-to-body="true"
     :z-index="4000"
