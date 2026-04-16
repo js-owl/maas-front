@@ -185,9 +185,9 @@ const goToMain = () => {
   router.push({ path: '/' })
 }
 
-// const goToOrders = () => {
-//   router.push({ path: '/personal/orders' })
-// }
+const goToOrders = () => {
+  router.push({ path: '/personal/orders' })
+}
 
 /** Юр. лицо: одно поле ФИО — храним строку целиком в last_name, чтобы не терять пробелы внутри части ФИО. */
 const contactFio = computed({
@@ -307,16 +307,37 @@ const contactFio = computed({
         <div v-if="activeTab === 'legal'" class="profile-content">
           <div v-if="profileForm" class="profile-section">
             <el-row :gutter="20">
-              <el-col :span="24">
+              <el-col :span="12">
                 <el-form-item prop="payment_company_name">
-                  <Input v-model="profileForm.payment_company_name" placeholder="Полное название компании" />
+                  <Input v-model="profileForm.payment_company_name" placeholder="Наименование организации / ИП" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item prop="username">
+                  <Input v-model="profileForm.username" placeholder="Отображаемое название" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+
+          <div v-if="profileForm" class="profile-section">
+            <div class="maas-subtitle" style="margin-bottom: 20px;">Данные компании</div>
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item prop="payment_inn">
+                  <Input v-model="profileForm.payment_inn" placeholder="ИНН" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item prop="payment_kpp">
+                  <Input v-model="profileForm.payment_kpp" placeholder="ОГРН / ОГРНИП" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="phone_number">
                   <Input
                     v-model="profileForm.phone_number"
-                    placeholder="+7 (___) ___-__-__"
+                    placeholder="Телефон"
                     type="tel"
                     :formatter="formatPhoneDisplay"
                     :parser="parsePhoneToDigits"
@@ -356,34 +377,24 @@ const contactFio = computed({
           <div v-if="profileForm" class="profile-section">
             <div class="maas-subtitle" style="margin-bottom: 20px;">Банковские реквизиты</div>
             <el-row :gutter="20">
-              <el-col :span="8">
-                <el-form-item prop="payment_inn">
-                  <Input v-model="profileForm.payment_inn" placeholder="ИНН" />
+              <el-col :span="12">
+                <el-form-item prop="payment_cor_account">
+                  <Input v-model="profileForm.payment_cor_account" placeholder="Корреспондентский счет" />
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
-                <el-form-item prop="payment_kpp">
-                  <Input v-model="profileForm.payment_kpp" placeholder="КПП" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
+              <el-col :span="12">
                 <el-form-item prop="payment_account">
                   <Input v-model="profileForm.payment_account" placeholder="Расчетный счет" />
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="12">
                 <el-form-item prop="payment_bank_name">
                   <Input v-model="profileForm.payment_bank_name" placeholder="Наименование банка" />
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="12">
                 <el-form-item prop="payment_bik">
                   <Input v-model="profileForm.payment_bik" placeholder="БИК" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="payment_cor_account">
-                  <Input v-model="profileForm.payment_cor_account" placeholder="Корреспондентский счет" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -432,11 +443,11 @@ const contactFio = computed({
               &lt; К главной странице
             </Button>
           </div>
-          <!-- <div v-if="activeTab === 'legal'" class="profile-footer-center">
+          <div class="profile-footer-center">
             <Button width="220px" class="profile-orders-button" @click="goToOrders">
               Заказы и расчеты
             </Button>
-          </div> -->
+          </div>
           <div class="profile-footer-right">
             <Button width="220px" class="profile-update-button" :loading="isSaving" @click="onUpdate">
               Сохранить изменения
