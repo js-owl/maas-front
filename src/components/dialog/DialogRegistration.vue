@@ -40,6 +40,7 @@ const usernameError = ref('')
 
 const regStore = useRegStore()
 const loading = ref(false)
+const isAgreementAccepted = ref(false)
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
@@ -121,6 +122,7 @@ const rules = ref<FormRules<FormData>>({
 
 const closeDialog = () => {
   dialogFormVisible.value = false
+  isAgreementAccepted.value = false
   // Reset form when closing
   form.value = {
     username: '',
@@ -141,6 +143,13 @@ const closeDialog = () => {
 
 const submitForm = async () => {
   if (!formRef.value) return
+  if (!isAgreementAccepted.value) {
+    ElMessage({
+      type: 'warning',
+      message: 'Подтвердите согласие на обработку данных',
+    })
+    return
+  }
 
   try {
     await formRef.value.validate()
@@ -169,6 +178,10 @@ const submitForm = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const onHaveAccount = () => {
+  closeDialog()
 }
 </script>
 
@@ -238,14 +251,30 @@ const submitForm = async () => {
         <el-form-item prop="confirmPassword">
           <Input v-model="form.confirmPassword" placeholder="Пароль" type="password" />
         </el-form-item>
-
-        <el-form-item class="submit-row">
-          <Button width="100%" :loading="loading" @click="submitForm">
-            {{ loading ? 'Регистрация...' : 'Регистрация' }}
-          </Button>
-        </el-form-item>
       </el-form>
+
+      <div class="agreement-row">
+        <el-checkbox v-model="isAgreementAccepted" class="agreement-checkbox">
+          Я согласен с условиями обработки моих данных
+        </el-checkbox>
+      </div>
     </div>
+
+    <template #footer>
+      <div class="dialog-footer">
+        <div class="buttons">
+          <Button width="42%" @click="onHaveAccount">Есть аккаунт</Button>
+          <Button
+            width="56%"
+            :loading="loading"
+            :disabled="!isAgreementAccepted"
+            @click="submitForm"
+          >
+            {{ loading ? 'Регистрация...' : 'Зарегистрироваться' }}
+          </Button>
+        </div>
+      </div>
+    </template>
   </el-dialog>
 </template>
 
@@ -291,7 +320,38 @@ const submitForm = async () => {
   padding: 0 30px 30px;
 }
 
-.submit-row {
+.dialog-footer {
+  padding: 5px 30px 0px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.agreement-row {
   margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.agreement-checkbox {
+  --el-checkbox-font-size: 14px;
+  --el-checkbox-text-color: #000;
+}
+
+.agreement-checkbox :deep(.el-checkbox__label) {
+  padding-left: 10px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.agreement-checkbox :deep(.el-checkbox__inner) {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
 }
 </style>
