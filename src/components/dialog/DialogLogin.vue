@@ -65,19 +65,15 @@ const onRestore = async () => {
       <div class="dialog-header">
         <h3 :id="titleId" class="titleClass">Вход в аккаунт</h3>
       </div>
+      
     </template>
     <div class="body-class">
       <el-form :model="formData">
         <el-form-item>
-          <el-input v-model="formData.username" autocomplete="off" placeholder="Логин" />
+          <Input v-model="formData.username" placeholder="Логин" />
         </el-form-item>
         <el-form-item>
-          <el-input
-            v-model="formData.password"
-            type="password"
-            placeholder="Пароль"
-            show-password
-          />
+          <Input v-model="formData.password" type="password" placeholder="Пароль" />
         </el-form-item>
       </el-form>
       <div><el-checkbox label="Запомнить данные" value="remember_me" /></div>
@@ -129,14 +125,14 @@ const onRestore = async () => {
 /* :deep(.el-dialog__body) {
   padding: 50px;
 } */
-:deep(.el-input__inner) {
+/* :deep(.el-input__inner) {
   background-color: var(--bgcolor);
   border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
   color: black;
   padding: 20px;
-}
+} */
 .titleClass {
   font-size: 24px;
   font-weight: 600;
