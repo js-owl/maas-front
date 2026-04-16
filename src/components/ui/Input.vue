@@ -73,10 +73,10 @@ const handleChange = (value: string) => {
 }
 
 .input :deep(.el-input__inner) {
-  font-family: 'Segoe UI';
+  font-family: 'Montserrat-Medium', sans-serif;
   font-size: 20px;
   font-weight: 500;
-  color: #000;
+  color: #55585B;
 }
 
 .input :deep(.el-input__placeholder) {
