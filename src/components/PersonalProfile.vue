@@ -2,7 +2,7 @@
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { computed, onMounted, ref, watch } from 'vue'
 import Input from './ui/Input.vue'
-import Button from './ui/Button.vue'
+import ButtonRound from './ui/ButtonRound.vue'
 import { useProfileStore, type IProfile } from '../stores/profile.store'
 import router from '../router'
 import {
@@ -10,6 +10,7 @@ import {
   formatPhoneDisplay,
   parsePhoneToDigits,
 } from '../composables/usePhoneValidation'
+import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 
 const profileStore = useProfileStore()
 const profileForm = ref<IProfile>()
@@ -439,19 +440,22 @@ const contactFio = computed({
 
         <div class="profile-footer">
           <div class="profile-footer-left">
-            <Button width="220px" class="profile-back-button" @click="goToMain">
-              &lt; К главной странице
-            </Button>
+            <ButtonRound width="280px" class="profile-back-button" @click="goToMain">
+              <template #icon-left>
+                 <IconArrowLeft color="#333" />
+              </template>
+              К главной странице
+            </ButtonRound>
           </div>
           <div class="profile-footer-center">
-            <Button width="220px" class="profile-orders-button" @click="goToOrders">
+            <ButtonRound width="250px" class="profile-orders-button" @click="goToOrders">
               Заказы и расчеты
-            </Button>
+            </ButtonRound>
           </div>
           <div class="profile-footer-right">
-            <Button width="220px" class="profile-update-button" :loading="isSaving" @click="onUpdate">
+            <ButtonRound width="300px" class="profile-update-button" :loading="isSaving" @click="onUpdate">
               Сохранить изменения
-            </Button>
+            </ButtonRound>
           </div>
         </div>
       </el-col>
