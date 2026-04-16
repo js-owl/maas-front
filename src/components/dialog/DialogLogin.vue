@@ -108,9 +108,6 @@ const onRestore = async () => {
   margin: 20px 0;
   padding: 0 30px;
 }
-/* :deep(.el-dialog__body) {
-  padding: 30px;
-} */
 .dialog-footer {
   padding: 5px 30px 0px;
 }
@@ -124,28 +121,11 @@ const onRestore = async () => {
 }
 :deep(.el-dialog) {
   border-radius: 10px;
-  /* padding: 20px 30px 40px; */
 }
 :deep(.el-input__wrapper) {
   padding: 0;
 }
-/* :deep(.el-dialog__body) {
-  padding: 50px;
-} */
-/* :deep(.el-input__inner) {
-  background-color: red;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  color: black;
-  padding: 20px;
-} */
-.titleClass {
-  font-size: 24px;
-  font-weight: 600;
-}
 .body-class {
-  /* background-color: blue; */
   padding: 0 30px;
 }
 
