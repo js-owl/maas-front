@@ -132,14 +132,14 @@ const onRestore = async () => {
 /* :deep(.el-dialog__body) {
   padding: 50px;
 } */
-:deep(.el-input__inner) {
+/* :deep(.el-input__inner) {
   background-color: red;
   border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
   color: black;
   padding: 20px;
-}
+} */
 .titleClass {
   font-size: 24px;
   font-weight: 600;
