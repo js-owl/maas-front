@@ -63,7 +63,7 @@ const onRestore = async () => {
   >
     <template #header="{ titleId }">
       <div class="dialog-header">
-        <h3 :id="titleId" class="titleClass">Вход в аккаунт</h3>
+        <div :id="titleId" class="maas-subtitle">Вход в аккаунт</div>
       </div>
       
     </template>
@@ -99,8 +99,8 @@ const onRestore = async () => {
   justify-content: space-between;
 }
 .dialog-header {
-  text-align: center;
-  padding: 15px;
+  margin: 20px 0;
+  padding: 0 30px;
 }
 /* :deep(.el-dialog__body) {
   padding: 30px;
@@ -125,14 +125,14 @@ const onRestore = async () => {
 /* :deep(.el-dialog__body) {
   padding: 50px;
 } */
-/* :deep(.el-input__inner) {
-  background-color: var(--bgcolor);
+:deep(.el-input__inner) {
+  background-color: red;
   border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
   color: black;
   padding: 20px;
-} */
+}
 .titleClass {
   font-size: 24px;
   font-weight: 600;
