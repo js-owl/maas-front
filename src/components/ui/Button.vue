@@ -42,27 +42,21 @@ const handleClick = () => {
 <style scoped>
 .btn {
   position: relative;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--bgcolor) 100%, white 15%) 0%,
-    var(--bgcolor) 25%,
-    color-mix(in srgb, var(--bgcolor) 100%, black 10%) 50%,
-    var(--bgcolor) 75%,
-    color-mix(in srgb, var(--bgcolor) 100%, white 15%) 100%
-  );
-  background-size: 200% 200%;
-  background-position: 0% 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #55585B;
   border: none;
-  border-radius: 12px;
-  color: black;
-  
-  font-family: 'Segoe UI';
-  font-size: 16px;
+  border-radius: 10px;
+  color: #fff;
+
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 20px;
   font-weight: 600;
   padding: 12px 24px;
   cursor: pointer;
-  
-  /* 3D эффект с тенями */
+
   box-shadow: 
     0 4px 8px rgba(0, 0, 0, 0.15),
     0 2px 4px rgba(0, 0, 0, 0.1),
@@ -87,7 +81,7 @@ const handleClick = () => {
     transparent 50%,
     rgba(0, 0, 0, 0.05) 100%
   );
-  border-radius: 12px;
+  border-radius: 30px;
   pointer-events: none;
   opacity: 1;
   transition: opacity 0.2s;
