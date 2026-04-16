@@ -14,6 +14,8 @@ const formData = reactive({
   password: '',
 })
 
+const isRememberMe = ref(false)
+
 const isRegistrationVisible = ref(false)
 
 const authStore = useAuthStore()
@@ -76,7 +78,11 @@ const onRestore = async () => {
           <Input v-model="formData.password" type="password" placeholder="Пароль" />
         </el-form-item>
       </el-form>
-      <div><el-checkbox label="Запомнить данные" value="remember_me" /></div>
+      <div class="remember-row">
+        <el-checkbox v-model="isRememberMe" class="remember-checkbox">
+          Запомнить данные
+        </el-checkbox>
+      </div>
     </div>
     <template #footer>
       <div class="dialog-footer">
@@ -111,9 +117,10 @@ const onRestore = async () => {
 .restore {
   margin: 20px 0 50px;
   cursor: pointer;
-  text-align: center;
+  font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
+  text-align: left;
 }
 :deep(.el-dialog) {
   border-radius: 10px;
@@ -140,5 +147,30 @@ const onRestore = async () => {
 .body-class {
   /* background-color: blue; */
   padding: 0 30px;
+}
+
+.remember-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.remember-checkbox {
+  --el-checkbox-font-size: 14px;
+  --el-checkbox-text-color: #000;
+}
+
+.remember-checkbox :deep(.el-checkbox__label) {
+  padding-left: 10px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.remember-checkbox :deep(.el-checkbox__inner) {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
 }
 </style>
