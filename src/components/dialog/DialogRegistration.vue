@@ -8,6 +8,8 @@ import { useRegStore } from '../../stores/reg.store'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { useWindowSize } from '@vueuse/core'
+import Input from '../ui/Input.vue'
+import Button from '../ui/Button.vue'
 
 const dialogFormVisible = defineModel<boolean>()
 
@@ -185,100 +187,71 @@ const submitForm = async () => {
   >
     <template #header="{ titleId }">
       <div class="dialog-header">
-        <h3 :id="titleId" class="titleClass">Регистрация</h3>
+        <div :id="titleId" class="maas-subtitle">Регистрация клиента</div>
       </div>
     </template>
-    <el-form
-      :model="form"
-      :rules="rules"
-      ref="formRef"
-      label-width="0"
-      label-position="top"
-      @submit.prevent="submitForm"
-    >
-      <el-form-item prop="user_type">
-        <el-radio-group v-model="form.user_type" class="user-type-toggle">
-          <!-- <el-radio-button value="individual">Частное лицо</el-radio-button> -->
-          <el-radio-button value="legal">Компания</el-radio-button>
-        </el-radio-group>
-      </el-form-item>
+    <div class="body-class">
+      <el-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        label-width="0"
+        label-position="top"
+        @submit.prevent="submitForm"
+      >
+        <!-- <el-form-item prop="user_type">
+          <el-radio-group v-model="form.user_type" class="user-type-toggle">
+            <el-radio-button value="individual">Частное лицо</el-radio-button>
+            <el-radio-button value="legal">Компания</el-radio-button>
+          </el-radio-group>
+        </el-form-item> -->
+        <el-form-item prop="full_name">
+          <Input v-model="form.full_name" placeholder="Название компании" />
+        </el-form-item>
+        <el-form-item prop="username" :error="usernameError">
+          <Input v-model="form.username" placeholder="Логин" @input="usernameError = ''" />
+        </el-form-item>
 
-      <el-form-item prop="username" :error="usernameError">
-        <el-input v-model="form.username" placeholder="Логин" @input="usernameError = ''" />
-      </el-form-item>
+        <el-form-item prop="email">
+          <Input v-model="form.email" placeholder="Email" type="email" />
+        </el-form-item>
 
-      <el-form-item prop="email">
-        <el-input v-model="form.email" placeholder="Email" type="email" />
-      </el-form-item>
 
-      <el-form-item prop="full_name">
-        <el-input v-model="form.full_name" placeholder="Полное имя" />
-      </el-form-item>
 
-      <el-form-item prop="phone_number">
-        <el-input
-          v-model="form.phone_number"
-          placeholder="Телефон"
-          type="tel"
-          inputmode="numeric"
-          @input="onPhoneInput"
-        />
-      </el-form-item>
+        <el-form-item prop="phone_number">
+          <Input
+            v-model="form.phone_number"
+            placeholder="Телефон"
+            type="tel"
+            @input="onPhoneInput"
+          />
+        </el-form-item>
 
-      <!-- <el-form-item v-if="form.user_type === 'legal'" prop="inn">
-        <el-input v-model="form.inn" placeholder="ИНН" />
-      </el-form-item> -->
+        <!-- <el-form-item v-if="form.user_type === 'legal'" prop="inn">
+          <Input v-model="form.inn" placeholder="ИНН" />
+        </el-form-item> -->
 
-      <el-form-item prop="password">
-        <el-input v-model="form.password" placeholder="Пароль" type="password" show-password />
-      </el-form-item>
+        <el-form-item prop="password">
+          <Input v-model="form.password" placeholder="Пароль" type="password" />
+        </el-form-item>
 
-      <el-form-item prop="confirmPassword">
-        <el-input
-          v-model="form.confirmPassword"
-          placeholder="Пароль"
-          type="password"
-          show-password
-        />
-      </el-form-item>
+        <el-form-item prop="confirmPassword">
+          <Input v-model="form.confirmPassword" placeholder="Пароль" type="password" />
+        </el-form-item>
 
-      <el-form-item>
-        <el-button
-          type="primary"
-          class="btn"
-          native-type="submit"
-          style="width: 100%; margin-top: 10px"
-          :loading="loading"
-        >
-          {{ loading ? 'Регистрация...' : 'Регистрация' }}
-        </el-button>
-      </el-form-item>
-    </el-form>
+        <el-form-item class="submit-row">
+          <Button width="100%" :loading="loading" @click="submitForm">
+            {{ loading ? 'Регистрация...' : 'Регистрация' }}
+          </Button>
+        </el-form-item>
+      </el-form>
+    </div>
   </el-dialog>
 </template>
 
 <style scoped>
 :deep(.el-form-item) {
   margin-bottom: 20px;
-}
-:deep(.el-input__wrapper) {
-  padding: 0;
-}
-:deep(.el-input__inner) {
-  background-color: var(--bgcolor);
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  color: black;
-  padding: 20px;
-}
-.btn {
-  background-color: var(--gray-footer);
-  border: 1px solid var(--gray-footer);
-  padding: 18px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
 }
 .user-type-toggle {
   display: flex;
@@ -310,10 +283,15 @@ const submitForm = async () => {
   color: white;
 }
 .dialog-header {
-  text-align: center;
+  margin: 20px 0;
+  padding: 0 30px;
 }
-.titleClass {
-  font-size: 24px;
-  font-weight: 600;
+
+.body-class {
+  padding: 0 30px 30px;
+}
+
+.submit-row {
+  margin-top: 10px;
 }
 </style>
