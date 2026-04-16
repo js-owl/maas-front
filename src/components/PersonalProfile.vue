@@ -332,7 +332,7 @@ const contactFio = computed({
           </div>
 
           <div v-if="profileForm" class="profile-section">
-            <div class="maas-title">Контактное лицо</div>
+            <div class="maas-subtitle" style="margin-bottom: 20px;">Контактное лицо</div>
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item prop="last_name">
@@ -354,7 +354,7 @@ const contactFio = computed({
           </div>
 
           <div v-if="profileForm" class="profile-section">
-            <div class="maas-title">Банковские реквизиты</div>
+            <div class="maas-subtitle" style="margin-bottom: 20px;">Банковские реквизиты</div>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="payment_inn">
@@ -390,7 +390,7 @@ const contactFio = computed({
           </div>
 
           <div v-if="profileForm" class="profile-section">
-            <div class="maas-title">Адрес доставки</div>
+            <div class="maas-subtitle" style="margin-bottom: 20px;">Адрес доставки</div>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="postal">
