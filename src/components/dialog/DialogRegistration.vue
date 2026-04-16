@@ -12,6 +12,9 @@ import Input from '../ui/Input.vue'
 import Button from '../ui/Button.vue'
 
 const dialogFormVisible = defineModel<boolean>()
+const emit = defineEmits<{
+  openLogin: []
+}>()
 
 interface FormData {
   username: string
@@ -182,6 +185,7 @@ const submitForm = async () => {
 
 const onHaveAccount = () => {
   closeDialog()
+  emit('openLogin')
 }
 </script>
 

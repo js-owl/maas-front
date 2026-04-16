@@ -47,6 +47,11 @@ const onRegistration = async () => {
   isRegistrationVisible.value = true
 }
 
+const onOpenLogin = () => {
+  isRegistrationVisible.value = false
+  dialogFormVisible.value = true
+}
+
 const onRestore = async () => {
   console.log('onRestore')
   dialogFormVisible.value = false
@@ -96,7 +101,7 @@ const onRestore = async () => {
       </div>
     </template>
   </el-dialog>
-  <DialogRegistration v-model="isRegistrationVisible" />
+  <DialogRegistration v-model="isRegistrationVisible" @open-login="onOpenLogin" />
 </template>
 
 <style scoped>
