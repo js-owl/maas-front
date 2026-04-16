@@ -498,24 +498,9 @@ function openServicePage(path: string) {
   width: 240px;
 }
 
-.main-menu {
-  border: none !important;
-}
-
-.services-menu {
-  display: flex;
-  align-items: center;
-}
-
 .services-title {
   display: inline-flex;
   align-items: center;
-}
-
-.dropdown-icon {
-  color: #d61e3c;
-  margin-left: 8px;
-  font-size: 12px;
 }
 
 .burger-btn {
@@ -524,34 +509,6 @@ function openServicePage(path: string) {
 
 .fullscreen-bg .burger-btn {
   color: #fff;
-}
-
-.call-btn {
-  background-color: transparent;
-  color: #333;
-  border: none;
-  font-size: 18px;
-  font-weight: 500;
-  padding: 8px 16px;
-  height: auto;
-}
-
-.fullscreen-bg .call-btn {
-  color: #fff;
-}
-
-.call-btn:hover,
-.call-btn:focus,
-.call-btn:active {
-  background-color: transparent !important;
-  border-color: transparent !important;
-  color: #333 !important;
-}
-
-.fullscreen-bg .call-btn:hover,
-.fullscreen-bg .call-btn:focus,
-.fullscreen-bg .call-btn:active {
-  color: #fff !important;
 }
 
 .auth-btn {
@@ -643,28 +600,6 @@ function openServicePage(path: string) {
   color: #fff !important;
 }
 
-.username {
-  color: #333;
-  padding-right: 5px;
-  cursor: pointer;
-  font-size: 24px;
-
-}
-
-.fullscreen-bg .username {
-  color: #fff;
-}
-
-.user-icon {
-  margin-right: 10px;
-  color: #333;
-  cursor: pointer;
-}
-
-.fullscreen-bg .user-icon {
-  color: #fff;
-}
-
 .el-menu.el-menu--horizontal {
   border-bottom: none;
 }
@@ -719,7 +654,6 @@ function openServicePage(path: string) {
   color: #333 !important;
 }
 
-.fullscreen-bg :deep(.main-menu > .el-menu-item),
 .fullscreen-bg :deep(.el-sub-menu__title) {
   color: #fff !important;
 }
@@ -729,7 +663,6 @@ function openServicePage(path: string) {
   background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
-.fullscreen-bg :deep(.main-menu > .el-menu-item:hover),
 .fullscreen-bg :deep(.el-sub-menu__title:hover) {
   color: #fff !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
@@ -756,46 +689,37 @@ function openServicePage(path: string) {
   background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
-:deep(.services-menu .el-menu .el-menu-item.mech-menu-item),
 :deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item) {
   color: #333 !important;
 }
 
-:deep(.services-menu .el-menu .el-menu-item.mech-menu-item:hover),
 :deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item:hover) {
   color: #333 !important;
   background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
-.fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.printing-menu-item),
 .fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item) {
   color: #333 !important;
 }
 
-.fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.printing-menu-item .printing-text),
 .fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item .printing-text),
-.fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.printing-menu-item *),
 .fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item *) {
   color: #333 !important;
 }
 
-.fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.printing-menu-item:hover),
 .fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item:hover) {
   color: #333 !important;
   background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
-.fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.printing-menu-item:hover .printing-text),
 .fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item:hover .printing-text) {
   color: #333 !important;
 }
 
-.fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.mech-menu-item),
 .fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item) {
   color: #333 !important;
 }
 
-.fullscreen-bg :deep(.services-menu .el-menu .el-menu-item.mech-menu-item:hover),
 .fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item:hover) {
   color: #333 !important;
   background-color: rgba(0, 0, 0, 0.05) !important;
@@ -818,23 +742,6 @@ function openServicePage(path: string) {
   text-align: left;
 }
 
-.hero-description {
-  font-size: 28px;
-  font-weight: 600;
-  color: #fff;
-  line-height: 1.6;
-  margin: 0 0 30px 0;
-  text-align: left;
-}
-
-.hero-slogan {
-  font-size: 28px;
-  font-weight: 600;
-  color: #fff;
-  margin: 0;
-  text-align: left;
-}
-
 @media (max-width: 767px) {
   .uppermenu-wrapper {
     min-height: auto;
@@ -846,7 +753,6 @@ function openServicePage(path: string) {
     padding: 0 8px;
   }
 
-  .call-btn,
   .auth-btn {
     font-size: 14px;
     height: 40px;
@@ -858,14 +764,6 @@ function openServicePage(path: string) {
     font-size: 14px;
     padding: 0 8px;
     height: 40px;
-  }
-
-  .username {
-    display: none;
-  }
-
-  .user-icon {
-    margin-right: 4px;
   }
 
   .logo-btn {
@@ -895,16 +793,6 @@ function openServicePage(path: string) {
     text-align: center;
   }
 
-  .hero-description {
-    font-size: 16px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  .hero-slogan {
-    font-size: 16px;
-    text-align: center;
-  }
 }
 
 .drawer-content {
