@@ -25,7 +25,7 @@ onMounted(async () => {
   <el-row :gutter="0" style="padding-top: 30px; min-height: 300px; background-color: var(--bgcolor);">
     <el-col :offset="3" :span="18">
       <div class="personal-layout">
-        <aside class="sidebar">
+        <!-- <aside class="sidebar">
           <el-menu :default-active="activeKey" class="menu" router>
             <el-menu-item index="/personal/profile">
               <span>Профиль</span>
@@ -37,7 +37,7 @@ onMounted(async () => {
               <span>Пользователи</span>
             </el-menu-item>
           </el-menu>
-        </aside>
+        </aside> -->
         <main class="content">
           <RouterView />
         </main>
@@ -49,10 +49,10 @@ onMounted(async () => {
 
 <style scoped>
 .personal-layout {
-  display: grid;
+  /* display: grid;
   grid-template-columns: 180px 1fr;
-  gap: 24px;
-  padding-bottom: 20px;
+  gap: 24px; */
+  padding-bottom: 40px;
 }
 
 .sidebar {
