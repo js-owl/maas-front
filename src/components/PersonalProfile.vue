@@ -209,10 +209,10 @@ const contactFio = computed({
 <template>
   <el-row :gutter="20" class="profile-header">
     <el-col :offset="1" :span="4">
-      <h1>Профиль</h1>
+      <div class="maas-title">Профиль</div>
     </el-col>
   </el-row>
-  <el-row :gutter="20" style="background-color: #fff; padding-top: 30px; min-height: 500px; padding-left: 20px">
+  <el-row :gutter="20" style="background-color: #fff; padding-top: 0px; min-height: 500px; padding-left: 20px">
     <el-form
       ref="formRef"
       :model="profileForm"
@@ -268,7 +268,7 @@ const contactFio = computed({
           </div>
 
           <div v-if="profileForm" class="profile-section">
-            <div class="section-title">Адрес доставки</div>
+            <div class="maas-subtitle" style="margin-bottom: 20px;">Адрес доставки</div>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="postal">
@@ -332,7 +332,7 @@ const contactFio = computed({
           </div>
 
           <div v-if="profileForm" class="profile-section">
-            <div class="section-title">Контактное лицо</div>
+            <div class="maas-title">Контактное лицо</div>
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item prop="last_name">
@@ -354,7 +354,7 @@ const contactFio = computed({
           </div>
 
           <div v-if="profileForm" class="profile-section">
-            <div class="section-title">Банковские реквизиты</div>
+            <div class="maas-title">Банковские реквизиты</div>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="payment_inn">
@@ -390,7 +390,7 @@ const contactFio = computed({
           </div>
 
           <div v-if="profileForm" class="profile-section">
-            <div class="section-title">Адрес доставки</div>
+            <div class="maas-title">Адрес доставки</div>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="postal">

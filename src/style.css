@@ -41,6 +41,11 @@ body {
 }
 
 /* Общие стили для секций */
+.maas-title {
+  font-family: 'Montserrat-Semibold', sans-serif;
+  font-size: 32px;
+  color: #000000;
+}
 .maas-subtitle {
   font-family: 'Montserrat-Semibold', sans-serif;
   font-size: 24px;
