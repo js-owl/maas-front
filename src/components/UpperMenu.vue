@@ -8,7 +8,6 @@ import { useAuthStore } from '../stores/auth.store'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
-  ArrowDown,
   Menu,
   User,
   Document,
@@ -567,12 +566,12 @@ function openServicePage(path: string) {
 
 .cabinet-btn {
   background-color: #fff;
-  color: #5f646c;
+  color: #55585b;
   border: 1px solid transparent;
   border-radius: 10px;
   font-size: 24px;
-  padding: 10px 24px;
-  height: auto;
+  padding: 0 24px;
+  height: 46px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
