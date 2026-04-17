@@ -10,13 +10,13 @@ import { ElMessage } from 'element-plus'
 import {
   Menu,
   User,
-  Document,
   ChatDotRound,
   Phone,
   SwitchButton,
 } from '@element-plus/icons-vue'
 import IconLogoHeader from './icons/IconLogoHeader.vue'
 import IconLogoHeader2 from './icons/IconLogoHeader2.vue'
+import IconCalculate from '../icons/IconCalculate.vue'
 
 const activeIndex = ref('1')
 
@@ -308,7 +308,7 @@ function openServicePage(path: string) {
                     <span>Профиль</span>
                   </button>
                   <button type="button" class="cabinet-menu-item montserrat-medium" @click="openOrdersPage">
-                    <el-icon :size="22" class="cabinet-menu-icon"><Document /></el-icon>
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconCalculate color="#7в8083" /></el-icon>
                     <span>Расчеты и заказы</span>
                   </button>
                   <button type="button" disabled class="cabinet-menu-item montserrat-medium" @click="openChatPage">
