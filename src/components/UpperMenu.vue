@@ -194,7 +194,7 @@ function openServicePage(path: string) {
                 v-model:visible="isServicesMenuVisible"
                 trigger="click"
                 placement="bottom-start"
-                width="auto"
+                width="349px"
                 :show-arrow="false"
                 popper-class="cabinet-menu-popper"
                 :offset="12"
@@ -217,7 +217,7 @@ function openServicePage(path: string) {
                     class="cabinet-menu-item printing-menu-item montserrat-medium"
                     @click="openServicePage('/printing')"
                   >
-                    <span class="printing-text">3D печать</span>
+                    <span class="printing-text">3D-печать</span>
                   </button>
                   <button
                     type="button"
