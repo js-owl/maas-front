@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
+import IconArrowDown from '@/icons/IconArrowDown.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -52,6 +53,7 @@ const handleChange = (value: string | number | boolean | object) => {
     :clearable="clearable"
     :filterable="filterable"
     :multiple="multiple"
+    :suffix-icon="IconArrowDown"
     :class="selectClasses"
     :style="{ width: props.width }"
     @update:model-value="handleUpdateModelValue"
