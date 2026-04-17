@@ -11,13 +11,14 @@ import {
   Menu,
   User,
   ChatDotRound,
-  Phone,
   SwitchButton,
 } from '@element-plus/icons-vue'
 import IconLogoHeader from './icons/IconLogoHeader.vue'
 import IconLogoHeader2 from './icons/IconLogoHeader2.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
 import IconReg from '../icons/IconReg.vue'
+import IconCall from '@/icons/IconCall.vue'
+import IconEnter from '@/icons/IconEnter.vue'
 
 const activeIndex = ref('1')
 
@@ -262,7 +263,7 @@ function openServicePage(path: string) {
                     class="cabinet-menu-item montserrat-medium"
                     @click="requestCall"
                   >
-                    <el-icon :size="22" class="cabinet-menu-icon"><Phone /></el-icon>
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconCall /></el-icon>
                     <span>Заказать звонок</span>
                   </button>
                   <button
@@ -270,7 +271,7 @@ function openServicePage(path: string) {
                     class="cabinet-menu-item montserrat-medium"
                     @click="openGuestLogin"
                   >
-                    <el-icon :size="22" class="cabinet-menu-icon"><SwitchButton /></el-icon>
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconEnter /></el-icon>
                     <span>Вход в аккаунт</span>
                   </button>
                 </div>
@@ -317,7 +318,7 @@ function openServicePage(path: string) {
                     <span>Чат</span>
                   </button>
                   <button type="button" class="cabinet-menu-item montserrat-medium" @click="requestCall">
-                    <el-icon :size="22" class="cabinet-menu-icon"><Phone /></el-icon>
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconCall /></el-icon>
                     <span>Заказать звонок</span>
                   </button>
                   <button type="button" class="cabinet-menu-item montserrat-medium" @click="onLogout">
