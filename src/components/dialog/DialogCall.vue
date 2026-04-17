@@ -4,6 +4,8 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { req_json } from '../../api'
 import { useWindowSize } from '@vueuse/core'
+import Input from '../ui/Input.vue'
+import Button from '../ui/Button.vue'
 
 const dialogFormVisible = defineModel<boolean>()
 
@@ -187,140 +189,120 @@ const submitForm = async () => {
   >
     <template #header="{ titleId }">
       <div class="dialog-header">
-          <h3 :id="titleId" class="titleClass">Заказать звонок</h3>
-        </div>
+        <div :id="titleId" class="maas-subtitle">Заказать звонок</div>
+      </div>
     </template>
-    <el-form
-      :model="form"
-      :rules="rules"
-      ref="formRef"
-      label-width="0"
-      label-position="top"
-      @submit.prevent="submitForm"
-    >
-      <el-form-item prop="name">
-        <el-input v-model="form.name" placeholder="Имя" />
-      </el-form-item>
+    <div class="body-class">
+      <el-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        label-width="0"
+        label-position="top"
+        @submit.prevent="submitForm"
+      >
+        <el-form-item prop="name">
+          <Input v-model="form.name" placeholder="Имя" />
+        </el-form-item>
 
-      <el-form-item prop="phone">
-        <el-input
-          v-model="form.phone"
-          placeholder="+7 (___) ___-__-__"
-          :formatter="(value: string) => formatPhone(value)"
-          :parser="(value: string) => parsePhone(value)"
-        />
-      </el-form-item>
+        <el-form-item prop="phone">
+          <Input
+            v-model="form.phone"
+            placeholder="+7 (___) ___-__-__"
+            type="tel"
+            :formatter="(value: string) => formatPhone(value)"
+            :parser="(value: string) => parsePhone(value)"
+          />
+        </el-form-item>
 
-      <el-form-item prop="product">
-        <el-select v-model="form.product" placeholder="Выберите продукт" style="width: 100%">
-          <el-option label="Токарные работы" value="machining" />
-          <el-option label="Фрезерные работы" value="milling" />
-          <el-option label="Другое" value="other" />
-        </el-select>
-      </el-form-item>
+        <el-form-item prop="product">
+          <Input v-model="form.product" placeholder="Интересующая услуга" />
+        </el-form-item>
 
-      <el-form-item prop="time">
-        <el-select v-model="form.time" placeholder="Выберите удобное время" style="width: 100%">
-          <el-option label="9:00 - 10:00" value="09:00-10:00" />
-          <el-option label="10:00 - 11:00" value="10:00-11:00" />
-          <el-option label="11:00 - 12:00" value="11:00-12:00" />
-          <el-option label="12:00 - 13:00" value="12:00-13:00" />
-          <el-option label="13:00 - 14:00" value="13:00-14:00" />
-          <el-option label="14:00 - 15:00" value="14:00-15:00" />
-          <el-option label="15:00 - 16:00" value="15:00-16:00" />
-          <el-option label="16:00 - 17:00" value="16:00-17:00" />
-          <el-option label="17:00 - 18:00" value="17:00-18:00" />
-          <el-option label="18:00 - 19:00" value="18:00-19:00" />
-        </el-select>
-      </el-form-item>
+        <el-form-item prop="time">
+          <Input v-model="form.time" placeholder="Когда вам позвонить?" />
+        </el-form-item>
 
-      <el-form-item prop="additional">
-        <el-input
-          v-model="form.additional"
-          type="textarea"
-          :rows="3"
-          placeholder="Опишите ваш запрос или оставьте комментарий"
-        />
-      </el-form-item>
+        <el-form-item prop="additional">
+          <Input v-model="form.additional" placeholder="Дополнительная информация" />
+        </el-form-item>
 
-      <el-form-item prop="agreement">
-        <el-checkbox v-model="form.agreement">
-          <span class="agreement">Я согласен с «Пользовательскими соглашениями ЦКП»</span>
-        </el-checkbox>
-      </el-form-item>
+        <el-form-item prop="agreement" class="agreement-row">
+          <el-checkbox v-model="form.agreement" class="agreement-checkbox">
+            Я согласен с "Пользовательскими соглашениями ЦКП"
+          </el-checkbox>
+        </el-form-item>
+      </el-form>
+    </div>
 
-      <el-form-item>
-        <el-button
-          type="primary"
-          class="btn" 
-          native-type="submit"
-          style="width: 100%"
-          :loading="loading"
-          :disabled="!form.agreement"
-        >
+    <template #footer>
+      <div class="dialog-footer">
+        <Button width="100%" :loading="loading" :disabled="!form.agreement" @click="submitForm">
           {{ loading ? 'Отправка...' : 'Заказать звонок' }}
-        </el-button>
-      </el-form-item>
-    </el-form>
+        </Button>
+      </div>
+    </template>
   </el-dialog>
 </template>
 
 <style scoped>
-.agreement {
-  font-size: 15px;
-}
-:deep(.el-input__wrapper) {
-  padding: 0;
-}
-:deep(.el-textarea__inner) {
-  background-color: var(--bgcolor);
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  color: black;
-  padding: 20px;
-}
-:deep(.el-select__wrapper) {
-  padding: 15px 20px;
-  background-color: var(--bgcolor);
-  font-size: 16px;
-  font-weight: 600;
-  color: black;
-}
-:deep(.el-input__inner) {
-  background-color: var(--bgcolor);
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  color: black;
-  padding: 20px;
-}
-.btn {
-  background-color: var(--gray-footer);
-  border: 1px solid var(--gray-footer);
-  padding: 18px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
-}
-.btn.is-disabled {
-  background-color: var(--gray2);
-  border: 1px solid var(--gray2);
-  color: gray-footer;
-}
-.dialog-header {
-  text-align: center;
-}
-.titleClass {
-  font-size: 24px;
-  font-weight: 600;
-}
-:deep(.el-form-item__content) { 
+:deep(.el-form-item) {
   margin-bottom: 20px;
 }
+
+.dialog-header {
+  margin: 20px 0;
+  padding: 0 30px;
+}
+
+.body-class {
+  padding: 0 30px 10px;
+}
+
+.agreement-row {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.agreement-checkbox {
+  --el-checkbox-font-size: 14px;
+  --el-checkbox-text-color: #000;
+}
+
+.agreement-checkbox :deep(.el-checkbox__label) {
+  padding-left: 10px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.agreement-checkbox :deep(.el-checkbox__inner) {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.dialog-footer {
+  padding: 0 30px 24px;
+}
+
 @media (max-width: 767px) {
-  .agreement {
+  .dialog-header {
+    margin: 10px 0;
+    padding: 0 16px;
+  }
+
+  .body-class {
+    padding: 0 16px 8px;
+  }
+
+  .agreement-checkbox :deep(.el-checkbox__label) {
     font-size: 12px;
+  }
+
+  .dialog-footer {
+    padding: 0 16px 16px;
   }
 }
 </style>
