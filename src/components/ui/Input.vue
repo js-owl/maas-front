@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { Hide, View } from '@element-plus/icons-vue'
+import { computed, ref } from 'vue'
+
 type InputType = 'text' | 'textarea' | 'password' | 'number' | 'tel' | 'email'
 
 const props = withDefaults(
@@ -30,6 +33,19 @@ const emit = defineEmits<{
   (e: 'focus', event: FocusEvent): void
 }>()
 
+const isPasswordVisible = ref(false)
+const isPasswordType = computed(() => props.type === 'password')
+const resolvedType = computed<InputType>(() => {
+  if (!isPasswordType.value)
+    return props.type
+
+  return isPasswordVisible.value ? 'text' : 'password'
+})
+
+const togglePasswordVisibility = () => {
+  isPasswordVisible.value = !isPasswordVisible.value
+}
+
 const handleUpdateModelValue = (value: string) => {
   emit('update:modelValue', value)
   emit('input', value)
@@ -45,7 +61,7 @@ const handleChange = (value: string) => {
     <el-input
       :model-value="modelValue"
       :placeholder="placeholder"
-      :type="type"
+      :type="resolvedType"
       :disabled="disabled"
       :clearable="clearable"
       :formatter="formatter"
@@ -55,7 +71,21 @@ const handleChange = (value: string) => {
       @change="handleChange"
       @blur="emit('blur', $event)"
       @focus="emit('focus', $event)"
-    />
+    >
+      <template v-if="isPasswordType" #suffix>
+        <button
+          type="button"
+          class="password-toggle"
+          :aria-label="isPasswordVisible ? 'Скрыть пароль' : 'Показать пароль'"
+          @mousedown.prevent
+          @click="togglePasswordVisibility"
+        >
+          <el-icon>
+            <component :is="isPasswordVisible ? Hide : View" />
+          </el-icon>
+        </button>
+      </template>
+    </el-input>
   </div>
 </template>
 
@@ -95,6 +125,28 @@ const handleChange = (value: string) => {
 }
 
 .input :deep(.el-input__placeholder) {
+  color: #606266;
+}
+
+.input :deep(.el-input__suffix) {
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: #909399;
+  cursor: pointer;
+  padding: 0;
+}
+
+.password-toggle:hover {
   color: #606266;
 }
 
