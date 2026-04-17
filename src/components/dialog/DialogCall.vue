@@ -226,7 +226,10 @@ const submitForm = async () => {
 
         <el-form-item prop="agreement" class="agreement-row">
           <el-checkbox v-model="form.agreement" class="agreement-checkbox">
-            Я согласен с "Пользовательскими соглашениями ЦКП"
+            Я согласен с
+            <router-link to="/offer-client" class="agreement-link" @click.stop="closeDialog">
+              "Пользовательскими соглашениями ЦКП"
+            </router-link>
           </el-checkbox>
         </el-form-item>
       </el-form>
@@ -272,6 +275,11 @@ const submitForm = async () => {
   font-weight: 500;
   font-size: 14px;
   line-height: 1.25;
+}
+
+.agreement-link {
+  color: inherit;
+  text-decoration: underline;
 }
 
 .agreement-checkbox :deep(.el-checkbox__inner) {
