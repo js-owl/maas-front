@@ -9,7 +9,6 @@ import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
   Menu,
-  User,
   ChatDotRound,
   SwitchButton,
 } from '@element-plus/icons-vue'
@@ -19,6 +18,7 @@ import IconCalculate from '../icons/IconCalculate.vue'
 import IconReg from '../icons/IconReg.vue'
 import IconCall from '@/icons/IconCall.vue'
 import IconEnter from '@/icons/IconEnter.vue'
+import IconProfile from '@/icons/IconProfile.vue'
 
 const activeIndex = ref('1')
 
@@ -306,7 +306,7 @@ function openServicePage(path: string) {
                 </template>
                 <div class="cabinet-menu">
                   <button type="button" class="cabinet-menu-item montserrat-medium" @click="openCabinetPage">
-                    <el-icon :size="22" class="cabinet-menu-icon"><User /></el-icon>
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconProfile /></el-icon>
                     <span>Профиль</span>
                   </button>
                   <button type="button" class="cabinet-menu-item montserrat-medium" @click="openOrdersPage">
@@ -327,11 +327,11 @@ function openServicePage(path: string) {
                   </button>
                 </div>
               </el-popover>
-              <el-button v-else class="auth-btn montserrat-semibold" @click="openCabinetPage" circle>
+              <!-- <el-button v-else class="auth-btn montserrat-semibold" @click="openCabinetPage" circle>
                 <el-icon :size="22">
                   <User />
                 </el-icon>
-              </el-button>
+              </el-button> -->
             </template>
           </div>
         </el-header>
