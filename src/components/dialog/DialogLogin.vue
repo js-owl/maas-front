@@ -4,7 +4,6 @@ import { useAuthStore } from '../../stores/auth.store'
 import DialogRegistration from './DialogRegistration.vue'
 import Button from '../ui/Button.vue'
 import { useWindowSize } from '@vueuse/core'
-import { ElMessage } from 'element-plus'
 // import { useRouter } from 'vue-router'
 
 let dialogFormVisible = defineModel<boolean>()
@@ -15,6 +14,7 @@ const formData = reactive({
 })
 
 const isRememberMe = ref(false)
+const loginError = ref('')
 
 const isRegistrationVisible = ref(false)
 
@@ -27,17 +27,19 @@ const isMobile = computed(() => width.value < 768)
 const onSubmit = async () => {
   console.log('onSubmit', { formData })
   if (!formData.username || !formData.password) return
+  loginError.value = ''
   try {
     await authStore.login(formData, isRememberMe.value)
     console.log('Dialog-login: token', authStore.getToken)
 
     formData.username = ''
     formData.password = ''
+    loginError.value = ''
     dialogFormVisible.value = false
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Ошибка входа'
     console.log({ message })
-    ElMessage.error('Неправильное имя пользователя или пароль')
+    loginError.value = 'Неправильное имя пользователя или пароль'
   }
 }
 
@@ -49,6 +51,7 @@ const onRegistration = async () => {
 
 const onOpenLogin = () => {
   isRegistrationVisible.value = false
+  loginError.value = ''
   dialogFormVisible.value = true
 }
 
@@ -71,8 +74,8 @@ const onRestore = async () => {
     <template #header="{ titleId }">
       <div class="dialog-header">
         <div :id="titleId" class="maas-subtitle">Вход в аккаунт</div>
+        <div v-if="loginError" class="login-error">{{ loginError }}</div>
       </div>
-      
     </template>
     <div class="body-class">
       <el-form :model="formData">
@@ -97,7 +100,7 @@ const onRestore = async () => {
             Регистрация
           </Button>
         </div>
-        <div class="restore" @click="onRestore">Восстановить пароль</div>
+        <!-- <div class="restore" @click="onRestore">Восстановить пароль</div> -->
       </div>
     </template>
   </el-dialog>
@@ -108,10 +111,19 @@ const onRestore = async () => {
 .buttons {
   display: flex;
   justify-content: space-between;
+  padding-bottom: 15px;
 }
 .dialog-header {
   margin: 20px 0;
   padding: 0 30px;
+}
+
+.login-error {
+  margin-top: 8px;
+  color: #f56c6c;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
 }
 .dialog-footer {
   padding: 5px 30px 0px;
