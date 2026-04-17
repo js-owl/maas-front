@@ -65,8 +65,8 @@ const submit = () => {
     
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
-        <div class="home-title montserrat-semibold">Производство под вашу потребность</div>
-        <p class="lead montserrat-medium">
+        <div class="maas-title">Производство под вашу потребность</div>
+        <p class="maas-text">
           Проведем расчет стоимости детали по 3D-модели в течении 5 рабочих дней, а также вы
           получите анализ и рекомендации по оптимизации процесса изготовления
         </p>

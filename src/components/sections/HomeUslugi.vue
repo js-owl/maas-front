@@ -40,10 +40,10 @@ const abilities = ref([
   },
   {
     id: 5,
-    title: 'Испытательные ресурсы',
-    link: '/test',
+    title: 'Производство из резины',
+    link: '/rubber',
     isDevelopment: false,
-    icon: markRaw(IconIspitaniya),
+    icon: markRaw(IconRubber),
   },
   {
     id: 6,
@@ -61,11 +61,12 @@ const abilities = ref([
   },
   {
     id: 8,
-    title: 'Производство из резины',
-    link: '/rubber',
+    title: 'Испытательные ресурсы',
+    link: '/test',
     isDevelopment: false,
-    icon: markRaw(IconRubber),
+    icon: markRaw(IconIspitaniya),
   },
+
 ])
 </script>
 
