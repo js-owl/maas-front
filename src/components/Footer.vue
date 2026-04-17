@@ -1,6 +1,14 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import IconLogo from "../icons/IconLogo.vue";
+import DialogCall from "./dialog/DialogCall.vue";
 import VersionInfo from "./VersionInfo.vue";
+
+const isCallDialogVisible = ref(false);
+
+const openCallDialog = () => {
+  isCallDialogVisible.value = true;
+};
 </script>
 
 <template>
@@ -24,12 +32,15 @@ import VersionInfo from "./VersionInfo.vue";
 
           <div class="footer-columns">
             <div class="footer-column">
-              <div class="footer-column-title">Контакты</div>
+              <!-- <div class="footer-column-title">Контакты</div> -->
               <a href="mailto:info@aeromax-group.ru" class="footer-link">
                 info@aeromax-group.ru
               </a>
               <a href="tel:+74959214242" class="footer-link">
                 +7 (495) 921-42-42
+              </a>
+              <a href="#" class="footer-link" @click.prevent="openCallDialog">
+                Заказать звонок
               </a>
             </div>
           </div>
@@ -53,6 +64,7 @@ import VersionInfo from "./VersionInfo.vue";
       </div>
     </el-col>
   </el-row>
+  <DialogCall v-model="isCallDialogVisible" />
 </template>
 
 <style scoped>
