@@ -249,11 +249,11 @@ const submitForm = async () => {
 
 .dialog-header {
   margin: 20px 0;
-  padding: 0 30px;
+  padding: 0 20px;
 }
 
 .body-class {
-  padding: 0 30px 10px;
+  padding: 0 20px 10px;
 }
 
 .agreement-row {
@@ -282,7 +282,7 @@ const submitForm = async () => {
 
 .dialog-footer {
   text-align: left;
-  padding: 0 30px 24px;
+  padding: 0 20px 24px;
 }
 
 @media (max-width: 767px) {
@@ -292,7 +292,7 @@ const submitForm = async () => {
   }
 
   .body-class {
-    padding: 0 16px 8px;
+    padding: 0 10px 5px;
   }
 
   .agreement-checkbox :deep(.el-checkbox__label) {
