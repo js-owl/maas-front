@@ -28,7 +28,7 @@ const onSubmit = async () => {
   console.log('onSubmit', { formData })
   if (!formData.username || !formData.password) return
   try {
-    await authStore.login(formData)
+    await authStore.login(formData, isRememberMe.value)
     console.log('Dialog-login: token', authStore.getToken)
 
     formData.username = ''
