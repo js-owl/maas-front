@@ -575,11 +575,15 @@ function openServicePage(path: string) {
   flex-shrink: 0;
 }
 
-:deep(.cabinet-menu-popper.el-popper) {
-  border-radius: 16px;
+:deep(.cabinet-menu-popper.el-popper),
+:deep(.cabinet-menu-popper.el-popper.is-light),
+:deep(.cabinet-menu-popper.el-popover) {
+  --el-popover-border-radius: 20px;
+  border-radius: 20px !important;
   border: none;
   box-shadow: 0 14px 34px rgba(30, 35, 44, 0.18);
   padding: 0;
+  overflow: hidden;
 }
 
 
@@ -799,5 +803,15 @@ function openServicePage(path: string) {
 
 .drawer-content {
   padding: 12px;
+}
+</style>
+
+<style>
+.cabinet-menu-popper.el-popper,
+.cabinet-menu-popper.el-popper.is-light,
+.cabinet-menu-popper.el-popover {
+  --el-popover-border-radius: 20px;
+  border-radius: 20px !important;
+  overflow: hidden;
 }
 </style>
