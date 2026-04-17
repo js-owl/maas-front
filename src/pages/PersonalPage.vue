@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { onMounted } from 'vue'
+// import { useRoute } from 'vue-router'
 import { useMaterialStore } from '../stores/material.store'
-import { useProfileStore } from '../stores/profile.store'
+// import { useProfileStore } from '../stores/profile.store'
 
-const route = useRoute()
+// const route = useRoute()
 const materialStore = useMaterialStore()
-const profileStore = useProfileStore()
+// const profileStore = useProfileStore()
 
-const activeKey = computed(() => {
-  // ensure parent path when at /personal
-  if (route.path === '/personal') return '/personal/profile'
-  return route.path
-})
+// const activeKey = computed(() => {
+//   // ensure parent path when at /personal
+//   if (route.path === '/personal') return '/personal/profile'
+//   return route.path
+// })
 
-const isAdmin = computed(() => profileStore.profile?.username === 'admin')
+// const isAdmin = computed(() => profileStore.profile?.username === 'admin')
 
 onMounted(async () => {
   await materialStore.setAllMaterials()
@@ -22,7 +22,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <el-row :gutter="0" style="padding-top: 30px; min-height: 300px; background-color: var(--bgcolor);">
+  <el-row
+    :gutter="0"
+    style="padding-top: 30px; min-height: 300px; background-color: var(--bgcolor)"
+  >
     <el-col :offset="3" :span="18">
       <div class="personal-layout">
         <!-- <aside class="sidebar">
@@ -45,7 +48,6 @@ onMounted(async () => {
     </el-col>
   </el-row>
 </template>
-
 
 <style scoped>
 .personal-layout {
