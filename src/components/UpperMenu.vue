@@ -207,21 +207,21 @@ function openServicePage(path: string) {
                 <div class="cabinet-menu">
                   <button
                     type="button"
-                    class="cabinet-menu-item mech-menu-item montserrat-medium"
+                    class="cabinet-menu-item services-menu-item mech-menu-item montserrat-medium"
                     @click="openServicePage('/milling')"
                   >
                     <span>Механообработка</span>
                   </button>
                   <button
                     type="button"
-                    class="cabinet-menu-item printing-menu-item montserrat-medium"
+                    class="cabinet-menu-item services-menu-item printing-menu-item montserrat-medium"
                     @click="openServicePage('/printing')"
                   >
                     <span class="printing-text">3D-печать</span>
                   </button>
                   <button
                     type="button"
-                    class="cabinet-menu-item other-menu-item montserrat-medium"
+                    class="cabinet-menu-item services-menu-item other-menu-item montserrat-medium"
                     @click="openServicePage('/other')"
                   >
                     <span>Прочее</span>
@@ -568,6 +568,17 @@ function openServicePage(path: string) {
 
 .cabinet-menu-item:hover {
   background-color: #f3f4f6;
+}
+
+.services-menu-item {
+  justify-content: space-between;
+}
+
+.services-menu-item::after {
+  content: '›';
+  color: #55585b;
+  font-size: 24px;
+  line-height: 1;
 }
 
 .cabinet-menu-icon {
