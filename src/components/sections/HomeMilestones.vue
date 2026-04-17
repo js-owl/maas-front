@@ -53,15 +53,15 @@ const steps: Step[] = [
   <section class="section-basic home-milestones">
     <div class="milestones-container">
       <div class="milestones-wrap">
-        <div class="home-title montserrat-semibold">Как создать заказ?</div>
+        <div class="maas-title">Как создать заказ?</div>
         <div class="steps">
           <div v-for="step in steps" :key="step.id" class="step-card">
             <div class="step-number">
               <component :is="step.icon" />
             </div>
             <div class="step-content">
-              <div class="step-title montserrat-semibold">{{ step.title }}</div>
-              <p class="step-description montserrat-medium">
+              <div class="maas-subtitle">{{ step.title }}</div>
+              <p class="maas-text">
                 <template v-if="step.highlightWord">
                   {{ step.description.split(step.highlightWord)[0] }}
                   <button
@@ -126,7 +126,7 @@ const steps: Step[] = [
   border-radius: 12px;
   padding: 20px 24px;
   /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); */
-  align-items: center;
+  align-items: start;
 }
 
 .step-number {
