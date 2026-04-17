@@ -17,6 +17,7 @@ import {
 import IconLogoHeader from './icons/IconLogoHeader.vue'
 import IconLogoHeader2 from './icons/IconLogoHeader2.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
+import IconReg from '../icons/IconReg.vue'
 
 const activeIndex = ref('1')
 
@@ -253,7 +254,7 @@ function openServicePage(path: string) {
                     class="cabinet-menu-item montserrat-medium"
                     @click="openGuestRegistration"
                   >
-                    <el-icon :size="22" class="cabinet-menu-icon"><User /></el-icon>
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconReg /></el-icon>
                     <span>Регистрация</span>
                   </button>
                   <button
