@@ -241,7 +241,7 @@ function openServicePage(path: string) {
                 v-model:visible="isGuestCabinetMenuVisible"
                 trigger="click"
                 placement="bottom-end"
-                width="auto"
+                width="265px"
                 :show-arrow="false"
                 popper-class="cabinet-menu-popper"
                 :offset="12"
@@ -276,7 +276,7 @@ function openServicePage(path: string) {
                   </button>
                 </div>
               </el-popover>
-              <el-button
+              <!-- <el-button
                 v-else
                 class="auth-btn  montserrat-semibold"
                 @click="isLoginVisible = true"
@@ -286,7 +286,7 @@ function openServicePage(path: string) {
                 <el-icon :size="22">
                   <User />
                 </el-icon>
-              </el-button>
+              </el-button> -->
             </template>
 
             <!-- Зарегистрированный пользователь -->
@@ -296,7 +296,7 @@ function openServicePage(path: string) {
                 v-model:visible="isCabinetMenuVisible"
                 trigger="click"
                 placement="bottom-end"
-                width="auto"
+                width="265px"
                 :show-arrow="false"
                 popper-class="cabinet-menu-popper"
                 :offset="12"
@@ -561,7 +561,7 @@ function openServicePage(path: string) {
   font-size: 18px;
   line-height: 1.2;
   text-align: left;
-  padding: 10px;
+  padding: 10px 5px;
   border-radius: 12px;
   cursor: pointer;
 }
