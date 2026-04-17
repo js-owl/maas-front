@@ -42,14 +42,11 @@ const validatePhone = (_rule: any, value: string, callback: (error?: Error) => v
   // Получаем чистый номер (только цифры)
   const cleanNumber = value.replace(/\D/g, '')
 
-  // Проверяем, что номер содержит от 10 до 11 цифр и начинается с 7 или 8
-  const isValid =
-    (cleanNumber.length === 11 && cleanNumber.startsWith('7')) ||
-    (cleanNumber.length === 10 && cleanNumber.startsWith('9')) ||
-    (cleanNumber.length === 11 && cleanNumber.startsWith('8'))
+  // Проверяем только длину номера: от 10 до 15 цифр
+  const isValid = cleanNumber.length >= 10 && cleanNumber.length <= 15
 
   if (!isValid) {
-    callback(new Error('Пожалуйста, введите корректный номер телефона'))
+    callback(new Error('Номер телефона должен содержать от 10 до 15 цифр'))
   } else {
     callback()
   }
