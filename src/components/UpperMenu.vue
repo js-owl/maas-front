@@ -8,9 +8,7 @@ import { useAuthStore } from '../stores/auth.store'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
-  Menu,
-  ChatDotRound,
-  SwitchButton,
+  Menu
 } from '@element-plus/icons-vue'
 import IconLogoHeader from './icons/IconLogoHeader.vue'
 import IconLogoHeader2 from './icons/IconLogoHeader2.vue'
@@ -19,6 +17,8 @@ import IconReg from '../icons/IconReg.vue'
 import IconCall from '@/icons/IconCall.vue'
 import IconEnter from '@/icons/IconEnter.vue'
 import IconProfile from '@/icons/IconProfile.vue'
+import IconChat from '@/icons/IconChat.vue'
+import IconExit from '@/icons/IconExit.vue'
 
 const activeIndex = ref('1')
 
@@ -314,7 +314,7 @@ function openServicePage(path: string) {
                     <span>Расчеты и заказы</span>
                   </button>
                   <button type="button" disabled class="cabinet-menu-item montserrat-medium" @click="openChatPage">
-                    <el-icon :size="22" class="cabinet-menu-icon"><ChatDotRound /></el-icon>
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconChat /></el-icon>
                     <span>Чат</span>
                   </button>
                   <button type="button" class="cabinet-menu-item montserrat-medium" @click="requestCall">
@@ -322,7 +322,7 @@ function openServicePage(path: string) {
                     <span>Заказать звонок</span>
                   </button>
                   <button type="button" class="cabinet-menu-item montserrat-medium" @click="onLogout">
-                    <el-icon :size="22" class="cabinet-menu-icon"><SwitchButton /></el-icon>
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconExit /></el-icon>
                     <span>Выход из аккаунта</span>
                   </button>
                 </div>
