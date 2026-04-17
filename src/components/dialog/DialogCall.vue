@@ -237,7 +237,7 @@ const submitForm = async () => {
 
     <template #footer>
       <div class="dialog-footer">
-        <Button width="100%" :loading="loading" :disabled="!form.agreement" @click="submitForm">
+        <Button width="265px" :loading="loading" :disabled="!form.agreement" @click="submitForm">
           {{ loading ? 'Отправка...' : 'Заказать звонок' }}
         </Button>
       </div>
@@ -284,6 +284,7 @@ const submitForm = async () => {
 }
 
 .dialog-footer {
+  text-align: left;
   padding: 0 30px 24px;
 }
 
