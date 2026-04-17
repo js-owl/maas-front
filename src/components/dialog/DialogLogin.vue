@@ -166,8 +166,28 @@ const onRestore = async () => {
 }
 
 .remember-checkbox :deep(.el-checkbox__inner) {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #8f98a3;
+  border-radius: 6px;
+  background-color: #e9edf1;
+}
+
+.remember-checkbox :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
+  border-color: #6c7783;
+  background-color: #dfe5ea;
+}
+
+.remember-checkbox :deep(.el-checkbox__inner::after) {
+  border-width: 2px;
+  border-color: #000;
+  left: 8px;
+  top: 4px;
+  width: 5px;
+  height: 10px;
+}
+
+.remember-checkbox :deep(.el-checkbox__input.is-checked .el-checkbox__inner::after) {
+  border-color: #000;
 }
 </style>
