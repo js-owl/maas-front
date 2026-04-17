@@ -6,19 +6,19 @@ const advantages = ref([
   {
     id: 1,
     title: 'Скорость',
-    text: 'Мы работаем максимально быстро и качественно, вы получаете результаты точно в назначенные сроки',
+    text: 'Мы работаем максимально быстро и качественно, вы получаете результаты в назначенные сроки',
     image: 'homePage/adv_spark.png',
   },
   {
     id: 2,
     title: 'Доставка',
-    text: 'Вам больше не нужно беспокоиться о логистике – мы сами надежно упакуем и доставим вам готовую продукцию',
+    text: 'Больше не нужно беспокоиться о логистике - мы сами позаботимся о доставке готовой продукции',
     image: 'homePage/adv_car.png',
   },
   {
     id: 3,
     title: 'Проверенные материалы и оборудование',
-    text: 'Мы гарантируем качество и работаем только с надежными поставщиками материалов и оборудования',
+    text: 'Вы получаете надежного партнера, который работает с лучшими поставщиками и гарантирует качество',
     image: 'homePage/adv_box.png',
   },
   {
@@ -35,14 +35,14 @@ const isMobile = computed(() => width.value <= 767)
 
 <template>
   <section class="section-basic">
-    <div class="home-title montserrat-semibold">Наши преимущества</div>
+    <div class="maas-title">Наши преимущества</div>
 
     <div class="items">
       <div class="item" v-for="advantage in advantages" :key="advantage.id">
         <div class="item-wrap">
           <div class="item-text-content">
-            <div class="item-title montserrat-semibold">{{ advantage.title }}</div>
-            <p class="item-text montserrat-medium">{{ advantage.text }}</p>
+            <div class="maas-subtitle">{{ advantage.title }}</div>
+            <p class="maas-text">{{ advantage.text }}</p>
           </div>
           <div class="item-image-container">
             <el-image
@@ -91,7 +91,7 @@ const isMobile = computed(() => width.value <= 767)
 }
 
 .item-image-container {
-  width: 40%;
+  width: 38%;
   height: 100%;
   display: flex;
   align-items: center;
