@@ -34,7 +34,7 @@ const isMaterialsExpanded = ref(true)
         </div>
       </div>
 
-      <UslugiTable col_number="Пространство построения, мм" col_text="Форматы файлов">
+      <UslugiTable :columns="['Пространство построения, мм', 'Форматы файлов']">
         <tr>
           <td>300 x 300 x 400</td>
           <td>STL, OBJ, 3DS, CLI, 3MF</td>

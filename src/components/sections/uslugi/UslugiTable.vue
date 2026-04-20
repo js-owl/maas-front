@@ -3,8 +3,7 @@ import { ref } from 'vue'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
 defineProps<{
-  col_number: string
-  col_text: string
+  columns: string[]
 }>()
 
 const isExpanded = ref(false)
@@ -23,8 +22,7 @@ const isExpanded = ref(false)
       <table class="requirements-table requirements-table--middle">
         <thead>
           <tr>
-            <th class="uslugi-table-thead">{{ col_number }}</th>
-            <th class="uslugi-table-thead">{{ col_text }}</th>
+            <th v-for="column in columns" :key="column" class="uslugi-table-thead">{{ column }}</th>
           </tr>
         </thead>
         <tbody>
