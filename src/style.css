@@ -254,6 +254,7 @@ html {
   .uslugi-wrapper {
     padding: 30px 40px;
     margin: 0 0 40px 0;
+    border-radius: 0px;
   }
   .uslugi-section {
     flex-direction: column;
