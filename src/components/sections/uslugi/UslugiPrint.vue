@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
 const isRequirementsExpanded = ref(false)
-const isMaterialsExpanded = ref(false)
+const isMaterialsExpanded = ref(true)
 </script>
 
 <template>
@@ -43,10 +43,28 @@ const isMaterialsExpanded = ref(false)
         </div>
 
         <div v-if="isRequirementsExpanded" class="requirements-table-wrapper">
-          <p class="accordion-text">
-            3D-модель или чертеж должны содержать габаритные размеры, требуемую точность и описание
-            назначения детали.
-          </p>
+          <table class="requirements-table requirements-table--middle">
+            <thead>
+              <tr>
+                <th class="uslugi-table-thead">Пространство построения, мм</th>
+                <th class="uslugi-table-thead">Форматы файлов</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>300 x 300 x 400</td>
+                <td>STL, OBJ, 3DS, CLI, 3MF</td>
+              </tr>
+              <tr>
+                <td>530 x 530 x 550</td>
+                <td>STL, CLI</td>
+              </tr>
+              <tr>
+                <td>?</td>
+                <td>?</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -59,14 +77,103 @@ const isMaterialsExpanded = ref(false)
         </div>
 
         <div v-if="isMaterialsExpanded" class="requirements-table-wrapper">
-          <ul class="materials-list">
-            <li>Термопластичный полиуретан</li>
-            <li>Термопластичный эластомер</li>
-            <li>Полиамид (11, 12)</li>
-            <li>Полистирол</li>
-            <li>Полипропилен</li>
-            <li>Полиэтилен</li>
-          </ul>
+          <table class="requirements-table materials-table">
+            <colgroup>
+              <col class="material-col-name" />
+              <col />
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="uslugi-table-thead">Вид материала</th>
+                <th class="uslugi-table-thead">Свойства</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="material-name">Термопластичный полиуретан</td>
+                <td>
+                  <p class="material-text">
+                    Идеально подходящий для производства деталей, требующих поглощения удара, возврата
+                    энергии.
+                  </p>
+                  <p class="material-text">
+                    Обеспечивают прочную, гибкую и долговечную работу в сочетании с превосходным
+                    качеством поверхности и уровнем детализации
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td class="material-name">Термопластичный эластомер</td>
+                <td>
+                  <p class="material-text">
+                    имеет уникальные физические характеристики, так как сочетает в себе преимущества
+                    пластика и резины.
+                    <br />
+                    ТРЕ можно сравнить с вулканизированной резиной: он прочен, но в то же время устойчив
+                    к деформации. В отличие от резины, ТРЕ используется в аддитивном производстве для
+                    изготовления шлангов, трубок или прототипов обуви.
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td class="material-name">Полиамид 11</td>
+                <td>
+                  <p class="material-text">
+                    биологически чистый материал для передовых применений, где важна прочность. Он
+                    предлагает исключительно высокую пластичность и ударную вязкость для любого
+                    применения, требующего деформации и ударной вязкости, от автомобильного до
+                    медицинского.
+                  </p>
+                  <p class="material-text">
+                    Это идеальный выбор для производства деталей, которые должны выдерживать высокие
+                    механические нагрузки, таких как петли, внутренние детали автомобиля или конструкции
+                    наружных крыльев.
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td class="material-name">Полиамид 12</td>
+                <td>
+                  <p class="material-text">
+                    Печать с использованием этого материала обеспечивает высокую селективность и высокое
+                    разрешение деталей. Кроме того, он характеризуется хорошей химической стойкостью,
+                    низким коэффициентом трения и хорошей стойкостью к истиранию.
+                  </p>
+                  <p class="material-text">
+                    Одной из типичных характеристик спеченных деталей в полиамиде является идеальная
+                    гармония между механической прочностью и эластичностью в широком диапазоне
+                    температур, что делает этот материал пригодным для деталей с различной геометрией,
+                    размерами и требованиями.
+                  </p>
+                  <p class="material-text">
+                    Прочный нейлоновый материал для изготовления функциональных изделий, устойчивый к
+                    механическим нагрузкам
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td class="material-name">Полистирол</td>
+                <td>
+                  <p class="material-text">
+                    Полистирол применяется довольно редко при печати функциональных деталей, поскольку
+                    детали получаются более хрупкими, чем из полиамида. Однако он служит для создания
+                    форм и изделий с максимально качественной поверхностью. Используются для изготовления
+                    мастер-моделей для вакуумного, гипсового и керамического литья. Имеет меньшую усадку
+                    при плавлении, а выжигается с минимальным количеством золы.
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td class="material-name">Полипропилен</td>
+                <td>
+                  <p class="material-text">
+                    Высокая химическая стойкость. Низкий коэффициент трения. Возможность печати как
+                    мелких, так и крупных изделий.
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -175,23 +282,37 @@ const isMaterialsExpanded = ref(false)
   border-radius: 12px;
   margin-top: 12px;
   overflow: hidden;
-  padding: 20px;
 }
 
-.accordion-text {
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 18px;
-  line-height: 1.4;
+.requirements-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* .requirements-table td:last-child,
+.requirements-table th:last-child {
+  border-right: none;
+}
+
+.requirements-table tr:last-child td {
+  border-bottom: none;
+} */
+
+.materials-table .material-col-name {
+  width: 24%;
+}
+
+.material-name {
+  white-space: normal;
+}
+
+.material-text {
   margin: 0;
 }
 
-.materials-list {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.materials-list li + li {
-  margin-top: 6px;
+.material-text + .material-text {
+  margin-top: 10px;
 }
 
 @media (max-width: 1200px) {
