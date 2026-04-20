@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
 defineProps<{
+  title: string
   columns: string[]
 }>()
 
@@ -12,7 +13,7 @@ const isExpanded = ref(false)
 <template>
   <div class="technical-requirements">
     <div class="requirements-header" @click="isExpanded = !isExpanded">
-      <div class="uslugi-table-title">Технические требования</div>
+      <div class="uslugi-table-title">{{ title }}</div>
       <el-icon class="requirements-arrow" :class="{ expanded: isExpanded }">
         <IconArrowDown />
       </el-icon>

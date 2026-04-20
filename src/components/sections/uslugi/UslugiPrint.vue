@@ -34,7 +34,10 @@ const isMaterialsExpanded = ref(true)
         </div>
       </div>
 
-      <UslugiTable :columns="['Пространство построения, мм', 'Форматы файлов']">
+      <UslugiTable
+        title="Технические требования"
+        :columns="['Пространство построения, мм', 'Форматы файлов']"
+      >
         <tr>
           <td>300 x 300 x 400</td>
           <td>STL, OBJ, 3DS, CLI, 3MF</td>
