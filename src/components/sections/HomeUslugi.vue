@@ -240,7 +240,7 @@ const abilities = ref([
 
   .service-card {
     width: 100%;
-    height: 130px;
+    height: 85px;
   }
 
   .card-title {
