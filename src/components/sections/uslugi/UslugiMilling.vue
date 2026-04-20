@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { ArrowLeft } from '@element-plus/icons-vue'
+import IconArrowDown from '@/icons/IconArrowDown.vue'
 
 const isRequirementsExpanded = ref(true)
 </script>
@@ -30,7 +30,7 @@ const isRequirementsExpanded = ref(true)
         <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
           <div class="uslugi-table-title">Технические требования</div>
           <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <ArrowLeft />
+            <IconArrowDown />
           </el-icon>
         </div>
 
