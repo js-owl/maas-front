@@ -119,5 +119,11 @@
     gap: 30px;
   }
 }
+
+@media (max-width: 767px) {
+  .technical-requirements {
+    display: none;
+  }
+}
 </style>
 

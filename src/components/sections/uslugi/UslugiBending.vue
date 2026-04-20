@@ -84,5 +84,11 @@
   text-align: left;
 }
 
+@media (max-width: 767px) {
+  .technical-requirements {
+    display: none;
+  }
+}
+
 </style>
 

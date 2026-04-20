@@ -143,4 +143,10 @@
     font-size: 16px;
   }
 }
+
+@media (max-width: 767px) {
+  .technical-requirements {
+    display: none;
+  }
+}
 </style>
