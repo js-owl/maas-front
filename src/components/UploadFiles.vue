@@ -181,6 +181,7 @@ const handleDragOver = (event: DragEvent) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .upload:hover:not(.is-disabled) {
@@ -208,6 +209,9 @@ const handleDragOver = (event: DragEvent) => {
 
 .custom .el-upload__text {
   text-align: center;
+  width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .upload-subtitle {
@@ -216,5 +220,24 @@ const handleDragOver = (event: DragEvent) => {
   font-size: 16px;
   line-height: 1.4;
   color: #7d8083;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .upload {
+    height: auto;
+    min-height: 110px;
+    padding: 16px;
+  }
+
+  .custom .el-upload__text {
+    font-size: 18px !important;
+  }
+
+  .upload-subtitle {
+    font-size: 14px;
+    line-height: 1.35;
+  }
 }
 </style>
