@@ -205,7 +205,7 @@ const openCallDialog = () => {
 @media (max-width: 767px) {
   .footer-row {
     min-height: auto;
-    padding: 12px 0;
+    padding: 12px 16px;
   }
 
   .footer-container {
