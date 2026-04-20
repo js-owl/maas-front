@@ -127,7 +127,7 @@ const isMobile = computed(() => width.value <= 767)
   .item {
     width: 100%;
     margin: 0;
-    height: 175px;
+    /* height: 175px; */
   }
 
   .item-text-content {
