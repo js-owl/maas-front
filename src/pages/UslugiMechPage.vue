@@ -22,6 +22,11 @@ const isMobile = computed(() => width.value < 768)
           <HomeCalc />
         </el-col>
       </div>
+      <!-- <template v-else>
+        <el-col :offset="0" :span="24">
+          <HomeCalc />
+        </el-col>
+      </template> -->
 
       <UslugiLathe />
       <UslugiMilling />
