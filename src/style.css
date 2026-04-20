@@ -40,20 +40,24 @@ body {
   padding: 0;
 }
 
+html {
+  font-size: 16px;
+}
+
 /* Общие стили для секций */
 .maas-title {
   font-family: 'Montserrat-Semibold', sans-serif;
-  font-size: 32px;
+  font-size: 2rem;
   color: #000000;
 }
 .maas-subtitle {
   font-family: 'Montserrat-Semibold', sans-serif;
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #000000;
 }
 .maas-text {
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #000000;
 }
 
@@ -73,17 +77,6 @@ body {
   padding-bottom: 20px;
 }
 
-@media (max-width: 767px) {
-  .section-basic {
-    min-height: auto;
-    border-radius: 0;
-    padding: 20px 20px;
-  }
-  .section-title {
-    font-size: 24px;
-    padding-bottom: 10px;
-  }
-}
 .home-title {
   font-size: 32px;
   color: #000000;
@@ -109,12 +102,6 @@ body {
   font-weight: 500;
   color: black;
 }
-@media (max-width: 767px) {
-  .coefficient-label {
-    font-size: 20px;
-  }
-}
-
 .montserrat-black {
   font-family: 'Montserrat-Black', sans-serif;
   font-weight: 900;
@@ -248,6 +235,22 @@ body {
 
 
 @media (max-width: 768px) {
+  html {
+    font-size: 14px; /* для rem */
+  }
+
+  .section-basic {
+    min-height: auto;
+    border-radius: 0;
+    padding: 20px 20px;
+  }
+  .section-title {
+    font-size: 24px;
+    padding-bottom: 10px;
+  }
+  .coefficient-label {
+    font-size: 20px;
+  }
   .uslugi-wrapper {
     padding: 30px 40px;
     margin: 0 0 40px 0;
