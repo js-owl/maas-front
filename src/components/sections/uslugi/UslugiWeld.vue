@@ -1,4 +1,9 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref } from 'vue'
+import IconArrowDown from '@/icons/IconArrowDown.vue'
+
+const isRequirementsExpanded = ref(true)
+</script>
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
@@ -20,9 +25,14 @@
       </div>
 
       <div class="technical-requirements">
-        <div class="uslugi-table-title">Виды сварки</div>
+        <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
+          <div class="uslugi-table-title">Виды сварки</div>
+          <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
+            <IconArrowDown />
+          </el-icon>
+        </div>
 
-        <div class="requirements-table-wrapper">
+        <div v-if="isRequirementsExpanded" class="requirements-table-wrapper">
           <table class="requirements-table requirements-table--compact">
             <colgroup>
               <col class="col-type" />
@@ -101,7 +111,26 @@
   margin-top: 40px;
 }
 
+.requirements-header {
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.requirements-arrow {
+  transition: transform 0.2s ease;
+  transform: rotate(-90deg);
+}
+
+.requirements-arrow.expanded {
+  transform: rotate(-180deg);
+}
+
 .requirements-table-wrapper {
+  margin-top: 12px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #e5e7eb;

@@ -1,4 +1,10 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref } from 'vue'
+import IconArrowDown from '@/icons/IconArrowDown.vue'
+
+const isRubberTypesExpanded = ref(true)
+const isProductsExpanded = ref(true)
+</script>
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
@@ -25,9 +31,14 @@
       </div>
 
       <div class="technical-requirements">
-        <div class="uslugi-table-title">Виды резины*</div>
+        <div class="requirements-header" @click="isRubberTypesExpanded = !isRubberTypesExpanded">
+          <div class="uslugi-table-title">Виды резины*</div>
+          <el-icon class="requirements-arrow" :class="{ expanded: isRubberTypesExpanded }">
+            <IconArrowDown />
+          </el-icon>
+        </div>
 
-        <div class="requirements-table-wrapper">
+        <div v-if="isRubberTypesExpanded" class="requirements-table-wrapper">
           <table class="requirements-table requirements-table--compact">
             <colgroup>
               <col class="col-type" />
@@ -81,13 +92,20 @@
           </table>
         </div>
 
-        <div style="margin-top: 10px; font-size: 16px; color: #000;">*Указаны не все доступные материалы</div>
+        <div v-if="isRubberTypesExpanded" style="margin-top: 10px; font-size: 16px; color: #000;">
+          *Указаны не все доступные материалы
+        </div>
       </div>
 
       <div class="technical-requirements">
-        <div class="uslugi-table-title">Примеры изделий</div>
+        <div class="requirements-header" @click="isProductsExpanded = !isProductsExpanded">
+          <div class="uslugi-table-title">Примеры изделий</div>
+          <el-icon class="requirements-arrow" :class="{ expanded: isProductsExpanded }">
+            <IconArrowDown />
+          </el-icon>
+        </div>
 
-        <div class="requirements-table-wrapper">
+        <div v-if="isProductsExpanded" class="requirements-table-wrapper">
           <table class="requirements-table requirements-table--compact">
             <colgroup>
               <col class="col-product" />
@@ -146,7 +164,26 @@
   margin-top: 40px;
 }
 
+.requirements-header {
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.requirements-arrow {
+  transition: transform 0.2s ease;
+  transform: rotate(-90deg);
+}
+
+.requirements-arrow.expanded {
+  transform: rotate(-180deg);
+}
+
 .requirements-table-wrapper {
+  margin-top: 12px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #e5e7eb;
