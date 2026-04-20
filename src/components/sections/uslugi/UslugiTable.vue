@@ -2,10 +2,16 @@
 import { ref } from 'vue'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
-defineProps<{
+const props = withDefaults(
+  defineProps<{
   title: string
   columns: string[]
-}>()
+  columnWidths?: string[]
+  }>(),
+  {
+    columnWidths: () => [],
+  }
+)
 
 const isExpanded = ref(false)
 </script>
@@ -21,9 +27,14 @@ const isExpanded = ref(false)
 
     <div v-if="isExpanded" class="requirements-table-wrapper">
       <table class="requirements-table requirements-table--middle">
+        <colgroup v-if="props.columnWidths.length">
+          <col v-for="(width, index) in props.columnWidths" :key="index" :style="{ width }" />
+        </colgroup>
         <thead>
           <tr>
-            <th v-for="column in columns" :key="column" class="uslugi-table-thead">{{ column }}</th>
+            <th v-for="column in props.columns" :key="column" class="uslugi-table-thead">
+              {{ column }}
+            </th>
           </tr>
         </thead>
         <tbody>
