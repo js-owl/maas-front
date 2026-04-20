@@ -189,13 +189,13 @@ html {
   vertical-align: top;
 }
 
-.requirements-table td:last-child {
+/* .requirements-table td:last-child {
   border-right: none;
-}
+} */
 
-.requirements-table tr:last-child td {
+/* .requirements-table tr:last-child td {
   border-bottom: none;
-}
+} */
 
 .requirements-table--middle td {
   vertical-align: middle;
