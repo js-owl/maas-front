@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
-const isRequirementsExpanded = ref(true)
+const isRequirementsExpanded = ref(false)
 </script>
 
 <template>
@@ -105,7 +105,7 @@ const isRequirementsExpanded = ref(true)
 
 .requirements-arrow {
   transition: transform 0.2s ease;
-  transform: rotate(-90deg);
+  transform: rotate(0deg);
 }
 
 .requirements-arrow.expanded {

@@ -175,7 +175,7 @@ const isProductsExpanded = ref(true)
 
 .requirements-arrow {
   transition: transform 0.2s ease;
-  transform: rotate(-90deg);
+  transform: rotate(0deg);
 }
 
 .requirements-arrow.expanded {
