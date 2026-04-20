@@ -31,9 +31,9 @@ const isMobile = computed(() => width.value < 768)
       <UslugiLathe />
       <UslugiMilling />
       <!-- <UslugiLaser /> -->
-      <UslugiBending />
-      <UslugiTooling />
+      <!-- <UslugiBending /> -->
       <UslugiGrinding />
+      <UslugiTooling />
     </el-row>
   </div>
 </template>
