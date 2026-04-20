@@ -1,4 +1,9 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { ArrowLeft } from '@element-plus/icons-vue'
+
+const isRequirementsExpanded = ref(true)
+</script>
 
 <template>
   <!-- Фрезерная обработка -->
@@ -22,9 +27,14 @@
       </div>
 
       <div class="technical-requirements">
-        <div class="uslugi-table-title">Технические требования</div>
+        <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
+          <div class="uslugi-table-title">Технические требования</div>
+          <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
+            <ArrowLeft />
+          </el-icon>
+        </div>
 
-        <div class="requirements-table-wrapper">
+        <div v-if="isRequirementsExpanded" class="requirements-table-wrapper">
           <table class="requirements-table">
             <colgroup>
               <col />
@@ -81,7 +91,28 @@
   margin-top: 40px;
 }
 
+.requirements-header {
+  height: 52px;
+  border-radius: 10px;
+  background-color: #cbd1d5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  cursor: pointer;
+}
+
+.requirements-arrow {
+  transition: transform 0.2s ease;
+  transform: rotate(-90deg);
+}
+
+.requirements-arrow.expanded {
+  transform: rotate(-180deg);
+}
+
 .requirements-table-wrapper {
+  margin-top: 12px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #e5e7eb;
