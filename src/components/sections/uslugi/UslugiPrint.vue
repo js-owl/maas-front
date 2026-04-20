@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
+import UslugiTable from '@/components/sections/uslugi/UslugiTable.vue'
 
-const isRequirementsExpanded = ref(false)
 const isMaterialsExpanded = ref(true)
 </script>
 
@@ -34,39 +34,20 @@ const isMaterialsExpanded = ref(true)
         </div>
       </div>
 
-      <div class="technical-requirements">
-        <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
-          <div class="uslugi-table-title">Технические требования</div>
-          <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <IconArrowDown />
-          </el-icon>
-        </div>
-
-        <div v-if="isRequirementsExpanded" class="requirements-table-wrapper">
-          <table class="requirements-table requirements-table--middle">
-            <thead>
-              <tr>
-                <th class="uslugi-table-thead">Пространство построения, мм</th>
-                <th class="uslugi-table-thead">Форматы файлов</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>300 x 300 x 400</td>
-                <td>STL, OBJ, 3DS, CLI, 3MF</td>
-              </tr>
-              <tr>
-                <td>530 x 530 x 550</td>
-                <td>STL, CLI</td>
-              </tr>
-              <tr>
-                <td>?</td>
-                <td>?</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <UslugiTable col_number="Пространство построения, мм" col_text="Форматы файлов">
+        <tr>
+          <td>300 x 300 x 400</td>
+          <td>STL, OBJ, 3DS, CLI, 3MF</td>
+        </tr>
+        <tr>
+          <td>530 x 530 x 550</td>
+          <td>STL, CLI</td>
+        </tr>
+        <tr>
+          <td>?</td>
+          <td>?</td>
+        </tr>
+      </UslugiTable>
 
       <div class="technical-requirements">
         <div class="requirements-header" @click="isMaterialsExpanded = !isMaterialsExpanded">

@@ -136,6 +136,7 @@ declare module 'vue' {
     UslugiPrint: typeof import('./src/components/sections/uslugi/UslugiPrint.vue')['default']
     UslugiPrintExample: typeof import('./src/components/sections/uslugi/UslugiPrintExample.vue')['default']
     UslugiRubber: typeof import('./src/components/sections/uslugi/UslugiRubber.vue')['default']
+    UslugiTable: typeof import('./src/components/sections/uslugi/UslugiTable.vue')['default']
     UslugiTooling: typeof import('./src/components/sections/uslugi/UslugiTooling.vue')['default']
     UslugiWeld: typeof import('./src/components/sections/uslugi/UslugiWeld.vue')['default']
     VersionInfo: typeof import('./src/components/VersionInfo.vue')['default']
