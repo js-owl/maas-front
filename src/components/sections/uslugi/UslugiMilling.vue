@@ -94,11 +94,11 @@ const isRequirementsExpanded = ref(true)
 .requirements-header {
   height: 52px;
   border-radius: 10px;
-  background-color: #cbd1d5;
+  /* background-color: #cbd1d5; */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 18px;
+  /* padding: 0 18px; */
   cursor: pointer;
 }
 
