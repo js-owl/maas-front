@@ -55,10 +55,10 @@ const onOpenLogin = () => {
   dialogFormVisible.value = true
 }
 
-const onRestore = async () => {
-  console.log('onRestore')
-  dialogFormVisible.value = false
-}
+// const onRestore = async () => {
+//   console.log('onRestore')
+//   dialogFormVisible.value = false
+// }
 </script>
 
 <template>
@@ -96,9 +96,7 @@ const onRestore = async () => {
       <div class="dialog-footer">
         <div class="buttons">
           <Button width="27%" @click="onSubmit">Войти</Button>
-          <Button v-if="true" width="67%" @click="onRegistration">
-            Регистрация
-          </Button>
+          <Button v-if="true" width="67%" @click="onRegistration"> Регистрация </Button>
         </div>
         <!-- <div class="restore" @click="onRestore">Восстановить пароль</div> -->
       </div>
