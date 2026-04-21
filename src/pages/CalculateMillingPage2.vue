@@ -9,7 +9,7 @@ import { parseFilesQueryToIds } from '../helpers/parse-files'
 import Input from '../components/ui/Input.vue'
 import DatePicker from '../components/ui/DatePicker.vue'
 
-import MaterialMilling from '../components/materials/MaterialMilling.vue'
+import SelectCalc from '../components/ui/SelectCalc.vue'
 
 import CoefficientOtk from '../components/coefficients/CoefficientOtk.vue'
 import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
@@ -57,6 +57,7 @@ const quantityInput = computed({
 
 let material_id = ref('alum_D16')
 let material_form = ref('sheet')
+const materials = ref<Array<{ value: string; label: string }>>([])
 
 let tolerance_id = ref('4')
 let finish_id = ref('3')
@@ -144,6 +145,7 @@ watch(
 )
 
 onMounted(() => {
+  loadMaterials()
   manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
   if (order_id.value === 0) {
     const filesQuery = route.query.files
@@ -171,6 +173,36 @@ onMounted(() => {
     getOrder(order_id.value)
   }
 })
+
+const transformMaterials = (data: { materials: Array<{ id: string; label: string }> }) =>
+  data.materials.map((item) => ({
+    value: item.id,
+    label: item.label,
+  }))
+
+async function loadMaterials() {
+  try {
+    const response = await req_json_auth('/materials?process=cnc-milling', 'GET')
+    if (response?.ok) {
+      const backendMaterials = (await response.json()) as {
+        materials: Array<{ id: string; label: string }>
+      }
+      materials.value = transformMaterials(backendMaterials)
+    }
+  } catch (error) {
+    console.error('Error loading materials:', error)
+    materials.value = [
+      {
+        value: 'alum_D16T',
+        label: 'Алюминий Д16Т',
+      },
+      {
+        value: 'steel_12X18H10T',
+        label: 'Сталь 12Х18Н10Т',
+      },
+    ]
+  }
+}
 
 async function sendData(payload: IOrderPayload) {
   startLoading()
@@ -274,8 +306,14 @@ async function getOrder(id: number) {
               </div>
             </div>
 
+            <div class="milling-field-group">
+              <div class="milling-field-title">Материал</div>
+              <SelectCalc v-model="material_id" :materials="materials" />
+            </div>
+
+
             <div class="milling-field-block">
-              <MaterialMilling v-model="material_id" />
+              
             </div>
 
             <div class="milling-field-grid">
