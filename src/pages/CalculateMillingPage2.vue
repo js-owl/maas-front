@@ -58,6 +58,8 @@ const quantityInput = computed({
 let material_id = ref('alum_D16')
 let material_form = ref('sheet')
 const materials = ref<Array<{ value: string; label: string }>>([])
+let service_id = ref('cnc-milling')
+const processes = ref<Array<{ value: string; label: string }>>([])
 
 let tolerance_id = ref('4')
 let finish_id = ref('3')
@@ -76,7 +78,7 @@ const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(),
 const addDays = (date: Date, days: number) => new Date(startOfDay(date).getTime() + days * MS_IN_DAY)
 
 const payload = reactive({
-  service_id: 'cnc-milling',
+  service_id,
   order_name,
   order_code,
   file_id,
@@ -146,6 +148,7 @@ watch(
 
 onMounted(() => {
   loadMaterials()
+  loadProcesses()
   manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
   if (order_id.value === 0) {
     const filesQuery = route.query.files
@@ -204,6 +207,45 @@ async function loadMaterials() {
   }
 }
 
+type OtherService = {
+  id: string
+  label: string
+  service: string
+}
+
+type OtherServicesResponse = {
+  other_services: OtherService[]
+}
+
+async function loadProcesses() {
+  try {
+    const res = await req_json('/other_services', 'GET')
+    if (res?.ok) {
+      const data = (await res.json()) as OtherServicesResponse | OtherService[]
+      const services = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.other_services)
+          ? data.other_services
+          : []
+
+      processes.value = services.map((item) => ({
+        value: item.service,
+        label: item.label,
+      }))
+    }
+  } catch (error) {
+    console.error('Error loading processes:', error)
+  } finally {
+    if (!processes.value.length) {
+      processes.value = [{ value: 'cnc-milling', label: 'Механообработка' }]
+    }
+    const hasCurrent = processes.value.some((item) => item.value === service_id.value)
+    if (!hasCurrent) {
+      service_id.value = processes.value[0].value
+    }
+  }
+}
+
 async function sendData(payload: IOrderPayload) {
   startLoading()
   try {
@@ -234,6 +276,7 @@ async function getOrder(id: number) {
     if (data.width) width.value = data.width
     if (data.height) height.value = data.height
     if (data.quantity) quantity.value = data.quantity
+    if (data.service_id) service_id.value = data.service_id
     if (data.material_id) material_id.value = data.material_id
     if (data.material_form) material_form.value = data.material_form
     if (data.tolerance_id) tolerance_id.value = data.tolerance_id
@@ -251,7 +294,7 @@ async function getOrder(id: number) {
 
     // Принудительно обновляем payload после изменения всех полей
     Object.assign(payload, {
-      service_id: 'cnc-milling',
+      service_id: service_id.value,
       order_name: order_name.value,
       order_code: order_code.value,
       file_id: file_id.value,
@@ -311,9 +354,9 @@ async function getOrder(id: number) {
               <SelectCalc v-model="material_id" :materials="materials" />
             </div>
 
-
-            <div class="milling-field-block">
-              
+            <div class="milling-field-group">
+              <div class="milling-field-title">Технология</div>
+              <SelectCalc v-model="service_id" :materials="processes" />
             </div>
 
             <div class="milling-field-grid">
