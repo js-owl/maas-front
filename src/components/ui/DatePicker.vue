@@ -143,12 +143,16 @@ watch(
 
 .milling-date-picker__icon {
   position: absolute;
-  top: 50%;
+  top: 20px;
+  bottom: 0;
   right: 24px;
-  width: 20px;
-  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  margin: auto 0;
   color: #7d8083;
-  transform: translateY(-50%);
   pointer-events: none;
 }
 
