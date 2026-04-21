@@ -110,7 +110,7 @@ const submitOrder = async () => {
   isSubmitting.value = true
 
   try {
-  let resolvedKitId = kitId.value
+  let targetKitId = kitId.value
   await ensureProfileLoaded()
   if (!isProfileComplete(profileStore.profile)) {
     ElMessage.warning('Заполните профиль перед оформлением заказа')
@@ -142,8 +142,6 @@ const submitOrder = async () => {
       const data = (await res?.json()) as IOrderResponse
       emit('updateResult', data)
 
-      const targetKitId = resolvedKitId
-
       if (targetKitId > 0) {
         // Добавляем новый order_id в существующий kit
         const updatedIds = Array.from(new Set([...existingOrderIds.value, data.order_id]))
@@ -173,7 +171,7 @@ const submitOrder = async () => {
         try {
           const kitRes = await req_json_auth('/kits', 'POST', kitPayload)
           const createdKit = (await kitRes?.json()) as IKit | { kit_id?: number }
-          resolvedKitId = Number(createdKit?.kit_id) || 0
+          targetKitId = Number(createdKit?.kit_id) || 0
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error('Error creating kit', error)
@@ -202,7 +200,6 @@ const submitOrder = async () => {
 
   emit('showInfo')
 
-  const targetKitId = resolvedKitId
   if (targetKitId > 0) {
     router.push({
       path: '/personal/order',
