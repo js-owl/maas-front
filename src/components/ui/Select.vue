@@ -71,20 +71,25 @@ const handleChange = (value: string | number | boolean | object) => {
 <style scoped>
 .full {
   width: 100%;
+  --bgcolor: #cbd1d5;
 }
 
 .full :deep(.el-select__wrapper) {
   background-color: var(--bgcolor);
   border: 1px solid var(--bgcolor);
-  border-radius: 10px;
-  font-family: 'Segoe UI';
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: 24px;
+  min-height: 56px;
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px;
+  font-weight: 600;
   padding: 14px 20px;
 }
 
 .full :deep(.el-select__selection-text),
 .full :deep(.el-select__placeholder) {
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px;
+  font-weight: 600;
   color: black;
 }
 </style>
