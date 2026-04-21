@@ -6,7 +6,7 @@ import { parseFilesQueryToIds } from '../helpers/parse-files'
 // import Length from "../components/coefficients/Length.vue";
 // import Width from "../components/coefficients/Width.vue";
 
-import CoefficientQuantity from '../components/coefficients/CoefficientQuantity.vue'
+import Input from '../components/ui/Input.vue'
 
 import MaterialMilling from '../components/materials/MaterialMilling.vue'
 
@@ -46,6 +46,13 @@ let length = ref(120)
 let width = ref(30)
 let height = ref(30)
 let quantity = ref(1)
+const quantityInput = computed({
+  get: () => String(quantity.value),
+  set: (value: string) => {
+    const parsedValue = Number(value)
+    quantity.value = Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 1
+  },
+})
 
 let material_id = ref('alum_D16')
 let material_form = ref('sheet')
@@ -263,7 +270,13 @@ async function getOrder(id: number) {
           <div class="milling-page__main">
             <div class="milling-field-grid">
               <div class="milling-field-group">
-                <CoefficientQuantity v-model="quantity" />
+                <div class="milling-field-title">Количество, шт</div>
+                <Input
+                  v-model="quantityInput"
+                  type="number"
+                  placeholder="Введите количество"
+                  class="milling-input"
+                />
               </div>
               <div class="milling-field-group">
                 <div class="milling-field-title">Сроки выполнения</div>

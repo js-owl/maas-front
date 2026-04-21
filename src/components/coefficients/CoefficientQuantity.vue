@@ -4,7 +4,7 @@ const quantity = defineModel()
 
 <template>
   <div class="milling-field-content">
-    <p class="milling-field-title">Количество, шт</p>
+    <p class="milling-field-title">Кол-во, шт</p>
     <el-input-number v-model="quantity" :min="1" :max="1000" size="large" class="full" />
   </div>
 </template>
