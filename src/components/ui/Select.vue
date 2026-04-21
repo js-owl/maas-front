@@ -53,6 +53,7 @@ const handleChange = (value: string | number | boolean | object) => {
     :clearable="clearable"
     :filterable="filterable"
     :multiple="multiple"
+    popper-class="select-dropdown"
     :suffix-icon="IconArrowDown"
     :class="selectClasses"
     :style="{ width: props.width }"
@@ -91,6 +92,14 @@ const handleChange = (value: string | number | boolean | object) => {
   font-size: 20px;
   font-weight: 600;
   color: black;
+}
+
+</style>
+
+<style>
+.select-dropdown .el-select-dropdown__item {
+  font-family: 'Montserrat-Medium', sans-serif !important;
+  font-size: 18px;
 }
 </style>
 
