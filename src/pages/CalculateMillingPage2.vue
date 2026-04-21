@@ -7,6 +7,7 @@ import { parseFilesQueryToIds } from '../helpers/parse-files'
 // import Width from "../components/coefficients/Width.vue";
 
 import Input from '../components/ui/Input.vue'
+import DatePicker from '../components/ui/DatePicker.vue'
 
 import MaterialMilling from '../components/materials/MaterialMilling.vue'
 
@@ -72,20 +73,6 @@ let special_instructions = ref('')
 const MS_IN_DAY = 24 * 60 * 60 * 1000
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
 const addDays = (date: Date, days: number) => new Date(startOfDay(date).getTime() + days * MS_IN_DAY)
-const calculateDaysUntil = (targetDate: Date) => {
-  const today = startOfDay(new Date())
-  const deadline = startOfDay(targetDate)
-  return Math.max(0, Math.ceil((deadline.getTime() - today.getTime()) / MS_IN_DAY))
-}
-const isPastDateDisabled = (date: Date) => startOfDay(date).getTime() < startOfDay(new Date()).getTime()
-
-watch(manufacturing_deadline, (value) => {
-  if (!value) {
-    manufacturing_cycle.value = 0
-    return
-  }
-  manufacturing_cycle.value = calculateDaysUntil(value)
-})
 
 const payload = reactive({
   service_id: 'cnc-milling',
@@ -279,14 +266,10 @@ async function getOrder(id: number) {
               </div>
               <div class="milling-field-group">
                 <div class="milling-field-title">Сроки выполнения</div>
-                <el-date-picker
+                <DatePicker
                   v-model="manufacturing_deadline"
-                  type="date"
-                  format="DD.MM.YYYY"
-                  :disabled-date="isPastDateDisabled"
+                  v-model:manufacturing-cycle="manufacturing_cycle"
                   placeholder="Выберите дату"
-                  popper-class="milling-date-picker-popper"
-                  class="milling-input milling-date-picker"
                 />
               </div>
             </div>
@@ -442,18 +425,6 @@ async function getOrder(id: number) {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
   color: #000;
-}
-
-.milling-date-picker :deep(.el-input__prefix-inner > .el-icon) {
-  color: rgba(0, 0, 0, 0.55);
-}
-
-:deep(.milling-date-picker-popper) {
-  border-radius: 10px;
-}
-
-:deep(.milling-date-picker-popper .el-picker-panel__content) {
-  font-family: 'Montserrat-Regular', sans-serif;
 }
 
 :deep(.el-textarea__inner) {
