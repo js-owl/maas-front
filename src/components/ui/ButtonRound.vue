@@ -59,7 +59,8 @@ const handleClick = () => {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 20px;
   font-weight: 600;
-  padding: 12px 24px;
+  height: 50px;
+  /* padding: 12px 24px; */
   cursor: pointer;
   
   /* 3D эффект с тенями */

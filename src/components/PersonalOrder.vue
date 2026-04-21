@@ -9,6 +9,7 @@ import { statusTexts } from '../helpers/status-text'
 import CadPreview from './cad/CadPreview.vue'
 // import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
 import Button from './ui/Button.vue'
+import ButtonRound from './ui/ButtonRound.vue'
 import Select from './ui/Select.vue'
 import InputEdit from './ui/InputEdit.vue'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
@@ -551,7 +552,7 @@ onMounted(() => {
           <Select
             v-model="selectedOrderType"
             placeholder="Добавить деталь"
-            width="200px"
+            width="270px"
             @change="handleOrderTypeChange"
           >
             <el-option
@@ -561,7 +562,7 @@ onMounted(() => {
               :value="option.value"
             />
           </Select>
-          <ButtonRound width="220px" @click="saveOrder">
+          <ButtonRound width="210px" @click="saveOrder">
             Сохранить
           </ButtonRound>
         </div>
