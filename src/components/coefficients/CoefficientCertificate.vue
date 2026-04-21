@@ -10,7 +10,7 @@ const certificates = [
 
 <template>
   <div style="max-width: 1000px">
-    <div class="coefficient-label">Сертификаты и квалификации поставщиков</div>
+    <div class="milling-field-title">Сертификаты</div>
     <el-checkbox-group v-model="selected">
       <el-checkbox
         v-for="option in certificates"
@@ -26,6 +26,13 @@ const certificates = [
 </template>
 
 <style scoped>
+.milling-field-title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  color: #000;
+}
+
 .checkbox-item {
   width: 290px;
 }
@@ -35,6 +42,12 @@ const certificates = [
 }
 :deep(.line) {
   border-color: #333;
+}
+
+@media (max-width: 767px) {
+  .milling-field-title {
+    font-size: 18px;
+  }
 }
 
 

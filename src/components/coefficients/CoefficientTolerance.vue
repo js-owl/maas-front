@@ -17,7 +17,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <p class="coefficient-title">Квалитет точности</p>
+    <p class="milling-field-title">Точность</p>
     <el-select v-model="selected" placeholder="Выбрать" size="large" class="full">
       <el-option
         v-for="item in tolerances"
@@ -30,6 +30,13 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.milling-field-title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  color: #000;
+}
+
 .full {
   width: 100%;
 }
@@ -43,5 +50,11 @@ onMounted(async () => {
   color: black;
   /* margin-top: 10px; */
   padding: 5px 15px;
+}
+
+@media (max-width: 767px) {
+  .milling-field-title {
+    font-size: 18px;
+  }
 }
 </style>

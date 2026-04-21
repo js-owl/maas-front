@@ -242,7 +242,6 @@ async function getOrder(id: number) {
           <div class="milling-page__main">
             <div class="milling-field-grid">
               <div class="milling-field-group">
-                <div class="milling-field-title">Количество, шт</div>
                 <CoefficientQuantity v-model="quantity" />
               </div>
               <div class="milling-field-group">
@@ -252,33 +251,27 @@ async function getOrder(id: number) {
             </div>
 
             <div class="milling-field-block">
-              <div class="milling-field-title">Материал</div>
               <MaterialMilling v-model="material_id" />
             </div>
 
             <div class="milling-field-grid">
               <div class="milling-field-group">
-                <div class="milling-field-title">Технология</div>
                 <CoefficientFinish v-model="finish_id" />
               </div>
               <div class="milling-field-group">
-                <div class="milling-field-title">Точность</div>
                 <CoefficientTolerance v-model="tolerance_id" />
               </div>
             </div>
 
             <div class="milling-field-block">
-              <div class="milling-field-title">Финишная обработка изделия</div>
               <CoefficientCover v-model="cover_id" />
             </div>
 
             <div class="milling-field-block">
-              <div class="milling-field-title">Вид контроля</div>
               <CoefficientOtk v-model="k_otk" />
             </div>
 
             <div class="milling-field-block">
-              <div class="milling-field-title">Сертификаты</div>
               <CoefficientCertificate v-model="k_cert" />
             </div>
 

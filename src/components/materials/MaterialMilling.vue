@@ -44,7 +44,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <p class="coefficient-title">Материал</p>
+    <p class="milling-field-title">Материал</p>
     <el-select
       v-model="selectedMaterial"
       value-key="label"
@@ -63,6 +63,13 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.milling-field-title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  color: #000;
+}
+
 .full {
   width: 100%;
 }
@@ -76,5 +83,11 @@ onMounted(() => {
   color: black;
   /* margin-top: 10px; */
   padding: 10px;
+}
+
+@media (max-width: 767px) {
+  .milling-field-title {
+    font-size: 18px;
+  }
 }
 </style>
