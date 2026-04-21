@@ -96,7 +96,7 @@ const handleChange = (value: string) => {
   box-shadow: none;
   border: none;
   min-height: var(--input-min-height, auto);
-  /* padding: var(--input-padding, 12px 16px); */
+  padding: 12px 24px;
 }
 
 .input :deep(.el-input__inner) {
@@ -152,16 +152,5 @@ const handleChange = (value: string) => {
   cursor: not-allowed;
 }
 
-.milling-input.input-wrapper :deep(.el-input__wrapper) {
-  background-color: var(--whity);
-  border-radius: 10px;
-  min-height: 40px;
-  padding: 12px 24px;
-}
-
-.milling-input.input-wrapper :deep(.el-input__inner) {
-  font-size: 16px;
-  color: #000;
-}
 </style>
 
