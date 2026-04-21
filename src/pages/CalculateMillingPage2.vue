@@ -419,8 +419,15 @@ async function getOrder(id: number) {
 
             <div class="milling-upload">
               <div class="milling-upload__title">Загрузите файлы</div>
-              <UploadModel v-model="file_id" color="#000" />
-              <UploadDrawings v-model="document_ids" color="#000" />
+              <UploadFiles
+                v-model="document_ids"
+                color="#000"
+                :hide-formats-text="true"
+                v-model:stp_id="file_id"
+                class="upload-files-bordered"
+              />
+              <!-- <UploadModel v-model="file_id" color="#000" />
+              <UploadDrawings v-model="document_ids" color="#000" /> -->
               <DocumentShowByIds v-model="document_ids" />
             </div>
           </aside>

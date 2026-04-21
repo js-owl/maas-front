@@ -7,10 +7,16 @@ import DialogLogin from './dialog/DialogLogin.vue'
 import { ElMessage } from 'element-plus'
 
 const document_ids = defineModel<number[]>({ default: [] })
-const props = defineProps<{
-  color?: string
-  stp_id?: number | null
-}>()
+const props = withDefaults(
+  defineProps<{
+    color?: string
+    stp_id?: number | null
+    hideFormatsText?: boolean
+  }>(),
+  {
+    hideFormatsText: false,
+  }
+)
 
 const emit = defineEmits<{
   (e: 'update:stp_id', value: number | null): void
@@ -147,12 +153,14 @@ const handleDragOver = (event: DragEvent) => {
           >
             {{ isUploading ? 'Загрузка...' : 'Перетащите или выберите файл' }}
           </div>
-          <div class="upload-subtitle">
-            Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
-          </div>
-          <div class="upload-subtitle">
-            Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
-          </div>
+          <template v-if="!props.hideFormatsText">
+            <div class="upload-subtitle">
+              Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
+            </div>
+            <div class="upload-subtitle">
+              Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
+            </div>
+          </template>
           <input
             type="file"
             @change="handleFileChange"
