@@ -15,7 +15,7 @@ import CoefficientOtk from '../components/coefficients/CoefficientOtk.vue'
 import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
 import CoefficientTolerance from '../components/coefficients/CoefficientTolerance.vue'
 import CoefficientFinish from '../components/coefficients/CoefficientFinish.vue'
-import CoefficientCover from '../components/coefficients/CoefficientCover.vue'
+import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 // import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
 import { useRoute } from 'vue-router'
@@ -369,7 +369,8 @@ async function getOrder(id: number) {
             </div> -->
 
             <div class="milling-field-block">
-              <CoefficientCover v-model="cover_id" />
+              <div class="milling-field-title">Финишная обработка изделия</div>
+              <CoefficientCover2 v-model="cover_id" />
             </div>
 
             <div class="milling-field-block">

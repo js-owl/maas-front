@@ -57,10 +57,9 @@ const selectedValue = defineModel<string>()
 :deep(.el-select__placeholder),
 :deep(.el-select__selected-item) {
   color: black;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: normal;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 :deep(.el-select__caret) {

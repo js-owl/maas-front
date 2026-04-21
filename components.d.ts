@@ -17,6 +17,7 @@ declare module 'vue' {
     CalculateSubmit: typeof import('./src/components/sections/CalculateSubmit.vue')['default']
     CoefficientCertificate: typeof import('./src/components/coefficients/CoefficientCertificate.vue')['default']
     CoefficientCover: typeof import('./src/components/coefficients/CoefficientCover.vue')['default']
+    CoefficientCover2: typeof import('./src/components/coefficients/CoefficientCover2.vue')['default']
     CoefficientFinish: typeof import('./src/components/coefficients/CoefficientFinish.vue')['default']
     CoefficientOtk: typeof import('./src/components/coefficients/CoefficientOtk.vue')['default']
     CoefficientProcess: typeof import('./src/components/coefficients/CoefficientProcess.vue')['default']

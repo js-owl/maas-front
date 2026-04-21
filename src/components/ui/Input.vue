@@ -101,8 +101,8 @@ const handleChange = (value: string) => {
 
 .input :deep(.el-input__inner) {
   font-family: var(--input-font-family, 'Montserrat-Medium'), sans-serif;
-  font-size: var(--input-font-size, 20px);
-  font-weight: var(--input-font-weight, 500);
+  font-size: 16px;
+  font-weight: 500;
   color: var(--input-text-color, #55585b);
 }
 
