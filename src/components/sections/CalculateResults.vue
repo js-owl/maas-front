@@ -58,9 +58,9 @@ const formatNumber = (value: number | string | null | undefined) => {
         <div>{{ Number(props.result?.total_time ?? 0).toFixed(2) || '?' }} ч.</div>
       </div>
 
-      <div class="disclaimer-text">
+      <!-- <div class="disclaimer-text">
         *При увеличении количества единиц в заказе стоимость одного изделия становится выгоднее
-      </div>
+      </div> -->
     </template>
   </div>
 </template>

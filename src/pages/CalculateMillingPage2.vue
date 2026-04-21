@@ -359,14 +359,14 @@ async function getOrder(id: number) {
               <SelectCalc v-model="service_id" :materials="processes" />
             </div>
 
-            <div class="milling-field-grid">
+            <!-- <div class="milling-field-grid">
               <div class="milling-field-group">
                 <CoefficientFinish v-model="finish_id" />
               </div>
               <div class="milling-field-group">
                 <CoefficientTolerance v-model="tolerance_id" />
               </div>
-            </div>
+            </div> -->
 
             <div class="milling-field-block">
               <CoefficientCover v-model="cover_id" />
@@ -376,9 +376,9 @@ async function getOrder(id: number) {
               <CoefficientOtk v-model="k_otk" />
             </div>
 
-            <div class="milling-field-block">
+            <!-- <div class="milling-field-block">
               <CoefficientCertificate v-model="k_cert" />
-            </div>
+            </div> -->
 
             <div
               class="milling-field-block"

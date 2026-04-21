@@ -101,7 +101,7 @@ watch(
 <style scoped>
 .cad-viewer-wrapper {
   width: 100%;
-  min-height: 400px;
+  /* min-height: 300px; */
 }
 
 .loading-placeholder {

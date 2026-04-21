@@ -507,7 +507,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .stp-viewer {
   width: 100%;
-  height: 400px;
+  height: 250px; /* меняет высоту 3D модели */
   display: flex;
   flex-direction: column;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
