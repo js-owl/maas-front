@@ -82,6 +82,9 @@ watch(
   --el-input-hover-border-color: transparent;
   --el-input-focus-border-color: transparent;
   --el-input-text-color: #000000;
+  --el-text-color-placeholder: #000000;
+  --el-disabled-bg-color: #f4f6f8;
+  --el-fill-color-light: #f4f6f8;
 }
 
 .milling-date-picker__control {
@@ -90,22 +93,24 @@ watch(
 
 :deep(.milling-date-picker__input.el-date-editor) {
   width: 100%;
-  height: 44px;
+  height: 31px !important;
 }
 
 :deep(.milling-date-picker__input .el-input__wrapper) {
-  height: 44px;
+  height: 31px !important;
+  min-height: 31px;
   padding: 12px 24px;
   background-color: #f4f6f8;
-  border-radius: 10px;
+  border-radius: 12px;
   box-shadow: none !important;
+  border: none;
 }
 
 :deep(.milling-date-picker__input .el-input__inner) {
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1;
   color: #000000;
 }
 
@@ -120,7 +125,7 @@ watch(
 }
 
 :deep(.milling-date-picker__input .el-input__suffix) {
-  margin-left: 12px;
+  margin-left: 10px;
 }
 
 :deep(.milling-date-picker__input .el-input__suffix-inner) {
@@ -136,17 +141,13 @@ watch(
   display: none;
 }
 
-:deep(.milling-date-picker__input .el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2) inset;
-}
-
 .milling-date-picker__icon {
   position: absolute;
   top: 50%;
   right: 24px;
   width: 20px;
   height: 20px;
-  color: rgba(0, 0, 0, 0.55);
+  color: #7d8083;
   transform: translateY(-50%);
   pointer-events: none;
 }
