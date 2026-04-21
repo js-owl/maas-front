@@ -373,7 +373,7 @@ async function getOrder(id: number) {
               <CoefficientCover2 v-model="cover_id" />
             </div>
 
-            <div class="milling-field-block">
+            <div class="milling-field-block milling-field-block--otk">
               <div class="milling-field-title">Вид контроля</div>
               <CoefficientOtk2 v-model="k_otk" />
             </div>
@@ -470,6 +470,11 @@ async function getOrder(id: number) {
   flex-direction: column;
   gap: 10px;
   padding: 5px 0;
+}
+
+.milling-field-block--otk {
+  max-width: 822px;
+  gap: 20px;
 }
 
 .milling-field-title {
