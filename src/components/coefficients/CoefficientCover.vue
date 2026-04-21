@@ -31,7 +31,7 @@ onMounted(async () => {
 
 <template>
   <div style="max-width: 1000px">
-    <div class="milling-field-title">Финишная обработка изделия</div>
+    <div class="coefficient-label">Финишная обработка изделия</div>
     <el-checkbox-group v-model="selected">
       <el-checkbox
         v-for="item in filteredCoveres"
@@ -46,13 +46,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.milling-field-title {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
-  line-height: 1;
-  color: #000;
-}
-
 .checkbox-item {
   width: 300px;
 }
@@ -62,11 +55,5 @@ onMounted(async () => {
 }
 :deep(.line) {
   border-color: #333;
-}
-
-@media (max-width: 767px) {
-  .milling-field-title {
-    font-size: 18px;
-  }
 }
 </style>
