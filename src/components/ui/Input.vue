@@ -90,17 +90,13 @@ const handleChange = (value: string) => {
 </template>
 
 <style scoped>
-.input-wrapper {
-  width: 100%;
-}
-
 .input :deep(.el-input__wrapper) {
   background-color: var(--input-bg, #f5f7fa);
   border-radius: var(--input-radius, 12px);
   box-shadow: none;
   border: none;
   min-height: var(--input-min-height, auto);
-  padding: var(--input-padding, 12px 16px);
+  /* padding: var(--input-padding, 12px 16px); */
 }
 
 .input :deep(.el-input__inner) {
@@ -151,7 +147,6 @@ const handleChange = (value: string) => {
   color: #606266;
 }
 
-.input :deep(.is-disabled .el-input__wrapper),
 .input :deep(.el-input.is-disabled .el-input__wrapper) {
   opacity: 0.7;
   cursor: not-allowed;

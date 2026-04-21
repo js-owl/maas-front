@@ -275,7 +275,6 @@ async function getOrder(id: number) {
                   v-model="quantityInput"
                   type="number"
                   placeholder="Введите количество"
-                  class="milling-input"
                 />
               </div>
               <div class="milling-field-group">
