@@ -2,10 +2,6 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { req_json, req_json_auth } from '../api'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
-
-// import Length from "../components/coefficients/Length.vue";
-// import Width from "../components/coefficients/Width.vue";
-
 import Input from '../components/ui/Input.vue'
 import DatePicker from '../components/ui/DatePicker.vue'
 
@@ -19,8 +15,8 @@ import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 // import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
 import { useRoute } from 'vue-router'
-import UploadModel from '../components/cad/UploadModel.vue'
-import UploadDrawings from '../components/UploadDrawings.vue'
+// import UploadModel from '../components/cad/UploadModel.vue'
+// import UploadDrawings from '../components/UploadDrawings.vue'
 import DocumentShowByIds from '../components/DocumentShowByIds.vue'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
@@ -31,6 +27,7 @@ import CalculateResults from '../components/sections/CalculateResults.vue'
 import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
 // import Height from "../components/coefficients/Height.vue";
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
+import UploadFiles2 from '@/components/UploadFiles2.vue'
 // import Loader from '../components/ui/Loader.vue'
 
 const profileStore = useProfileStore()
@@ -419,7 +416,7 @@ async function getOrder(id: number) {
 
             <div class="milling-upload">
               <div class="milling-upload__title">Загрузите файлы</div>
-              <UploadFiles
+              <UploadFiles2
                 v-model="document_ids"
                 color="#000"
                 :hide-formats-text="true"
