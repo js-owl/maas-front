@@ -65,7 +65,7 @@ onMounted(() => {
 <style scoped>
 .milling-field-title {
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
+  font-size: 18px;
   line-height: 1;
   color: #000;
 }
