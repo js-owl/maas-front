@@ -11,6 +11,9 @@ import CadPreview from './cad/CadPreview.vue'
 import Button from './ui/Button.vue'
 import Select from './ui/Select.vue'
 import InputEdit from './ui/InputEdit.vue'
+import IconArrowLeft from '@/icons/IconArrowLeft.vue'
+import IconCalculate from '@/icons/IconCalculate.vue'
+
 const route = useRoute()
 const router = useRouter()
 
@@ -434,8 +437,13 @@ onMounted(() => {
             </div>
           </div>
           <div class="order-quantity">
-            <!-- <CoefficientQuantity v-model="quantity" /> -->
-            <Button class="calc-button" @click="handleOpenCalcs">Калькуляция стоимости</Button>
+            <ButtonRound width="220px" @click="handleOpenCalcs">
+              <template #icon-left>
+                <IconCalculate color="#7d8083" />
+              </template>
+              Калькуляция
+            </ButtonRound>
+            <!-- <Button class="calc-button" @click="handleOpenCalcs">Калькуляция стоимости</Button> -->
           </div>
         </div>
 
@@ -534,7 +542,12 @@ onMounted(() => {
         </el-table>
 
         <div class="order-footer">
-          <Button width="200px" @click="goBack"> &lt; к списку </Button>
+          <ButtonRound width="280px" @click="goBack">
+              <template #icon-left>
+                 <IconArrowLeft color="#333" />
+              </template>
+               Расчеты и заказы
+            </ButtonRound>
           <Select
             v-model="selectedOrderType"
             placeholder="Добавить деталь"
@@ -548,7 +561,9 @@ onMounted(() => {
               :value="option.value"
             />
           </Select>
-          <Button width="200px" @click="saveOrder"> Сохранить </Button>
+          <ButtonRound width="220px" @click="saveOrder">
+            Сохранить
+          </ButtonRound>
         </div>
         <!-- </el-card> -->
       </el-col>
