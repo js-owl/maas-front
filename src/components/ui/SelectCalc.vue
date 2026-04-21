@@ -43,13 +43,34 @@ const selectedValue = defineModel<string>()
 
 :deep(.el-select__wrapper) {
   background-color: var(--whity);
-  border-color: var(--whity);
-  border-radius: 5px;
-  height: 44px;
-  font-size: 16px;
-  font-weight: 500;
+  border: 0;
+  border-radius: 10px;
+  min-height: 48px;
+  box-shadow: none;
+  font-size: 20px;
+  font-weight: 600;
   color: black;
-  padding: 10px;
+  line-height: normal;
+  padding: 12px 24px;
 }
 
+:deep(.el-select__placeholder),
+:deep(.el-select__selected-item) {
+  color: black;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+:deep(.el-select__caret) {
+  color: var(--button);
+  font-size: 20px;
+}
+
+:deep(.el-select:hover .el-select__wrapper),
+:deep(.el-select .el-select__wrapper.is-focused),
+:deep(.el-select .el-select__wrapper.is-hovering) {
+  box-shadow: none;
+}
 </style>

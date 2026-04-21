@@ -424,6 +424,7 @@ async function getOrder(id: number) {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 5px 0;
 }
 
 .milling-field-title {
