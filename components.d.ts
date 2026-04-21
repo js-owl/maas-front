@@ -82,6 +82,7 @@ declare module 'vue' {
     HomeMilestones: typeof import('./src/components/sections/HomeMilestones.vue')['default']
     HomeModel: typeof import('./src/components/sections/HomeModel.vue')['default']
     HomeUslugi: typeof import('./src/components/sections/HomeUslugi.vue')['default']
+    IconDate: typeof import('./src/components/icons/IconDate.vue')['default']
     IconLogoHeader: typeof import('./src/components/icons/IconLogoHeader.vue')['default']
     IconLogoHeader2: typeof import('./src/components/icons/IconLogoHeader2.vue')['default']
     Input: typeof import('./src/components/ui/Input.vue')['default']
