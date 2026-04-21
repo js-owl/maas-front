@@ -20,6 +20,7 @@ declare module 'vue' {
     CoefficientCover2: typeof import('./src/components/coefficients/CoefficientCover2.vue')['default']
     CoefficientFinish: typeof import('./src/components/coefficients/CoefficientFinish.vue')['default']
     CoefficientOtk: typeof import('./src/components/coefficients/CoefficientOtk.vue')['default']
+    CoefficientOtk2: typeof import('./src/components/coefficients/CoefficientOtk2.vue')['default']
     CoefficientProcess: typeof import('./src/components/coefficients/CoefficientProcess.vue')['default']
     CoefficientQuantity: typeof import('./src/components/coefficients/CoefficientQuantity.vue')['default']
     CoefficientSize: typeof import('./src/components/coefficients/CoefficientSize.vue')['default']

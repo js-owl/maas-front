@@ -11,10 +11,10 @@ import DatePicker from '../components/ui/DatePicker.vue'
 
 import SelectCalc from '../components/ui/SelectCalc.vue'
 
-import CoefficientOtk from '../components/coefficients/CoefficientOtk.vue'
-import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
-import CoefficientTolerance from '../components/coefficients/CoefficientTolerance.vue'
-import CoefficientFinish from '../components/coefficients/CoefficientFinish.vue'
+import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
+  // import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
+  // import CoefficientTolerance from '../components/coefficients/CoefficientTolerance.vue'
+  // import CoefficientFinish from '../components/coefficients/CoefficientFinish.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 // import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
@@ -374,7 +374,8 @@ async function getOrder(id: number) {
             </div>
 
             <div class="milling-field-block">
-              <CoefficientOtk v-model="k_otk" />
+              <div class="milling-field-title">Вид контроля</div>
+              <CoefficientOtk2 v-model="k_otk" />
             </div>
 
             <!-- <div class="milling-field-block">
