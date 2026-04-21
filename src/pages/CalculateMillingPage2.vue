@@ -413,6 +413,7 @@ async function getOrder(id: number) {
   color: #000;
 }
 
+
 .milling-actions {
   padding-top: 6px;
 }
@@ -441,19 +442,6 @@ async function getOrder(id: number) {
 .milling-upload__title {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
-  color: #000;
-}
-
-.milling-input :deep(.el-input__wrapper) {
-  background: var(--whity);
-  box-shadow: none;
-  border-radius: 10px;
-  height: 44px;
-  padding: 0 14px;
-}
-
-.milling-input :deep(.el-input__inner) {
-  font-size: 16px;
   color: #000;
 }
 

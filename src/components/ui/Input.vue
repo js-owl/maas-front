@@ -95,18 +95,19 @@ const handleChange = (value: string) => {
 }
 
 .input :deep(.el-input__wrapper) {
-  background-color: #f5f7fa;
-  border-radius: 12px;
+  background-color: var(--input-bg, #f5f7fa);
+  border-radius: var(--input-radius, 12px);
   box-shadow: none;
   border: none;
-  padding: 12px 16px;
+  min-height: var(--input-min-height, auto);
+  padding: var(--input-padding, 12px 16px);
 }
 
 .input :deep(.el-input__inner) {
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  color: #55585B;
+  font-family: var(--input-font-family, 'Montserrat-Medium'), sans-serif;
+  font-size: var(--input-font-size, 20px);
+  font-weight: var(--input-font-weight, 500);
+  color: var(--input-text-color, #55585b);
 }
 
 .input :deep(.el-input__inner:-webkit-autofill),
@@ -117,10 +118,10 @@ const handleChange = (value: string) => {
 .input :deep(.el-textarea__inner:-webkit-autofill:hover),
 .input :deep(.el-textarea__inner:-webkit-autofill:focus),
 .input :deep(.el-textarea__inner:-webkit-autofill:active) {
-  -webkit-text-fill-color: #55585B;
-  caret-color: #55585B;
-  -webkit-box-shadow: 0 0 0px 1000px #f5f7fa inset;
-  box-shadow: 0 0 0px 1000px #f5f7fa inset;
+  -webkit-text-fill-color: var(--input-text-color, #55585b);
+  caret-color: var(--input-text-color, #55585b);
+  -webkit-box-shadow: 0 0 0px 1000px var(--input-bg, #f5f7fa) inset;
+  box-shadow: 0 0 0px 1000px var(--input-bg, #f5f7fa) inset;
   transition: background-color 999999s ease-out 0s;
 }
 
@@ -154,6 +155,18 @@ const handleChange = (value: string) => {
 .input :deep(.el-input.is-disabled .el-input__wrapper) {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.milling-input.input-wrapper :deep(.el-input__wrapper) {
+  background-color: var(--whity);
+  border-radius: 10px;
+  min-height: 40px;
+  padding: 12px 24px;
+}
+
+.milling-input.input-wrapper :deep(.el-input__inner) {
+  font-size: 16px;
+  color: #000;
 }
 </style>
 
