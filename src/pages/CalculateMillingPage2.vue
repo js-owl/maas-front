@@ -17,7 +17,7 @@ import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 import { useRoute } from 'vue-router'
 // import UploadModel from '../components/cad/UploadModel.vue'
 // import UploadDrawings from '../components/UploadDrawings.vue'
-import DocumentShowByIds from '../components/DocumentShowByIds.vue'
+// import DocumentShowByIds from '../components/DocumentShowByIds.vue'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
 import { useProfileStore } from '../stores/profile.store'
@@ -28,6 +28,7 @@ import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
 // import Height from "../components/coefficients/Height.vue";
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
 import UploadFiles2 from '@/components/UploadFiles2.vue'
+import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 // import Loader from '../components/ui/Loader.vue'
 
 const profileStore = useProfileStore()
@@ -425,7 +426,7 @@ async function getOrder(id: number) {
               />
               <!-- <UploadModel v-model="file_id" color="#000" />
               <UploadDrawings v-model="document_ids" color="#000" /> -->
-              <DocumentShowByIds v-model="document_ids" />
+              <DocumentShowByIds2 :document-ids="document_ids" />
             </div>
           </aside>
         </div>
