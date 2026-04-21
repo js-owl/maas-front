@@ -59,7 +59,26 @@ let k_otk = ref('1.0')
 let k_cert = ref(['a', 'f'])
 // Длительность изготовления (в днях)
 let manufacturing_cycle = ref<number>(0)
+let manufacturing_deadline = ref<Date | null>(null)
 let special_instructions = ref('')
+
+const MS_IN_DAY = 24 * 60 * 60 * 1000
+const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
+const addDays = (date: Date, days: number) => new Date(startOfDay(date).getTime() + days * MS_IN_DAY)
+const calculateDaysUntil = (targetDate: Date) => {
+  const today = startOfDay(new Date())
+  const deadline = startOfDay(targetDate)
+  return Math.max(0, Math.ceil((deadline.getTime() - today.getTime()) / MS_IN_DAY))
+}
+const isPastDateDisabled = (date: Date) => startOfDay(date).getTime() < startOfDay(new Date()).getTime()
+
+watch(manufacturing_deadline, (value) => {
+  if (!value) {
+    manufacturing_cycle.value = 0
+    return
+  }
+  manufacturing_cycle.value = calculateDaysUntil(value)
+})
 
 const payload = reactive({
   service_id: 'cnc-milling',
@@ -131,6 +150,7 @@ watch(
 )
 
 onMounted(() => {
+  manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
   if (order_id.value === 0) {
     const filesQuery = route.query.files
     const stpParam = route.query.stp
@@ -198,6 +218,7 @@ async function getOrder(id: number) {
     if (data.k_otk) k_otk.value = data.k_otk
     if (data.k_cert) k_cert.value = data.k_cert
     if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
+    manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
     if (data.special_instructions) special_instructions.value = data.special_instructions
     if (data.order_name) order_name.value = data.order_name
     if ((data as any).order_code) order_code.value = (data as any).order_code
@@ -246,7 +267,15 @@ async function getOrder(id: number) {
               </div>
               <div class="milling-field-group">
                 <div class="milling-field-title">Сроки выполнения</div>
-                <el-input v-model="manufacturing_cycle" class="milling-input" />
+                <el-date-picker
+                  v-model="manufacturing_deadline"
+                  type="date"
+                  format="DD.MM.YYYY"
+                  :disabled-date="isPastDateDisabled"
+                  placeholder="Выберите дату"
+                  popper-class="milling-date-picker-popper"
+                  class="milling-input milling-date-picker"
+                />
               </div>
             </div>
 
@@ -406,7 +435,25 @@ async function getOrder(id: number) {
   background: var(--whity);
   box-shadow: none;
   border-radius: 10px;
-  padding: 12px 24px;
+  height: 44px;
+  padding: 0 14px;
+}
+
+.milling-input :deep(.el-input__inner) {
+  font-size: 16px;
+  color: #000;
+}
+
+.milling-date-picker :deep(.el-input__prefix-inner > .el-icon) {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+:deep(.milling-date-picker-popper) {
+  border-radius: 10px;
+}
+
+:deep(.milling-date-picker-popper .el-picker-panel__content) {
+  font-family: 'Montserrat-Regular', sans-serif;
 }
 
 :deep(.el-textarea__inner) {
