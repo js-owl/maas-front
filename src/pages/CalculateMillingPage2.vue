@@ -231,381 +231,227 @@ async function getOrder(id: number) {
 </script>
 
 <template>
-  <section class="personal-order">
-    <el-row :gutter="0" style="padding-top: 30px; min-height: 300px; background-color: var(--bgcolor);">
-      <el-col :offset="3" :span="18" style="background-color: white; border-radius: 20px; margin-bottom: 40px; padding: 20px 20px;">
-        <el-row :gutter="20">
-          <!-- 1. Левая часть -->
-          <el-col :span="17" style="background-color: white; border-radius: 20px;">
-            <el-row :gutter="5">
-              <el-col :offset="0" :span="15" :xs="{ span: 24, offset: 0 }">
-                <MaterialMilling v-model="material_id" />
-              </el-col>
-              <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
+  <section
+    class="milling-page"
+    v-loading="isLoading"
+    element-loading-text="Пересчитываем стоимость..."
+  >
+    <el-row :gutter="0" class="milling-page__row">
+      <el-col :offset="3" :span="18">
+        <div class="milling-page__card">
+          <div class="milling-page__main">
+            <div class="milling-field-grid">
+              <div class="milling-field-group">
+                <div class="milling-field-title">Количество, шт</div>
                 <CoefficientQuantity v-model="quantity" />
-              </el-col>
-            </el-row>
+              </div>
+              <div class="milling-field-group">
+                <div class="milling-field-title">Сроки выполнения</div>
+                <el-input v-model="manufacturing_cycle" class="milling-input" />
+              </div>
+            </div>
 
-            <el-row :gutter="5">
-              <el-col :offset="0" :span="7" :xs="{ span: 24, offset: 0 }">
-                <!-- <div class="disabled-block"> -->
-                <div>
-                  <CoefficientFinish v-model="finish_id" />
-                </div>
-              </el-col>
-              <el-col :offset="1" :span="7" :xs="{ span: 24, offset: 0 }">
-                <!-- <div class="disabled-block"> -->
-                <div>
-                  <CoefficientTolerance v-model="tolerance_id" />
-                </div>
-              </el-col>
-            </el-row>
+            <div class="milling-field-block">
+              <div class="milling-field-title">Материал</div>
+              <MaterialMilling v-model="material_id" />
+            </div>
 
-            <el-row :gutter="5" class="row-spacing-top">
-              <el-col :offset="0" :span="23">
-                <CoefficientCover v-model="cover_id" />
-              </el-col>
-            </el-row>
+            <div class="milling-field-grid">
+              <div class="milling-field-group">
+                <div class="milling-field-title">Технология</div>
+                <CoefficientFinish v-model="finish_id" />
+              </div>
+              <div class="milling-field-group">
+                <div class="milling-field-title">Точность</div>
+                <CoefficientTolerance v-model="tolerance_id" />
+              </div>
+            </div>
 
-            <el-row
-              :gutter="5"
-              class="row-spacing-top"
+            <div class="milling-field-block">
+              <div class="milling-field-title">Финишная обработка изделия</div>
+              <CoefficientCover v-model="cover_id" />
+            </div>
+
+            <div class="milling-field-block">
+              <div class="milling-field-title">Вид контроля</div>
+              <CoefficientOtk v-model="k_otk" />
+            </div>
+
+            <div class="milling-field-block">
+              <div class="milling-field-title">Сертификаты</div>
+              <CoefficientCertificate v-model="k_cert" />
+            </div>
+
+            <div
+              class="milling-field-block"
               v-if="profileStore.profile?.username === 'admin'"
             >
-              <el-col :offset="0" :span="23">
-                <SuitableMachines :machines="result?.suitable_machines || []" />
-              </el-col>
-            </el-row>
+              <SuitableMachines :machines="result?.suitable_machines || []" />
+            </div>
 
-            <el-row :gutter="5" class="row-spacing-top">
-              <el-col :offset="0" :span="23">
-                <CoefficientOtk v-model="k_otk" />
-              </el-col>
-            </el-row>
+            <div class="milling-field-block">
+              <div class="milling-field-title">Описание заказа</div>
+              <el-input
+                v-model="special_instructions"
+                type="textarea"
+                :rows="5"
+                placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
+              />
+            </div>
 
-            <el-row :gutter="5" class="row-spacing-both">
-              <el-col :offset="0" :span="23">
-                <CoefficientCertificate v-model="k_cert" />
-              </el-col>
-            </el-row>
-            <el-row :gutter="5" class="row-spacing-bottom">
-              <el-col :offset="0" :span="23">
-                <div class="coefficient-label">Комментарий</div>
-                <el-input
-                  v-model="special_instructions"
-                  type="textarea"
-                  :rows="5"
-                  placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
-                  :input-style="{ backgroundColor: 'var(--whity)', color: 'black' }"
-                />
-              </el-col>
-            </el-row>
-            <el-row :gutter="5">
-              <el-col :offset="0" :span="23" :xs="{ span: 24, offset: 0 }">
-            <CalculateSubmit
-              :order-id="order_id"
-              :payload="{ ...payload } as unknown as IOrderPayload"
-              :special-instructions="special_instructions"
-              @updateResult="onUpdateResult"
-              @showInfo="isInfoVisible = true"
-            />
-              </el-col>
-            </el-row>
+            <div class="milling-actions">
+              <CalculateSubmit
+                :order-id="order_id"
+                :payload="{ ...payload } as unknown as IOrderPayload"
+                :special-instructions="special_instructions"
+                @updateResult="onUpdateResult"
+                @showInfo="isInfoVisible = true"
+              />
+            </div>
+          </div>
 
-          </el-col>
-
-           <!-- 2. Правая часть -->
-          <el-col :span="7" :xs="{ span: 24, offset: 0 }">
-            <div class="summary-card">
+          <aside class="milling-page__aside">
             <CalculateResults :result="result" />
 
-            <el-row :gutter="20" class="component-section">
-              <el-col :offset="0" :span="24" class="cad-section">
-                <CadShowById v-model="file_id" />
-              </el-col>
-            </el-row>
-            <el-row :gutter="5" class="upload-section">
-              <el-col :span="24" class="upload-title"> Загрузите файлы для расчета </el-col>
-              <el-col :span="24" class="upload-model">
-                <UploadModel v-model="file_id" color="#000" />
-              </el-col>
-              <el-col :span="24" class="upload-drawings">
-                <UploadDrawings v-model="document_ids" color="#000" />
-              </el-col>
-              <el-col :span="24" class="upload-info"> Максимальный размер 100Мб </el-col>
-              <el-col :span="24">
-                <DocumentShowByIds v-model="document_ids" />
-              </el-col>
-            </el-row>
-
-
+            <div v-if="file_id" class="milling-cad">
+              <CadShowById v-model="file_id" />
             </div>
-  
-          </el-col>
-        </el-row>
+
+            <div class="milling-upload">
+              <div class="milling-upload__title">Загрузите файлы</div>
+              <UploadModel v-model="file_id" color="#000" />
+              <UploadDrawings v-model="document_ids" color="#000" />
+              <DocumentShowByIds v-model="document_ids" />
+            </div>
+          </aside>
+        </div>
       </el-col>
     </el-row>
   </section>
 </template>
 
 <style scoped>
-.personal-order {
-  min-height: 100vh;
-  background-color: white;
+.milling-page {
+  padding: 30px 0 40px;
+  min-height: 300px;
+  background-color: var(--bgcolor);
+}
+
+.milling-page__row {
+  width: 100%;
+}
+
+.milling-page__card {
+  width: 100%;
+  padding: 30px;
   border-radius: 20px;
-  /* box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12); */
+  background: #fff;
+  box-shadow: 0 10px 15px 0 var(--button);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 40px;
 }
 
-.summary-card {
-  background-color: #e9ecef;
-  border-radius: 16px;
-  border: none;
+.milling-page__main {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 24px;
+}
+
+.milling-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.milling-field-group,
+.milling-field-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.milling-field-title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  color: #000;
+}
+
+.milling-actions {
+  padding-top: 6px;
+}
+
+.milling-page__aside {
+  background: var(--bgcolor);
+  border-radius: 20px;
   padding: 20px;
-}
-
-
-:deep(.el-upload-dragger) {
-  padding: 10px;
-  background-color: #283d5b;
-}
-
-.custom {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  gap: 20px;
 }
 
-.submit {
-  background-color: var(--bgcolor);
-  border: 1px solid var(--bgcolor);
-  color: black;
-  font-size: 20px;
-  padding: 30px 0;
-  width: 100%;
+.milling-cad {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
 }
 
-/* Основные цвета и фоны */
-.main-container {
-  min-height: 500px;
-  background-color: var(--bgcolor);
-}
-
-.summary-card {
-  background-color: #e9ecef;
-  border-radius: 16px;
-  border: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding: 20px;
-}
-
-/* Текстовые стили */
-.title-text {
-  color: black;
-  font-size: 28px;
-  font-weight: 600;
-  padding-bottom: 30px;
-}
-
-.title-input-wrapper {
-  width: 100%;
-}
-
-.title-input :deep(.el-input__wrapper) {
-  padding: 0;
-  box-shadow: none;
-  background-color: transparent;
-  border: none;
-}
-
-.title-input :deep(.el-input__wrapper:hover) {
-  box-shadow: none;
-}
-
-.title-input :deep(.el-input__wrapper.is-focus) {
-  box-shadow: none;
-  border: none;
-}
-
-.title-input :deep(.el-input__inner) {
-  padding: 0;
-  font-size: 28px;
-  font-weight: 600;
-  color: black;
-}
-
-.title-input :deep(.el-input__inner::placeholder) {
-  color: rgba(0, 0, 0, 0.4);
-}
-
-.code-input :deep(.el-input__inner) {
-  font-size: 20px;
-  font-weight: 400;
-}
-
-/* price section moved to CalculateResults */
-
-/* Секции с компонентами */
-.component-section {
-  background-color: white;
-  padding-bottom: 30px;
-}
-
-.upload-section {
-  background-color: white;
-  padding-bottom: 30px;
-}
-
-.upload-title {
-  padding-bottom: 10px;
-  font-size: 30px;
-  color: black;
-  font-weight: 700;
-  /* color: #577aad; */
-}
-.upload-model {
-  padding-bottom: 20px;
-}
-
-.upload-drawings {
-  padding-bottom: 20px;
-}
-.upload-info {
-  font-size: 20px;
-  color: black;
-}
-
-.cad-section {
-  color: var(--whity);
-}
-
-/* Кнопки и центрирование */
-.center-button {
-  display: flex;
-  justify-content: center;
-}
-
-/* Отступы для строк */
-.row-spacing-top {
-  padding-top: 30px;
-}
-
-.row-spacing-bottom {
-  padding: 0 0 30px 0;
-}
-
-.row-spacing-both {
-  padding: 30px 0;
-}
-
-/* Стили для комментариев */
-
-.disabled-block {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.summary-card {
-  background-color: #e9ecef;
-  border-radius: 16px;
-  border: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding: 20px;
-}
-
-.status-section {
+.milling-upload {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 24px;
 }
 
-.status-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.status-label {
-  font-size: 20px;
-  font-weight: 500;
+.milling-upload__title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
   color: #000;
 }
 
-.status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 16px;
-  font-weight: 500;
-  background-color: #ffd89b;
-  color: #000;
-  font-size: 12px;
-  font-weight: 500;
+.milling-input :deep(.el-input__wrapper) {
+  background: var(--whity);
+  box-shadow: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+}
+
+:deep(.el-textarea__inner) {
+  min-height: 150px !important;
+  border-radius: 10px;
+  background: var(--whity);
+  box-shadow: none;
+  border: 0;
+}
+
+@media (max-width: 1199px) {
+  .milling-page__card {
+    width: calc(100% - 24px);
+    padding: 20px;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
 }
 
 @media (max-width: 767px) {
-  .main-container {
-    min-height: auto;
+  .milling-page {
+    padding: 16px 0 20px;
   }
 
-  .left-section {
-    padding: 16px 12px 24px 12px;
+  .milling-page__card {
+    width: calc(100% - 16px);
+    padding: 14px;
+    border-radius: 16px;
   }
 
-  .right-section {
-    padding: 16px 12px 24px 12px;
+  .milling-field-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
-  .title-text {
-    font-size: 24px;
-    text-align: center;
-    padding-bottom: 16px;
-  }
-
-  .title-input :deep(.el-input__inner) {
-    font-size: 24px;
-    text-align: center;
-  }
-
-  /* price section styles now provided by CalculateResults */
-
-  .upload-section {
-    margin-bottom: 16px;
-  }
-
-  .upload-title {
+  .milling-field-title,
+  .milling-upload__title {
     font-size: 18px;
-    text-align: center;
-    margin-bottom: 12px;
-  }
-
-  .upload-info {
-    font-size: 12px;
-    text-align: center;
-    margin-bottom: 12px;
-  }
-
-  .submit {
-    font-size: 16px;
-    padding: 16px 0;
-    margin-bottom: 8px;
-  }
-
-  .component-section {
-    margin-bottom: 16px;
-  }
-
-  .coefficient-label {
-    font-size: 18px;
-    padding-bottom: 8px;
   }
 }
 </style>
