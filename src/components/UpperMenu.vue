@@ -412,6 +412,7 @@ function openServicePage(path: string) {
   position: relative;
   width: 100%;
   background-color: var(--bgcolor);
+  padding: 10px 0;
 }
 
 .uppermenu-wrapper.fullscreen-bg {
