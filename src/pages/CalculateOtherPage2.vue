@@ -169,7 +169,7 @@ onMounted(() => {
         }
       }
     } else {
-      file_id.value = 2
+      // file_id.value = 2
     }
 
     sendData(calculationPayload.value as unknown as IOrderPayload)
@@ -450,7 +450,7 @@ async function getOrder(id: number) {
 }
 
 .milling-page__card {
-  width: 100%;
+  /* width: 100%; */
   padding: 30px;
   border-radius: 20px;
   background: #fff;
