@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import HomeCalc from '@/components/sections/HomeCalc.vue'
 import UslugiPKM from '@/components/sections/uslugi/UslugiPKM.vue'
+import UslugiPKMAdvantages from '@/components/sections/uslugi/UslugiPKMAdvantages.vue'
+import UslugiPKMExample from '@/components/sections/uslugi/UslugiPKMExample.vue'
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
@@ -17,6 +19,8 @@ const isMobile = computed(() => width.value < 768)
         </el-col>
       </div>
       <UslugiPKM />
+      <UslugiPKMAdvantages />
+      <UslugiPKMExample />
     </el-row>
   </div>
 </template>

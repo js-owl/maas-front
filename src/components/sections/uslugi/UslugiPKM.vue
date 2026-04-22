@@ -1,22 +1,26 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import IconArrowDown from '@/icons/IconArrowDown.vue'
 
-const isRequirementsExpanded = ref(false)
+const isRequirementsExpanded = ref(true)
 </script>
 
 <template>
-  <!-- Полимерно-композитные материалы -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">Полимерно-композитные материалы</div> 
+      <div class="uslugi-title">Полимерно-композитные материалы</div>
 
-      <div class="uslugi-section">
-        <div class="uslugi-text">
-          Основная технология: вакуумная инфузия, которая позволяет получать высококачественные
-          композитные конструкции с минимальным содержанием внутренних дефектов.
-          Позволяет изготавливать крупногабаритные детали с высокой точностью и равномерным
-          распределением смолы.
+      <div class="uslugi-section pkm-section">
+        <div class="uslugi-text pkm-text">
+          <p class="pkm-lead"><span>Основная технология:</span> вакуумная инфузия</p>
+          <p>
+            Позволяет изготавливать крупногабаритные детали с высокой точностью и равномерным
+            распределением смолы. Обеспечивает прочную, гибкую и долговечную работу в сочетании с
+            превосходным качеством поверхности и уровнем детализации.
+          </p>
+          <p>Идеально подходит для производства деталей, требующих поглощения удара, возврата энергии.</p>
+          <p class="pkm-lead">
+            <span>Материалы:</span> углеткани, стеклоткани, арамидные и базальтовые ткани
+          </p>
         </div>
 
         <div class="uslugi-image-wrapper">
@@ -25,49 +29,13 @@ const isRequirementsExpanded = ref(false)
       </div>
 
       <div class="technical-requirements">
-        <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
-          <div class="uslugi-table-title">Технические требования</div>
-          <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <IconArrowDown />
-          </el-icon>
-        </div>
-
+        <div class="uslugi-table-title">Технические требования</div>
         <div v-if="isRequirementsExpanded" class="requirements-table-wrapper">
-          <table class="requirements-table">
-            <thead>
-              <tr>
-                <th class="uslugi-table-thead">Оборудование</th>
-                <th class="uslugi-table-thead">Габариты</th>
-              </tr>
-            </thead>
+          <table class="requirements-table requirements-table--compact requirements-table--middle">
             <tbody>
               <tr>
-                <td>
-                  <ul class="materials-list">
-                    <li>Окрасочно-сушильная камера</li>
-                    <li>Автоматизированная вакуумная станция AVS 020 220</li>
-                    <li>Камера сушильная (полимеризации)</li>
-                    <li>Сушильный шкаф</li>
-                    <li>Раскройный комплекс ЧПУ (по неметаллам)</li>
-                    <li>Камера холода для хранения препрегов</li>
-                  </ul>
-                </td>
-                <td>
-                  <p>
-                    Горячее формование композитов в камере полимеризации размером до 7000 x 2500 x
-                    2500 мм
-                  </p>
-                  <p>
-                    Раскройно разметочный комплекс предназначен для автоматизированного раскроя
-                    композитных материалов:
-                  </p>
-                  <ul class="materials-list">
-                    <li>углеткани</li>
-                    <li>стеклоткани,</li>
-                    <li>арамидные и базальтовые ткани</li>
-                  </ul>
-                  <p>Рабочее поле 1200 х 1300 мм</p>
-                </td>
+                <td class="requirements-label">Габариты, мм</td>
+                <td>до 7000 x 2500 x 2500</td>
               </tr>
             </tbody>
           </table>
@@ -78,34 +46,26 @@ const isRequirementsExpanded = ref(false)
 </template>
 
 <style scoped>
+.uslugi-wrapper {
+  box-shadow: 0 10px 15px 0 var(--button-bg);
+  padding: 40px;
+}
+
+.uslugi-title {
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
 .technical-requirements {
-  margin-top: 40px;
-}
-
-.requirements-header {
-  height: 52px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-}
-
-.requirements-arrow {
-  transition: transform 0.2s ease;
-  transform: rotate(0deg);
-}
-
-.requirements-arrow.expanded {
-  transform: rotate(-180deg);
+  margin-top: 20px;
 }
 
 .requirements-table-wrapper {
-  margin-top: 12px;
+  margin-top: 20px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  border: 2px solid var(--button-bg);
+  background-color: var(--whity);
 }
 
 .requirements-table {
@@ -114,19 +74,66 @@ const isRequirementsExpanded = ref(false)
   table-layout: fixed;
 }
 
-.materials-list {
-  margin: 0;
-  padding-left: 20px;
-  list-style-type: disc;
+.requirements-table td {
+  border-right: 2px solid var(--button-bg);
+  border-bottom: none;
+  font-size: 18px;
+  padding: 12px 20px;
 }
 
-.materials-list li + li {
-  margin-top: 4px;
+.requirements-table td:last-child {
+  border-right: none;
+}
+
+.requirements-label {
+  background-color: var(--bgcolor);
+}
+
+.pkm-section {
+  align-items: stretch;
+  margin-bottom: 0;
+}
+
+.pkm-text {
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.pkm-text p {
+  margin: 0 0 16px;
+}
+
+.pkm-text p:last-child {
+  margin-bottom: 0;
+}
+
+.pkm-lead span {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+}
+
+.uslugi-image-wrapper {
+  flex: 0 0 590px;
+}
+
+.uslugi-image {
+  border-radius: 10px;
+  box-shadow: none;
+  height: 100%;
+  width: 100%;
 }
 
 @media (max-width: 767px) {
-  .technical-requirements {
-    display: none;
+  .uslugi-wrapper {
+    padding: 20px;
+  }
+
+  .uslugi-image-wrapper {
+    flex: 1;
+  }
+
+  .pkm-lead span {
+    font-size: 20px;
   }
 }
 </style>
