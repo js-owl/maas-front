@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
-const isRequirementsExpanded = ref(false)
+const isRequirementsExpanded = ref(true)
 </script>
 
 <template>
@@ -38,7 +38,7 @@ const isRequirementsExpanded = ref(false)
           <table class="requirements-table requirements-table--compact">
             <colgroup>
               <col class="col-type" />
-              <col />
+              <col class="col-thickness" />
             </colgroup>
             <thead>
               <tr>
@@ -180,8 +180,8 @@ const isRequirementsExpanded = ref(false)
 }
 
 .requirements-table-wrapper {
-  margin-top: 12px;
-  border-radius: 12px;
+  margin-top: 20px;
+  border-radius: 0;
   overflow: hidden;
   border: 1px solid var(--button-bg);
   background-color: var(--whity);
@@ -194,7 +194,11 @@ const isRequirementsExpanded = ref(false)
 }
 
 .col-type {
-  width: 70%;
+  width: calc(100% - 350px);
+}
+
+.col-thickness {
+  width: 350px;
 }
 
 .requirements-table th {
@@ -205,12 +209,28 @@ const isRequirementsExpanded = ref(false)
   font-weight: 500;
   color: #000;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--button-bg);
+  border-right: 1px solid var(--button-bg);
+  vertical-align: top;
+}
+
+.requirements-table td {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #000;
+  padding: 12px 20px;
+  text-align: left;
+  border-bottom: 1px solid var(--button-bg);
+  border-right: 1px solid var(--button-bg);
   vertical-align: top;
 }
 
 .requirements-table th:last-child {
+  border-right: none;
+}
+
+.requirements-table td:last-child {
   border-right: none;
 }
 
