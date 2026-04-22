@@ -12,7 +12,8 @@ import type {
   IOrderResponse,
 } from '../../interfaces/order.interface'
 import DialogLogin from '../dialog/DialogLogin.vue'
-import Button from '../ui/Button.vue'
+import ButtonRound from '../ui/ButtonRound.vue'
+import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 
 const props = defineProps<{
   orderId: number
@@ -234,44 +235,41 @@ const cancel = () => {
 </script>
 
 <template>
-  <div style="display: flex; justify-content: space-between; align-self: flex-start">
-    <Button width="250px" :disabled="isDisabled" @click="cancel"> Отменить </Button>
+  <div class="calculate-submit2">
+    <ButtonRound width="250px" :disabled="isDisabled" @click="cancel">
+      <template #icon-left>
+        <IconArrowLeft color="#333" />
+      </template>
+      Назад
+    </ButtonRound>
 
-    <Button
-      width="250px"
+    <ButtonRound
+      width="300px"
       :disabled="isDisabled || isSubmitting"
       :loading="isSubmitting"
       @click="submitOrder"
     >
-      {{ isNewOrder ? 'Оформить расчет' : 'Сохранить расчет' }}
-    </Button>
+      {{ isNewOrder ? 'Сохранить изменения' : 'Сохранить изменения' }}
+    </ButtonRound>
   </div>
 
   <DialogLogin v-model="isLoginDialogVisible" />
 </template>
 
 <style scoped>
-.submit {
-  background-color: var(--bgcolor);
-  border: 1px solid var(--bgcolor);
-  color: black;
-  font-size: 20px;
-  padding: 10px 20px;
-  /* width: 100%; */
+.calculate-submit2 {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
 }
-.submit.is-disabled {
-  background-color: var(--bgcolor) !important;
-  opacity: 0.6;
-  cursor: default;
-  color: black;
-}
-/* keep appearance unchanged on hover/focus/active */
-.submit:hover,
-.submit:focus,
-.submit:active {
-  background-color: var(--bgcolor) !important;
-  border-color: var(--bgcolor) !important;
-  color: black !important;
-  box-shadow: none !important;
+
+@media (max-width: 599px) {
+  .calculate-submit2 {
+    justify-content: center;
+  }
 }
 </style>
