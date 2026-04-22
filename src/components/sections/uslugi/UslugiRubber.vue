@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
-const isRubberTypesExpanded = ref(true)
-const isProductsExpanded = ref(true)
+const isRubberTypesExpanded = ref(false)
+const isProductsExpanded = ref(false)
 </script>
 
 <template>
