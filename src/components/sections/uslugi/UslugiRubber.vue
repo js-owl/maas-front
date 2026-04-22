@@ -205,6 +205,8 @@ const isProductsExpanded = ref(false)
 }
 
 .requirements-table th {
+  background-color: var(--bgcolor, #e1e4e6);
+  font-family: 'Montserrat-Medium', sans-serif;
   padding: 16px 20px;
   font-size: 18px;
   font-weight: 500;
