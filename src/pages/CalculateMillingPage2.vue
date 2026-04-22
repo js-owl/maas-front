@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { req_json, req_json_auth } from '../api'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
+
 import Input from '../components/ui/Input.vue'
 import DatePicker from '../components/ui/DatePicker.vue'
 
@@ -14,7 +16,7 @@ import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 // import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
-import { useRoute } from 'vue-router'
+
 // import UploadModel from '../components/cad/UploadModel.vue'
 // import UploadDrawings from '../components/UploadDrawings.vue'
 // import DocumentShowByIds from '../components/DocumentShowByIds.vue'
@@ -24,11 +26,12 @@ import { useProfileStore } from '../stores/profile.store'
 // import DialogInfoPayment from '../components/dialog/DialogInfoPayment.vue'
 import SuitableMachines from '../components/SuitableMachines.vue'
 import CalculateResults from '../components/sections/CalculateResults.vue'
-import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
+// import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
 // import Height from "../components/coefficients/Height.vue";
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
 import UploadFiles2 from '@/components/UploadFiles2.vue'
 import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
+import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
 // import Loader from '../components/ui/Loader.vue'
 
 const profileStore = useProfileStore()
@@ -398,7 +401,7 @@ async function getOrder(id: number) {
             </div>
 
             <div class="milling-actions">
-              <CalculateSubmit
+              <CalculateSubmit2
                 :order-id="order_id"
                 :payload="{ ...payload } as unknown as IOrderPayload"
                 :special-instructions="special_instructions"
