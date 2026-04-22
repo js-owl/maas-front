@@ -241,30 +241,35 @@ const handleEdit = () => {
 
   const serviceId = orderData.value.service_id
   const orderIdValue = orderData.value.order_id
+  const query: Record<string, string> = { orderId: orderIdValue.toString() }
+
+  if (kitId.value && kitId.value > 0) {
+    query.kitId = kitId.value.toString()
+  }
 
   switch (serviceId) {
     case 'cnc-lathe':
       router.push({
         path: '/other',
-        query: { orderId: orderIdValue.toString() },
+        query,
       })
       break
     case 'cnc-milling':
       router.push({
         path: '/milling',
-        query: { orderId: orderIdValue.toString() },
+        query,
       })
       break
     case 'printing':
       router.push({
         path: '/printing',
-        query: { orderId: orderIdValue.toString() },
+        query,
       })
       break
     default:
       router.push({
         path: '/other',
-        query: { orderId: orderIdValue.toString() },
+        query,
       })
       break
   }
