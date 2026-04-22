@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
-const isRequirementsExpanded = ref(true)
+const isRequirementsExpanded = ref(false)
 </script>
 
 <template>
