@@ -40,8 +40,8 @@ const isRequirementsExpanded = ref(false)
           <table class="requirements-table">
             <colgroup>
               <col class="col-type" />
-              <col />
-              <col />
+              <col class="col-thickness" />
+              <col class="col-size" />
             </colgroup>
             <thead>
               <tr>
@@ -151,19 +151,22 @@ const isRequirementsExpanded = ref(false)
 
 <style scoped>
 .technical-requirements {
-  margin-top: 40px;
+  margin-top: 20px;
 }
 
 .requirements-header {
-  height: 52px;
-  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
+  min-height: 32px;
+  padding-top: 4px;
+  user-select: none;
 }
 
 .requirements-arrow {
+  color: var(--gray-footer);
+  font-size: 16px;
   transition: transform 0.2s ease;
   transform: rotate(0deg);
 }
@@ -173,11 +176,11 @@ const isRequirementsExpanded = ref(false)
 }
 
 .requirements-table-wrapper {
-  margin-top: 12px;
+  margin-top: 16px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  border: 1px solid var(--button-bg);
+  background-color: var(--whity);
 }
 
 .requirements-table {
@@ -186,11 +189,112 @@ const isRequirementsExpanded = ref(false)
   table-layout: fixed;
 }
 
+.requirements-table th,
+.requirements-table td {
+  border: 1px solid var(--button-bg);
+  color: var(--blacky);
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 12px 20px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.requirements-table thead th {
+  background-color: var(--bgcolor);
+  min-height: 74px;
+  padding: 12px 20px;
+}
+
+.requirements-table tbody td {
+  background-color: var(--whity);
+}
+
+.requirements-table tr {
+  height: 57px;
+}
+
 .col-type {
   width: 600px;
 }
 
+.col-thickness {
+  width: 239px;
+}
+
+.col-size {
+  width: 363px;
+}
+
+.uslugi-wrapper {
+  box-shadow: 0 10px 15px 0 var(--button-bg);
+  border-radius: 20px;
+  margin-bottom: 40px;
+  padding: 40px;
+}
+
+.uslugi-title {
+  font-size: 32px;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.uslugi-section {
+  align-items: stretch;
+  gap: 80px;
+  margin-bottom: 80px;
+}
+
+.uslugi-text {
+  font-size: 18px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  line-height: 1.3;
+}
+
+.uslugi-image-wrapper {
+  flex: 0 0 590px;
+}
+
+.uslugi-image {
+  border-radius: 10px;
+  box-shadow: none;
+  height: 100%;
+  width: 100%;
+}
+
+.uslugi-table-title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  margin-bottom: 0;
+}
+
 @media (max-width: 767px) {
+  .uslugi-wrapper {
+    border-radius: 0;
+    margin-bottom: 20px;
+    padding: 20px;
+  }
+
+  .uslugi-title {
+    font-size: 28px;
+  }
+
+  .uslugi-section {
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .uslugi-image-wrapper {
+    flex: 1 1 auto;
+  }
+
+  .uslugi-table-title {
+    font-size: 20px;
+  }
+
   .technical-requirements {
     display: none;
   }
