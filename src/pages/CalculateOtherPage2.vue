@@ -440,7 +440,7 @@ async function getOrder(id: number) {
 
 <style scoped>
 .milling-page {
-  padding: 30px 0 40px;
+  padding: 0px 0 40px;
   min-height: 300px;
   background-color: var(--bgcolor);
 }
