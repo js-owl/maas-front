@@ -13,10 +13,12 @@ const isRequirementsExpanded = ref(false)
       <div class="uslugi-section">
         <div class="uslugi-text">
           Сварка отличается от склеивания тем, что зазор между соединяемыми деталями заполняется материалом
-          сварочной детали (в том числе с присадочного материала), в результате чего первоначальная граница
-          раздела исчезает, превращаясь в переходный слой[3]. Взаимное растворение и диффузия материала
-          детали и припоя происходят в том числе и при пайке. Но граница между соединяемыми деталями
-          заполняется припоем
+          свариваемых деталей (в том числе с участием присадочного материала), в результате чего первоначальная
+          граница раздела исчезает, превращаясь в переходный слой.
+          <br />
+          <br />
+          Взаимное растворение и диффузия материала детали и припоя происходят в том числе и при пайке.
+          Но граница между соединяемыми деталями заполняется припоем.
         </div>
 
         <div class="uslugi-image-wrapper">
@@ -108,21 +110,69 @@ const isRequirementsExpanded = ref(false)
 
 <style scoped>
 .technical-requirements {
-  margin-top: 40px;
+  margin-top: 0;
+  width: 100%;
+}
+
+.uslugi-wrapper {
+  padding: 40px;
+  box-shadow: 0 10px 15px 0 var(--button-bg);
+}
+
+.uslugi-section {
+  margin-bottom: 80px;
+  align-items: center;
+  gap: 80px;
+}
+
+.uslugi-title {
+  margin-bottom: 20px;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.uslugi-text {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.uslugi-image-wrapper {
+  flex: 0 0 561px;
+}
+
+.uslugi-image {
+  width: 561px;
+  height: 380px;
+  max-width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
 }
 
 .requirements-header {
-  height: 52px;
-  border-radius: 10px;
+  min-height: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
 }
 
+.requirements-header :deep(.uslugi-table-title) {
+  margin-bottom: 0;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+}
+
 .requirements-arrow {
   transition: transform 0.2s ease;
   transform: rotate(0deg);
+  font-size: 24px;
+  color: #000;
 }
 
 .requirements-arrow.expanded {
@@ -133,8 +183,8 @@ const isRequirementsExpanded = ref(false)
   margin-top: 12px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  border: 1px solid var(--button-bg);
+  background-color: var(--whity);
 }
 
 .requirements-table {
@@ -144,10 +194,12 @@ const isRequirementsExpanded = ref(false)
 }
 
 .col-type {
-  width: 900px;
+  width: 70%;
 }
 
 .requirements-table th {
+  background-color: var(--bgcolor);
+  font-family: 'Montserrat-Medium', sans-serif;
   padding: 16px 20px;
   font-size: 18px;
   font-weight: 500;
@@ -158,16 +210,42 @@ const isRequirementsExpanded = ref(false)
   vertical-align: top;
 }
 
-.requirements-table th {
-  font-size: 18px;
-  font-weight: 500;
-}
-
 .requirements-table th:last-child {
   border-right: none;
 }
 
 @media (max-width: 768px) {
+  .uslugi-wrapper {
+    padding: 30px 40px;
+  }
+
+  .uslugi-section {
+    margin-bottom: 40px;
+    gap: 30px;
+  }
+
+  .uslugi-title {
+    font-size: 32px;
+  }
+
+  .uslugi-text {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .uslugi-image-wrapper {
+    flex: 1;
+  }
+
+  .uslugi-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .requirements-header :deep(.uslugi-table-title) {
+    font-size: 20px;
+  }
+
   .requirements-table th {
     font-size: 16px;
   }
