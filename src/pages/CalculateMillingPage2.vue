@@ -393,7 +393,7 @@ async function getOrder(id: number) {
                 v-model="special_instructions"
                 type="textarea"
                 :rows="5"
-                placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
+                placeholder=""
               />
             </div>
 
