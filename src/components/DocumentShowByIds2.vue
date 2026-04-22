@@ -6,6 +6,8 @@ import { ElMessage } from "element-plus";
 type DocumentInfo = {
   id: number;
   original_filename: string;
+  created_at?: string | null;
+  uploaded_at?: string | null;
 };
 
 const document_ids = defineModel<number[]>();
@@ -29,14 +31,21 @@ async function loadUserDocuments() {
     }
 
     // Загружаем каждый документ отдельно по его ID
-    const documentPromises = ids.map(async (documentId) => {
+    const documentPromises: Array<Promise<DocumentInfo | null>> = ids.map(async (documentId) => {
       try {
         const r = await req_json_auth(`/documents/${documentId}`, "GET");
         const data = (await r?.json()) as {
           id: number;
           original_filename: string;
+          created_at?: string | null;
+          uploaded_at?: string | null;
         };
-        return { id: data.id, original_filename: data.original_filename };
+        return {
+          id: data.id,
+          original_filename: data.original_filename,
+          created_at: data.created_at,
+          uploaded_at: data.uploaded_at,
+        };
       } catch (e) {
         console.error(`Error loading document ${documentId}:`, e);
         return null;
@@ -135,6 +144,28 @@ function handleMenuCommand(command: string, id: number) {
   removeDocument(id);
 }
 
+const formatDocumentDate = (doc: DocumentInfo): string => {
+  const sourceDate = doc.created_at ?? doc.uploaded_at;
+  if (!sourceDate) return "";
+
+  const date = new Date(sourceDate);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const datePart = new Intl.DateTimeFormat("ru-RU", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+
+  const timePart = new Intl.DateTimeFormat("ru-RU", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+
+  return `${datePart}   ${timePart}`;
+};
+
 onMounted(() => {
   if (Array.isArray(document_ids.value) && document_ids.value.length > 0) {
     loadUserDocuments();
@@ -163,15 +194,20 @@ watch(
         >
           
         </div>
-        <div v-else>
+        <div v-else class="doc-list">
           <div v-for="doc in filteredDocuments" :key="doc.id" class="doc-row">
-            <span class="doc-name">{{ doc.original_filename }}</span>
+            <div class="doc-content">
+              <span class="doc-name">{{ doc.original_filename }}</span>
+              <span class="doc-date">{{ formatDocumentDate(doc) }}</span>
+            </div>
             <el-dropdown
               trigger="click"
               placement="bottom-end"
               @command="(command: string) => handleMenuCommand(command, doc.id)"
             >
-              <span class="file-menu">⋮</span>
+              <button class="file-menu" type="button" aria-label="Действия с документом">
+                <span class="menu-dots" />
+              </button>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item command="download">Скачать</el-dropdown-item>
@@ -187,28 +223,104 @@ watch(
 </template>
 
 <style scoped>
+.doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .doc-row {
-  min-height: 54px;
+  height: 82px;
   background: #f4f6f8;
   border-radius: 10px;
-  padding: 0 16px;
+  padding: 12px 24px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.doc-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
 }
 
 .doc-name {
   font-family: "Montserrat-SemiBold", sans-serif;
   font-size: 20px;
   font-weight: 600;
+  line-height: 1;
   color: #000000;
-  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-date {
+  font-family: "Montserrat-Medium", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  color: #7d8083;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .file-menu {
-  font-size: 28px;
-  color: #667085;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   cursor: pointer;
-  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.file-menu:hover,
+.file-menu:focus-visible {
+  background-color: #e1e4e6;
+}
+
+.file-menu:focus-visible {
+  outline: 1px solid #7d8083;
+  outline-offset: 1px;
+}
+
+.menu-dots,
+.menu-dots::before,
+.menu-dots::after {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #7d8083;
+  display: block;
+}
+
+.menu-dots {
+  position: relative;
+}
+
+.menu-dots::before,
+.menu-dots::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.menu-dots::before {
+  top: -7px;
+}
+
+.menu-dots::after {
+  top: 7px;
 }
 </style>
