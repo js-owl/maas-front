@@ -261,7 +261,8 @@ onMounted(() => {
   padding: 40px;
   border-radius: 20px;
   min-height: 620px;
-  font-family: Montserrat, sans-serif;
+  font-family: 'Montserrat-Medium', sans-serif;
+  letter-spacing: 0;
 }
 
 .calc-header {
@@ -273,10 +274,12 @@ onMounted(() => {
 }
 
 .document-number {
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
   font-weight: 600;
   line-height: 1;
   color: #000;
+  letter-spacing: 0;
 }
 
 .cost-section {
@@ -291,10 +294,12 @@ onMounted(() => {
 }
 
 .section-name {
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
   font-weight: 600;
   line-height: 1;
   color: #000;
+  letter-spacing: 0;
 }
 
 .section-line {
@@ -304,6 +309,7 @@ onMounted(() => {
 }
 
 .section-value {
+  font-family: 'Montserrat-SemiBold', sans-serif;
   min-width: 70px;
   text-align: right;
   font-size: 24px;
@@ -311,54 +317,62 @@ onMounted(() => {
   line-height: 1;
   color: #000;
   white-space: nowrap;
+  letter-spacing: 0;
 }
 
 .cost-line {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
+  min-height: 28px;
+  margin-bottom: 0;
 }
 
 .line-number {
+  font-family: 'Montserrat-Medium', sans-serif;
   width: 40px;
   font-size: 18px;
   font-weight: 500;
-  line-height: 1.1;
+  line-height: 1;
   color: #000;
+  letter-spacing: 0;
 }
 
 .line-label {
+  font-family: 'Montserrat-Medium', sans-serif;
   white-space: nowrap;
   font-size: 18px;
   font-weight: 500;
-  line-height: 1.1;
+  line-height: 1;
   color: #000;
+  letter-spacing: 0;
 }
 
 .line-dash {
   flex: 1;
   min-width: 40px;
   border-bottom: 1px dashed #cbd1d5;
-  transform: translateY(-3px);
+  transform: translateY(1px);
 }
 
 .line-value {
+  font-family: 'Montserrat-Medium', sans-serif;
   min-width: 90px;
   text-align: right;
   font-size: 18px;
   font-weight: 500;
-  line-height: 1.1;
+  line-height: 1;
   color: #000;
   word-break: break-word;
   white-space: nowrap;
+  letter-spacing: 0;
 }
 
 .action-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 12px;
+  margin-top: 20px;
 }
 
 .right-actions {
@@ -372,8 +386,10 @@ onMounted(() => {
   border-radius: 30px !important;
   box-shadow: none !important;
   color: #000 !important;
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
   font-size: 20px !important;
   font-weight: 600 !important;
+  letter-spacing: 0 !important;
 }
 
 .action-section :deep(.btn:hover),
