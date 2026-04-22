@@ -426,7 +426,7 @@ async function getOrder(id: number) {
               />
               <!-- <UploadModel v-model="file_id" color="#000" />
               <UploadDrawings v-model="document_ids" color="#000" /> -->
-              <DocumentShowByIds2 :document-ids="document_ids" />
+              <DocumentShowByIds2 v-model="document_ids" />
             </div>
           </aside>
         </div>
