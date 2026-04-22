@@ -2,7 +2,6 @@
 import { onMounted, ref, watch, computed } from "vue";
 import { req_json_auth } from "../api";
 import { ElMessage } from "element-plus";
-import { Download } from "@element-plus/icons-vue";
 
 type DocumentInfo = {
   id: number;
@@ -128,6 +127,14 @@ function removeDocument(id: number) {
   }
 }
 
+function handleMenuCommand(command: string, id: number) {
+  if (command === "download") {
+    downloadDoc(id);
+    return;
+  }
+  removeDocument(id);
+}
+
 onMounted(() => {
   if (Array.isArray(document_ids.value) && document_ids.value.length > 0) {
     loadUserDocuments();
@@ -159,16 +166,19 @@ watch(
         <div v-else>
           <div v-for="doc in filteredDocuments" :key="doc.id" class="doc-row">
             <span class="doc-name">{{ doc.original_filename }}</span>
-            <span class="doc-actions">
-              <el-button size="small" link @click="downloadDoc(doc.id)">
-                <el-icon color="black">
-                  <Download />
-                </el-icon>
-              </el-button>
-              <el-button size="small" link @click="removeDocument(doc.id)">
-                <span class="action-remove">✖</span>
-              </el-button>
-            </span>
+            <el-dropdown
+              trigger="click"
+              placement="bottom-end"
+              @command="(command: string) => handleMenuCommand(command, doc.id)"
+            >
+              <span class="file-menu">⋮</span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="download">Скачать</el-dropdown-item>
+                  <el-dropdown-item command="remove">Удалить</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </div>
         </div>
       </template>
@@ -178,26 +188,27 @@ watch(
 
 <style scoped>
 .doc-row {
-  padding: 6px 0;
+  min-height: 54px;
+  background: #f4f6f8;
+  border-radius: 10px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .doc-name {
-  color: black;
-  font-size: 14px;
-  padding-right: 10px;
+  font-family: "Montserrat-SemiBold", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  flex: 1;
 }
 
-.doc-actions {
-  padding-right: 10px;
-}
-/* 
-.action-link {
-  color: #577aad;
-  font-weight: 700;
-} */
-
-.action-remove {
-  color: #bc2b55;
-  font-weight: 700;
+.file-menu {
+  font-size: 28px;
+  color: #667085;
+  cursor: pointer;
+  user-select: none;
 }
 </style>
