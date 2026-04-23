@@ -352,7 +352,7 @@ onMounted(() => {
   flex: 1;
   min-width: 40px;
   border-bottom: 1px dashed #cbd1d5;
-  transform: translateY(1px);
+  transform: translateY(8px);
 }
 
 .line-value {

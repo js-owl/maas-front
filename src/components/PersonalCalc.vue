@@ -723,7 +723,7 @@ watch(
 .property-divider {
   flex: 1;
   border-bottom: 2px dashed var(--button-bg);
-  transform: translateY(-1px);
+  transform: translateY(8px);
 }
 
 .property-value {
