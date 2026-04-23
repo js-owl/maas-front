@@ -649,9 +649,9 @@ onMounted(() => {
 
 <style scoped>
 .personal-order {
-  min-height: auto;
+  /* min-height: auto; */
   background-color: var(--bgcolor);
-  padding: 24px 0 20px;
+  padding: 0;
   border-radius: 20px;
 }
 

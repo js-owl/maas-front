@@ -24,7 +24,7 @@ onMounted(async () => {
 <template>
   <el-row
     :gutter="0"
-    style="padding: 30px 0; min-height: 300px; background-color: var(--bgcolor)"
+    style="padding: 30px 0 40px; min-height: 60vh; background-color: var(--bgcolor)"
   >
     <el-col :offset="3" :span="18">
       <div>

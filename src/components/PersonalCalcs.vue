@@ -217,9 +217,8 @@ onMounted(() => {
 
 <style scoped>
 .personal-calcs {
-  min-height: 100vh;
   background-color: var(--bgcolor);
-  padding: 24px 0 40px;
+  padding: 0;
 }
 
 .calcs-card {
@@ -391,7 +390,7 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .personal-calcs {
-    padding: 0 0 24px;
+    padding: 0;
   }
 
   .calcs-card {
