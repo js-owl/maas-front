@@ -2,11 +2,12 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Download, Edit } from '@element-plus/icons-vue'
+import { Edit } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import ButtonRound from './ui/ButtonRound.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
+import IconDownlod from '@/icons/IconDownlod.vue'
 
 type CalculationOrderRow = {
   order_id: number
@@ -205,7 +206,7 @@ onMounted(() => {
         </ButtonRound>
         <ButtonRound width="300px" @click="handleDownload">
           <template #icon-left>
-            <el-icon><Download /></el-icon>
+            <IconDownlod />
           </template>
           Скачать
         </ButtonRound>
@@ -372,8 +373,8 @@ onMounted(() => {
   display: none !important;
 }
 
-.actions :deep(.el-icon) {
-  font-size: 18px;
+.actions :deep(svg) {
+  display: block;
 }
 
 @media (max-width: 1200px) {
