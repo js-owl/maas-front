@@ -1,24 +1,10 @@
-<script lang="ts" setup>
-import { ref } from 'vue'
-import IconArrowDown from '@/icons/IconArrowDown.vue'
-
-const isRequirementsExpanded = ref(false)
-</script>
-
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
       <div class="uslugi-title">Оборудование</div>
 
       <div class="technical-requirements">
-        <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
-          <div class="uslugi-table-title">Технические требования</div>
-          <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <IconArrowDown />
-          </el-icon>
-        </div>
-
-        <div v-if="isRequirementsExpanded" class="requirements-table-wrapper">
+        <div class="requirements-table-wrapper">
           <table class="requirements-table">
             <thead>
               <tr>
@@ -60,42 +46,27 @@ const isRequirementsExpanded = ref(false)
 
 <style scoped>
 .technical-requirements {
-  margin-top: 40px;
+  margin-top: 20px;
 }
 
-.requirements-header {
-  height: 52px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
+.uslugi-wrapper {
+  box-shadow: 0 10px 15px var(--button-bg);
 }
 
-.requirements-arrow {
-  transition: transform 0.2s ease;
-  transform: rotate(0deg);
-}
-
-.requirements-arrow.expanded {
-  transform: rotate(-180deg);
-}
-
-.requirements-title {
-  font-size: 36px;
-  font-weight: 700;
-  color: #000;
+.uslugi-title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
   text-transform: uppercase;
-  margin-bottom: 40px;
-  text-align: left;
+  margin-bottom: 20px;
 }
 
 .requirements-table-wrapper {
-  margin-top: 12px;
-  border-radius: 12px;
+  margin-top: 0;
+  border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  border: 2px solid var(--button-bg);
+  background-color: #ffffff;
 }
 
 .requirements-table {
@@ -104,50 +75,50 @@ const isRequirementsExpanded = ref(false)
   table-layout: fixed;
 }
 
-.requirements-table th{
-  font-size: 24px;
-}
-
 .requirements-table th {
-  padding: 16px 20px;
-  font-size: 20px;
-  font-weight: 500;
-  color: #000;
+  padding: 12px 20px;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000000;
+  background-color: var(--bgcolor);
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  border-right: 1px solid #e5e7eb;
+  border-bottom: 2px solid var(--button-bg);
   vertical-align: top;
 }
 
-.requirements-table th {
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.requirements-table th:last-child {
-  border-right: none;
+.requirements-table td {
+  padding: 12px 20px;
+  border-top: 0;
+  background-color: var(--whity);
 }
 
 .materials-list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 16px;
   list-style-type: disc;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #000000;
 }
 
 .materials-list li + li {
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 @media (max-width: 768px) {
-  .requirements-title {
-    font-size: 22px;
-    text-align: center;
-    margin-bottom: 30px;
+  .uslugi-title {
+    font-size: 24px;
   }
 
-  .requirements-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
+  .requirements-table th {
+    font-size: 20px;
+  }
+
+  .materials-list {
+    font-size: 16px;
   }
 }
 

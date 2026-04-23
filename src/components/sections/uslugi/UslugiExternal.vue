@@ -38,7 +38,7 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
 
           <router-link class="factor-card factor-card-link" to="/testing#humidity">
             <IconExternal4 class="factor-icon" :stroke-width="2.5" color="#7d8083" />
-            <div class="factor-title">Воздействие влаги и соляного тумана</div>
+            <div class="factor-title">Воздействие соляного тумана</div>
           </router-link>
         </div>
       </div>
@@ -47,92 +47,36 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
 </template>
 
 <style scoped>
-.technical-requirements {
-  margin-top: 40px;
+.uslugi-wrapper {
+  box-shadow: 0 10px 15px var(--button-bg);
 }
 
-.requirements-title {
-  font-size: 36px;
-  font-weight: 700;
-  color: #000;
-  text-transform: uppercase;
-  margin-bottom: 40px;
-  text-align: left;
-}
-
-.requirements-table-wrapper {
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
-}
-
-.requirements-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.requirements-table th{
-  font-size: 24px;
-}
-
-.requirements-table th {
-  padding: 16px 20px;
-  font-size: 20px;
-  font-weight: 500;
-  color: #000;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  border-right: 1px solid #e5e7eb;
-  vertical-align: top;
-}
-
-.requirements-table th {
-  font-size: 24px;
+.uslugi-title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 32px;
   font-weight: 600;
-}
-
-.requirements-table th:last-child {
-  border-right: none;
-}
-
-.materials-list {
-  margin: 0;
-  padding-left: 20px;
-  list-style-type: disc;
-}
-
-.materials-list li + li {
-  margin-top: 4px;
+  margin-bottom: 20px;
 }
 
 .factors-grid {
   display: flex;
-  gap: 24px;
+  gap: 20px;
 }
 
 .factors-column {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .factor-card {
-  background-color: #e1e4e6;
+  background-color: var(--bgcolor);
   border-radius: 10px;
-  padding: 10px 24px;
+  padding: 20px;
   display: flex;
   align-items: center;
-  min-height: 80px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.factor-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  min-height: 100px;
 }
 
 .factor-card-link {
@@ -141,31 +85,35 @@ import IconExternal5 from '@/icons/IconExternal5.vue';
 }
 
 .factor-title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
   font-weight: 600;
-  color: #000;
+  line-height: 1.2;
+  color: #000000;
 }
 
 .factor-icon {
   width: 60px;
   height: 60px;
-  margin-right: 16px;
+  margin-right: 20px;
 }
 
 @media (max-width: 768px) {
-  .requirements-title {
-    font-size: 22px;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .requirements-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
   .factors-grid {
     flex-direction: column;
+  }
+
+  .uslugi-title {
+    font-size: 24px;
+  }
+
+  .factor-card {
+    min-height: 88px;
+    padding: 16px;
+  }
+
+  .factor-title {
+    font-size: 20px;
   }
 }
 </style>
