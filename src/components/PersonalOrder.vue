@@ -609,7 +609,7 @@ onMounted(() => {
 
           <!-- Стоимость изготовления -->
           <div class="cost-item">
-            <div class="maas-text">Сроки изготовления</div>
+            <div class="maas-text" style="padding-top: 24px;">Сроки изготовления</div>
             <div class="maas-subtitle">
               {{ productionLeadTime }}
             </div>
@@ -656,6 +656,7 @@ onMounted(() => {
 }
 
 .order-layout {
+  margin-bottom: 40px;
   background-color: #fff;
   border-radius: 20px;
   box-shadow: 0 10px 15px 0 var(--button-bg);
