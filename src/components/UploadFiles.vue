@@ -11,6 +11,7 @@ const props = withDefaults(
   defineProps<{
     color?: string
     stp_id?: number | null
+    service_id?: string
     hideFormatsText?: boolean
   }>(),
   {

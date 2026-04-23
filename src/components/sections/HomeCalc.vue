@@ -7,6 +7,15 @@ import Button from '../ui/Button.vue'
 import UploadFiles from '../UploadFiles.vue'
 import { useAuthStore } from '../../stores/auth.store'
 
+const props = withDefaults(
+  defineProps<{
+    service_id?: string
+  }>(),
+  {
+    service_id: '',
+  }
+)
+
 const router = useRouter()
 const authStore = useAuthStore()
 
@@ -21,15 +30,25 @@ const stp_id = ref<number | null>(null)
 const selectedOrderType = ref<string>('')
 
 const orderTypeOptions = [
-  { label: 'мехобработка', value: '/milling' },
-  { label: '3D-печать', value: '/printing' },
-  { label: 'прочее', value: '/other' },
+  { label: 'мехобработка', value: '/milling', service_id: 'cnc-milling' },
+  { label: '3D-печать', value: '/printing', service_id: 'printing' },
+  { label: 'прочее', value: '/other', service_id: 'other' },
 ]
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
 
 const hasToken = computed(() => Boolean(authStore.getToken))
+const hasExternalServiceId = computed(() => Boolean(props.service_id))
+const selectedServiceId = computed(
+  () => orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.service_id ?? ''
+)
+const uploadServiceId = computed(() => props.service_id || selectedServiceId.value)
+const selectedRoutePath = computed(() => {
+  if (selectedOrderType.value) return selectedOrderType.value
+  if (!props.service_id) return ''
+  return orderTypeOptions.find((option) => option.service_id === props.service_id)?.value ?? ''
+})
 
 const handleOrderTypeChange = (value: string | number | boolean | object) => {
   if (!value) return
@@ -43,12 +62,12 @@ const handleOrderTypeChange = (value: string | number | boolean | object) => {
 
 const submit = () => {
   // if (!formModel.value.name || formModel.value.phone.length < 6) return
-  if (!selectedOrderType.value) return
+  if (!selectedRoutePath.value) return
 
   isSubmitting.value = true
   router
     .push({
-      path: selectedOrderType.value,
+      path: selectedRoutePath.value,
       query: {
         stp: stp_id.value != null ? String(stp_id.value) : undefined,
         files: JSON.stringify(document_ids.value ?? []),
@@ -78,10 +97,11 @@ const submit = () => {
             v-model="document_ids"
             color="#000"
             v-model:stp_id="stp_id"
+            :service_id="uploadServiceId"
             class="upload-files-bordered"
           />
           <div class="action-row">
-            <el-form-item>
+            <el-form-item v-if="!hasExternalServiceId">
               <Select
                 v-model="selectedOrderType"
                 placeholder="Тип обработки"
@@ -153,6 +173,7 @@ const submit = () => {
   gap: 12px;
   margin-top: 10px;
   align-items: stretch;
+  justify-content: flex-end;
 }
 
 .action-row > * {
