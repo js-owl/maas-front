@@ -41,7 +41,7 @@ onMounted(async () => {
             </el-menu-item>
           </el-menu>
         </aside> -->
-        <main class="content">
+        <main>
           <RouterView />
         </main>
       </div>

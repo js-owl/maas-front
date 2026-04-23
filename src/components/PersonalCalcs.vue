@@ -2,9 +2,11 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { Download, Edit } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
-import Button from './ui/Button.vue'
+import ButtonRound from './ui/ButtonRound.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
+import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 
 type CalculationOrderRow = {
   order_id: number
@@ -126,78 +128,88 @@ onMounted(() => {
 
 <template>
   <section class="personal-calcs">
-    <div class="page-header">
-      <div class="page-title">
-        <div class="order-number">Заказ №{{ kitId }}</div>
-        <div class="order-name">{{ summary?.kit_name || 'Наименование заказа' }}</div>
+    <div class="calcs-card">
+      <div class="page-header">
+        <div class="page-title">
+          <div class="order-number">Заказ №{{ kitId }}</div>
+          <div class="order-name-row">
+            <div class="order-name">{{ summary?.kit_name || 'Наименование заказа' }}</div>
+            <el-icon class="order-edit-icon">
+              <Edit />
+            </el-icon>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <el-table
-      :data="calcRows"
-      style="width: 100%; margin-top: 16px; font-size: 16px; font-weight: 600; color: #000;"
-      :header-cell-style="{ background: '#f5f7fa', fontWeight: '500', fontSize: '12px', color: '#000' }"
-      v-loading="isLoading"
-      empty-text="Нет данных по деталям"
-    >
-      <el-table-column type="index" label="№" width="50" />
-      <el-table-column prop="order_code" label="Обозначение" min-width="180">
-        <template #default="{ row }">
-          <span class="order-code" @click="handleOpenCalculation(row)">
-            {{ row.order_code }}
-          </span>
+      <el-table
+        class="calcs-table"
+        :data="calcRows"
+        v-loading="isLoading"
+        empty-text="Нет данных по деталям"
+      >
+        <el-table-column type="index" label="№" width="50" />
+        <el-table-column prop="order_code" label="Обозначение" min-width="180">
+          <template #default="{ row }">
+            <span class="order-code" @click="handleOpenCalculation(row)">
+              {{ row.order_code }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="order_name" label="Наименование" min-width="200" />
+        <el-table-column prop="quantity" label="Кол-во, шт" width="90" align="center">
+          <template #default="{ row }">
+            {{ row.quantity || 1 }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Калькуляция" width="110" align="center">
+          <template #default="{ row }">
+            <button type="button" class="calc-icon-button" @click="handleOpenCalcInfo(row)">
+              <IconCalculate class="calc-icon" />
+            </button>
+          </template>
+        </el-table-column>
+        <el-table-column label="Цена за ед. без НДС, руб." min-width="132" align="right">
+          <template #default="{ row }">
+            {{ formatMoney(getNetUnitPrice(row)) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Стоимость без НДС, руб." min-width="132" align="right">
+          <template #default="{ row }">
+            {{ formatMoney(getNetTotal(row)) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="НДС 20%, руб." min-width="126" align="right">
+          <template #default="{ row }">
+            {{ formatMoney(getVat(row)) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Стоимость с НДС, руб." min-width="157" align="right">
+          <template #default="{ row }">
+            {{ formatMoney(getTotalWithVat(row)) }}
+          </template>
+        </el-table-column>
+        <template #append>
+          <div class="table-append-total">
+            <span class="table-append-total__label">ИТОГО</span>
+            <span class="table-append-total__value">{{ formatMoney(totalWithVatAll) }}</span>
+          </div>
         </template>
-      </el-table-column>
-      <el-table-column prop="order_name" label="Наименование" min-width="200" />
-      <el-table-column prop="quantity" label="Кол-во, шт" width="80" align="center">
-        <template #default="{ row }">
-          {{ row.quantity || 1 }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Калькуляция" width="110" align="center">
-        <template #default="{ row }">
-          <button type="button" class="calc-icon-button" @click="handleOpenCalcInfo(row)">
-            <IconCalculate class="calc-icon" />
-          </button>
-        </template>
-      </el-table-column>
-      <el-table-column label="Цена за ед. без НДС, руб." min-width="120" align="right">
-        <template #default="{ row }">
-          {{ formatMoney(getNetUnitPrice(row)) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Стоимость без НДС, руб." min-width="120" align="right">
-        <template #default="{ row }">
-          {{ formatMoney(getNetTotal(row)) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="НДС 20%, руб." min-width="120" align="right">
-        <template #default="{ row }">
-          {{ formatMoney(getVat(row)) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Стоимость с НДС, руб." min-width="120" align="right">
-        <template #default="{ row }">
-          {{ formatMoney(getTotalWithVat(row)) }}
-        </template>
-      </el-table-column>
-    </el-table>
+      </el-table>
 
-    <div class="summary-row">
-      <div class="summary-spacer" />
-      <div class="summary-total">
-        <span class="summary-label">ИТОГО</span>
-        <span class="summary-value">{{ formatMoney(totalWithVatAll) }}</span>
+      <div class="actions">
+        <ButtonRound width="300px" @click="handleBackToOrder">
+          <template #icon-left>
+            <IconArrowLeft color="#2f3133" />
+          </template>
+          Вернуться в Заказ
+        </ButtonRound>
+        <ButtonRound width="300px" @click="handleDownload">
+          <template #icon-left>
+            <el-icon><Download /></el-icon>
+          </template>
+          Скачать
+        </ButtonRound>
       </div>
-    </div>
-
-    <div class="actions">
-      <Button class="back-button" width="300px" @click="handleBackToOrder">
-        &lt; Вернуться в Заказ
-      </Button>
-      <Button class="download-button" width="300px" @click="handleDownload">
-        Скачать
-      </Button>
     </div>
   </section>
 </template>
@@ -205,32 +217,87 @@ onMounted(() => {
 <style scoped>
 .personal-calcs {
   min-height: 100vh;
-  background-color: #ffffff;
-  padding: 20px 10px 32px;
+  background-color: var(--bgcolor);
+  padding: 24px 0 40px;
+}
+
+.calcs-card {
+  background-color: #fff;
   border-radius: 20px;
+  box-shadow: 0 10px 15px 0 var(--button-bg);
+  padding: 40px;
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .page-title {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .order-number {
-  font-size: 16px;
-  font-weight: 500;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+  color: #000;
+}
+
+.order-name-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .order-name {
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
   font-weight: 600;
+  line-height: 1;
+  color: #000;
+}
+
+.order-edit-icon {
+  color: #7d8083;
+  font-size: 18px;
+}
+
+.calcs-table {
+  width: 100%;
+  --el-table-header-bg-color: var(--bgcolor);
+  --el-table-border-color: var(--bgcolor);
+  --el-table-text-color: #000;
+  --el-table-row-hover-bg-color: #fff;
+}
+
+.calcs-table :deep(.el-table__header-wrapper th.el-table__cell) {
+  background-color: var(--bgcolor) !important;
+  color: #000;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  padding: 12px 10px;
+}
+
+.calcs-table :deep(.el-table__body-wrapper td.el-table__cell) {
+  color: #000;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 26px 10px;
+  border-bottom: 1px solid var(--bgcolor);
+}
+
+.calcs-table :deep(.el-table__body .el-table__row td:first-child .cell) {
+  color: #7d8083;
 }
 
 .order-code {
@@ -252,58 +319,96 @@ onMounted(() => {
 
 .calc-icon {
   display: inline-block;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
 }
 
-.summary-row {
-  display: flex;
-  justify-content: space-between;
+.table-append-total {
+  display: inline-flex;
   align-items: center;
-  margin-top: 16px;
+  justify-content: flex-end;
+  gap: 38px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 26px 10px 0;
 }
 
-.summary-spacer {
-  flex: 1;
-}
-
-.summary-total {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #ce132f;
-}
-
-.summary-label {
-  text-transform: uppercase;
+.table-append-total__label,
+.table-append-total__value {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--custom-red);
 }
 
 .actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 24px;
+  margin-top: 40px;
 }
 
-.back-button :deep(.btn) {
-  min-width: 200px;
+.actions :deep(.btn) {
+  background: var(--button-bg) !important;
+  background-size: 100% 100% !important;
+  border-radius: 30px !important;
+  box-shadow: none !important;
+  color: #000 !important;
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
 }
 
-.download-button :deep(.btn) {
-  min-width: 160px;
+.actions :deep(.btn:hover),
+.actions :deep(.btn:active) {
+  transform: none !important;
+  box-shadow: none !important;
+  animation: none !important;
 }
 
-@media (max-width: 768px) {
+.actions :deep(.btn::before) {
+  display: none !important;
+}
+
+.actions :deep(.el-icon) {
+  font-size: 18px;
+}
+
+@media (max-width: 1200px) {
+  .calcs-card {
+    padding: 24px;
+  }
+
   .actions {
     flex-direction: column;
     gap: 12px;
     align-items: stretch;
   }
+}
 
-  .back-button :deep(.btn),
-  .download-button :deep(.btn) {
+@media (max-width: 768px) {
+  .personal-calcs {
+    padding: 0 0 24px;
+  }
+
+  .calcs-card {
+    border-radius: 0;
+    padding: 20px;
+  }
+
+  .order-number,
+  .order-name {
+    font-size: 20px;
+  }
+
+  .table-append-total {
+    gap: 16px;
+    padding-top: 20px;
+  }
+
+  .actions :deep(.btn) {
     width: 100% !important;
   }
 }
