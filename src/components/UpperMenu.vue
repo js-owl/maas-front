@@ -10,8 +10,8 @@ import { ElMessage } from 'element-plus'
 import {
   Menu
 } from '@element-plus/icons-vue'
-import IconLogoHeader from './icons/IconLogoHeader.vue'
-import IconLogoHeader2 from './icons/IconLogoHeader2.vue'
+import IconLogoHeader from '../icons/IconLogoHeader.vue'
+import IconLogoHeader2 from '../icons/IconLogoHeader2.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
 import IconReg from '../icons/IconReg.vue'
 import IconCall from '@/icons/IconCall.vue'

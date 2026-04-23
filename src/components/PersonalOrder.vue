@@ -14,6 +14,7 @@ import Select from './ui/Select.vue'
 import InputEdit from './ui/InputEdit.vue'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 import IconCalculate from '@/icons/IconCalculate.vue'
+import IconChat from '@/icons/IconChat.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -356,8 +357,8 @@ const goBack = () => {
   router.push({ path: '/personal/orders' })
 }
 
-const cancel = () => {
-  console.log('cancel')
+const handleOpenChat = () => {
+  ElMessage.info('Чат будет доступен позже')
 }
 
 const handleOrderTypeChange = (value: string | number | boolean | object) => {
@@ -404,6 +405,16 @@ const saveOrder = async () => {
   }
 }
 
+const productionLeadTime = computed(() => {
+  if (!order.value?.created_at || !order.value?.updated_at) return '7 рабочих дней'
+  const created = new Date(order.value.created_at)
+  const completed = new Date(order.value.updated_at)
+  if (Number.isNaN(created.getTime()) || Number.isNaN(completed.getTime())) return '7 рабочих дней'
+  const msInDay = 1000 * 60 * 60 * 24
+  const diffDays = Math.max(1, Math.round((completed.getTime() - created.getTime()) / msInDay))
+  return `${diffDays} рабочих дней`
+})
+
 const confirmOrder = async () => {
   if (!kitId.value) return
 
@@ -427,8 +438,8 @@ onMounted(() => {
 
 <template>
   <section class="personal-order">
-    <el-row :gutter="20">
-      <el-col :span="17">
+    <div class="order-layout">
+      <div class="order-main">
         <!-- <el-card shadow="never" class="order-card"> -->
         <div class="order-header">
           <div class="order-title">
@@ -438,7 +449,13 @@ onMounted(() => {
             </div>
           </div>
           <div class="order-quantity">
-            <ButtonRound width="220px" @click="handleOpenCalcs">
+            <ButtonRound width="164px" @click="handleOpenChat">
+              <template #icon-left>
+                <IconChat color="#7d8083" />
+              </template>
+              Чат
+            </ButtonRound>
+            <ButtonRound width="214px" @click="handleOpenCalcs">
               <template #icon-left>
                 <IconCalculate color="#7d8083" />
               </template>
@@ -449,9 +466,9 @@ onMounted(() => {
         </div>
 
         <el-table
+          class="order-table"
           :data="calcRows"
-          style="margin-top: 10px; width: 100%; font-size: 16px; font-weight: 600;"  
-          :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
+          style="margin-top: 10px; width: 100%;"
           v-loading="isLoading"
           empty-text="Нет данных по деталям"
         >
@@ -460,7 +477,7 @@ onMounted(() => {
               {{ row.order_id }}
             </template>
           </el-table-column> -->
-          <el-table-column prop="file_id" label="Превью" width="120">
+          <el-table-column prop="file_id" label="Превью" width="90">
             <template #default="{ row }">
               <div v-if="row.file_id" class="model-preview">
                 <CadPreview :file-id="row.file_id" />
@@ -468,19 +485,19 @@ onMounted(() => {
               <div v-else class="preview-placeholder" />
             </template>
           </el-table-column>
-          <el-table-column label="Обозначение">
+          <el-table-column label="Обозначение" min-width="250">
             <template #default="{ row }">
               <span class="order-name-link" @click="handleOpenCalculation(row)">
                 {{ row.order_code }}
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="Наименование"  width="200">
+          <el-table-column label="Наименование" min-width="180">
             <template #default="{ row }">
               {{ row.order_name }}
             </template>
           </el-table-column>
-          <el-table-column label="Кол-во" width="100" align="center">
+          <el-table-column label="Кол-во, шт" width="96" align="center">
             <template #default="{ row }">
               <div class="quantity-controls-cell">
                 <!-- <el-button
@@ -503,13 +520,13 @@ onMounted(() => {
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="Цена" width="80" align="center">
+          <el-table-column label="Цена" width="96" align="right">
             <template #default="{ row }">
               {{ formatPrice(row.total_price) }}
             </template>
           </el-table-column>
 
-          <el-table-column label="" width="60" align="center">
+          <el-table-column label="" width="52" align="center">
             <template #default="row">
               <div class="action-buttons">
                 <!-- <el-button
@@ -543,7 +560,7 @@ onMounted(() => {
         </el-table>
 
         <div class="order-footer">
-          <ButtonRound width="280px" @click="goBack">
+          <ButtonRound width="274px" @click="goBack">
               <template #icon-left>
                  <IconArrowLeft color="#333" />
               </template>
@@ -552,7 +569,7 @@ onMounted(() => {
           <Select
             v-model="selectedOrderType"
             placeholder="Добавить деталь"
-            width="270px"
+            width="266px"
             @change="handleOrderTypeChange"
           >
             <el-option
@@ -562,33 +579,42 @@ onMounted(() => {
               :value="option.value"
             />
           </Select>
-          <ButtonRound width="210px" @click="saveOrder">
+          <ButtonRound width="200px" @click="saveOrder">
             Сохранить
           </ButtonRound>
         </div>
         <!-- </el-card> -->
-      </el-col>
+      </div>
 
       <!-- Правая карточка -->
-      <el-col :span="7">
+      <div class="order-side">
         <div shadow="never" class="summary-card">
           <!-- Статус и даты -->
           <div class="status-section">
             <div class="status-row">
               <span class="maas-text">Статус</span>
-              <span class="status-badge">{{ orderStatus }}</span>
+              <span class="status-value">{{ orderStatus }}</span>
             </div>
-            <div class="date-row">
-              <span class="maas-text">Дата создания</span>
-              <span class="maas-text">{{ createdDate }}</span>
-            </div>
-            <div class="date-row">
-              <span class="maas-text">Дата завершения</span>
-              <span class="maas-text">{{ completionDate }}</span>
+            <div class="date-group">
+              <div class="date-row">
+                <span class="maas-text">Дата создания</span>
+                <span class="status-value">{{ createdDate }}</span>
+              </div>
+              <div class="date-row">
+                <span class="maas-text">Дата завершения</span>
+                <span class="status-value">{{ completionDate }}</span>
+              </div>
             </div>
           </div>
 
           <!-- Стоимость изготовления -->
+          <div class="cost-item">
+            <div class="maas-text">Сроки изготовления</div>
+            <div class="maas-subtitle">
+              {{ productionLeadTime }}
+            </div>
+          </div>
+
           <div class="cost-item">
             <div class="maas-text">Стоимость изготовления</div>
             <div class="maas-subtitle">
@@ -612,46 +638,55 @@ onMounted(() => {
             </div>
           </div>
           <!-- Кнопка оплаты -->
-          <div class="summary-actions" style="margin-bottom: 20px;">
-            <Button @click="confirmOrder" class="pay-order-button">Подтвердить</Button>
-          </div>
-          <!-- Кнопка оплаты -->
           <div class="summary-actions">
-            <Button @click="cancel" class="pay-order-button">Оплатить заказ</Button>
+            <Button @click="confirmOrder" class="pay-order-button">Создать заказ</Button>
           </div>
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
   </section>
 </template>
 
 <style scoped>
 .personal-order {
-  min-height: 100vh;
-  background-color: white;
-  /* margin: 0px 0 40px;*/
-  padding: 20px 10px;
+  min-height: auto;
+  background-color: var(--bgcolor);
+  padding: 24px 0 20px;
   border-radius: 20px;
-  /* box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12); */
 }
 
-/* .order-card {
-  background-color: #f7f8fa;
-  border-radius: 16px;
-  border: none;
-} */
+.order-layout {
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 15px 0 var(--button-bg);
+  padding: 40px 40px 32px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 40px;
+}
+
+.order-main {
+  min-width: 0;
+}
+
+.order-side {
+  min-width: 0;
+  width: 100%;
+  max-width: 360px;
+  justify-self: end;
+}
 
 .order-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  align-items: flex-start;
+  margin-bottom: 40px;
 }
 
 .order-title {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 10px;
 }
 
 .order-name-wrapper {
@@ -662,87 +697,150 @@ onMounted(() => {
 
 .order-quantity {
   display: flex;
-  flex-direction: column;
-  /* align-items: flex-end; */
-  gap: 8px;
-}
-
-.calc-button {
-  margin-top: 4px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
 }
 
 .model-preview {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5px;
+  padding: 0;
 }
 
 .preview-placeholder {
   width: 60px;
-  height: 60px;
-  background-color: #f5f7fa;
+  height: 40px;
+  background: linear-gradient(180deg, #fafafb 0%, var(--bgcolor) 99%);
+  border: 2px solid var(--button-bg);
   border-radius: 4px;
   margin: 4px auto;
+}
+
+.order-table {
+  --el-table-header-bg-color: var(--bgcolor);
+  --el-table-border-color: var(--bgcolor);
+  --el-table-text-color: #000;
+  --el-table-row-hover-bg-color: #fff;
+}
+
+.order-table :deep(.el-table__header-wrapper th.el-table__cell) {
+  background-color: var(--bgcolor) !important;
+  color: #000;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  padding: 12px 10px;
+}
+
+.order-table :deep(.el-table__body-wrapper td.el-table__cell) {
+  color: #000;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 26px 10px;
+  border-bottom: 1px solid var(--bgcolor);
+}
+
+.order-table :deep(.el-table__body-wrapper .el-table__cell .cell) {
+  line-height: 1.1;
+}
+
+.order-table :deep(.el-table__header-wrapper th.el-table__cell .cell) {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .order-footer {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  gap: 20px;
+  margin-top: 40px;
 }
 
 .summary-card {
-  background-color: #e9ecef;
-  border-radius: 16px;
+  background-color: var(--bgcolor);
+  border-radius: 20px;
   border: none;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  justify-content: space-between;
   padding: 20px;
+  min-height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .status-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 20px;
+  margin-bottom: 0;
 }
 
 .status-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
-.status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 16px;
-  font-weight: 500;
-  background-color: #ffd89b;
-  color: #000;
-  font-size: 12px;
-  font-weight: 500;
+.status-row::before,
+.date-row::before {
+  content: '';
+  flex: 1;
+  order: 2;
+  border-bottom: 2px dashed var(--button-bg);
+  transform: translateY(-2px);
 }
 
 .date-row {
   display: flex;
   justify-content: space-between;
-  font-size: 16px;
-  color: #909399;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-value {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  color: #000;
+}
+
+.status-row > :first-child,
+.date-row > :first-child {
+  order: 1;
+}
+
+.status-row > :last-child,
+.date-row > :last-child {
+  order: 3;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .cost-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .cost-item.total {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .rub {
@@ -752,7 +850,7 @@ onMounted(() => {
 }
 
 .summary-actions {
-  margin-top: auto;
+  margin-top: 4px;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -760,18 +858,21 @@ onMounted(() => {
 
 .pay-order-button :deep(.btn) {
   width: 100% !important;
-  background: #e9ecef !important;
+  height: 48px !important;
+  background: #aeb2b5 !important;
   background-size: 100% 100% !important;
   border: none !important;
-  color: #606266 !important;
-  border-radius: 8px !important;
-  font-weight: 500 !important;
+  color: #000 !important;
+  border-radius: 10px !important;
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
   box-shadow: none !important;
   padding: 12px 24px !important;
 }
 
 .pay-order-button :deep(.btn:hover) {
-  background: #dee2e6 !important;
+  background: #aeb2b5 !important;
   transform: translateY(0) !important;
   box-shadow: none !important;
   animation: none !important;
@@ -793,12 +894,17 @@ onMounted(() => {
 }
 
 .action-buttons :deep(.el-button) {
-  padding: 4px 2px;
-  color: #606266;
+  padding: 0;
+  color: #7d8083;
+  min-height: auto;
 }
 
 .action-buttons :deep(.el-button:hover) {
-  color: #409eff;
+  color: #7d8083;
+}
+
+.action-buttons :deep(.el-icon) {
+  font-size: 14px;
 }
 
 .quantity-controls-cell {
@@ -811,27 +917,76 @@ onMounted(() => {
 .quantity-value {
   min-width: 30px;
   text-align: center;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
   font-weight: 500;
 }
 
 .order-name-link {
   cursor: pointer;
   transition: color 0.2s;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
 }
 
 .order-name-link:hover {
   text-decoration: underline;
 }
 
+.order-quantity :deep(.btn),
+.order-footer :deep(.btn) {
+  background: var(--button-bg) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  animation: none !important;
+  color: #000 !important;
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  height: 48px !important;
+  border-radius: 320px !important;
+}
+
+.order-quantity :deep(.btn::before),
+.order-footer :deep(.btn::before) {
+  display: none !important;
+}
+
+.order-footer :deep(.el-select__wrapper) {
+  min-height: 48px !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
 @media (max-width: 992px) {
+  .order-layout {
+    padding: 20px;
+    border-radius: 0;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
   .order-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
 
+  .order-side {
+    max-width: 100%;
+    justify-self: stretch;
+  }
+
   .order-quantity {
+    flex-direction: column;
     align-items: flex-start;
+    gap: 12px;
+  }
+
+  .order-footer {
+    flex-direction: column;
   }
 }
 </style>

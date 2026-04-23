@@ -27,7 +27,7 @@ onMounted(async () => {
     style="padding-top: 30px; min-height: 300px; background-color: var(--bgcolor)"
   >
     <el-col :offset="3" :span="18">
-      <div class="personal-layout">
+      <div>
         <!-- <aside class="sidebar">
           <el-menu :default-active="activeKey" class="menu" router>
             <el-menu-item index="/personal/profile">
