@@ -397,7 +397,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
   font-size: 16px;
   font-weight: 500;
   line-height: 1;
-  padding: 26px 10px;
+  padding: 20px 10px;
   border-bottom: 1px solid var(--bgcolor);
 }
 
