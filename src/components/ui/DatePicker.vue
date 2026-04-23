@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue'
-import IconDate from '@/components/icons/IconDate.vue'
+import IconDate from '@/icons/IconDate.vue'
 
 const props = withDefaults(
   defineProps<{
