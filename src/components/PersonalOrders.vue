@@ -6,7 +6,8 @@ import { req_json_auth } from '../api'
 import { useProfileStore } from '../stores/profile.store'
 import { hidePrice } from '../helpers/hide-price'
 import { statusTexts } from '../helpers/status-text'
-import { Search, Delete } from '@element-plus/icons-vue'
+import { Search, Delete, Plus, Refresh } from '@element-plus/icons-vue'
+import ButtonRound from './ui/ButtonRound.vue'
 import type { IKit } from '../interfaces/order.interface'
 
 const router = useRouter()
@@ -22,17 +23,14 @@ const excludedStatuses = ['cancelled', 'C3:LOSE']
 const filteredOrders = computed(() => {
   let result = allOrders.value.filter((order) => !excludedStatuses.includes(order.status ?? ''))
 
-  // Фильтрация по вкладкам
   if (activeTab.value === 'paid') {
     result = result.filter((order) => order.status === 'completed' || order.status === 'C3:WIN')
   } else if (activeTab.value === 'unpaid') {
     result = result.filter((order) => order.status === 'pending' || order.status === 'processing')
-  } else if (activeTab.value === 'calculations') {
-    // Для вкладки "Расчеты" можно добавить свою логику
-    result = result
+  } else if (activeTab.value === 'completed') {
+    result = result.filter((order) => order.status === 'completed' || order.status === 'C3:WIN')
   }
 
-  // Поиск
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter((order) => {
@@ -87,22 +85,22 @@ const formatPrice = (cellValue: number | string | null | undefined, status?: str
   return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(Math.trunc(value))
 }
 
-const statusColors: Record<string, string> = {
-  pending: 'warning',
-  processing: 'info',
-  'in-progress': 'primary',
-  completed: 'success',
-  'C3:WIN': 'success',
-  'C3:LOSE': 'danger',
-  cancelled: 'danger',
+const statusClasses: Record<string, string> = {
+  pending: 'status-chip--pending',
+  processing: 'status-chip--processing',
+  'in-progress': 'status-chip--processing',
+  completed: 'status-chip--completed',
+  'C3:WIN': 'status-chip--completed',
+  'C3:LOSE': 'status-chip--cancelled',
+  cancelled: 'status-chip--cancelled',
 }
 
 const getStatusText = (status: string): string => {
   return statusTexts[status] || status
 }
 
-const getStatusColor = (status: string): string => {
-  return statusColors[status] || 'info'
+const getStatusClass = (status: string): string => {
+  return statusClasses[status] || 'status-chip--default'
 }
 
 const getFilename = (fileId: number | null | undefined): string | null => {
@@ -119,6 +117,14 @@ const handleOpen = (row: IKit): void => {
 
 const handleView = (row: IKit): void => {
   handleOpen(row)
+}
+
+const handleCreateOrder = (): void => {
+  ElMessage.info('Функция "Создать заказ" будет доступна позже')
+}
+
+const handleRepeatOrder = (): void => {
+  ElMessage.info('Функция "Повторить" будет доступна позже')
 }
 
 const handleDelete = async (row: IKit): Promise<void> => {
@@ -155,45 +161,50 @@ const handleDelete = async (row: IKit): Promise<void> => {
 </script>
 
 <template>
-  <el-row
-    :gutter="20"
-    style="background-color: #fff; padding: 10px 20px 0px 20px; min-height: 100px"
-  >
-    <el-col :span="18">
-      <!-- <h1>Мои заказы</h1> -->
-    </el-col>
-    <el-col :span="6" class="search-col">
-      <el-input
-        v-model="searchQuery"
-        placeholder="Поиск"
-        class="search-input"
-        :prefix-icon="Search"
-        clearable
-      />
-    </el-col>
-  </el-row>
-  <el-row :gutter="20" style="background-color: #fff; padding: 0px 20px 20px 20px; min-height: 500px">
-    <el-col :offset="0" :span="24">
-      <div class="table-header">
+  <section class="personal-orders">
+    <div class="orders-card">
+      <div class="orders-toolbar">
         <el-tabs v-model="activeTab" class="filter-tabs">
           <el-tab-pane label="Все" name="all" />
           <el-tab-pane label="Оплаченные" name="paid" />
           <el-tab-pane label="Неоплаченные" name="unpaid" />
+          <el-tab-pane label="Завершенные" name="completed" />
         </el-tabs>
+        <div class="toolbar-actions">
+          <ButtonRound width="220px" @click="handleCreateOrder">
+            <template #icon-left>
+              <el-icon><Plus /></el-icon>
+            </template>
+            Создать заказ
+          </ButtonRound>
+          <ButtonRound width="170px" @click="handleRepeatOrder">
+            <template #icon-left>
+              <el-icon><Refresh /></el-icon>
+            </template>
+            Повторить
+          </ButtonRound>
+          <el-input
+            v-model="searchQuery"
+            placeholder="Поиск"
+            class="search-input"
+            :prefix-icon="Search"
+            clearable
+          />
+        </div>
       </div>
+
       <el-table
+        class="orders-table"
         :data="filteredOrders"
         :default-sort="{ prop: 'kit_id', order: 'descending' }"
-        style="width: 100%; font-size: 16px; font-weight: 600;"  
-        :header-cell-style="{ background: '#f5f7fa', fontWeight: 'bold' }"
         empty-text="Нет данных"
       >
-        <el-table-column prop="kit_id" label="№" width="70" />
+        <el-table-column type="selection" width="56" align="center" />
+        <el-table-column prop="kit_id" label="№" width="74" />
 
-        <!-- Наименование -->
         <el-table-column prop="kit_name" label="Наименование">
           <template #default="{ row }">
-            <span v-if="row.kit_name" class="filename-text" style="cursor: pointer;" @click="handleView(row)">{{
+            <span v-if="row.kit_name" class="filename-text filename-text--link" @click="handleView(row)">{{
               row.kit_name
             }}</span>
             <span
@@ -207,9 +218,6 @@ const handleDelete = async (row: IKit): Promise<void> => {
           </template>
         </el-table-column>
 
-        <!-- <el-table-column prop="quantity" label="Кол-во" width="100" align="center" /> -->
-
-        <!-- Дата создания / завершения -->
         <el-table-column label="Дата созд." width="150">
           <template #default="{ row }">
             <span class="filename-text">{{ formatDate(row.created_at) }}</span>
@@ -221,51 +229,67 @@ const handleDelete = async (row: IKit): Promise<void> => {
           </template>
         </el-table-column>
 
-        <!-- Статус -->
-        <el-table-column prop="status" label="Статус" width="160">
+        <el-table-column prop="status" label="Статус" width="180">
           <template #default="{ row }">
-            <el-tag :type="getStatusColor(row.status)" size="small">
-              <span class="filename-text">{{ getStatusText(row.status) }}</span>
-            </el-tag>
+            <span class="status-chip" :class="getStatusClass(row.status)">
+              {{ getStatusText(row.status) }}
+            </span>
           </template>
         </el-table-column>
 
-        <!-- Цена -->
-        <el-table-column prop="total_kit_price" label="Цена" width="110">
+        <el-table-column prop="total_kit_price" label="Цена" width="120" align="right">
           <template #default="{ row }">
             <span class="filename-text">{{ formatPrice(row.total_kit_price, row.status) }}</span>
           </template>
         </el-table-column>
 
-        <!-- Действия -->
-        <el-table-column label="" width="100" align="center">
+        <el-table-column label="" width="70" align="center">
           <template #default="{ row }">
-            <div class="action-buttons">
-              <el-button
-                link
-                type="primary"
-
-                @click="handleDelete(row)"
-                :loading="deleteLoading === row.kit_id"
-                :icon="Delete"
-                title="Удалить"
-                class="delete-button"
-              />
-            </div>
+            <el-button
+              link
+              class="delete-button"
+              @click="handleDelete(row)"
+              :loading="deleteLoading === row.kit_id"
+              :icon="Delete"
+              title="Удалить"
+            />
           </template>
         </el-table-column>
       </el-table>
-    </el-col>
-  </el-row>
+    </div>
+  </section>
 </template>
 
 <style scoped>
-.table-header {
+.personal-orders {
+  min-height: 100vh;
+  background-color: var(--bgcolor);
+}
+
+.orders-card {
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 15px 0 var(--button-bg);
+  padding: 40px;
+}
+
+.orders-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
   margin-bottom: 20px;
 }
 
 .filter-tabs {
-  flex: 1;
+  min-width: 0;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
 }
 
 .filter-tabs :deep(.el-tabs__header) {
@@ -273,58 +297,144 @@ const handleDelete = async (row: IKit): Promise<void> => {
 }
 
 .filter-tabs :deep(.el-tabs__item) {
-  color: #909399;
-  font-size: 14px;
+  border-bottom: 2px solid var(--button-bg);
+  color: #7d8083;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 0 0 8px;
+  margin-right: 20px;
 }
 
 .filter-tabs :deep(.el-tabs__item.is-active) {
-  color: #ce132f;
+  color: var(--custom-red);
   font-weight: 500;
 }
 
 .filter-tabs :deep(.el-tabs__active-bar) {
-  background-color: #ce132f;
+  background-color: var(--custom-red);
 }
 
-.search-col {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+.filter-tabs :deep(.el-tabs__nav-wrap::after) {
+  display: none;
+}
+
+.toolbar-actions :deep(.btn) {
+  background: var(--button-bg) !important;
+  box-shadow: none !important;
+  border-radius: 40px !important;
+  color: #000 !important;
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+}
+
+.toolbar-actions :deep(.btn:hover),
+.toolbar-actions :deep(.btn:active) {
+  transform: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+.toolbar-actions :deep(.btn::before) {
+  display: none !important;
 }
 
 .search-input {
-  width: 100%;
-  max-width: 300px;
+  width: 181px;
 }
 
 .search-input :deep(.el-input__wrapper) {
-  background-color: #fff;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
+  background-color: var(--whity);
+  border: 2px solid var(--button-bg);
+  border-radius: 10px;
   box-shadow: none;
-  padding: 8px 12px;
+  padding: 8px 16px;
 }
 
 .search-input :deep(.el-input__wrapper:hover) {
-  border-color: #c0c4cc;
+  border-color: var(--button-bg);
 }
 
 .search-input :deep(.el-input__wrapper.is-focus) {
-  border-color: #409eff;
-  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+  border-color: var(--button-bg);
+  box-shadow: none;
 }
 
 .search-input :deep(.el-input__inner) {
-  font-size: 14px;
-  color: #606266;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
 }
 
-.search-input :deep(.el-input__prefix) {
-  left: 12px;
+.search-input :deep(.el-input__prefix .el-icon) {
+  color: #000;
 }
 
-.search-input :deep(.el-input__prefix .el-input__prefix-inner) {
-  color: #909399;
+.orders-table {
+  width: 100%;
+  --el-table-header-bg-color: var(--bgcolor);
+  --el-table-border-color: var(--bgcolor);
+  --el-table-text-color: #000;
+  --el-table-row-hover-bg-color: #fff;
+}
+
+.orders-table :deep(.el-table__header-wrapper th.el-table__cell) {
+  background-color: var(--bgcolor) !important;
+  color: #000;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  padding: 12px 10px;
+}
+
+.orders-table :deep(.el-table__body-wrapper td.el-table__cell) {
+  color: #000;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 26px 10px;
+  border-bottom: 1px solid var(--bgcolor);
+}
+
+.orders-table :deep(.el-table__body .el-table__row td:first-child .cell) {
+  color: #7d8083;
+}
+
+.orders-table :deep(.el-table__header-wrapper th.el-table-column--selection .cell) {
+  display: flex;
+  justify-content: center;
+}
+
+.orders-table :deep(.el-checkbox__inner) {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--button-bg);
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.orders-table :deep(.el-checkbox__inner::after) {
+  left: 7px;
+  top: 3px;
+}
+
+.orders-table :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
+  background-color: var(--button-bg);
+  border-color: var(--button-bg);
+}
+
+.orders-table :deep(.el-checkbox__input.is-checked .el-checkbox__inner::after) {
+  border-color: #fff;
+}
+
+.orders-table :deep(.el-checkbox__input.is-indeterminate .el-checkbox__inner) {
+  background-color: var(--button-bg);
+  border-color: var(--button-bg);
 }
 
 .filename-text {
@@ -336,42 +446,99 @@ const handleDelete = async (row: IKit): Promise<void> => {
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  color: #000000;
+  color: #000;
 }
-/* .filename-text:hover {
+
+.filename-text--link {
+  cursor: pointer;
+}
+
+.filename-text--link:hover {
   text-decoration: underline;
-} */
+}
 
 .no-filename {
-  color: #909399;
+  color: #7d8083;
   font-style: italic;
   font-size: 12px;
 }
 
-.action-buttons {
-  display: flex;
-  gap: 8px;
+.status-chip {
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+  white-space: nowrap;
 }
 
-.action-buttons :deep(.el-button) {
-  padding: 4px 8px;
-  color: #606266;
+.status-chip--default,
+.status-chip--cancelled {
+  background-color: var(--whity);
+  border-color: var(--bgcolor);
 }
 
-.action-buttons :deep(.el-button:hover) {
-  color: #409eff;
+.status-chip--completed {
+  background-color: #e2f3e7;
+  border-color: #bbe9c7;
+}
+
+.status-chip--processing {
+  background-color: #e7f7ff;
+  border-color: #bddded;
+}
+
+.status-chip--pending {
+  background-color: #f6f0e4;
+  border-color: #eddbbb;
+}
+
+.delete-button {
+  color: #7d8083 !important;
+}
+
+.delete-button:hover {
+  color: #55585b !important;
+}
+
+@media (max-width: 1200px) {
+  .orders-card {
+    padding: 24px;
+  }
+
+  .orders-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar-actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
 }
 
 @media (max-width: 768px) {
-  .search-col {
-    margin-top: 10px;
-    justify-content: stretch;
+  .personal-orders {
+    min-height: auto;
   }
 
-  .search-input {
+  .orders-card {
+    border-radius: 0;
+    padding: 20px;
+  }
+
+  .toolbar-actions {
+    gap: 12px;
+  }
+
+  .search-input,
+  .toolbar-actions :deep(.btn) {
     width: 100%;
-    max-width: 100%;
   }
 }
 </style>
