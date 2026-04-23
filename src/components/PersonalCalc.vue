@@ -502,16 +502,15 @@ watch(
     v-loading="isLoading"
     element-loading-text="Загрузка данных заказа..."
   >
-  <section class="personal-order">
-    <el-row :gutter="20">
-      <el-col :span="16">
-        <el-card class="product-card" shadow="never">
+    <section class="personal-order">
+      <div class="calc-layout">
+        <div class="calc-main">
           <div class="toolbar-row">
             <ButtonRound width="280px" @click="handleBack">
               <template #icon-left>
-                 <IconArrowLeft color="#333" />
+                <IconArrowLeft color="#333" />
               </template>
-               Вернуться в Заказ
+              Вернуться в Заказ
             </ButtonRound>
             <ButtonRound width="220px" @click="handleCalcInfo">
               <template #icon-left>
@@ -539,7 +538,7 @@ watch(
               <span class="property-value">{{ productProperties.dimensions || '-' }}</span>
             </div>
             <div class="property-item">
-              <span class="property-label">Объем детали, см²</span>
+              <span class="property-label">Объем детали, мм³</span>
               <span class="property-divider" />
               <span class="property-value">{{ productProperties.partVolume || '-' }}</span>
             </div>
@@ -559,7 +558,7 @@ watch(
               <span class="property-value">{{ productProperties.coating || '-' }}</span>
             </div>
             <div class="property-item">
-              <span class="property-label">Площадь покраски, см²</span>
+              <span class="property-label">Площадь покраски, мм³</span>
               <span class="property-divider" />
               <span class="property-value">-</span>
             </div>
@@ -570,92 +569,93 @@ watch(
             @view-document="downloadUploadedDocument"
             @remove-document="removeUploadedDocument"
           />
-        </el-card>
-      </el-col>
+        </div>
 
-      <!-- Правая карточка -->
-      <el-col :span="8">
-        <div class="summary-card">
-          <!-- Image Container -->
-          <div class="image-container">
-            <div class="personal-wrapper">
-              <div v-if="fileId" class="preview-wrapper">
-                <CadShowById v-model="fileId" />
-              </div>
-              <div v-else class="preview-placeholder">
-                <div class="placeholder-content"></div>
+        <div class="calc-side">
+          <div class="summary-card">
+            <div class="image-container">
+              <div class="personal-wrapper">
+                <div v-if="fileId" class="preview-wrapper">
+                  <CadShowById v-model="fileId" />
+                </div>
+                <div v-else class="preview-placeholder">
+                  <div class="placeholder-content" />
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Quantity Display -->
-          <div class="cost-value" style="padding-top:20px">
-            {{ quantity }} шт.
-          </div>
+            <div class="cost-value quantity-value">{{ quantity }} шт.</div>
 
-          
-          <div class="cost-item">
-            <div class="cost-label">Стоимость 1 изд.</div>
-            <div class="cost-value">
-              {{ formatPrice(costPerItem) }}
+            <div class="cost-item">
+              <div class="cost-label">Стоимость 1 изд.</div>
+              <div class="cost-value">{{ formatPrice(costPerItem) }}</div>
             </div>
-          </div>
 
-          <div class="cost-item">
-            <div class="cost-label">Общая стоимость</div>
-            <div class="cost-value">
-              {{ formatPrice(totalCostFormatted) }}
+            <div class="cost-item">
+              <div class="cost-label">Общая стоимость</div>
+              <div class="cost-value">{{ formatPrice(totalCostFormatted) }}</div>
             </div>
-          </div>
-          <div class="summary-actions">
-            <Button width="100%" type="secondary" :disabled="isCalculationDisabled" @click="handleEdit">
-              Расчет
-            </Button>
-            <Button width="100%" :loading="isSaving" @click="saveOrder">
-              Сохранить
-            </Button>
+            <div class="summary-actions">
+              <Button
+                width="100%"
+                type="secondary"
+                :disabled="isCalculationDisabled"
+                @click="handleEdit"
+              >
+                Расчет
+              </Button>
+              <Button width="100%" :loading="isSaving" @click="saveOrder">
+                Сохранить
+              </Button>
+            </div>
           </div>
         </div>
-      </el-col>
-    </el-row>
-  </section>
+      </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
 .personal-order {
-  min-height: 130vh;
-  box-sizing: border-box;
-  background-color: white;
-  padding: 20px 10px;
+  min-height: auto;
+  background-color: var(--bgcolor);
+  padding: 24px 0 20px;
   border-radius: 20px;
 }
+
 .personal-calc-container {
   padding: 0;
   min-height: 500px;
 }
 
-/* Product Card Styling */
-.product-card {
-  background: #fff;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.calc-layout {
+  margin-bottom: 40px;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 15px 0 var(--button-bg);
+  padding: 30px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 40px;
 }
 
-:deep(.el-card) {
-  border: none;
+.calc-main {
+  min-width: 0;
 }
 
-.product-card :deep(.el-card__body) {
-  padding: 24px;
-  border: none;
+.calc-side {
+  min-width: 0;
+  width: 100%;
+  max-width: 360px;
+  justify-self: end;
 }
 
 .toolbar-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  gap: 20px;
+  margin-bottom: 40px;
 }
 
 .order-number {
@@ -668,17 +668,16 @@ watch(
 .placeholder-content {
   width: 100%;
   height: 100%;
-  background-color: #e4e7ed;
-  border-radius: 8px;
+  background-color: var(--whity);
+  border-radius: 10px;
 }
 
-/* Product Info Section */
 .product-info {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 40px;
 }
 
 .cost-label {
@@ -696,19 +695,21 @@ watch(
   color: #000000;
 }
 
-/* Properties Section */
+.quantity-value {
+  padding-top: 0;
+}
+
 .properties-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 28px;
+  gap: 20px;
+  margin-bottom: 40px;
 }
 
 .property-item {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
-  padding: 4px 0;
 }
 
 .property-label {
@@ -721,8 +722,8 @@ watch(
 
 .property-divider {
   flex: 1;
-  border-bottom: 1px dashed #d0d5dd;
-  transform: translateY(4px);
+  border-bottom: 2px dashed var(--button-bg);
+  transform: translateY(-1px);
 }
 
 .property-value {
@@ -734,19 +735,19 @@ watch(
   white-space: nowrap;
 }
 
-/* Right Summary Card */
 .summary-card {
-  background-color: #e9ecef;
-  border-radius: 16px;
+  background-color: var(--bgcolor);
+  border-radius: 20px;
   border: none;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 24px;
   padding: 20px;
-  min-height: 100%;
+  min-height: 640px;
+  box-sizing: border-box;
 }
 
-/* Image Container */
 .image-container {
   display: flex;
   align-items: center;
@@ -756,10 +757,8 @@ watch(
 .personal-wrapper {
   position: relative;
   width: 100%;
-  /* background-color: #fff; */
-  border-radius: 12px;
-  padding: 12px;
-  /* min-height: 200px; */
+  border-radius: 10px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -784,11 +783,12 @@ watch(
 .preview-wrapper :deep(.stl-preview) {
   width: 100% !important;
   height: 100% !important;
-  min-height: 180px;
+  min-height: 250px;
   max-width: 100%;
   max-height: 100%;
   border: none !important;
-  border-radius: 8px;
+  border-radius: 10px;
+  background-color: #fff;
 }
 
 .preview-wrapper :deep(.preview-image) {
@@ -800,34 +800,93 @@ watch(
 .preview-placeholder {
   width: 100%;
   height: 100%;
-  min-height: 180px;
-  background-color: #f5f7fa;
-  border-radius: 8px;
+  min-height: 250px;
+  background-color: #fff;
+  border-radius: 10px;
 }
 
 .cost-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
-
 .summary-actions {
-  margin-top: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .personal-calc-container {
-    padding: 16px;
+/* Use same button appearance pattern as PersonalOrder/PersonalCalcs. */
+.toolbar-row :deep(.btn) {
+  background: var(--button-bg) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  animation: none !important;
+  color: #000 !important;
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  height: 48px !important;
+  border-radius: 320px !important;
+}
+
+.toolbar-row :deep(.btn::before) {
+  display: none !important;
+}
+
+.summary-actions :deep(.btn) {
+  width: 100% !important;
+  height: 48px !important;
+  background: #aeb2b5 !important;
+  background-size: 100% 100% !important;
+  border: none !important;
+  color: #000 !important;
+  border-radius: 10px !important;
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  padding: 12px 24px !important;
+}
+
+.summary-actions :deep(.btn:hover) {
+  background: #aeb2b5 !important;
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+.summary-actions :deep(.btn:active) {
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+}
+
+.summary-actions :deep(.btn::before) {
+  display: none !important;
+}
+
+@media (max-width: 992px) {
+  .calc-layout {
+    padding: 20px;
+    border-radius: 0;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .toolbar-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .calc-side {
+    max-width: 100%;
+    justify-self: stretch;
   }
 
   .summary-card {
-    margin-top: 20px;
+    min-height: auto;
   }
 }
 </style>
