@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import HomeCalc from '@/components/sections/HomeCalc.vue'
-import UslugiExternal from '@/components/sections/uslugi/UslugiExternal.vue'
+import UslugiTestExternal from '@/components/sections/uslugi/UslugiTestExternal.vue'
 import UslugiOptical from '@/components/sections/uslugi/UslugiOptical.vue'
 import UslugiEquipment from '@/components/sections/uslugi/UslugiEquipment.vue'
 
@@ -18,7 +18,7 @@ const isMobile = computed(() => width.value < 768)
           <HomeCalc />
         </el-col>
       </div>
-      <UslugiExternal />
+      <UslugiTestExternal />
       <UslugiOptical />
       <UslugiEquipment />
     </el-row>
