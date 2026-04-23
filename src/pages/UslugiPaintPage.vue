@@ -13,7 +13,7 @@ const isMobile = computed(() => width.value < 768)
     <el-row>
       <div v-if="!isMobile">
         <el-col :offset="3" :span="18">
-          <HomeCalc />
+          <HomeCalc service_id="other" />
         </el-col>
       </div>
       <UslugiPaint />
