@@ -31,7 +31,7 @@ import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interfac
 import UploadFiles2 from '@/components/UploadFiles2.vue'
 import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
-// import Loader from '../components/ui/Loader.vue'
+import Loader from '../components/ui/Loader.vue'
 
 const profileStore = useProfileStore()
 
@@ -308,15 +308,12 @@ watch(
 </script>
 
 <template>
-  <section
-    class="milling-page"
-    v-loading="isLoading"
-    element-loading-text="Пересчитываем стоимость..."
-  >
-    <el-row :gutter="0" class="milling-page__row">
-      <el-col :offset="3" :span="18">
-        <div class="milling-page__card">
-          <div class="milling-page__main">
+  <Loader :loading="isLoading" text="Расчет цены...">
+    <section class="milling-page">
+      <el-row :gutter="0" class="milling-page__row">
+        <el-col :offset="3" :span="18">
+          <div class="milling-page__card">
+            <div class="milling-page__main">
             <div class="milling-field-grid">
               <div class="milling-field-group">
                 <div class="milling-field-title">Количество, шт</div>
@@ -394,31 +391,32 @@ watch(
             </div>
           </div>
 
-          <aside class="milling-page__aside">
-            <CalculateResults :result="result" />
+            <aside class="milling-page__aside">
+              <CalculateResults :result="result" />
 
-            <div v-if="file_id" class="milling-cad">
-              <CadShowById v-model="file_id" />
-            </div>
+              <div v-if="file_id" class="milling-cad">
+                <CadShowById v-model="file_id" />
+              </div>
 
-            <div class="milling-upload">
-              <div class="milling-upload__title">Загрузите файлы</div>
-              <UploadFiles2
-                v-model="document_ids"
-                color="#000"
-                :hide-formats-text="true"
-                v-model:stp_id="file_id"
-                class="upload-files-bordered"
-              />
-              <!-- <UploadModel v-model="file_id" color="#000" />
+              <div class="milling-upload">
+                <div class="milling-upload__title">Загрузите файлы</div>
+                <UploadFiles2
+                  v-model="document_ids"
+                  color="#000"
+                  :hide-formats-text="true"
+                  v-model:stp_id="file_id"
+                  class="upload-files-bordered"
+                />
+                <!-- <UploadModel v-model="file_id" color="#000" />
               <UploadDrawings v-model="document_ids" color="#000" /> -->
-              <DocumentShowByIds2 v-model="document_ids" />
-            </div>
-          </aside>
-        </div>
-      </el-col>
-    </el-row>
-  </section>
+                <DocumentShowByIds2 v-model="document_ids" />
+              </div>
+            </aside>
+          </div>
+        </el-col>
+      </el-row>
+    </section>
+  </Loader>
 </template>
 
 <style scoped>
