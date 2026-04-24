@@ -23,45 +23,43 @@ const modelValue = defineModel<CheckboxValue | CheckboxValue[] | boolean>()
 
 <style scoped>
 .checkbox {
-  --el-checkbox-font-size: var(--checkbox-font-size, 14px);
-  --el-checkbox-text-color: var(--checkbox-text-color, #000);
+  --el-checkbox-font-size: 16px;
+  --el-checkbox-text-color: #000;
 }
 
 .checkbox :deep(.el-checkbox__label) {
-  padding-left: var(--checkbox-label-padding-left, 10px);
-  font-family: var(--checkbox-font-family, 'Montserrat-Medium'), sans-serif;
-  font-weight: var(--checkbox-font-weight, 500);
-  font-size: var(--checkbox-label-size, 14px);
-  line-height: var(--checkbox-line-height, 1.2);
+  padding-left: 8px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: normal;
 }
 
 .checkbox :deep(.el-checkbox__inner) {
-  width: var(--checkbox-size, 18px);
-  height: var(--checkbox-size, 18px);
-  border: var(--checkbox-border-width, 1px) solid var(--checkbox-border-color, #dcdfe6);
-  border-radius: var(--checkbox-radius, 4px);
-  background-color: var(--checkbox-bg-color, #fff);
+  width: 20px;
+  height: 21px;
+  border: 2px solid #cbd1d5;
+  border-radius: 6px;
+  background-color: #fff;
 }
 
 .checkbox :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-  border-color: var(--checkbox-checked-border-color, var(--checkbox-border-color, #409eff));
-  background-color: var(--checkbox-checked-bg-color, var(--checkbox-bg-color, #409eff));
+  border-color: #cbd1d5;
+  background-color: #fff;
 }
 
 .checkbox :deep(.el-checkbox__inner::after) {
-  left: 7px;
+  left: 6px;
   top: 2px;
-  width: var(--checkbox-check-width, 4px);
-  height: var(--checkbox-check-height, 8px);
-  border-width: var(--checkbox-check-border-width, 2px);
-  /* border-color: var(--checkbox-check-color, #000);
-  transform: translate(-50%, -55%) rotate(45deg); */
+  width: 4px;
+  height: 8px;
+  border-width: 2px;
 }
 
 .checkbox :deep(.el-checkbox__input.is-checked .el-checkbox__inner::after),
 .checkbox :deep(.el-checkbox__input.is-indeterminate .el-checkbox__inner::after),
 .checkbox :deep(.el-checkbox__input.is-disabled .el-checkbox__inner::after) {
-  border-color: var(--checkbox-check-color, #000);
+  border-color: #cbd1d5;
 }
 
 </style>
