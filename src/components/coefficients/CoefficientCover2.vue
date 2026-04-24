@@ -5,6 +5,7 @@ import Checkbox from '../ui/Checkbox.vue'
 
 const selected = defineModel<string[]>()
 const coveres = ref()
+const defaultCoveres = [{ value: '1', label: 'Покраска' }]
 
 interface Props {
   excludeLabels?: string[]
@@ -26,6 +27,7 @@ onMounted(async () => {
     coveres.value = coefficients.cover
   } catch (error) {
     console.error('Failed to load covers:', error)
+    coveres.value = defaultCoveres
   }
 })
 </script>
