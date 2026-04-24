@@ -310,6 +310,12 @@ const submitForm = async () => {
   color: var(--gray-footer);
 }
 
+.dialog-call-form :deep(.el-form-item__error) {
+  position: static;
+  padding-top: 6px;
+  line-height: 1.2;
+}
+
 .agreement-checkbox :deep(.el-checkbox__label) {
   padding-left: 12px;
   font-family: 'Montserrat-Medium', sans-serif;

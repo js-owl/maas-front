@@ -176,6 +176,12 @@ const onOpenLogin = () => {
   color: var(--gray-footer);
 }
 
+.dialog-login-form :deep(.el-form-item__error) {
+  position: static;
+  padding-top: 6px;
+  line-height: 1.2;
+}
+
 .remember-row {
   margin-top: 20px;
   display: flex;
