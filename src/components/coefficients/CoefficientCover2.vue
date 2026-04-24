@@ -50,7 +50,7 @@ onMounted(async () => {
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  width: 300px;
+  width: 390px;
   padding-bottom: 5px;
 }
 :deep(.line) {
