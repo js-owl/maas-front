@@ -259,7 +259,7 @@ const onHaveAccount = () => {
       </el-form>
 
       <div class="agreement-row">
-        <Checkbox v-model="isAgreementAccepted" class="agreement-checkbox">
+        <Checkbox v-model="isAgreementAccepted">
           Я согласен с условиями обработки моих данных
         </Checkbox>
       </div>
@@ -339,9 +339,6 @@ const onHaveAccount = () => {
   margin-top: 10px;
   display: flex;
   align-items: center;
-}
-
-.agreement-checkbox {
   --checkbox-font-size: 14px;
   --checkbox-text-color: #000;
   --checkbox-label-padding-left: 10px;

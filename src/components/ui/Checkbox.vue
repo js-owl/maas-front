@@ -64,24 +64,4 @@ const modelValue = defineModel<CheckboxValue | CheckboxValue[] | boolean>()
   border-color: var(--checkbox-check-color, #000);
 }
 
-.checkbox.agreement-checkbox {
-  --checkbox-font-size: 12px;
-  --checkbox-text-color: #000;
-  --checkbox-label-padding-left: 12px;
-  --checkbox-font-family: 'Montserrat-Medium';
-  --checkbox-font-weight: 400;
-  --checkbox-label-size: 12px;
-  --checkbox-line-height: 14px;
-  --checkbox-size: 24px;
-  --checkbox-border-width: 2px;
-  --checkbox-border-color: #7d8083;
-  --checkbox-bg-color: var(--bgcolor);
-  --checkbox-radius: 4px;
-  --checkbox-checked-border-color: #7d8083;
-  --checkbox-checked-bg-color: var(--bgcolor);
-  --checkbox-check-width: 5px;
-  --checkbox-check-height: 10px;
-  --checkbox-check-border-width: 2px;
-  --checkbox-check-color: #000;
-}
 </style>
