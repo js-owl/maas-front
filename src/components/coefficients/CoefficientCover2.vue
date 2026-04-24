@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { getCoefficients } from './api-coefficients'
-import Checkbox from '../ui/Checkbox.vue'
+import CheckboxСalc from '../ui/CheckboxСalc.vue'
 
 const selected = defineModel<string[]>()
 const coveres = ref()
@@ -35,14 +35,14 @@ onMounted(async () => {
 <template>
   <div style="max-width: 1000px">
     <el-checkbox-group v-model="selected">
-      <Checkbox
+      <CheckboxСalc
         v-for="item in filteredCoveres"
         :key="item.value"
         :value="item.value"
         class="checkbox-item"
       >
         <div class="coefficient-value">{{ item.label }}</div>
-      </Checkbox>
+      </CheckboxСalc>
     </el-checkbox-group>
   </div>
 </template>
