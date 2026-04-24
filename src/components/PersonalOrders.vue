@@ -229,7 +229,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
           </template>
         </el-table-column>
 
-        <el-table-column prop="status" label="Статус" width="180">
+        <el-table-column prop="status" label="Статус" width="250">
           <template #default="{ row }">
             <span class="status-chip" :class="getStatusClass(row.status)">
               {{ getStatusText(row.status) }}
