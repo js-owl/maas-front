@@ -49,12 +49,19 @@ const modelValue = defineModel<CheckboxValue | CheckboxValue[] | boolean>()
 }
 
 .checkbox :deep(.el-checkbox__inner::after) {
-  left: var(--checkbox-check-left, 5px);
-  top: var(--checkbox-check-top, 2px);
+  left: 7px;
+  top: 2px;
   width: var(--checkbox-check-width, 4px);
   height: var(--checkbox-check-height, 8px);
   border-width: var(--checkbox-check-border-width, 2px);
-  border-color: var(--checkbox-check-color, #fff);
+  /* border-color: var(--checkbox-check-color, #000);
+  transform: translate(-50%, -55%) rotate(45deg); */
+}
+
+.checkbox :deep(.el-checkbox__input.is-checked .el-checkbox__inner::after),
+.checkbox :deep(.el-checkbox__input.is-indeterminate .el-checkbox__inner::after),
+.checkbox :deep(.el-checkbox__input.is-disabled .el-checkbox__inner::after) {
+  border-color: var(--checkbox-check-color, #000);
 }
 
 .checkbox.agreement-checkbox {
@@ -72,8 +79,6 @@ const modelValue = defineModel<CheckboxValue | CheckboxValue[] | boolean>()
   --checkbox-radius: 4px;
   --checkbox-checked-border-color: #7d8083;
   --checkbox-checked-bg-color: var(--bgcolor);
-  --checkbox-check-left: 8px;
-  --checkbox-check-top: 4px;
   --checkbox-check-width: 5px;
   --checkbox-check-height: 10px;
   --checkbox-check-border-width: 2px;
