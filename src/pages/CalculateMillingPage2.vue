@@ -11,9 +11,8 @@ import SelectCalc from '../components/ui/SelectCalc.vue'
 
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 // import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
-import CoefficientTolerance from '../components/coefficients/CoefficientTolerance.vue'
-import CoefficientFinish from '../components/coefficients/CoefficientFinish.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
+import { getCoefficients } from '../components/coefficients/api-coefficients'
 // import CoefficientSize from "../components/coefficients/CoefficientSize.vue";
 
 
@@ -61,6 +60,8 @@ let material_form = ref('sheet')
 const materials = ref<Array<{ value: string; label: string }>>([
   { value: 'alum_D16', label: 'Алюминий Д16' },
 ])
+const tolerances = ref<Array<{ value: string; label: string }>>([])
+const finishes = ref<Array<{ value: string; label: string }>>([])
 const service_id = ref('cnc-milling')
 
 let tolerance_id = ref('4')
@@ -150,6 +151,7 @@ watch(
 
 onMounted(() => {
   loadMaterials()
+  loadFinishAndTolerance()
   manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
   if (order_id.value === 0) {
     const filesQuery = route.query.files
@@ -198,6 +200,23 @@ async function loadMaterials() {
     }
   } catch (error) {
     console.error('Error loading materials:', error)
+  }
+}
+
+async function loadFinishAndTolerance() {
+  try {
+    const coefficients = await getCoefficients()
+    tolerances.value = coefficients.tolerance
+    finishes.value = coefficients.finish
+
+    if (!tolerances.value.some((item) => item.value === tolerance_id.value) && tolerances.value.length) {
+      tolerance_id.value = tolerances.value[0].value
+    }
+    if (!finishes.value.some((item) => item.value === finish_id.value) && finishes.value.length) {
+      finish_id.value = finishes.value[0].value
+    }
+  } catch (error) {
+    console.error('Error loading finish/tolerance:', error)
   }
 }
 
@@ -324,10 +343,12 @@ watch(
 
             <div class="milling-field-grid">
               <div class="milling-field-group">
-                <CoefficientFinish v-model="finish_id" />
+                <div class="milling-field-title">Шероховатость, Ra</div>
+                <SelectCalc v-model="finish_id" :materials="finishes" />
               </div>
               <div class="milling-field-group">
-                <CoefficientTolerance v-model="tolerance_id" />
+                <div class="milling-field-title">Квалитет точности</div>
+                <SelectCalc v-model="tolerance_id" :materials="tolerances" />
               </div>
             </div>
 
@@ -412,7 +433,7 @@ watch(
 }
 
 .milling-page__card {
-  width: 100%;
+  /* width: 100%; */
   padding: 30px;
   border-radius: 20px;
   background: #fff;
