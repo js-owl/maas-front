@@ -3,6 +3,7 @@ import { reactive, ref, computed } from 'vue'
 import { useAuthStore } from '../../stores/auth.store'
 import DialogRegistration from './DialogRegistration.vue'
 import Button from '../ui/Button.vue'
+import Checkbox from '../ui/Checkbox.vue'
 import { useWindowSize } from '@vueuse/core'
 // import { useRouter } from 'vue-router'
 
@@ -87,9 +88,9 @@ const onOpenLogin = () => {
         </el-form-item>
       </el-form>
       <div class="remember-row">
-        <el-checkbox v-model="isRememberMe" class="remember-checkbox">
+        <Checkbox v-model="isRememberMe" class="remember-checkbox">
           Запомнить данные
-        </el-checkbox>
+        </Checkbox>
       </div>
     </div>
     <template #footer>
@@ -189,42 +190,26 @@ const onOpenLogin = () => {
 }
 
 .remember-checkbox {
-  --el-checkbox-font-size: 12px;
-  --el-checkbox-text-color: #000;
-}
-
-.remember-checkbox :deep(.el-checkbox__label) {
-  padding-left: 12px;
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 14px;
-}
-
-.remember-checkbox :deep(.el-checkbox__inner) {
-  width: 24px;
-  height: 24px;
-  border: 2px solid #7d8083;
-  border-radius: 4px;
-  background-color: var(--bgcolor);
-}
-
-.remember-checkbox :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-  border-color: #7d8083;
-  background-color: var(--bgcolor);
-}
-
-.remember-checkbox :deep(.el-checkbox__inner::after) {
-  border-width: 2px;
-  border-color: #000;
-  left: 8px;
-  top: 4px;
-  width: 5px;
-  height: 10px;
-}
-
-.remember-checkbox :deep(.el-checkbox__input.is-checked .el-checkbox__inner::after) {
-  border-color: #000;
+  --checkbox-font-size: 12px;
+  --checkbox-text-color: #000;
+  --checkbox-label-padding-left: 12px;
+  --checkbox-font-family: 'Montserrat-Medium';
+  --checkbox-font-weight: 400;
+  --checkbox-label-size: 12px;
+  --checkbox-line-height: 14px;
+  --checkbox-size: 24px;
+  --checkbox-border-width: 2px;
+  --checkbox-border-color: #7d8083;
+  --checkbox-bg-color: var(--bgcolor);
+  --checkbox-radius: 4px;
+  --checkbox-checked-border-color: #7d8083;
+  --checkbox-checked-bg-color: var(--bgcolor);
+  --checkbox-check-left: 8px;
+  --checkbox-check-top: 4px;
+  --checkbox-check-width: 5px;
+  --checkbox-check-height: 10px;
+  --checkbox-check-border-width: 2px;
+  --checkbox-check-color: #000;
 }
 
 @media (max-width: 767px) {

@@ -6,6 +6,7 @@ import { req_json } from '../../api'
 import { useWindowSize } from '@vueuse/core'
 import Input from '../ui/Input.vue'
 import Button from '../ui/Button.vue'
+import Checkbox from '../ui/Checkbox.vue'
 
 const dialogFormVisible = defineModel<boolean>()
 
@@ -226,12 +227,12 @@ const submitForm = async () => {
         </el-form-item>
 
         <el-form-item prop="agreement" class="agreement-row">
-          <el-checkbox v-model="form.agreement" class="agreement-checkbox">
+          <Checkbox v-model="form.agreement" class="agreement-checkbox">
             Я согласен с
             <router-link to="/offer-client" class="agreement-link" @click.stop="closeDialog">
               "Пользовательскими соглашениями ЦКП"
             </router-link>
-          </el-checkbox>
+          </Checkbox>
         </el-form-item>
       </el-form>
     </div>
@@ -290,11 +291,6 @@ const submitForm = async () => {
   margin-bottom: 0;
 }
 
-.agreement-checkbox {
-  --el-checkbox-font-size: 12px;
-  --el-checkbox-text-color: #000;
-}
-
 .dialog-call-form {
   --input-bg: var(--whity);
   --input-radius: 10px;
@@ -316,44 +312,14 @@ const submitForm = async () => {
   line-height: 1.2;
 }
 
-.agreement-checkbox :deep(.el-checkbox__label) {
-  padding-left: 12px;
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 14px;
-}
-
 .agreement-link {
   color: inherit;
   text-decoration: underline;
 }
 
-.agreement-checkbox :deep(.el-checkbox__inner) {
-  width: 24px;
-  height: 24px;
-  border: 2px solid #7d8083;
-  background-color: var(--bgcolor);
-  border-radius: 4px;
-}
-
 .dialog-footer {
   text-align: left;
   padding: 40px 0 0;
-}
-
-:deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-  border-color: #7d8083;
-  background-color: var(--bgcolor);
-}
-
-:deep(.el-checkbox__inner::after) {
-  left: 8px;
-  top: 4px;
-  width: 5px;
-  height: 10px;
-  border-width: 2px;
-  border-color: #000;
 }
 
 @media (max-width: 767px) {
@@ -376,10 +342,6 @@ const submitForm = async () => {
 
   .body-class {
     padding: 0;
-  }
-
-  .agreement-checkbox :deep(.el-checkbox__label) {
-    font-size: 12px;
   }
 
   .dialog-footer {

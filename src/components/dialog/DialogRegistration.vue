@@ -10,6 +10,7 @@ import { ElMessage } from 'element-plus'
 import { useWindowSize } from '@vueuse/core'
 import Input from '../ui/Input.vue'
 import Button from '../ui/Button.vue'
+import Checkbox from '../ui/Checkbox.vue'
 
 const dialogFormVisible = defineModel<boolean>()
 const emit = defineEmits<{
@@ -258,9 +259,9 @@ const onHaveAccount = () => {
       </el-form>
 
       <div class="agreement-row">
-        <el-checkbox v-model="isAgreementAccepted" class="agreement-checkbox">
+        <Checkbox v-model="isAgreementAccepted" class="agreement-checkbox">
           Я согласен с условиями обработки моих данных
-        </el-checkbox>
+        </Checkbox>
       </div>
     </div>
 
@@ -341,21 +342,14 @@ const onHaveAccount = () => {
 }
 
 .agreement-checkbox {
-  --el-checkbox-font-size: 14px;
-  --el-checkbox-text-color: #000;
-}
-
-.agreement-checkbox :deep(.el-checkbox__label) {
-  padding-left: 10px;
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 1.2;
-}
-
-.agreement-checkbox :deep(.el-checkbox__inner) {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
+  --checkbox-font-size: 14px;
+  --checkbox-text-color: #000;
+  --checkbox-label-padding-left: 10px;
+  --checkbox-font-family: 'Montserrat-Medium';
+  --checkbox-font-weight: 500;
+  --checkbox-label-size: 16px;
+  --checkbox-line-height: 1.2;
+  --checkbox-size: 18px;
+  --checkbox-radius: 4px;
 }
 </style>

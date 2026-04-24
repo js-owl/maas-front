@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import Checkbox from '../ui/Checkbox.vue'
+
 const selected = defineModel<string[]>()
 
 const certificates = [
@@ -12,7 +14,7 @@ const certificates = [
   <div style="max-width: 1000px">
     <div class="coefficient-label">Сертификаты и квалификации поставщиков</div>
     <el-checkbox-group v-model="selected">
-      <el-checkbox
+      <Checkbox
         v-for="option in certificates"
         :key="option.label"
         :value="option.value"
@@ -20,7 +22,7 @@ const certificates = [
         disabled
       >
         <div class="coefficient-value">{{ option.label }}</div>
-      </el-checkbox>
+      </Checkbox>
     </el-checkbox-group>
   </div>
 </template>
@@ -28,9 +30,6 @@ const certificates = [
 <style scoped>
 .checkbox-item {
   width: 290px;
-}
-
-.el-checkbox {
   padding-bottom: 5px;
 }
 :deep(.line) {

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { getCoefficients } from './api-coefficients'
+import Checkbox from '../ui/Checkbox.vue'
 
 const selected = defineModel<string[]>()
 const coveres = ref()
@@ -33,14 +34,14 @@ onMounted(async () => {
   <div style="max-width: 1000px">
     <div class="coefficient-label">Финишная обработка изделия</div>
     <el-checkbox-group v-model="selected">
-      <el-checkbox
+      <Checkbox
         v-for="item in filteredCoveres"
         :key="item.value"
         :value="item.value"
         class="checkbox-item"
       >
         <div class="coefficient-value">{{ item.label }}</div>
-      </el-checkbox>
+      </Checkbox>
     </el-checkbox-group>
   </div>
 </template>
@@ -48,11 +49,9 @@ onMounted(async () => {
 <style scoped>
 .checkbox-item {
   width: 300px;
-}
-
-.el-checkbox {
   padding-bottom: 5px;
 }
+
 :deep(.line) {
   border-color: #333;
 }
