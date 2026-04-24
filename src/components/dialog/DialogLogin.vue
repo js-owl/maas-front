@@ -65,7 +65,7 @@ const onOpenLogin = () => {
   <el-dialog
     v-model="dialogFormVisible"
     title="Вход в аккаунт"
-    width="500"
+    width="477"
     :fullscreen="isMobile"
     :append-to-body="true"
     :modal-append-to-body="true"
@@ -78,7 +78,7 @@ const onOpenLogin = () => {
       </div>
     </template>
     <div class="body-class">
-      <el-form :model="formData">
+      <el-form class="dialog-login-form" :model="formData">
         <el-form-item>
           <Input v-model="formData.username" placeholder="Логин" />
         </el-form-item>
@@ -95,8 +95,8 @@ const onOpenLogin = () => {
     <template #footer>
       <div class="dialog-footer">
         <div class="buttons">
-          <Button width="27%" @click="onSubmit">Войти</Button>
-          <Button v-if="true" width="67%" @click="onRegistration"> Регистрация </Button>
+          <Button width="fit-content" flat @click="onSubmit">Войти</Button>
+          <Button v-if="true" width="fit-content" flat @click="onRegistration"> Регистрация </Button>
         </div>
         <!-- <div class="restore" @click="onRestore">Восстановить пароль</div> -->
       </div>
@@ -108,23 +108,24 @@ const onOpenLogin = () => {
 <style scoped>
 .buttons {
   display: flex;
-  justify-content: space-between;
-  padding-bottom: 15px;
+  gap: 12px;
+  padding-bottom: 0;
+  flex-wrap: wrap;
 }
 .dialog-header {
-  margin: 20px 0;
-  padding: 0 30px;
+  margin: 0;
+  padding: 0;
 }
 
 .login-error {
-  margin-top: 8px;
+  margin-top: 10px;
   color: #f56c6c;
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 14px;
   font-weight: 500;
 }
 .dialog-footer {
-  padding: 5px 30px 0px;
+  padding: 40px 0 0;
 }
 .restore {
   margin: 20px 0 50px;
@@ -135,45 +136,76 @@ const onOpenLogin = () => {
   text-align: left;
 }
 :deep(.el-dialog) {
-  border-radius: 10px;
+  border-radius: 20px;
+  background: #fff;
 }
-:deep(.el-input__wrapper) {
+
+:deep(.el-dialog__header) {
+  margin-right: 0;
+  padding: 40px 40px 0;
+}
+
+:deep(.el-dialog__body) {
+  padding: 40px 40px 0;
+}
+
+:deep(.el-dialog__footer) {
+  padding: 0 40px 40px;
+}
+
+.body-class {
   padding: 0;
 }
-.body-class {
-  padding: 0 30px;
+
+.dialog-login-form {
+  --input-bg: var(--whity);
+  --input-radius: 10px;
+  --input-font-family: 'Montserrat-Medium';
+  --input-text-color: var(--gray-footer);
+  --input-font-size: 18px;
+  --input-font-weight: 500;
+  --input-padding: 14px 16px;
+  max-width: 397px;
+}
+
+.dialog-login-form :deep(.el-form-item) {
+  margin-bottom: 10px;
+}
+
+.dialog-login-form :deep(.el-input__placeholder) {
+  color: var(--gray-footer);
 }
 
 .remember-row {
-  margin-top: 10px;
+  margin-top: 20px;
   display: flex;
   align-items: center;
 }
 
 .remember-checkbox {
-  --el-checkbox-font-size: 14px;
+  --el-checkbox-font-size: 12px;
   --el-checkbox-text-color: #000;
 }
 
 .remember-checkbox :deep(.el-checkbox__label) {
-  padding-left: 10px;
+  padding-left: 12px;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 1.2;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
 }
 
 .remember-checkbox :deep(.el-checkbox__inner) {
   width: 24px;
   height: 24px;
-  border: 2px solid #8f98a3;
-  border-radius: 6px;
-  background-color: #e9edf1;
+  border: 2px solid #7d8083;
+  border-radius: 4px;
+  background-color: var(--bgcolor);
 }
 
 .remember-checkbox :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-  border-color: #6c7783;
-  background-color: #dfe5ea;
+  border-color: #7d8083;
+  background-color: var(--bgcolor);
 }
 
 .remember-checkbox :deep(.el-checkbox__inner::after) {
@@ -187,5 +219,23 @@ const onOpenLogin = () => {
 
 .remember-checkbox :deep(.el-checkbox__input.is-checked .el-checkbox__inner::after) {
   border-color: #000;
+}
+
+@media (max-width: 767px) {
+  :deep(.el-dialog__header) {
+    padding: 16px 16px 0;
+  }
+
+  :deep(.el-dialog__body) {
+    padding: 24px 16px 0;
+  }
+
+  :deep(.el-dialog__footer) {
+    padding: 0 16px 16px;
+  }
+
+  .dialog-footer {
+    padding-top: 24px;
+  }
 }
 </style>

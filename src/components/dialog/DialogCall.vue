@@ -175,7 +175,7 @@ const submitForm = async () => {
 <template>
   <el-dialog
     v-model="dialogFormVisible"
-    width="500"
+    width="477"
     :z-index="4000"
     append-to-body
     modal-class="dialog-call-overlay"
@@ -192,6 +192,7 @@ const submitForm = async () => {
     <div class="body-class">
       <el-form
         ref="formRef"
+        class="dialog-call-form"
         :model="form"
         :rules="rules"
         label-width="0"
@@ -237,7 +238,14 @@ const submitForm = async () => {
 
     <template #footer>
       <div class="dialog-footer">
-        <Button width="265px" :loading="loading" :disabled="!form.agreement" @click="submitForm">
+        <Button
+          class="dialog-call-submit"
+          width="fit-content"
+          flat
+          :loading="loading"
+          :disabled="!form.agreement"
+          @click="submitForm"
+        >
           {{ loading ? 'Отправка...' : 'Заказать звонок' }}
         </Button>
       </div>
@@ -246,35 +254,68 @@ const submitForm = async () => {
 </template>
 
 <style scoped>
+:deep(.el-dialog) {
+  border-radius: 20px;
+  background: #fff;
+}
+
+:deep(.el-dialog__header) {
+  margin-right: 0;
+  padding: 40px 40px 0;
+}
+
+:deep(.el-dialog__body) {
+  padding: 40px 40px 0;
+}
+
+:deep(.el-dialog__footer) {
+  padding: 0 40px 40px;
+}
+
 :deep(.el-form-item) {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .dialog-header {
-  margin: 20px 0;
-  padding: 0 20px;
+  margin: 0;
+  padding: 0;
 }
 
 .body-class {
-  padding: 0 20px 10px;
+  padding: 0;
 }
 
 .agreement-row {
-  margin-top: 8px;
+  margin-top: 20px;
   margin-bottom: 0;
 }
 
 .agreement-checkbox {
-  --el-checkbox-font-size: 14px;
+  --el-checkbox-font-size: 12px;
   --el-checkbox-text-color: #000;
 }
 
+.dialog-call-form {
+  --input-bg: var(--whity);
+  --input-radius: 10px;
+  --input-font-family: 'Montserrat-Medium';
+  --input-text-color: var(--gray-footer);
+  --input-font-size: 18px;
+  --input-font-weight: 500;
+  --input-padding: 14px 16px;
+  max-width: 397px;
+}
+
+.dialog-call-form :deep(.el-input__placeholder) {
+  color: var(--gray-footer);
+}
+
 .agreement-checkbox :deep(.el-checkbox__label) {
-  padding-left: 10px;
+  padding-left: 12px;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 1.25;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
 }
 
 .agreement-link {
@@ -283,24 +324,52 @@ const submitForm = async () => {
 }
 
 .agreement-checkbox :deep(.el-checkbox__inner) {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #7d8083;
+  background-color: var(--bgcolor);
   border-radius: 4px;
 }
 
 .dialog-footer {
   text-align: left;
-  padding: 0 20px 24px;
+  padding: 40px 0 0;
+}
+
+:deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
+  border-color: #7d8083;
+  background-color: var(--bgcolor);
+}
+
+:deep(.el-checkbox__inner::after) {
+  left: 8px;
+  top: 4px;
+  width: 5px;
+  height: 10px;
+  border-width: 2px;
+  border-color: #000;
 }
 
 @media (max-width: 767px) {
+  :deep(.el-dialog__header) {
+    padding: 16px 16px 0;
+  }
+
+  :deep(.el-dialog__body) {
+    padding: 24px 16px 0;
+  }
+
+  :deep(.el-dialog__footer) {
+    padding: 0 16px 16px;
+  }
+
   .dialog-header {
-    margin: 10px 0;
-    padding: 0 16px;
+    margin: 0;
+    padding: 0;
   }
 
   .body-class {
-    padding: 0 10px 5px;
+    padding: 0;
   }
 
   .agreement-checkbox :deep(.el-checkbox__label) {
@@ -308,7 +377,7 @@ const submitForm = async () => {
   }
 
   .dialog-footer {
-    padding: 0 16px 16px;
+    padding-top: 24px;
   }
 }
 </style>

@@ -7,12 +7,14 @@ const props = withDefaults(
     plain?: boolean
     width?: string
     loading?: boolean
+    flat?: boolean
   }>(),
   {
     disabled: false,
     plain: false,
     width: '100%',
     loading: false,
+    flat: false,
   }
 )
 
@@ -23,6 +25,7 @@ const emit = defineEmits<{
 const buttonClasses = computed(() => ({
   'is-disabled': props.disabled || props.loading,
   'is-loading': props.loading,
+  'is-flat': props.flat,
 }))
 
 const handleClick = () => {
@@ -104,6 +107,14 @@ const handleClick = () => {
   animation: none !important;
 }
 
+.btn.is-flat {
+  box-shadow: none;
+}
+
+.btn.is-flat::before {
+  opacity: 0;
+}
+
 .btn:hover:not(.is-disabled) {
   transform: translateY(-2px);
   box-shadow: 
@@ -112,6 +123,13 @@ const handleClick = () => {
     inset 0 1px 0 rgba(255, 255, 255, 0.25),
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   animation: gradient-shift 3s ease infinite;
+}
+
+.btn.is-flat:hover:not(.is-disabled),
+.btn.is-flat:active:not(.is-disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+  animation: none;
 }
 
 .btn:hover:not(.is-disabled)::before {
