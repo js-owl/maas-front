@@ -37,7 +37,7 @@ onMounted(async () => {
         v-for="item in filteredCoveres"
         :key="item.value"
         :value="item.value"
-        class="checkbox-item"
+        class="checkbox-item agreement-checkbox"
       >
         <div class="coefficient-value">{{ item.label }}</div>
       </Checkbox>
@@ -47,9 +47,6 @@ onMounted(async () => {
 
 <style scoped>
 .checkbox-item {
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
   width: 390px;
   padding-bottom: 5px;
 }
