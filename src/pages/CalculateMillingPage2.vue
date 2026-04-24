@@ -338,17 +338,17 @@ watch(
 
             <div class="milling-field-group">
               <div class="milling-field-title">Материал</div>
-              <SelectCalc v-model="material_id" :materials="materials" />
+              <SelectCalc v-model="material_id" :input-data="materials" />
             </div>
 
             <div class="milling-field-grid">
               <div class="milling-field-group">
                 <div class="milling-field-title">Шероховатость, Ra</div>
-                <SelectCalc v-model="finish_id" :materials="finishes" />
+                <SelectCalc v-model="finish_id" :input-data="finishes" />
               </div>
               <div class="milling-field-group">
                 <div class="milling-field-title">Квалитет точности</div>
-                <SelectCalc v-model="tolerance_id" :materials="tolerances" />
+                <SelectCalc v-model="tolerance_id" :input-data="tolerances" />
               </div>
             </div>
 

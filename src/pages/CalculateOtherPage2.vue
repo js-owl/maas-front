@@ -352,12 +352,12 @@ async function getOrder(id: number) {
 
             <div class="milling-field-group">
               <div class="milling-field-title">Материал</div>
-              <SelectCalc v-model="material_id" :materials="materials" />
+              <SelectCalc v-model="material_id" :input-data="materials" />
             </div>
 
             <div class="milling-field-group">
               <div class="milling-field-title">Технология</div>
-              <SelectCalc v-model="service_id" :materials="processes" />
+              <SelectCalc v-model="service_id" :input-data="processes" />
             </div>
 
             <!-- <div class="milling-field-grid">

@@ -6,7 +6,7 @@ type SelectCalcOption = {
 
 withDefaults(
   defineProps<{
-    materials: SelectCalcOption[]
+    inputData: SelectCalcOption[]
     placeholder?: string
   }>(),
   {
@@ -27,7 +27,7 @@ const selectedValue = defineModel<string>()
       class="full"
     >
       <el-option
-        v-for="item in materials"
+        v-for="item in inputData"
         :key="item.value"
         :label="item.label"
         :value="item.value"
