@@ -229,7 +229,7 @@ const onOpenLogin = () => {
 
 <style>
 .dialog-login {
-  padding-top: 20px;
+  padding: 40px;
   border-radius: 20px !important;
   background: #fff;
   overflow: hidden;

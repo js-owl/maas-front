@@ -354,7 +354,7 @@ const onHaveAccount = () => {
 
 <style>
 .dialog-registration {
-  padding-top: 10px;
+  padding: 40px;
   border-radius: 20px !important;
   background: #fff;
   overflow: hidden;
