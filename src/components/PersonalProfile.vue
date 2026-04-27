@@ -220,14 +220,9 @@ const contactFio = computed({
 </script>
 
 <template>
-  <el-row :gutter="20" class="profile-header">
-    <el-col :offset="1" :span="4">
-      <div class="maas-title">Профиль</div>
-    </el-col>
-  </el-row>
   <el-row
     :gutter="20"
-    style="background-color: #fff; padding-top: 0px; min-height: 500px; padding-left: 20px; border-radius: 0px 0px 20px 20px"
+    class="profile-header"
   >
     <el-form
       ref="formRef"
@@ -238,9 +233,12 @@ const contactFio = computed({
       style="width: 100%"
       @submit.prevent
     >
-      <el-col :offset="1" :span="22">
-        <div v-if="activeTab === 'individual'" class="profile-content">
+      <el-col :span="24">
+        <div v-if="activeTab === 'individual'">
           <div v-if="profileForm" class="profile-section">
+            <el-row :gutter="20">
+              <div class="maas-title" style="margin: 0 0 30px 5px;">Профиль</div>
+            </el-row>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="last_name">
@@ -319,9 +317,12 @@ const contactFio = computed({
             </el-row>
           </div>
         </div>
-
-        <div v-if="activeTab === 'legal'" class="profile-content">
+        <!-- Юридическое лицо -->
+        <div v-if="activeTab === 'legal'">
           <div v-if="profileForm" class="profile-section">
+            <el-row :gutter="20">
+              <div class="maas-title" style="margin: 0 0 30px 12px;">Профиль</div>
+            </el-row>
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item prop="payment_company_name">
@@ -479,10 +480,6 @@ const contactFio = computed({
 </template>
 
 <style scoped>
-.profile-content {
-  margin-top: 20px;
-}
-
 .profile-section {
   margin-bottom: 32px;
 }
@@ -497,9 +494,10 @@ const contactFio = computed({
   display: flex;
   align-items: center;
   background-color: #fff;
-  padding: 10px 20px 0;
+  padding: 40px;
   min-height: 100px;
-  border-radius: 20px 20px 0 0;
+  border-radius: 20px;
+  width: 100%;
 }
 
 .profile-footer {
