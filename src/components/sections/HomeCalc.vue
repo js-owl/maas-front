@@ -152,7 +152,7 @@ const submit = () => {
 .calc-right {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  /* box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); */
   width: calc((100% - 20px) / 2);
   box-sizing: border-box;
   /* padding: 20px; */

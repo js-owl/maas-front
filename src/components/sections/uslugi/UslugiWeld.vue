@@ -121,7 +121,7 @@ const isRequirementsExpanded = ref(false)
 
 .uslugi-section {
   margin-bottom: 80px;
-  align-items: center;
+  /* align-items: center; */
   gap: 80px;
 }
 
