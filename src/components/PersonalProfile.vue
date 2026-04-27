@@ -225,7 +225,10 @@ const contactFio = computed({
       <div class="maas-title">Профиль</div>
     </el-col>
   </el-row>
-  <el-row :gutter="20" style="background-color: #fff; padding-top: 0px; min-height: 500px; padding-left: 20px">
+  <el-row
+    :gutter="20"
+    style="background-color: #fff; padding-top: 0px; min-height: 500px; padding-left: 20px; border-radius: 0px 0px 20px 20px"
+  >
     <el-form
       ref="formRef"
       :model="profileForm"
@@ -496,6 +499,7 @@ const contactFio = computed({
   background-color: #fff;
   padding: 10px 20px 0;
   min-height: 100px;
+  border-radius: 20px 20px 0 0;
 }
 
 .profile-footer {
