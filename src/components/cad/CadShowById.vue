@@ -1,11 +1,10 @@
 <script setup>
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, defineAsyncComponent } from "vue";
 import { API_BASE } from "../../api";
 import { useAuthStore } from "../../stores/auth.store";
-// @ts-ignore
-import STLViewer from "./STLViewer.vue";
-// @ts-ignore
-import STPViewer from "./STPViewer.vue";
+
+const STLViewer = defineAsyncComponent(() => import("./STLViewer.vue"));
+const STPViewer = defineAsyncComponent(() => import("./STPViewer.vue"));
 
 const authStore = useAuthStore();
 

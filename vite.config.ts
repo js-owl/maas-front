@@ -51,8 +51,9 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             'vue-vendor': ['vue', 'vue-router', 'pinia'],
             'element-plus': ['element-plus', '@element-plus/icons-vue'],
-            'three': ['three', 'occt-import-js', 'three-stl-loader']
-          }
+            'three': ['three', 'three-stl-loader'],
+            'occt-import-js': ['occt-import-js'],
+          },
         },
         plugins: [
           {
@@ -76,10 +77,10 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       AutoImport({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [ElementPlusResolver({ importStyle: 'css' })],
       }),
       Components({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [ElementPlusResolver({ importStyle: 'css' })],
       }),
     ],
     server: {

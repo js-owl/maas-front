@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { /* Edit, */ Delete /*, Notebook, Plus, Minus */ } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import { statusTexts } from '../helpers/status-text'
-import CadPreview from './cad/CadPreview.vue'
+const CadPreview = defineAsyncComponent(() => import('./cad/CadPreview.vue'))
 // import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
 import Button from './ui/Button.vue'
 import ButtonRound from './ui/ButtonRound.vue'
