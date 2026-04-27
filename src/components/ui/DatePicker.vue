@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue'
+import ru from 'element-plus/es/locale/lang/ru'
+import dayjs from 'dayjs'
+import updateLocale from 'dayjs/plugin/updateLocale'
+import 'dayjs/locale/ru'
 import IconDate from '@/icons/IconDate.vue'
 
 const props = withDefaults(
@@ -18,6 +22,9 @@ const emit = defineEmits<{
   (e: 'update:manufacturingCycle', value: number): void
 }>()
 
+dayjs.extend(updateLocale)
+dayjs.updateLocale('ru', { weekStart: 1 })
+
 const MS_IN_DAY = 24 * 60 * 60 * 1000
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
 
@@ -28,6 +35,8 @@ const calculateDaysUntil = (targetDate: Date) => {
 }
 
 const isPastDateDisabled = (date: Date) => startOfDay(date).getTime() < startOfDay(new Date()).getTime()
+
+const ruLocale = ru
 
 const deadline = computed({
   get: () => props.modelValue,
@@ -53,15 +62,17 @@ watch(
 <template>
   <div class="milling-date-picker">
     <div class="milling-date-picker__control">
-      <el-date-picker
-        v-model="deadline"
-        type="date"
-        format="[до ]DD.MM.YYYY"
-        :disabled-date="isPastDateDisabled"
-        :placeholder="placeholder"
-        popper-class="milling-date-picker-popper"
-        class="milling-date-picker__input"
-      />
+      <el-config-provider :locale="ruLocale">
+        <el-date-picker
+          v-model="deadline"
+          type="date"
+          format="[до ]DD.MM.YYYY"
+          :disabled-date="isPastDateDisabled"
+          :placeholder="placeholder"
+          popper-class="milling-date-picker-popper"
+          class="milling-date-picker__input"
+        />
+      </el-config-provider>
       <IconDate class="milling-date-picker__icon" />
     </div>
   </div>
