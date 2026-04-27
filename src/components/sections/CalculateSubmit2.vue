@@ -267,9 +267,13 @@ const cancel = () => {
   gap: 12px 20px;
 }
 
-@media (max-width: 599px) {
+@media (max-width: 767px) {
   .calculate-submit2 {
     justify-content: center;
+  }
+
+  .calculate-submit2 :deep(.btn) {
+    width: 100% !important;
   }
 }
 </style>
