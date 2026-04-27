@@ -108,6 +108,12 @@ const validatePaymentBankName = (_rule: any, value: string, callback: (error?: E
 
 const phoneValidator = createPhoneNumberValidator({ allowEmpty: false })
 
+const requiredTrimmed =
+  (message: string) => (_rule: unknown, value: string, callback: (error?: Error) => void) => {
+    if (!(value ?? '').trim()) callback(new Error(message))
+    else callback()
+  }
+
 const validateLastNameRequired = (_rule: any, value: string, callback: (error?: Error) => void) => {
   const normalizedValue = value?.trim() ?? ''
   if (!normalizedValue) callback(new Error('Введите фамилию'))
@@ -148,6 +154,12 @@ const rules = ref<FormRules<IProfile>>({
   payment_account: [{ validator: validatePaymentAccount, trigger: ['blur', 'change'] }],
   payment_cor_account: [{ validator: validatePaymentCorAccount, trigger: ['blur', 'change'] }],
   payment_bank_name: [{ validator: validatePaymentBankName, trigger: ['blur', 'change'] }],
+  postal: [{ validator: requiredTrimmed('Введите индекс'), trigger: ['blur', 'change'] }],
+  region: [{ validator: requiredTrimmed('Введите регион или область'), trigger: ['blur', 'change'] }],
+  city_name: [{ validator: requiredTrimmed('Введите город'), trigger: ['blur', 'change'] }],
+  street: [{ validator: requiredTrimmed('Введите улицу'), trigger: ['blur', 'change'] }],
+  building: [{ validator: requiredTrimmed('Введите строение'), trigger: ['blur', 'change'] }],
+  office: [{ validator: requiredTrimmed('Введите офис или помещение'), trigger: ['blur', 'change'] }],
 })
 
 function buildAddressString(): string {
