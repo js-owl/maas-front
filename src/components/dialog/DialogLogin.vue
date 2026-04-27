@@ -65,6 +65,7 @@ const onOpenLogin = () => {
 <template>
   <el-dialog
     v-model="dialogFormVisible"
+    class="dialog-login"
     title="Вход в аккаунт"
     width="477"
     :fullscreen="isMobile"
@@ -136,11 +137,6 @@ const onOpenLogin = () => {
   font-weight: 500;
   text-align: left;
 }
-:deep(.el-dialog) {
-  border-radius: 20px;
-  background: #fff;
-}
-
 :deep(.el-dialog__header) {
   margin-right: 0;
   padding: 40px 40px 0;
@@ -228,5 +224,14 @@ const onOpenLogin = () => {
   .dialog-footer {
     padding-top: 24px;
   }
+}
+</style>
+
+<style>
+.dialog-login {
+  padding-top: 20px;
+  border-radius: 20px !important;
+  background: #fff;
+  overflow: hidden;
 }
 </style>

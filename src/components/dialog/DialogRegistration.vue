@@ -193,6 +193,7 @@ const onHaveAccount = () => {
 <template>
   <el-dialog
     v-model="dialogFormVisible"
+    class="dialog-registration"
     title="Регистрация клиента"
     width="600"
     :append-to-body="true"
@@ -348,5 +349,14 @@ const onHaveAccount = () => {
   --checkbox-line-height: 1.2;
   --checkbox-size: 18px;
   --checkbox-radius: 4px;
+}
+</style>
+
+<style>
+.dialog-registration {
+  padding-top: 10px;
+  border-radius: 20px !important;
+  background: #fff;
+  overflow: hidden;
 }
 </style>

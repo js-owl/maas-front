@@ -176,6 +176,7 @@ const submitForm = async () => {
 <template>
   <el-dialog
     v-model="dialogFormVisible"
+    class="dialog-call"
     width="477"
     :z-index="4000"
     append-to-body
@@ -255,11 +256,6 @@ const submitForm = async () => {
 </template>
 
 <style scoped>
-:deep(.el-dialog) {
-  border-radius: 20px;
-  background: #fff;
-}
-
 :deep(.el-dialog__header) {
   margin-right: 0;
   padding: 40px 40px 0;
@@ -374,5 +370,12 @@ const submitForm = async () => {
 <style>
 .dialog-call-overlay {
   z-index: 4000 !important;
+}
+
+.dialog-call {
+  padding-top: 20px;
+  border-radius: 20px !important;
+  background: #fff;
+  overflow: hidden;
 }
 </style>
