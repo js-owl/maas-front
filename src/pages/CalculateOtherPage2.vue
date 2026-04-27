@@ -328,7 +328,7 @@ async function getOrder(id: number) {
     element-loading-text="Пересчитываем стоимость..."
   >
     <el-row :gutter="0" class="milling-page__row">
-      <el-col :offset="3" :span="18">
+      <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }" >
         <div class="milling-page__card">
           <div class="milling-page__main">
             <div class="milling-field-grid">
@@ -546,10 +546,31 @@ async function getOrder(id: number) {
     padding: 16px 0 20px;
   }
 
+  .milling-page__row {
+    box-sizing: border-box;
+  }
+
   .milling-page__card {
-    width: calc(100% - 16px);
+    width: 100%;
     padding: 14px;
-    border-radius: 16px;
+    border-radius: 0px;
+    gap: 16px;
+    box-shadow: 0 6px 10px 0 var(--button);
+  }
+
+  .milling-page__main {
+    gap: 16px;
+  }
+
+  .milling-field-group,
+  .milling-field-block {
+    gap: 8px;
+    padding: 2px 0;
+  }
+
+  .milling-field-block--otk {
+    gap: 12px;
+    max-width: 100%;
   }
 
   .milling-field-grid {
@@ -560,6 +581,29 @@ async function getOrder(id: number) {
   .milling-field-title,
   .milling-upload__title {
     font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .milling-page__aside {
+    padding: 12px;
+    border-radius: 14px;
+    gap: 14px;
+  }
+
+  .milling-upload {
+    gap: 10px;
+  }
+
+  .milling-actions {
+    padding-top: 0;
+  }
+
+  .milling-cad {
+    border-radius: 8px;
+  }
+
+  :deep(.el-textarea__inner) {
+    min-height: 120px !important;
   }
 }
 </style>
