@@ -230,7 +230,7 @@ const submitForm = async () => {
           <Checkbox v-model="form.agreement">
             Я согласен с
             <router-link to="/offer-client" class="agreement-link" @click.stop="closeDialog">
-              "Пользовательскими соглашениями ЦКП"
+              "Пользовательскими соглашениями Аэромакс"
             </router-link>
           </Checkbox>
         </el-form-item>

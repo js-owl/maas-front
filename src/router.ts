@@ -137,7 +137,7 @@ const routes: RouteRecordRaw[] = [
     name: 'policy',
   },
 
-  { path: '/:patchMatch(.*)*', component: NotFoundPage },
+  { path: '/:patchMatch(.*)*', name: 'not-found', component: NotFoundPage },
 ]
 
 const router = createRouter({

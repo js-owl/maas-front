@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /personal
+
+Sitemap: https://maas.aeromax-group.ru/sitemap.xml
