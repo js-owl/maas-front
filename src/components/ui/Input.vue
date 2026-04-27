@@ -12,6 +12,7 @@ const props = withDefaults(
     disabled?: boolean
     clearable?: boolean
     width?: string
+    fontSize?: string
     formatter?: (value: string) => string
     parser?: (value: string) => string
   }>(),
@@ -22,6 +23,7 @@ const props = withDefaults(
     disabled: false,
     clearable: false,
     width: '100%',
+    fontSize: '16px',
   }
 )
 
@@ -57,7 +59,10 @@ const handleChange = (value: string) => {
 </script>
 
 <template>
-  <div class="input-wrapper" :style="{ width: props.width }">
+  <div
+    class="input-wrapper"
+    :style="{ width: props.width, '--input-font-size': props.fontSize }"
+  >
     <el-input
       :model-value="modelValue"
       :placeholder="placeholder"
@@ -99,7 +104,8 @@ const handleChange = (value: string) => {
   padding: var(--input-padding, 12px 24px);
 }
 
-.input :deep(.el-input__inner) {
+.input :deep(.el-input__inner),
+.input :deep(.el-textarea__inner) {
   font-family: var(--input-font-family, 'Montserrat-Medium'), sans-serif;
   font-size: var(--input-font-size, 16px);
   font-weight: var(--input-font-weight, 500);

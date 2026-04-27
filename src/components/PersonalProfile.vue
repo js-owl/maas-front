@@ -241,36 +241,36 @@ const contactFio = computed({
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="last_name">
-                  <Input v-model="profileForm.last_name" placeholder="Фамилия" />
+                  <Input v-model="profileForm.last_name" placeholder="Фамилия" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="first_name">
-                  <Input v-model="profileForm.first_name" placeholder="Имя" />
+                  <Input v-model="profileForm.first_name" placeholder="Имя" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="patronymic">
-                  <Input v-model="profileForm.patronymic" placeholder="Отчество" />
+                  <Input v-model="profileForm.patronymic" placeholder="Отчество" fontSize="20px" />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="username">
-                  <Input v-model="profileForm.username" placeholder="Логин" disabled />
+                  <Input v-model="profileForm.username" placeholder="Логин" disabled fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="email">
-                  <Input v-model="profileForm.email" placeholder="E-mail" type="email" />
+                  <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="phone_number">
                   <Input
                     v-model="profileForm.phone_number"
-                    placeholder="+7 (___) ___-__-__"
+                    placeholder="+7 (___) ___-__-__" fontSize="20px"
                     type="tel"
                     :formatter="formatPhoneDisplay"
                     :parser="parsePhoneToDigits"
@@ -285,32 +285,32 @@ const contactFio = computed({
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="postal">
-                  <Input v-model="profileForm.postal" placeholder="Индекс" />
+                  <Input v-model="profileForm.postal" placeholder="Индекс" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="region">
-                  <Input v-model="profileForm.region" placeholder="Регион/Область" />
+                  <Input v-model="profileForm.region" placeholder="Регион/Область" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="city_name">
-                  <Input v-model="profileForm.city_name" placeholder="Город" />
+                  <Input v-model="profileForm.city_name" placeholder="Город" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="street">
-                  <Input v-model="profileForm.street" placeholder="Улица" />
+                  <Input v-model="profileForm.street" placeholder="Улица" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="building">
-                  <Input v-model="profileForm.building" placeholder="Строение" />
+                  <Input v-model="profileForm.building" placeholder="Строение" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="office">
-                  <Input v-model="profileForm.office" placeholder="Офис/Помещение" />
+                  <Input v-model="profileForm.office" placeholder="Офис/Помещение" fontSize="20px" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -322,12 +322,12 @@ const contactFio = computed({
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item prop="payment_company_name">
-                  <Input v-model="profileForm.payment_company_name" placeholder="Наименование организации / ИП" />
+                  <Input v-model="profileForm.payment_company_name" placeholder="Наименование организации / ИП" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="username">
-                  <Input v-model="profileForm.username" placeholder="Отображаемое название" />
+                  <Input v-model="profileForm.username" placeholder="Отображаемое название" fontSize="20px" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -338,19 +338,19 @@ const contactFio = computed({
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item prop="payment_inn">
-                  <Input v-model="profileForm.payment_inn" placeholder="ИНН" />
+                  <Input v-model="profileForm.payment_inn" placeholder="ИНН" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="payment_kpp">
-                  <Input v-model="profileForm.payment_kpp" placeholder="ОГРН / ОГРНИП" />
+                  <Input v-model="profileForm.payment_kpp" placeholder="ОГРН / ОГРНИП" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="phone_number">
                   <Input
                     v-model="profileForm.phone_number"
-                    placeholder="Телефон"
+                    placeholder="Телефон" fontSize="20px"
                     type="tel"
                     :formatter="formatPhoneDisplay"
                     :parser="parsePhoneToDigits"
@@ -359,7 +359,7 @@ const contactFio = computed({
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="email">
-                  <Input v-model="profileForm.email" placeholder="E-mail" type="email" />
+                  <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -370,14 +370,14 @@ const contactFio = computed({
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item prop="last_name">
-                  <Input v-model="contactFio" placeholder="ФИО" />
+                  <Input v-model="contactFio" placeholder="ФИО" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="personal_phone_number">
                   <Input
                     v-model="profileForm.personal_phone_number"
-                    placeholder="+7 (___) ___-__-__"
+                    placeholder="+7 (___) ___-__-__" fontSize="20px"  
                     type="tel"
                     :formatter="formatPhoneDisplay"
                     :parser="parsePhoneToDigits"
@@ -392,22 +392,22 @@ const contactFio = computed({
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item prop="payment_cor_account">
-                  <Input v-model="profileForm.payment_cor_account" placeholder="Корреспондентский счет" />
+                  <Input v-model="profileForm.payment_cor_account" placeholder="Корреспондентский счет" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="payment_account">
-                  <Input v-model="profileForm.payment_account" placeholder="Расчетный счет" />
+                  <Input v-model="profileForm.payment_account" placeholder="Расчетный счет" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="payment_bank_name">
-                  <Input v-model="profileForm.payment_bank_name" placeholder="Наименование банка" />
+                  <Input v-model="profileForm.payment_bank_name" placeholder="Наименование банка" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="payment_bik">
-                  <Input v-model="profileForm.payment_bik" placeholder="БИК" />
+                  <Input v-model="profileForm.payment_bik" placeholder="БИК" fontSize="20px" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -418,32 +418,32 @@ const contactFio = computed({
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item prop="postal">
-                  <Input v-model="profileForm.postal" placeholder="Индекс" />
+                  <Input v-model="profileForm.postal" placeholder="Индекс" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="region">
-                  <Input v-model="profileForm.region" placeholder="Регион/Область" />
+                  <Input v-model="profileForm.region" placeholder="Регион/Область" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="city_name">
-                  <Input v-model="profileForm.city_name" placeholder="Город" />
+                  <Input v-model="profileForm.city_name" placeholder="Город" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="street">
-                  <Input v-model="profileForm.street" placeholder="Улица" />
+                  <Input v-model="profileForm.street" placeholder="Улица" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="building">
-                  <Input v-model="profileForm.building" placeholder="Строение" />
+                  <Input v-model="profileForm.building" placeholder="Строение" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="office">
-                  <Input v-model="profileForm.office" placeholder="Офис/Помещение" />
+                  <Input v-model="profileForm.office" placeholder="Офис/Помещение" fontSize="20px" />
                 </el-form-item>
               </el-col>
             </el-row>
