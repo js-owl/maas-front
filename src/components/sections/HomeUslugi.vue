@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, markRaw } from 'vue'
+import { ref, markRaw, computed } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 import IconMech from '@/icons/home/IconMech.vue'
 import Icon3DView from '@/icons/home/Icon3DView.vue'
 import IconPKM from '@/icons/home/IconPKM.vue'
@@ -14,60 +15,66 @@ const abilities = ref([
     id: 1,
     title: 'Механическая обработка',
     link: '/mechanical',
-    isDevelopment: false,
+    isDevelopment: true,
     icon: markRaw(IconMech),
   },
   {
     id: 2,
     title: '3Д-печать',
     link: '/print',
-    isDevelopment: false,
+    isDevelopment: true,
     icon: markRaw(Icon3DView),
   },
   {
     id: 3,
     title: 'Полимерно-композитный материал',
     link: '/pkm',
-    isDevelopment: false,
+    isDevelopment: true,
     icon: markRaw(IconPKM),
   },
   {
     id: 4,
     title: 'Нанесение ЛКМ',
     link: '/painting',
-    isDevelopment: false,
+    isDevelopment: true,
     icon: markRaw(IconLKM),
   },
   {
     id: 5,
     title: 'Производство из резины',
     link: '/rubber',
-    isDevelopment: false,
+    isDevelopment: true,
     icon: markRaw(IconRubber),
   },
   {
     id: 6,
     title: 'Гальваника',
     link: '/galv',
-    isDevelopment: false,
+    isDevelopment: true,
     icon: markRaw(IconGalv),
   },
   {
     id: 7,
     title: 'Сварка',
     link: '/weld',
-    isDevelopment: false,
+    isDevelopment: true,
     icon: markRaw(IconWelding),
   },
   {
     id: 8,
     title: 'Испытательные ресурсы',
     link: '/test',
-    isDevelopment: false,
+    isDevelopment: true,
     icon: markRaw(IconIspitaniya),
   },
 
 ])
+
+const { width } = useWindowSize()
+const isMobileLayout = computed(() => width.value <= 768)
+
+const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
+  Boolean(ability.link && !(ability.isDevelopment && isMobileLayout.value))
 </script>
 
 <template>
@@ -79,9 +86,12 @@ const abilities = ref([
         class="service-card"
         v-for="ability in abilities"
         :key="ability.id"
-        :class="{ 'card-development': ability.isDevelopment }"
       >
-        <component :is="ability.link ? 'RouterLink' : 'div'" :to="ability.link" class="card-link">
+        <component
+          :is="isCardRouterLink(ability) ? 'RouterLink' : 'div'"
+          v-bind="isCardRouterLink(ability) ? { to: ability.link } : {}"
+          class="card-link"
+        >
           <div class="card-content">
             <div v-if="ability.icon" class="card-icon">
               <el-icon :size="60">
@@ -90,9 +100,9 @@ const abilities = ref([
             </div>
             <div class="card-text">
               <h3 class="card-title montserrat-semibold">{{ ability.title }}</h3>
-              <div v-if="ability.isDevelopment" class="development-notice">
+              <!-- <div v-if="ability.isDevelopment" class="development-notice">
                 <span class="development-text">[Раздел в разработке]</span>
-              </div>
+              </div> -->
             </div>
           </div>
         </component>

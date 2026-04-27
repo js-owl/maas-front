@@ -392,7 +392,7 @@ function openServicePage(path: string) {
           >Механообработка</el-menu-item
           >
           <el-menu-item index="/printing" :route="{ path: '/printing' }">3D печать</el-menu-item>
-          <el-menu-item index="/other" :route="{ path: '/other' }">Прочее</el-menu-item>
+          <!-- <el-menu-item index="/other" :route="{ path: '/other' }">Прочее</el-menu-item> -->
           <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Лабораторные исследования</el-menu-item> -->
           <!-- <el-sub-menu index="m1-2" disabled>
             <template #title>Сварочное производство</template>
