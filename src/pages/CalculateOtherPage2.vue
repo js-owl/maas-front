@@ -450,7 +450,9 @@ async function getOrder(id: number) {
 }
 
 .milling-page__card {
-  /* width: 100%; */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 30px;
   border-radius: 20px;
   background: #fff;
@@ -464,6 +466,7 @@ async function getOrder(id: number) {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-width: 0;
 }
 
 .milling-field-grid {
@@ -504,6 +507,7 @@ async function getOrder(id: number) {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
 .milling-cad {
@@ -534,7 +538,7 @@ async function getOrder(id: number) {
 
 @media (max-width: 1199px) {
   .milling-page__card {
-    width: calc(100% - 24px);
+    width: 100%;
     padding: 20px;
     grid-template-columns: 1fr;
     gap: 24px;
@@ -552,10 +556,12 @@ async function getOrder(id: number) {
 
   .milling-page__card {
     width: 100%;
+    max-width: 100%;
     padding: 14px;
     border-radius: 0px;
     gap: 16px;
     box-shadow: 0 6px 10px 0 var(--button);
+    overflow-x: hidden;
   }
 
   .milling-page__main {
