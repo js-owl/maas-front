@@ -1,4 +1,4 @@
-export const hiddenUsernames = ['AODMZ', 'KTSPECTR', 'AOIKAR', 'Kronshtadt', 'ecolibriaero_legal']
+export const hiddenUsernames = ['AODMZ', 'KTSPECTR', 'AOIKAR', 'Kronshtadt']
 export const hiddenStatuses = ['NEW', 'C3:NEW', 'C3:PREPARATION']
 
 export const hidePrice = (username?: string | null, status?: string | null): boolean => {
