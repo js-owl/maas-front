@@ -321,7 +321,9 @@ const contactFio = computed({
         <div v-if="activeTab === 'legal'">
           <div v-if="profileForm" class="profile-section">
             <el-row :gutter="20">
-              <div class="maas-title" style="margin: 0 0 30px 12px;">Профиль</div>
+              <el-col :span="24">
+                <div class="maas-title" style="margin: 0 0 30px;">Профиль</div>
+              </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="12">
