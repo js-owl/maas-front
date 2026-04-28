@@ -8,6 +8,7 @@ import CoefficientCertificate from '../components/coefficients/CoefficientCertif
 import CoefficientCover from '../components/coefficients/CoefficientCover.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
 import Input from '../components/ui/Input.vue'
+import DatePicker from '../components/ui/DatePicker.vue'
 
 import { useRoute } from 'vue-router'
 import UploadModel from '../components/cad/UploadModel.vue'
@@ -55,7 +56,12 @@ let cover_id = ref<string[]>(['1'])
 let k_otk = ref('1.0')
 let k_cert = ref(['a', 'f'])
 let manufacturing_cycle = ref<number>(0)
+let manufacturing_deadline = ref<Date | null>(null)
 let special_instructions = ref('')
+
+const MS_IN_DAY = 24 * 60 * 60 * 1000
+const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
+const addDays = (date: Date, days: number) => new Date(startOfDay(date).getTime() + days * MS_IN_DAY)
 
 const payload = reactive({
   service_id: 'printing',
@@ -119,6 +125,7 @@ watch(
 
 onMounted(() => {
   loadMaterials()
+  manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
   if (order_id.value === 0) {
     const filesQuery = route.query.files
     const stpParam = route.query.stp
@@ -205,6 +212,7 @@ async function getOrder(id: number) {
     if (data.k_otk) k_otk.value = data.k_otk
     if (data.k_cert) k_cert.value = data.k_cert
     if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
+    manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
     if (data.special_instructions) special_instructions.value = data.special_instructions
     if (data.order_name) order_name.value = data.order_name
     if ((data as any).order_code) order_code.value = (data as any).order_code
@@ -231,6 +239,14 @@ async function getOrder(id: number) {
   }
   await stopLoading()
 }
+
+watch(
+  manufacturing_cycle,
+  (days) => {
+    manufacturing_deadline.value = addDays(new Date(), Math.max(0, Number(days) || 0))
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -258,11 +274,6 @@ async function getOrder(id: number) {
                 <div v-else class="printing-title__text">3D ПЕЧАТЬ</div>
               </div> -->
 
-              <div class="printing-field-group">
-                <div class="printing-field-title">Материал</div>
-                <SelectCalc v-model="material_id" :input-data="materials" />
-              </div>
-
               <div class="printing-field-grid">
                 <div class="printing-field-group">
                   <div class="printing-field-title">Количество, шт</div>
@@ -272,6 +283,19 @@ async function getOrder(id: number) {
                     placeholder="Введите количество"
                   />
                 </div>
+                <div class="printing-field-group">
+                  <div class="printing-field-title">Сроки выполнения</div>
+                  <DatePicker
+                    v-model="manufacturing_deadline"
+                    v-model:manufacturing-cycle="manufacturing_cycle"
+                    placeholder="Выберите дату"
+                  />
+                </div>
+              </div>
+
+              <div class="printing-field-group">
+                <div class="printing-field-title">Материал</div>
+                <SelectCalc v-model="material_id" :input-data="materials" />
               </div>
 
               <div class="printing-field-block">
