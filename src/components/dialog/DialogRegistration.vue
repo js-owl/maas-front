@@ -2,7 +2,8 @@
 import { computed, ref } from 'vue'
 import {
   createPhoneNumberValidator,
-  normalizePhoneInput,
+  formatPhoneDisplay,
+  parsePhoneToDigits,
 } from '../../composables/usePhoneValidation'
 import { useRegStore } from '../../stores/reg.store'
 import type { FormInstance, FormRules } from 'element-plus'
@@ -95,10 +96,6 @@ const validateEmailNoCyrillic = (_rule: any, value: string, callback: (error?: E
   }
 }
 
-const onPhoneInput = (val: string) => {
-  form.value.phone_number = normalizePhoneInput(val)
-}
-
 const rules = ref<FormRules<FormData>>({
   user_type: [{ required: true, message: 'Выберите тип пользователя', trigger: 'change' }],
   username: [
@@ -112,7 +109,7 @@ const rules = ref<FormRules<FormData>>({
   ],
   phone_number: [
     { required: true, message: 'Пожалуйста, введите телефон', trigger: 'blur' },
-    { validator: createPhoneNumberValidator(), trigger: ['blur', 'change'] },
+    { validator: createPhoneNumberValidator({ allowEmpty: false }), trigger: ['blur', 'change'] },
   ],
   password: [
     { required: true, message: 'Пожалуйста, введите пароль', trigger: 'blur' },
@@ -240,9 +237,10 @@ const onHaveAccount = () => {
         <el-form-item prop="phone_number">
           <Input
             v-model="form.phone_number"
-            placeholder="Телефон"
+            placeholder="+7 (___) ___-__-__"
             type="tel"
-            @input="onPhoneInput"
+            :formatter="formatPhoneDisplay"
+            :parser="parsePhoneToDigits"
           />
         </el-form-item>
 
