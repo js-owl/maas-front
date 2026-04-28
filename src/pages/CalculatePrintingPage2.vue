@@ -3,9 +3,9 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { req_json, req_json_auth } from '../api'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
 
-import CoefficientOtk from '../components/coefficients/CoefficientOtk.vue'
-import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
-import CoefficientCover from '../components/coefficients/CoefficientCover.vue'
+import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
+// import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
+import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
 import Input from '../components/ui/Input.vue'
 import DatePicker from '../components/ui/DatePicker.vue'
@@ -299,33 +299,35 @@ watch(
               </div>
 
               <div class="printing-field-block">
-                <CoefficientCover v-model="cover_id" :exclude-labels="['Гальваника']" />
+                <div class="printing-field-title">Финишная обработка изделия</div>
+                <CoefficientCover2 v-model="cover_id" :exclude-labels="['Гальваника']" />
               </div>
 
+              <div class="printing-field-block printing-field-block--otk">
+                <div class="printing-field-title">Вид контроля</div>
+                <CoefficientOtk2 v-model="k_otk" />
+              </div>
+
+              <!-- <div class="printing-field-block">
+                <CoefficientCertificate v-model="k_cert" />
+              </div> -->
+
+              <div class="printing-field-block">
+                <div class="printing-field-title">Описание заказа</div>
+                <el-input
+                  v-model="special_instructions"
+                  type="textarea"
+                  :rows="5"
+                  placeholder=""
+                />
+              </div>
+
+              
               <div
                 class="printing-field-block"
                 v-if="profileStore.profile?.username === 'admin'"
               >
                 <SuitableMachines :machines="result?.suitable_machines || []" />
-              </div>
-
-              <div class="printing-field-block">
-                <CoefficientOtk v-model="k_otk" />
-              </div>
-
-              <div class="printing-field-block">
-                <CoefficientCertificate v-model="k_cert" />
-              </div>
-
-              <div class="printing-field-block">
-                <div class="printing-field-title">Комментарий</div>
-                <el-input
-                  v-model="special_instructions"
-                  type="textarea"
-                  :rows="5"
-                  placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
-                  :input-style="{ backgroundColor: 'var(--whity)', color: 'black' }"
-                />
               </div>
 
               <div class="printing-actions">
@@ -447,6 +449,11 @@ watch(
   gap: 10px;
 }
 
+.printing-field-block--otk {
+  max-width: 822px;
+  gap: 20px;
+}
+
 .printing-field-title {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
@@ -534,6 +541,11 @@ watch(
   .printing-field-group,
   .printing-field-block {
     gap: 8px;
+  }
+
+  .printing-field-block--otk {
+    gap: 12px;
+    max-width: 100%;
   }
 
   .printing-field-grid {
