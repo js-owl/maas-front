@@ -19,7 +19,7 @@ import { useProfileStore } from '../stores/profile.store'
 import DialogInfoPayment from '../components/dialog/DialogInfoPayment.vue'
 import SuitableMachines from '../components/SuitableMachines.vue'
 import CalculateResults from '../components/sections/CalculateResults.vue'
-import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
+import CalculateSubmit2 from '../components/sections/CalculateSubmit2.vue'
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
 import Loader from '../components/ui/Loader.vue'
 
@@ -339,7 +339,7 @@ watch(
               </div>
 
               <div class="printing-actions">
-                <CalculateSubmit
+                <CalculateSubmit2
                   :order-id="order_id"
                   :payload="{ ...payload } as unknown as IOrderPayload"
                   :special-instructions="special_instructions"
