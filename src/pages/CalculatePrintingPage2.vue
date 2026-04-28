@@ -48,6 +48,10 @@ const quantityInput = computed({
 
 let material_id = ref('PA11')
 let material_form = ref('powder')
+const printing_technology = ref('sls')
+const printingTechnologies = ref<Array<{ value: string; label: string }>>([
+  { value: 'sls', label: 'SLS (послойное лазерное спекание)' },
+])
 const materials = ref<Array<{ value: string; label: string }>>([
   { value: 'PA11', label: 'Полиамид PA11' },
 ])
@@ -298,6 +302,11 @@ watch(
                 <SelectCalc v-model="material_id" :input-data="materials" />
               </div>
 
+              <div class="printing-field-group">
+                <div class="printing-field-title">Технология печати</div>
+                <SelectCalc v-model="printing_technology" :input-data="printingTechnologies" />
+              </div>
+
               <div class="printing-field-block">
                 <div class="printing-field-title">Финишная обработка изделия</div>
                 <CoefficientCover2 v-model="cover_id" :exclude-labels="['Гальваника']" />
@@ -444,6 +453,7 @@ watch(
 
 .printing-field-group,
 .printing-field-block {
+  padding: 5px 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
