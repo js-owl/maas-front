@@ -3,11 +3,11 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { req_json, req_json_auth } from '../api'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
 
-import CoefficientQuantity from '../components/coefficients/CoefficientQuantity.vue'
-import MaterialPrinting from '../components/materials/MaterialPrinting.vue'
 import CoefficientOtk from '../components/coefficients/CoefficientOtk.vue'
 import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
 import CoefficientCover from '../components/coefficients/CoefficientCover.vue'
+import SelectCalc from '../components/ui/SelectCalc.vue'
+import Input from '../components/ui/Input.vue'
 
 import { useRoute } from 'vue-router'
 import UploadModel from '../components/cad/UploadModel.vue'
@@ -37,9 +37,19 @@ let length = ref(120)
 let width = ref(30)
 let height = ref(30)
 let quantity = ref(1)
+const quantityInput = computed({
+  get: () => String(quantity.value),
+  set: (value: string) => {
+    const parsedValue = Number(value)
+    quantity.value = Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 1
+  },
+})
 
 let material_id = ref('PA11')
 let material_form = ref('powder')
+const materials = ref<Array<{ value: string; label: string }>>([
+  { value: 'PA11', label: 'Полиамид PA11' },
+])
 
 let cover_id = ref<string[]>(['1'])
 let k_otk = ref('1.0')
@@ -108,6 +118,7 @@ watch(
 )
 
 onMounted(() => {
+  loadMaterials()
   if (order_id.value === 0) {
     const filesQuery = route.query.files
     const stpParam = route.query.stp
@@ -134,6 +145,29 @@ onMounted(() => {
     getOrder(order_id.value)
   }
 })
+
+const transformMaterials = (data: { materials: Array<{ id: string; label: string }> }) =>
+  data.materials.map((item) => ({
+    value: item.id,
+    label: item.label,
+  }))
+
+async function loadMaterials() {
+  try {
+    const response = await req_json_auth('/materials?process=printing', 'GET')
+    if (response?.ok) {
+      const backendMaterials = (await response.json()) as {
+        materials: Array<{ id: string; label: string }>
+      }
+      materials.value = transformMaterials(backendMaterials)
+      if (!materials.value.some((item) => item.value === material_id.value) && materials.value.length) {
+        material_id.value = materials.value[0].value
+      }
+    }
+  } catch (error) {
+    console.error('Error loading materials:', error)
+  }
+}
 
 async function sendData(payload: IOrderPayload) {
   startLoading()
@@ -206,7 +240,7 @@ async function getOrder(id: number) {
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
           <div class="printing-page__card">
             <div class="printing-page__main">
-              <div class="printing-title">
+              <!-- <div class="printing-title">
                 <div v-if="order_id != 0" class="printing-title__inputs">
                   <el-input
                     v-model="order_code"
@@ -222,14 +256,21 @@ async function getOrder(id: number) {
                   {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
                 </div>
                 <div v-else class="printing-title__text">3D ПЕЧАТЬ</div>
+              </div> -->
+
+              <div class="printing-field-group">
+                <div class="printing-field-title">Материал</div>
+                <SelectCalc v-model="material_id" :input-data="materials" />
               </div>
 
               <div class="printing-field-grid">
                 <div class="printing-field-group">
-                  <MaterialPrinting v-model="material_id" />
-                </div>
-                <div class="printing-field-group">
-                  <CoefficientQuantity v-model="quantity" />
+                  <div class="printing-field-title">Количество, шт</div>
+                  <Input
+                    v-model="quantityInput"
+                    type="number"
+                    placeholder="Введите количество"
+                  />
                 </div>
               </div>
 
