@@ -14,7 +14,31 @@ type CreatePhoneNumberValidatorOptions = {
 }
 
 /**
- * Returns an Element Plus rule validator for phone number (digits only, 10–15 length).
+ * Normalizes phone input to Russian digits-only format:
+ * - always starts with `7`
+ * - max length 11 (7 + 10 digits)
+ * - converts leading `8` -> `7`
+ * - if user enters 10-digit mobile starting with `9`, prefixes `7`
+ */
+export const normalizeRuPhoneDigits = (value: string): string => {
+  const digits = (value || '').replace(/\D/g, '')
+  if (!digits) return ''
+
+  // Handle common Russian input forms first.
+  if (digits.length === 11 && digits.startsWith('8')) return `7${digits.slice(1)}`
+  if (digits.length === 10 && digits.startsWith('9')) return `7${digits}`.slice(0, 11)
+
+  // Ensure first digit is 7 without growing the number unexpectedly.
+  if (!digits.startsWith('7')) {
+    const normalized = `7${digits.slice(1)}`
+    return normalized.slice(0, 11)
+  }
+
+  return digits.slice(0, 11)
+}
+
+/**
+ * Returns an Element Plus rule validator for Russian phone number.
  * @param options.allowEmpty - if true, empty value passes validation (for optional fields)
  */
 export const createPhoneNumberValidator = (
@@ -27,13 +51,17 @@ export const createPhoneNumberValidator = (
       callback()
       return
     }
-    if (!/^\d+$/.test(value)) {
+    const digits = normalizeRuPhoneDigits(value)
+    if (!digits) {
+      callback(new Error('Введите телефон'))
+      return
+    }
+    if (!/^\d+$/.test(digits)) {
       callback(new Error('Телефон должен содержать только цифры'))
       return
     }
-    const length = value.length
-    if (length < 10 || length > 15) {
-      callback(new Error('Введите корректный номер телефона (10–15 цифр)'))
+    if (!/^7\d{10}$/.test(digits)) {
+      callback(new Error('Введите телефон в формате 7XXXXXXXXXX (10 цифр после 7)'))
       return
     }
     callback()
@@ -43,8 +71,7 @@ export const createPhoneNumberValidator = (
 /**
  * Returns string with only digits. Use in @input to restrict phone input.
  */
-export const normalizePhoneInput = (value: string): string =>
-  (value || '').replace(/\D/g, '')
+export const normalizePhoneInput = (value: string): string => normalizeRuPhoneDigits(value)
 
 /**
  * Formats digits as Russian phone display: +7 (XXX) XXX-XX-XX.
@@ -52,13 +79,7 @@ export const normalizePhoneInput = (value: string): string =>
  */
 export const formatPhoneDisplay = (value: string): string => {
   if (!value) return value
-  const numbers = (value || '').replace(/\D/g, '')
-  let cleanNumber = numbers
-  if (numbers.startsWith('8') && numbers.length === 11) {
-    cleanNumber = '7' + numbers.slice(1)
-  } else if (numbers.startsWith('9') && numbers.length === 10) {
-    cleanNumber = '7' + numbers
-  }
+  const cleanNumber = normalizeRuPhoneDigits(value)
   if (cleanNumber.length <= 1) return cleanNumber
   if (cleanNumber.length <= 4) return `+7 (${cleanNumber.slice(1)}`
   if (cleanNumber.length <= 7) return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4)}`
@@ -73,7 +94,5 @@ export const formatPhoneDisplay = (value: string): string => {
  * Use as el-input parser for phone fields.
  */
 export const parsePhoneToDigits = (value: string): string => {
-  if (!value) return value
-  const numbers = (value || '').replace(/\D/g, '')
-  return numbers.startsWith('8') ? '7' + numbers.slice(1) : numbers
+  return normalizeRuPhoneDigits(value)
 }
