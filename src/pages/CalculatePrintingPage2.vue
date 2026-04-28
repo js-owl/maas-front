@@ -1,0 +1,520 @@
+<script lang="ts" setup>
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { req_json, req_json_auth } from '../api'
+import { parseFilesQueryToIds } from '../helpers/parse-files'
+
+import CoefficientQuantity from '../components/coefficients/CoefficientQuantity.vue'
+import MaterialPrinting from '../components/materials/MaterialPrinting.vue'
+import CoefficientOtk from '../components/coefficients/CoefficientOtk.vue'
+import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
+import CoefficientCover from '../components/coefficients/CoefficientCover.vue'
+
+import { useRoute } from 'vue-router'
+import UploadModel from '../components/cad/UploadModel.vue'
+import UploadDrawings from '../components/UploadDrawings.vue'
+import DocumentShowByIds from '../components/DocumentShowByIds.vue'
+// @ts-ignore
+import CadShowById from '../components/cad/CadShowById.vue'
+import { useProfileStore } from '../stores/profile.store'
+import DialogInfoPayment from '../components/dialog/DialogInfoPayment.vue'
+import SuitableMachines from '../components/SuitableMachines.vue'
+import CalculateResults from '../components/sections/CalculateResults.vue'
+import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
+import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
+import Loader from '../components/ui/Loader.vue'
+
+const profileStore = useProfileStore()
+
+const route = useRoute()
+const order_id = computed(() => Number(route.query.orderId) || 0)
+let order_name = ref('')
+let order_code = ref('3000.000.001')
+
+let file_id = ref<number | undefined>(undefined)
+let document_ids = ref<number[]>([])
+
+let length = ref(120)
+let width = ref(30)
+let height = ref(30)
+let quantity = ref(1)
+
+let material_id = ref('PA11')
+let material_form = ref('powder')
+
+let cover_id = ref<string[]>(['1'])
+let k_otk = ref('1.0')
+let k_cert = ref(['a', 'f'])
+let manufacturing_cycle = ref<number>(0)
+let special_instructions = ref('')
+
+const payload = reactive({
+  service_id: 'printing',
+  order_name,
+  order_code,
+  file_id,
+  document_ids,
+  quantity,
+  length,
+  width,
+  height,
+  material_id,
+  material_form,
+  cover_id,
+  k_otk,
+  k_cert,
+  manufacturing_cycle,
+})
+
+const result = ref<IOrderResponse | null>(null)
+
+let isInfoVisible = ref(false)
+const isLoading = ref<boolean>(true)
+
+const MIN_LOADING_MS = 1000
+let loadingStartedAt = 0
+const startLoading = () => {
+  loadingStartedAt = Date.now()
+  isLoading.value = true
+}
+const stopLoading = async () => {
+  const elapsed = Date.now() - loadingStartedAt
+  const remaining = Math.max(0, MIN_LOADING_MS - elapsed)
+  if (remaining > 0) await new Promise((r) => setTimeout(r, remaining))
+  isLoading.value = false
+}
+
+const calculationPayload = computed(() => ({
+  service_id: payload.service_id,
+  file_id: payload.file_id,
+  document_ids: payload.document_ids,
+  quantity: payload.quantity,
+  length: payload.length,
+  width: payload.width,
+  height: payload.height,
+  material_id: payload.material_id,
+  material_form: payload.material_form,
+  cover_id: payload.cover_id,
+  k_otk: payload.k_otk,
+  k_cert: payload.k_cert,
+  manufacturing_cycle: payload.manufacturing_cycle,
+}))
+
+watch(
+  calculationPayload,
+  (newVal) => {
+    sendData(newVal as unknown as IOrderPayload)
+  },
+  { deep: true }
+)
+
+onMounted(() => {
+  if (order_id.value === 0) {
+    const filesQuery = route.query.files
+    const stpParam = route.query.stp
+
+    const ids = parseFilesQueryToIds(filesQuery)
+    if (ids.length > 0) {
+      document_ids.value = ids
+    }
+
+    if (filesQuery) {
+      if (stpParam) {
+        const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
+        const parsedStpId = Number(stpId)
+        if (!Number.isNaN(parsedStpId)) {
+          file_id.value = parsedStpId
+        }
+      }
+    } else {
+      file_id.value = 1
+    }
+
+    sendData(calculationPayload.value as unknown as IOrderPayload)
+  } else {
+    getOrder(order_id.value)
+  }
+})
+
+async function sendData(payload: IOrderPayload) {
+  startLoading()
+  try {
+    const res = await req_json('/calculate-price', 'POST', payload)
+    const data = (await res?.json()) as IOrderResponse
+    result.value = data
+  } catch (error) {
+    console.error({ error })
+  }
+  await stopLoading()
+}
+
+const onUpdateResult = (d: IOrderResponse) => {
+  result.value = d
+}
+
+async function getOrder(id: number) {
+  startLoading()
+  try {
+    const res = await req_json_auth(`/orders/${id}`, 'GET')
+    const data = (await res?.json()) as IOrderResponse
+    result.value = data
+
+    if (data.file_id) file_id.value = data.file_id
+    if (data.document_ids) document_ids.value = data.document_ids
+    if (data.length) length.value = data.length
+    if (data.width) width.value = data.width
+    if (data.height) height.value = data.height
+    if (data.quantity) quantity.value = data.quantity
+    if (data.material_id) material_id.value = data.material_id
+    if (data.material_form) material_form.value = data.material_form
+    if (data.cover_id)
+      cover_id.value = Array.isArray(data.cover_id) ? data.cover_id : [data.cover_id]
+    if (data.k_otk) k_otk.value = data.k_otk
+    if (data.k_cert) k_cert.value = data.k_cert
+    if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
+    if (data.special_instructions) special_instructions.value = data.special_instructions
+    if (data.order_name) order_name.value = data.order_name
+    if ((data as any).order_code) order_code.value = (data as any).order_code
+
+    Object.assign(payload, {
+      service_id: 'printing',
+      order_name: order_name.value,
+      order_code: order_code.value,
+      file_id: file_id.value,
+      document_ids: document_ids.value,
+      quantity: quantity.value,
+      length: length.value,
+      width: width.value,
+      height: height.value,
+      material_id: material_id.value,
+      material_form: material_form.value,
+      cover_id: cover_id.value,
+      k_otk: k_otk.value,
+      k_cert: k_cert.value,
+      manufacturing_cycle: manufacturing_cycle.value,
+    })
+  } catch (error) {
+    console.error({ error })
+  }
+  await stopLoading()
+}
+</script>
+
+<template>
+  <Loader :loading="isLoading" text="Расчет цены...">
+    <section class="printing-page">
+      <el-row :gutter="0" class="printing-page__row">
+        <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
+          <div class="printing-page__card">
+            <div class="printing-page__main">
+              <div class="printing-title">
+                <div v-if="order_id != 0" class="printing-title__inputs">
+                  <el-input
+                    v-model="order_code"
+                    placeholder="Код заказа"
+                    class="printing-title__input"
+                    style="margin-top: 8px"
+                  />
+                  <el-input
+                    v-model="order_name"
+                    placeholder="Название заказа"
+                    class="printing-title__input"
+                  />
+                  {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
+                </div>
+                <div v-else class="printing-title__text">3D ПЕЧАТЬ</div>
+              </div>
+
+              <div class="printing-field-grid">
+                <div class="printing-field-group">
+                  <MaterialPrinting v-model="material_id" />
+                </div>
+                <div class="printing-field-group">
+                  <CoefficientQuantity v-model="quantity" />
+                </div>
+              </div>
+
+              <div class="printing-field-block">
+                <CoefficientCover v-model="cover_id" :exclude-labels="['Гальваника']" />
+              </div>
+
+              <div
+                class="printing-field-block"
+                v-if="profileStore.profile?.username === 'admin'"
+              >
+                <SuitableMachines :machines="result?.suitable_machines || []" />
+              </div>
+
+              <div class="printing-field-block">
+                <CoefficientOtk v-model="k_otk" />
+              </div>
+
+              <div class="printing-field-block">
+                <CoefficientCertificate v-model="k_cert" />
+              </div>
+
+              <div class="printing-field-block">
+                <div class="printing-field-title">Комментарий</div>
+                <el-input
+                  v-model="special_instructions"
+                  type="textarea"
+                  :rows="5"
+                  placeholder="Укажите особые требования, допуски, упаковку, логистику и т.п."
+                  :input-style="{ backgroundColor: 'var(--whity)', color: 'black' }"
+                />
+              </div>
+
+              <div class="printing-actions">
+                <CalculateSubmit
+                  :order-id="order_id"
+                  :payload="{ ...payload } as unknown as IOrderPayload"
+                  :special-instructions="special_instructions"
+                  @updateResult="onUpdateResult"
+                  @showInfo="isInfoVisible = true"
+                />
+              </div>
+            </div>
+
+            <aside class="printing-page__aside">
+              <CalculateResults :result="result" />
+
+              <div v-if="file_id" class="printing-cad">
+                <CadShowById v-model="file_id" />
+              </div>
+
+              <div class="printing-upload">
+                <div class="printing-upload__title">Загрузите файлы для расчета</div>
+                <UploadModel v-model="file_id" color="#000" />
+                <UploadDrawings v-model="document_ids" color="#000" />
+                <div class="printing-upload__info">Максимальный размер 100Мб</div>
+                <DocumentShowByIds v-model="document_ids" />
+              </div>
+            </aside>
+          </div>
+        </el-col>
+      </el-row>
+      <DialogInfoPayment v-model="isInfoVisible" />
+    </section>
+  </Loader>
+</template>
+
+<style scoped>
+.printing-page {
+  padding: 0 0 40px;
+  min-height: 300px;
+  background-color: var(--bgcolor);
+}
+
+.printing-page__row {
+  width: 100%;
+}
+
+.printing-page__card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 30px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 10px 15px 0 var(--button);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 40px;
+}
+
+.printing-page__main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.printing-title {
+  color: black;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.printing-title__inputs {
+  width: 100%;
+}
+
+.printing-title__input :deep(.el-input__wrapper) {
+  padding: 0;
+  box-shadow: none;
+  background-color: transparent;
+  border: none;
+}
+
+.printing-title__input :deep(.el-input__wrapper:hover) {
+  box-shadow: none;
+}
+
+.printing-title__input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: none;
+  border: none;
+}
+
+.printing-title__input :deep(.el-input__inner) {
+  padding: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: black;
+}
+
+.printing-title__input :deep(.el-input__inner::placeholder) {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.printing-title__text {
+  font-size: 38px;
+}
+
+.printing-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.printing-field-group,
+.printing-field-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.printing-field-title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  line-height: 1.1;
+  color: #000;
+}
+
+.printing-actions {
+  padding-top: 6px;
+}
+
+.printing-page__aside {
+  background: var(--bgcolor);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.printing-cad {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.printing-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.printing-upload__title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  color: #000;
+}
+
+.printing-upload__info {
+  font-size: 14px;
+  color: #000;
+}
+
+:deep(.el-textarea__inner) {
+  min-height: 150px !important;
+  border-radius: 10px;
+  background: var(--whity);
+  box-shadow: none;
+  border: 0;
+}
+
+@media (max-width: 1199px) {
+  .printing-page__card {
+    width: 100%;
+    padding: 20px;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .printing-page {
+    padding: 16px 0 20px;
+  }
+
+  .printing-page__row {
+    box-sizing: border-box;
+  }
+
+  .printing-page__card {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px;
+    border-radius: 0;
+    gap: 16px;
+    box-shadow: 0 6px 10px 0 var(--button);
+    overflow-x: hidden;
+  }
+
+  .printing-page__main {
+    gap: 16px;
+  }
+
+  .printing-field-group,
+  .printing-field-block {
+    gap: 8px;
+  }
+
+  .printing-field-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .printing-field-title,
+  .printing-upload__title {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .printing-title {
+    font-size: 24px;
+  }
+
+  .printing-title__input :deep(.el-input__inner) {
+    font-size: 24px;
+  }
+
+  .printing-title__text {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .printing-page__aside {
+    padding: 12px;
+    border-radius: 14px;
+    gap: 14px;
+  }
+
+  .printing-upload {
+    gap: 10px;
+  }
+
+  .printing-actions {
+    padding-top: 0;
+  }
+
+  .printing-cad {
+    border-radius: 8px;
+  }
+
+  :deep(.el-textarea__inner) {
+    min-height: 120px !important;
+  }
+}
+</style>

@@ -59,12 +59,12 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/milling',
-    component: () => import('./pages/CalculateMillingPage.vue'),
+    component: () => import('./pages/CalculateMillingPage2.vue'),
     name: 'milling',
   },
   {
     path: '/milling2',
-    component: () => import('./pages/CalculateMillingPage2.vue'),
+    component: () => import('./pages/CalculateMillingPage.vue'),
     name: 'milling2',
   },
   // {
@@ -74,8 +74,13 @@ const routes: RouteRecordRaw[] = [
   // },
   {
     path: '/printing',
-    component: () => import('./pages/CalculatePrintingPage.vue'),
+    component: () => import('./pages/CalculatePrintingPage2.vue'),
     name: 'printing',
+  },
+  {
+    path: '/printing2',
+    component: () => import('./pages/CalculatePrintingPage.vue'),
+    name: 'printing2',
   },
 
   {
