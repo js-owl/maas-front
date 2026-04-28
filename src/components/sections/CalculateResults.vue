@@ -38,7 +38,7 @@ const formatNumber = (value: number | string | null | undefined) => {
     <template v-else>
       <div class="price-section">
         <div class="card">
-          <div class="coefficient-label">Стоимость</div>
+          <div class="calc-res">Стоимость</div>
           <div class="price-line">
             <span class="price">{{ formatNumber(props.result?.total_price) }} ₽</span>
             <span v-if="props.result && props.result.quantity > 1" class="per-item">
@@ -48,8 +48,11 @@ const formatNumber = (value: number | string | null | undefined) => {
         </div>
 
         <div class="card">
-          <div class="coefficient-label">Время изготовления</div>
-          <div class="price">{{ props.result?.manufacturing_cycle ?? '—' }}</div>
+          <div class="calc-res">Время изготовления</div>
+          <div class="price-line">
+            <span class="price">{{ props.result?.manufacturing_cycle ?? '—' }}</span>
+            <span class="per-item">(рабочие дни)</span>
+          </div>
         </div>
       </div>
 
@@ -146,18 +149,19 @@ const formatNumber = (value: number | string | null | undefined) => {
   font-weight: 600;
 }
 
-.currency {
-  font-size: 24px;
-  font-weight: 600;
-}
-
 .per-item {
   margin-top: 4px;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   color: black;
 
+}
+.calc-res {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: black;
 }
 
 @media (max-width: 767px) {
