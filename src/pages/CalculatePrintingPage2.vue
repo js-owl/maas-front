@@ -23,6 +23,9 @@ import CalculateSubmit2 from '../components/sections/CalculateSubmit2.vue'
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
 import Loader from '../components/ui/Loader.vue'
 
+type BackendMaterial = { id: string; label: string }
+type MaterialOption = { value: string; label: string }
+
 const profileStore = useProfileStore()
 
 const route = useRoute()
@@ -51,7 +54,7 @@ const printing_technology = ref('sls')
 const printingTechnologies = ref<Array<{ value: string; label: string }>>([
   { value: 'sls', label: 'SLS (послойное лазерное спекание)' },
 ])
-const materials = ref<Array<{ value: string; label: string }>>([
+const materials = ref<MaterialOption[]>([
   { value: 'PA11', label: 'Полиамид PA11' },
 ])
 
@@ -156,8 +159,8 @@ onMounted(() => {
   }
 })
 
-const transformMaterials = (data: { materials: Array<{ id: string; label: string }> }) =>
-  data.materials.map((item) => ({
+const transformMaterials = (data: { materials: BackendMaterial[] }) =>
+  data.materials.map((item: BackendMaterial): MaterialOption => ({
     value: item.id,
     label: item.label,
   }))
@@ -167,7 +170,7 @@ async function loadMaterials() {
     const response = await req_json_auth('/materials?process=printing', 'GET')
     if (response?.ok) {
       const backendMaterials = (await response.json()) as {
-        materials: Array<{ id: string; label: string }>
+        materials: BackendMaterial[]
       }
       materials.value = transformMaterials(backendMaterials)
       if (!materials.value.some((item) => item.value === material_id.value) && materials.value.length) {
