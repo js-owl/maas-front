@@ -16,7 +16,7 @@ import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
 import { useProfileStore } from '../stores/profile.store'
-import DialogInfoPayment from '../components/dialog/DialogInfoPayment.vue'
+// import DialogInfoPayment from '../components/dialog/DialogInfoPayment.vue'
 import SuitableMachines from '../components/SuitableMachines.vue'
 import CalculateResults from '../components/sections/CalculateResults.vue'
 import CalculateSubmit2 from '../components/sections/CalculateSubmit2.vue'
@@ -371,7 +371,7 @@ watch(
           </div>
         </el-col>
       </el-row>
-      <DialogInfoPayment v-model="isInfoVisible" />
+      <!-- <DialogInfoPayment v-model="isInfoVisible" /> -->
     </section>
   </Loader>
 </template>
