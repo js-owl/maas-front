@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
+import DialogLogin from './dialog/DialogLogin.vue'
+import DialogCall from './dialog/DialogCall.vue'
+import DialogRegistration from './dialog/DialogRegistration.vue'
 import { useAuthStore } from '../stores/auth.store'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -17,10 +20,6 @@ import IconProfile from '@/icons/IconProfile.vue'
 import IconChat from '@/icons/IconChat.vue'
 import IconExit from '@/icons/IconExit.vue'
 
-const DialogLogin = defineAsyncComponent(() => import('./dialog/DialogLogin.vue'))
-const DialogCall = defineAsyncComponent(() => import('./dialog/DialogCall.vue'))
-const DialogRegistration = defineAsyncComponent(() => import('./dialog/DialogRegistration.vue'))
-
 const activeIndex = ref('1')
 
 const isLoginVisible = ref(false)
@@ -36,7 +35,6 @@ const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
 const isDrawerOpen = ref(false)
 const isHomePage = computed(() => route.path === '/')
-const isHomeHeaderBgVisible = computed(() => isHomePage.value && !isMobile.value)
 const isCabinetMenuVisible = ref(false)
 const isGuestCabinetMenuVisible = ref(false)
 const isServicesMenuVisible = ref(false)
@@ -174,8 +172,8 @@ function openServicePage(path: string) {
 </script>
 
 <template>
-  <div class="uppermenu-wrapper" :class="{ 'fullscreen-bg': isHomeHeaderBgVisible }">
-    <div v-if="isHomeHeaderBgVisible" class="background-overlay"></div>
+  <div class="uppermenu-wrapper" :class="{ 'fullscreen-bg': isHomePage }">
+    <div v-if="isHomePage" class="background-overlay"></div>
     <el-row :gutter="0" class="uppermenu-row">
       <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
         <el-header class="uppermenu-header">
