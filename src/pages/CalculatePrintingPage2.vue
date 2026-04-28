@@ -11,9 +11,8 @@ import Input from '../components/ui/Input.vue'
 import DatePicker from '../components/ui/DatePicker.vue'
 
 import { useRoute } from 'vue-router'
-import UploadModel from '../components/cad/UploadModel.vue'
-import UploadDrawings from '../components/UploadDrawings.vue'
-import DocumentShowByIds from '../components/DocumentShowByIds.vue'
+import UploadFiles2 from '@/components/UploadFiles2.vue'
+import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
 import { useProfileStore } from '../stores/profile.store'
@@ -358,11 +357,15 @@ watch(
               </div>
 
               <div class="printing-upload">
-                <div class="printing-upload__title">Загрузите файлы для расчета</div>
-                <UploadModel v-model="file_id" color="#000" />
-                <UploadDrawings v-model="document_ids" color="#000" />
-                <div class="printing-upload__info">Максимальный размер 100Мб</div>
-                <DocumentShowByIds v-model="document_ids" />
+                <div class="printing-upload__title">Загрузите файлы</div>
+                <UploadFiles2
+                  v-model="document_ids"
+                  color="#000"
+                  :hide-formats-text="true"
+                  v-model:stp_id="file_id"
+                  class="upload-files-bordered"
+                />
+                <DocumentShowByIds2 v-model="document_ids" />
               </div>
             </aside>
           </div>
@@ -375,7 +378,7 @@ watch(
 
 <style scoped>
 .printing-page {
-  padding: 0 0 40px;
+  padding: 0px 0 40px;
   min-height: 300px;
   background-color: var(--bgcolor);
 }
@@ -467,7 +470,7 @@ watch(
 .printing-field-title {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
-  line-height: 1.1;
+  line-height: 1;
   color: #000;
 }
 
@@ -503,9 +506,12 @@ watch(
   color: #000;
 }
 
-.printing-upload__info {
-  font-size: 14px;
-  color: #000;
+.upload-files-bordered :deep(.upload) {
+  border: 2px dashed #7d8083;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 :deep(.el-textarea__inner) {
@@ -538,7 +544,7 @@ watch(
     width: 100%;
     max-width: 100%;
     padding: 14px;
-    border-radius: 0;
+    border-radius: 0px;
     gap: 16px;
     box-shadow: 0 6px 10px 0 var(--button);
     overflow-x: hidden;
@@ -551,6 +557,7 @@ watch(
   .printing-field-group,
   .printing-field-block {
     gap: 8px;
+    padding: 2px 0;
   }
 
   .printing-field-block--otk {
