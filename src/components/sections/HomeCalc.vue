@@ -41,7 +41,8 @@ const isMobile = computed(() => width.value < 768)
 const hasToken = computed(() => Boolean(authStore.getToken))
 const hasExternalServiceId = computed(() => Boolean(props.service_id))
 const selectedServiceId = computed(
-  () => orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.service_id ?? ''
+  () =>
+    orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.service_id ?? ''
 )
 const uploadServiceId = computed(() => props.service_id || selectedServiceId.value)
 const selectedRoutePath = computed(() => {
@@ -81,12 +82,12 @@ const submit = () => {
 
 <template>
   <section class="section-basic">
-    
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
         <div class="maas-title">Производство под вашу потребность</div>
         <p class="maas-text">
-          Проведем расчет стоимости детали по 3Д-модели или чертежу в течении 5 рабочих дней, а также вы получите анализ и рекомендации по оптимизации процесса изготовления
+          Проведем расчет стоимости детали по 3Д-модели или чертежу в течении 5 рабочих дней, а
+          также вы получите анализ и рекомендации по оптимизации процесса изготовления
         </p>
       </div>
 
@@ -100,10 +101,11 @@ const submit = () => {
             class="upload-files-bordered"
           />
           <div class="action-row">
-            <el-form-item v-if="!hasExternalServiceId">
+            <el-form-item v-if="!hasExternalServiceId" label="Тип обработки">
               <Select
                 v-model="selectedOrderType"
                 placeholder="Тип обработки"
+                aria-label="Тип обработки"
                 width="100%"
                 @change="handleOrderTypeChange"
               >
@@ -115,7 +117,12 @@ const submit = () => {
                 />
               </Select>
             </el-form-item>
-            <Button :loading="isSubmitting" :disabled="!hasToken" @click="submit" class="calc-submit-button">
+            <Button
+              :loading="isSubmitting"
+              :disabled="!hasToken"
+              @click="submit"
+              class="calc-submit-button"
+            >
               Отправить
             </Button>
           </div>
@@ -235,7 +242,7 @@ const submit = () => {
 }
 
 @media (max-width: 768px) {
-  .calc-left{
+  .calc-left {
     padding-right: 0px;
     width: 100%;
   }

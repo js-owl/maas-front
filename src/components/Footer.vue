@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { defineAsyncComponent, ref } from "vue";
 import IconLogo from "../icons/IconLogo.vue";
-import DialogCall from "./dialog/DialogCall.vue";
 import VersionInfo from "./VersionInfo.vue";
+
+const DialogCall = defineAsyncComponent(() => import('./dialog/DialogCall.vue'))
 
 const isCallDialogVisible = ref(false);
 
@@ -132,7 +133,7 @@ const openCallDialog = () => {
 .footer-legal {
   font-family: "Montserrat-Medium", sans-serif;
   font-size: 16px;
-  color: #aeb2b5;
+  color: #e2e6ea;
   text-align: left;
 }
 

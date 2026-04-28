@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { useCoefficientsStore } from '../stores/coefficients.store'
-import HomeUslugi from '../components/sections/HomeUslugi.vue'
-import HomeAdvantages from '../components/sections/HomeAdvantages.vue'
-import HomeCalc from '../components/sections/HomeCalc.vue'
-import HomeMilestones from '../components/sections/HomeMilestones.vue'
+const HomeUslugi = defineAsyncComponent(() => import('../components/sections/HomeUslugi.vue'))
+const HomeAdvantages = defineAsyncComponent(() => import('../components/sections/HomeAdvantages.vue'))
+const HomeCalc = defineAsyncComponent(() => import('../components/sections/HomeCalc.vue'))
+const HomeMilestones = defineAsyncComponent(() => import('../components/sections/HomeMilestones.vue'))
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
+const showHomeCalc = ref(true)
 
 const coefficientsStore = useCoefficientsStore()
 
@@ -25,7 +26,7 @@ onMounted(() => {
         <el-col :offset="3" :span="18">
           <!-- <HomeModel /> -->
           <HomeUslugi />
-          <HomeCalc />
+          <HomeCalc v-if="showHomeCalc" />
           <HomeMilestones />
           <!-- <HomeAbout /> -->
           <HomeAdvantages />
@@ -37,7 +38,7 @@ onMounted(() => {
       <el-row>
         <el-col :offset="0" :span="24">
           <HomeUslugi />
-          <HomeCalc />
+          <HomeCalc v-if="showHomeCalc" />
           <HomeMilestones />
           <!-- <HomeAbout /> -->
 
@@ -47,4 +48,3 @@ onMounted(() => {
     </template>
   </div>
 </template>
-<style scoped></style>

@@ -1,20 +1,20 @@
 @font-face {
   font-family: 'Montserrat-Black';
-  src: url('/fonts/Montserrat-Black.ttf') format('truetype');
+  src: url('/fonts/Montserrat-Black.woff2') format('woff2');
   /* font-weight: 900; */
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Montserrat-SemiBold';
-  src: url('/fonts/Montserrat-SemiBold.ttf') format('truetype');
+  src: url('/fonts/Montserrat-SemiBold.woff2') format('woff2');
   /* font-weight: 600; */
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Montserrat-Medium';
-  src: url('/fonts/Montserrat-Medium.ttf') format('truetype');
+  src: url('/fonts/Montserrat-Medium.woff2') format('woff2');
   /* font-weight: 500; */
   font-display: swap;
 }
@@ -46,12 +46,12 @@ html {
 
 /* Общие стили для секций */
 .maas-title {
-  font-family: 'Montserrat-Semibold', sans-serif;
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 2rem;
   color: #000000;
 }
 .maas-subtitle {
-  font-family: 'Montserrat-Semibold', sans-serif;
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 1.5rem;
   color: #000000;
 }
@@ -133,7 +133,7 @@ html {
   align-items: flex-start;
 }
 .uslugi-title {
-  font-family: 'Montserrat-Semibold', sans-serif;
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 2rem;
   color: #000;
   /* text-transform: uppercase; */
@@ -162,7 +162,7 @@ html {
 }
 
 .uslugi-table-title {
-  font-family: 'Montserrat-Semibold', sans-serif;
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 1.5rem;
   margin-bottom: 10px;
   text-align: left;

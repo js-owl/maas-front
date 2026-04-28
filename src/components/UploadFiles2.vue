@@ -166,6 +166,7 @@ const handleDragOver = (event: DragEvent) => {
             style="display: none"
             ref="fileInput"
             multiple
+            aria-label="Загрузка файлов для расчёта"
             :disabled="isDisabled() || isUploading"
           />
         </div>
@@ -231,7 +232,7 @@ const handleDragOver = (event: DragEvent) => {
   width: 100%;
   font-size: 16px;
   line-height: 1.4;
-  color: #7d8083;
+  color: #3d4146;
   overflow-wrap: anywhere;
   word-break: break-word;
 }

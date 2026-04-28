@@ -7,25 +7,25 @@ const advantages = ref([
     id: 1,
     title: 'Скорость',
     text: 'Мы работаем максимально быстро и качественно, вы получаете результаты в назначенные сроки',
-    image: 'homePage/adv_spark.png',
+    image: 'homePage/adv_spark.webp',
   },
   {
     id: 2,
     title: 'Доставка',
     text: 'Больше не нужно беспокоиться о логистике - мы сами позаботимся о доставке готовой продукции',
-    image: 'homePage/adv_car.png',
+    image: 'homePage/adv_car.webp',
   },
   {
     id: 3,
     title: 'Проверенные материалы и оборудование',
     text: 'Вы получаете надежного партнера, который работает с лучшими поставщиками и гарантирует качество',
-    image: 'homePage/adv_box.png',
+    image: 'homePage/adv_box.webp',
   },
   {
     id: 4,
     title: 'Гибкость',
     text: 'Наши специалисты помогут найти все необходимые решения, учтут ваши пожелания и нюансы заказов.',
-    image: 'homePage/adv_puzzle.png',
+    image: 'homePage/adv_puzzle.webp',
   },
 ])
 
@@ -47,7 +47,9 @@ const isMobile = computed(() => width.value <= 767)
           <div class="item-image-container">
             <el-image
               :src="advantage.image"
+              :alt="advantage.title"
               :fit="isMobile ? 'contain' : 'cover'"
+              lazy
               class="item-img"
             />
           </div>

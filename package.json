@@ -14,7 +14,10 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:ui": "vitest --ui",
-    "build:info": "node scripts/build-info.js"
+    "build:info": "node scripts/build-info.js",
+    "lh:local": "node scripts/lighthouse-local.mjs",
+    "lh:local:mobile": "node scripts/lighthouse-local.mjs --mobile",
+    "lh:docs": "node scripts/export-lighthouse-docs.mjs"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",

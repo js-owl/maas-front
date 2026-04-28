@@ -6,6 +6,8 @@ const props = withDefaults(
   defineProps<{
     modelValue?: string | number | boolean | object
     placeholder?: string
+    /** Accessible name for the control (Element Plus inner input). */
+    ariaLabel?: string
     size?: 'large' | 'default' | 'small'
     disabled?: boolean
     clearable?: boolean
@@ -48,6 +50,7 @@ const handleChange = (value: string | number | boolean | object) => {
   <el-select
     :model-value="modelValue"
     :placeholder="placeholder"
+    :aria-label="ariaLabel || placeholder"
     :size="size"
     :disabled="disabled"
     :clearable="clearable"

@@ -99,7 +99,7 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
               </el-icon>
             </div>
             <div class="card-text">
-              <h3 class="card-title montserrat-semibold">{{ ability.title }}</h3>
+              <div class="card-title montserrat-semibold">{{ ability.title }}</div>
               <!-- <div v-if="ability.isDevelopment" class="development-notice">
                 <span class="development-text">[Раздел в разработке]</span>
               </div> -->
