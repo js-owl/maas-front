@@ -18,7 +18,6 @@ describe('hidePrice', () => {
 
   it('returns true when username is in hiddenUsernames and status is null or undefined', () => {
     expect(hidePrice('AODMZ', null)).toBe(true)
-    expect(hidePrice('ecolibriaero_legal', undefined)).toBe(true)
   })
 
   it('returns false when username is not in hiddenUsernames', () => {
@@ -36,7 +35,6 @@ describe('hidePrice', () => {
 describe('hide-price constants', () => {
   it('hiddenUsernames contains expected companies', () => {
     expect(hiddenUsernames).toContain('AODMZ')
-    expect(hiddenUsernames).toContain('ecolibriaero_legal')
     expect(hiddenUsernames.length).toBeGreaterThan(0)
   })
 

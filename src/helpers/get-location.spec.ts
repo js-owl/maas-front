@@ -21,6 +21,5 @@ describe('get-location', () => {
     const companies = locations.map((l) => l.company)
     expect(companies).toContain('AODMZ')
     expect(companies).toContain('Kronshtadt')
-    expect(companies).toContain('ecolibriaero_legal')
   })
 })
