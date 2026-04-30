@@ -101,7 +101,7 @@ const submit = () => {
             class="upload-files-bordered"
           />
           <div class="action-row">
-            <el-form-item v-if="!hasExternalServiceId" label="Тип обработки">
+            <el-form-item v-if="!hasExternalServiceId">
               <Select
                 v-model="selectedOrderType"
                 placeholder="Тип обработки"
