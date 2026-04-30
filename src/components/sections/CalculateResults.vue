@@ -38,7 +38,7 @@ const formatNumber = (value: number | string | null | undefined) => {
     <template v-else>
       <div class="price-section">
         <div class="card">
-          <div class="calc-res">Стоимость</div>
+          <div class="calc-res">Стоимость (без НДС)</div>
           <div class="price-line">
             <span class="price">{{ formatNumber(props.result?.total_price) }} ₽</span>
             <span v-if="props.result && props.result.quantity > 1" class="per-item">
