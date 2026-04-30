@@ -28,6 +28,7 @@ const order_name = ref('')
 const order_code = ref('3000.000.001')
 
 const file_id = ref<number | undefined>(undefined)
+const cadViewerKey = ref(0)
 const document_ids = ref<number[]>([])
 
 const length = ref(120)
@@ -255,6 +256,10 @@ watch(
   },
   { immediate: true }
 )
+
+watch(file_id, () => {
+  cadViewerKey.value += 1
+})
 </script>
 
 <template>
@@ -333,7 +338,7 @@ watch(
               <CalculateResults :result="result" />
 
               <div v-if="file_id" class="milling-cad">
-                <CadShowById v-model="file_id" />
+                <CadShowById :key="cadViewerKey" v-model="file_id" />
               </div>
 
               <div class="milling-upload">

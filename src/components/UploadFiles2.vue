@@ -37,12 +37,11 @@ const isDisabled = () => {
 const processUploadedFile = async (file: File) => {
   const extension = file.name.split('.').pop()?.toLowerCase()
   const isStp = extension === 'stp'
-  const hasMainStp = props.stp_id != null
 
   const base64Data = await fileToBase64(file)
 
-  // Первый STP-файл отправляем в /files и сохраняем как основной stp_id
-  if (isStp && !hasMainStp) {
+  // Любой STP-файл отправляем в /files и обновляем основной stp_id
+  if (isStp) {
     const response = await uploadFile3D(file.name, base64Data, extension || 'stp')
     if (!response?.ok) throw new Error('Upload failed')
 
