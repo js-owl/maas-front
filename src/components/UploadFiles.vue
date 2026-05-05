@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { uploadDocument, fileToBase64, uploadFile3D } from '../api'
+import { uploadDocument, fileToBase64, req_json, uploadFile3D } from '../api'
 // import IconDrawing from "../icons/IconDrawing.vue";
-// import { useAuthStore } from '../stores/auth.store'
+import { useAuthStore } from '../stores/auth.store'
 // import DialogLogin from './dialog/DialogLogin.vue'
 import { ElMessage } from 'element-plus'
 
@@ -23,7 +23,7 @@ const emit = defineEmits<{
   (e: 'update:stp_id', value: number | null): void
 }>()
 
-// const authStore = useAuthStore()
+const authStore = useAuthStore()
 // const isLoginDialogVisible = ref(false)
 const uploadingCount = ref(0)
 const fileInput = ref<HTMLInputElement>()
@@ -41,6 +41,17 @@ const processUploadedFile = async (file: File) => {
   const hasMainStp = props.stp_id != null
 
   const base64Data = await fileToBase64(file)
+
+  if (!authStore.getToken) {
+    const response = await req_json('/calculate-price', 'POST', {
+      service_id: props.service_id,
+      file_name: file.name,
+      file_data: base64Data,
+      file_type: extension || 'stp',
+    })
+    if (!response?.ok) throw new Error('Calculate failed')
+    return
+  }
 
   // Первый STP-файл отправляем в /files и сохраняем как основной stp_id
   if (isStp && !hasMainStp) {
