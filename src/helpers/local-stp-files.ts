@@ -32,15 +32,16 @@ export const saveFile3D = (fileName: string, fileData: string, fileType: string)
   const lastId = files.reduce((maxId, file) => Math.max(maxId, file.id), 0)
   const id = Math.max(Date.now(), lastId + 1)
 
-  files.push({
+  const file: LocalStpFile = {
     id,
     file_name: fileName,
     file_data: fileData,
     file_type: fileType,
     created_at: new Date().toISOString(),
-  })
+  }
 
-  localStorage.setItem(LOCAL_STP_FILES_KEY, JSON.stringify(files))
+  localStorage.removeItem(LOCAL_STP_FILES_KEY)
+  localStorage.setItem(LOCAL_STP_FILES_KEY, JSON.stringify([file]))
 
   return id
 }
