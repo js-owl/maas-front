@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { req_json, req_json_auth } from '../api'
+import { getLocalStpFileById } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
 
 import Input from '../components/ui/Input.vue'
@@ -121,25 +122,39 @@ const stopLoading = async () => {
   isLoading.value = false
 }
 
+const localStpFile = computed(() => getLocalStpFileById(file_id.value))
+
 // Пэйлоад только для расчета (игнорируем order_name, чтобы не дергать /calculate-price)
-const calculationPayload = computed(() => ({
-  service_id: payload.service_id,
-  file_id: payload.file_id,
-  document_ids: payload.document_ids,
-  quantity: payload.quantity,
-  length: payload.length,
-  width: payload.width,
-  height: payload.height,
-  material_id: payload.material_id,
-  material_form: payload.material_form,
-  tolerance_id: payload.tolerance_id,
-  finish_id: payload.finish_id,
-  cover_id: payload.cover_id,
-  n_dimensions: payload.n_dimensions,
-  k_otk: payload.k_otk,
-  k_cert: payload.k_cert,
-  manufacturing_cycle: payload.manufacturing_cycle,
-}))
+const calculationPayload = computed(() => {
+  const fileFields = localStpFile.value
+    ? {
+        file_type: localStpFile.value.file_type,
+        file_name: localStpFile.value.file_name,
+        file_data: localStpFile.value.file_data,
+      }
+    : {
+        file_id: payload.file_id,
+      }
+
+  return {
+    service_id: payload.service_id,
+    ...fileFields,
+    document_ids: payload.document_ids,
+    quantity: payload.quantity,
+    length: payload.length,
+    width: payload.width,
+    height: payload.height,
+    material_id: payload.material_id,
+    material_form: payload.material_form,
+    tolerance_id: payload.tolerance_id,
+    finish_id: payload.finish_id,
+    cover_id: payload.cover_id,
+    n_dimensions: payload.n_dimensions,
+    k_otk: payload.k_otk,
+    k_cert: payload.k_cert,
+    manufacturing_cycle: payload.manufacturing_cycle,
+  }
+})
 
 // Отправляем запрос на сервер при изменении значимых для расчета данных
 watch(

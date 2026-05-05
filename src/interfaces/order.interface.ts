@@ -19,6 +19,9 @@ export interface IOrderBase {
   order_name?: string
   order_code?: string
   file_id?: number
+  file_type?: string
+  file_name?: string
+  file_data?: string
   quantity: number
   length: number
   width: number
