@@ -119,7 +119,6 @@ const submit = () => {
             </el-form-item>
             <Button
               :loading="isSubmitting"
-              :disabled="!hasToken"
               @click="submit"
               class="calc-submit-button"
             >

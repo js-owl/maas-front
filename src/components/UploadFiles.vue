@@ -1,10 +1,20 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { uploadDocument, fileToBase64, req_json, uploadFile3D } from '../api'
+import { uploadDocument, fileToBase64 } from '../api'
 // import IconDrawing from "../icons/IconDrawing.vue";
-import { useAuthStore } from '../stores/auth.store'
+// import { useAuthStore } from '../stores/auth.store'
 // import DialogLogin from './dialog/DialogLogin.vue'
 import { ElMessage } from 'element-plus'
+
+const LOCAL_STP_FILES_KEY = 'uploaded_stp_files'
+
+type LocalStpFile = {
+  id: number
+  file_name: string
+  file_data: string
+  file_type: string
+  created_at: string
+}
 
 const document_ids = defineModel<number[]>({ default: [] })
 const props = withDefaults(
@@ -23,7 +33,7 @@ const emit = defineEmits<{
   (e: 'update:stp_id', value: number | null): void
 }>()
 
-const authStore = useAuthStore()
+// const authStore = useAuthStore()
 // const isLoginDialogVisible = ref(false)
 const uploadingCount = ref(0)
 const fileInput = ref<HTMLInputElement>()
@@ -35,6 +45,24 @@ const isDisabled = () => {
   return isUploading.value
 }
 
+const saveFile3D = (fileName: string, fileData: string, fileType: string): number => {
+  const stored = localStorage.getItem(LOCAL_STP_FILES_KEY)
+  const files: LocalStpFile[] = stored ? JSON.parse(stored) : []
+  const id = Date.now()
+
+  files.push({
+    id,
+    file_name: fileName,
+    file_data: fileData,
+    file_type: fileType,
+    created_at: new Date().toISOString(),
+  })
+
+  localStorage.setItem(LOCAL_STP_FILES_KEY, JSON.stringify(files))
+
+  return id
+}
+
 const processUploadedFile = async (file: File) => {
   const extension = file.name.split('.').pop()?.toLowerCase()
   const isStp = extension === 'stp'
@@ -42,26 +70,9 @@ const processUploadedFile = async (file: File) => {
 
   const base64Data = await fileToBase64(file)
 
-  if (!authStore.getToken) {
-    const response = await req_json('/calculate-price', 'POST', {
-      service_id: props.service_id,
-      file_name: file.name,
-      file_data: base64Data,
-      file_type: extension || 'stp',
-    })
-    if (!response?.ok) throw new Error('Calculate failed')
-    return
-  }
-
-  // Первый STP-файл отправляем в /files и сохраняем как основной stp_id
+  // Первый STP-файл сохраняем локально и используем его id как основной stp_id
   if (isStp && !hasMainStp) {
-    const response = await uploadFile3D(file.name, base64Data, extension || 'stp')
-    if (!response?.ok) throw new Error('Upload failed')
-
-    const data = await response.json()
-    console.log('STP upload response:', data)
-    const id = Number((data as any).id)
-    if (!Number.isFinite(id)) return
+    const id = saveFile3D(file.name, base64Data, extension || 'stp')
 
     emit('update:stp_id', id)
     return
