@@ -71,10 +71,10 @@ const processUploadedFile = async (file: File) => {
 }
 
 const handleFilesUpload = async (files: FileList | File[]) => {
-  if (!authStore.getToken) {
-    isLoginDialogVisible.value = true
-    return
-  }
+  // if (!authStore.getToken) {
+  //   isLoginDialogVisible.value = true
+  //   return
+  // }
 
   const list = Array.from(files)
 
@@ -93,10 +93,10 @@ const handleFilesUpload = async (files: FileList | File[]) => {
 }
 
 const handleFileChange = (event: Event) => {
-  if (!authStore.getToken) {
-    isLoginDialogVisible.value = true
-    return
-  }
+  // if (!authStore.getToken) {
+  //   isLoginDialogVisible.value = true
+  //   return
+  // }
 
   const target = event.target as HTMLInputElement
   const files = target.files
@@ -105,20 +105,20 @@ const handleFileChange = (event: Event) => {
 }
 
 const handleUploadClick = () => {
-  if (!authStore.getToken) {
-    isLoginDialogVisible.value = true
-    return
-  }
+  // if (!authStore.getToken) {
+  //   isLoginDialogVisible.value = true
+  //   return
+  // }
 
   fileInput.value?.click()
 }
 
 const handleDrop = (event: DragEvent) => {
   event.preventDefault()
-  if (!authStore.getToken) {
-    isLoginDialogVisible.value = true
-    return
-  }
+  // if (!authStore.getToken) {
+  //   isLoginDialogVisible.value = true
+  //   return
+  // }
   const files = event.dataTransfer?.files
   if (files && files.length) handleFilesUpload(files)
 }
@@ -133,7 +133,7 @@ const handleDragOver = (event: DragEvent) => {
     <el-tooltip
       content="Необходимо зарегистрироваться"
       placement="top"
-      :disabled="!!authStore.getToken"
+      :disabled="true"
     >
       <div
         class="upload"
