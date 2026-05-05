@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { uploadDocument, fileToBase64, uploadFile3D } from '../api'
+import { uploadDocument, fileToBase64 } from '../api'
+import { saveFile3D } from '../helpers/local-stp-files'
 // import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from '../stores/auth.store'
 import DialogLogin from './dialog/DialogLogin.vue'
@@ -28,6 +29,10 @@ const uploadingCount = ref(0)
 const fileInput = ref<HTMLInputElement>()
 
 const isUploading = computed(() => uploadingCount.value > 0)
+const modelExtensions = new Set([
+  'step',
+  'stp',
+])
 
 const isDisabled = () => {
   if (authStore.getToken) return false
@@ -36,19 +41,13 @@ const isDisabled = () => {
 
 const processUploadedFile = async (file: File) => {
   const extension = file.name.split('.').pop()?.toLowerCase()
-  const isStp = extension === 'stp'
+  const isModel = !!extension && modelExtensions.has(extension)
 
   const base64Data = await fileToBase64(file)
 
-  // Любой STP-файл отправляем в /files и обновляем основной stp_id
-  if (isStp) {
-    const response = await uploadFile3D(file.name, base64Data, extension || 'stp')
-    if (!response?.ok) throw new Error('Upload failed')
-
-    const data = await response.json()
-    console.log('STP upload response:', data)
-    const id = Number((data as any).id)
-    if (!Number.isFinite(id)) return
+  // Модель сохраняем локально, чтобы /calculate-price получил file_type/file_name/file_data
+  if (isModel) {
+    const id = saveFile3D(file.name, base64Data, extension)
 
     emit('update:stp_id', id)
     return

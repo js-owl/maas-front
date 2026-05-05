@@ -23,7 +23,8 @@ async function detectFileType(id) {
 
   const localFile = getLocalStpFileById(id);
   if (localFile) {
-    detectedType.value = "stp";
+    const extension = localFile.file_type?.toLowerCase();
+    detectedType.value = extension === "stl" ? "stl" : ["stp", "step"].includes(extension) ? "stp" : null;
     isLoading.value = false;
     return;
   }
