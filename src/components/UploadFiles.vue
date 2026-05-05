@@ -2,8 +2,8 @@
 import { computed, ref } from 'vue'
 import { uploadDocument, fileToBase64, uploadFile3D } from '../api'
 // import IconDrawing from "../icons/IconDrawing.vue";
-import { useAuthStore } from '../stores/auth.store'
-import DialogLogin from './dialog/DialogLogin.vue'
+// import { useAuthStore } from '../stores/auth.store'
+// import DialogLogin from './dialog/DialogLogin.vue'
 import { ElMessage } from 'element-plus'
 
 const document_ids = defineModel<number[]>({ default: [] })
@@ -23,15 +23,15 @@ const emit = defineEmits<{
   (e: 'update:stp_id', value: number | null): void
 }>()
 
-const authStore = useAuthStore()
-const isLoginDialogVisible = ref(false)
+// const authStore = useAuthStore()
+// const isLoginDialogVisible = ref(false)
 const uploadingCount = ref(0)
 const fileInput = ref<HTMLInputElement>()
 
 const isUploading = computed(() => uploadingCount.value > 0)
 
 const isDisabled = () => {
-  if (authStore.getToken) return false
+  // if (authStore.getToken) return false
   return isUploading.value
 }
 
@@ -73,10 +73,10 @@ const processUploadedFile = async (file: File) => {
 }
 
 const handleFilesUpload = async (files: FileList | File[]) => {
-  if (!authStore.getToken) {
-    isLoginDialogVisible.value = true
-    return
-  }
+  // if (!authStore.getToken) {
+  //   isLoginDialogVisible.value = true
+  //   return
+  // }
 
   const list = Array.from(files)
 
@@ -95,10 +95,10 @@ const handleFilesUpload = async (files: FileList | File[]) => {
 }
 
 const handleFileChange = (event: Event) => {
-  if (!authStore.getToken) {
-    isLoginDialogVisible.value = true
-    return
-  }
+  // if (!authStore.getToken) {
+  //   isLoginDialogVisible.value = true
+  //   return
+  // }
 
   const target = event.target as HTMLInputElement
   const files = target.files
@@ -107,20 +107,21 @@ const handleFileChange = (event: Event) => {
 }
 
 const handleUploadClick = () => {
-  if (!authStore.getToken) {
-    isLoginDialogVisible.value = true
-    return
-  }
+  // if (!authStore.getToken) {
+  //   isLoginDialogVisible.value = true
+  //   return
+  // }
 
   fileInput.value?.click()
 }
 
 const handleDrop = (event: DragEvent) => {
   event.preventDefault()
-  if (!authStore.getToken) {
-    isLoginDialogVisible.value = true
-    return
-  }
+  // if (!authStore.getToken) {
+  //   isLoginDialogVisible.value = true
+  //   return
+  // }
+
   const files = event.dataTransfer?.files
   if (files && files.length) handleFilesUpload(files)
 }
@@ -132,50 +133,51 @@ const handleDragOver = (event: DragEvent) => {
 
 <template>
   <div>
+    <!--
     <el-tooltip
       content="Необходимо зарегистрироваться"
       placement="top"
       :disabled="!!authStore.getToken"
     >
-      <div
-        class="upload"
-        :style="{ '--border-color': color }"
-        :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
-        @click="handleUploadClick"
-        @drop="handleDrop"
-        @dragover="handleDragOver"
-      >
-        <div class="custom">
-          <!-- <IconDrawing :color="color" style="display: block; width: 30px; height: 30px" /> -->
-          <div
-            class="el-upload__text montserrat-semibold"
-            :style="{ color }"
-            style="font-size: 20px; font-weight: 600"
-          >
-            {{ isUploading ? 'Загрузка...' : 'Перетащите или выберите файл' }}
-          </div>
-          <template v-if="!props.hideFormatsText">
-            <div class="upload-subtitle">
-              Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
-            </div>
-            <div class="upload-subtitle">
-              Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
-            </div>
-          </template>
-          <input
-            type="file"
-            @change="handleFileChange"
-            style="display: none"
-            ref="fileInput"
-            multiple
-            aria-label="Загрузка файлов для расчёта"
-            :disabled="isDisabled() || isUploading"
-          />
+    -->
+    <div
+      class="upload"
+      :style="{ '--border-color': color }"
+      :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
+      @click="handleUploadClick"
+      @drop="handleDrop"
+      @dragover="handleDragOver"
+    >
+      <div class="custom">
+        <!-- <IconDrawing :color="color" style="display: block; width: 30px; height: 30px" /> -->
+        <div
+          class="el-upload__text montserrat-semibold"
+          :style="{ color }"
+          style="font-size: 20px; font-weight: 600"
+        >
+          {{ isUploading ? 'Загрузка...' : 'Перетащите или выберите файл' }}
         </div>
+        <template v-if="!props.hideFormatsText">
+          <div class="upload-subtitle">
+            Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
+          </div>
+          <div class="upload-subtitle">
+            Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
+          </div>
+        </template>
+        <input
+          type="file"
+          @change="handleFileChange"
+          style="display: none"
+          ref="fileInput"
+          multiple
+          aria-label="Загрузка файлов для расчёта"
+          :disabled="isDisabled() || isUploading"
+        />
       </div>
-    </el-tooltip>
-
-    <DialogLogin v-model="isLoginDialogVisible" />
+    </div>
+    <!-- </el-tooltip> -->
+    <!-- <DialogLogin v-model="isLoginDialogVisible" /> -->
   </div>
 </template>
 
