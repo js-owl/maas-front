@@ -1,20 +1,11 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { uploadDocument, fileToBase64 } from '../api'
+import { saveFile3D } from '../helpers/local-stp-files'
 // import IconDrawing from "../icons/IconDrawing.vue";
 // import { useAuthStore } from '../stores/auth.store'
 // import DialogLogin from './dialog/DialogLogin.vue'
 import { ElMessage } from 'element-plus'
-
-const LOCAL_STP_FILES_KEY = 'uploaded_stp_files'
-
-type LocalStpFile = {
-  id: number
-  file_name: string
-  file_data: string
-  file_type: string
-  created_at: string
-}
 
 const document_ids = defineModel<number[]>({ default: [] })
 const props = withDefaults(
@@ -43,24 +34,6 @@ const isUploading = computed(() => uploadingCount.value > 0)
 const isDisabled = () => {
   // if (authStore.getToken) return false
   return isUploading.value
-}
-
-const saveFile3D = (fileName: string, fileData: string, fileType: string): number => {
-  const stored = localStorage.getItem(LOCAL_STP_FILES_KEY)
-  const files: LocalStpFile[] = stored ? JSON.parse(stored) : []
-  const id = Date.now()
-
-  files.push({
-    id,
-    file_name: fileName,
-    file_data: fileData,
-    file_type: fileType,
-    created_at: new Date().toISOString(),
-  })
-
-  localStorage.setItem(LOCAL_STP_FILES_KEY, JSON.stringify(files))
-
-  return id
 }
 
 const processUploadedFile = async (file: File) => {

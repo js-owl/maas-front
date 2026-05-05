@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { API_BASE } from '../../api'
+import { getLocalStpFileById } from '../../helpers/local-stp-files'
 import { useAuthStore } from '../../stores/auth.store'
 
 const file_id = defineModel()
@@ -286,6 +287,17 @@ function readFileAsArrayBuffer(file) {
   })
 }
 
+function base64ToFile(base64Data, fileName, fileType) {
+  const binary = atob(base64Data)
+  const bytes = new Uint8Array(binary.length)
+
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i)
+  }
+
+  return new File([bytes], fileName, { type: `application/${fileType}` })
+}
+
 function clearMeshes() {
   meshes.value.forEach((meshData) => {
     if (meshData.mesh && scene) {
@@ -357,6 +369,19 @@ async function loadFileFromServer(id) {
   if (!id) return
 
   try {
+    const localFile = getLocalStpFileById(id)
+    if (localFile) {
+      loading.value = true
+      loadingStatus.value = 'Загрузка файла из localStorage...'
+      loadingProgress.value = 30
+
+      const file = base64ToFile(localFile.file_data, localFile.file_name, localFile.file_type)
+
+      loadingProgress.value = 50
+      await loadFile(file)
+      return
+    }
+
     loading.value = true
     loadingStatus.value = 'Загрузка файла с сервера...'
     loadingProgress.value = 10

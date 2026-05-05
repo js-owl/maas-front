@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, computed, defineAsyncComponent } from "vue";
 import { API_BASE } from "../../api";
+import { getLocalStpFileById } from "../../helpers/local-stp-files";
 import { useAuthStore } from "../../stores/auth.store";
 
 const STLViewer = defineAsyncComponent(() => import("./STLViewer.vue"));
@@ -16,6 +17,13 @@ const isLoading = ref(true);
 async function detectFileType(id) {
   if (!id) {
     detectedType.value = null;
+    isLoading.value = false;
+    return;
+  }
+
+  const localFile = getLocalStpFileById(id);
+  if (localFile) {
+    detectedType.value = "stp";
     isLoading.value = false;
     return;
   }
