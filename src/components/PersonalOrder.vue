@@ -819,7 +819,7 @@ onMounted(() => {
   flex: 1;
   order: 2;
   border-bottom: 2px dashed var(--button-bg);
-  transform: translateY(-2px);
+  transform: translateY(7px);
 }
 
 .date-row {
