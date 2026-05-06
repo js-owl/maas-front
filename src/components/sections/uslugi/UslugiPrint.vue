@@ -23,7 +23,7 @@ import UslugiTable from '@/components/sections/uslugi/UslugiTable.vue'
 
         <div class="uslugi-image-wrapper">
           <img
-            src="https://www.figma.com/api/mcp/asset/0b10ee62-3b88-48b5-b9f7-cfa825ec17e7"
+            src="/uslugiPages/print-main.png"
             alt="3D-печать"
             class="uslugi-image"
           />
