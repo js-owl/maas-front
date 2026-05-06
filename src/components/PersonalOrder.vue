@@ -801,7 +801,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-bottom: 0;
+  margin-bottom: 15px;
 }
 
 .status-row {
@@ -834,7 +834,7 @@ onMounted(() => {
 }
 
 .manufacturer-section {
-  padding: 24px 0;
+  padding: 15px 0;
   border-top: 2px solid var(--button-bg);
   border-bottom: 2px solid var(--button-bg);
 }
@@ -904,7 +904,8 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 24px;
+  margin-top: 15px;
+  /* margin-bottom: 24px; */
 }
 
 .cost-item.total {
