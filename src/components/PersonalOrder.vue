@@ -493,7 +493,7 @@ onMounted(() => {
               {{ row.order_id }}
             </template>
           </el-table-column> -->
-          <el-table-column prop="file_id" label="Превью" width="90">
+          <el-table-column prop="file_id" label="Превью" width="90" class-name="preview-column">
             <template #default="{ row }">
               <div v-if="row.file_id" class="model-preview">
                 <CadPreview :file-id="row.file_id" />
@@ -727,6 +727,11 @@ onMounted(() => {
 }
 
 .model-preview {
+  width: 80px;
+  max-width: 100%;
+  height: 60px;
+  margin: 0 auto;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -771,6 +776,17 @@ onMounted(() => {
 
 .order-table :deep(.el-table__body-wrapper .el-table__cell .cell) {
   line-height: 1.1;
+}
+
+.order-table :deep(.preview-column.el-table__cell) {
+  padding: 10px 5px;
+}
+
+.order-table :deep(.preview-column .cell) {
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+  line-height: 0;
 }
 
 .order-table :deep(.el-table__header-wrapper th.el-table__cell .cell) {

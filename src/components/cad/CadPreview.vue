@@ -369,11 +369,21 @@ onBeforeUnmount(() => {
 .cad-preview-container {
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stl-preview {
   width: 80px;
   height: 60px;
+  max-width: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
   border: 1px solid #ddd;
   border-radius: 4px;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -384,6 +394,7 @@ onBeforeUnmount(() => {
 }
 
 .preview-image {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
