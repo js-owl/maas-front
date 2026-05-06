@@ -49,6 +49,7 @@ export interface IOrderBase {
     mat_price_full?: number
     net_cost?: number
     overhead_expenses?: number
+    billable_weight_kg?: number
     price_of_hour?: number
     price_of_hour_with_others?: number
     price_per_kg?: number

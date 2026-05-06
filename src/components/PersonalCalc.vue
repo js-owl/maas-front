@@ -83,6 +83,7 @@ const productProperties = ref({
   serviceId: '', // ID услуги (Service ID)
   dimensions: '', // Размеры (Dimensions)
   partVolume: '', // Объем детали (Part volume)
+  billableWeight: '', // Масса материала на 1 деталь
   material: '', // Материал (Material)
   coating: '', // Покрытие (Coating)
 })
@@ -380,6 +381,9 @@ const fetchOrder = async (id: number) => {
         const volumeInCm3 = fetchedOrderData.mat_volume * 1_000_000
         productProperties.value.partVolume = `${volumeInCm3.toFixed(2)} см³`
       }
+      if (fetchedOrderData.total_price_breakdown?.billable_weight_kg != null) {
+        productProperties.value.billableWeight = `${fetchedOrderData.total_price_breakdown.billable_weight_kg.toFixed(2)} кг`
+      }
       if (fetchedOrderData.material_id) {
         const foundMaterial = materialStore.materials.find(
           (m) => m.value === fetchedOrderData.material_id
@@ -541,6 +545,11 @@ watch(
               <span class="property-label">Объем детали, мм³</span>
               <span class="property-divider" />
               <span class="property-value">{{ productProperties.partVolume || '-' }}</span>
+            </div>
+            <div class="property-item">
+              <span class="property-label">Масса материала на 1 деталь</span>
+              <span class="property-divider" />
+              <span class="property-value">{{ productProperties.billableWeight || '-' }}</span>
             </div>
             <div class="property-item">
               <span class="property-label">Материал</span>
