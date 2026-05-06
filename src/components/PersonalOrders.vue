@@ -107,6 +107,22 @@ const getStatusClass = (status: string): string => {
   return statusClasses[status] || 'status-chip--default'
 }
 
+const normalizeStatusColor = (statusColor?: string | null): string | null => {
+  if (!statusColor) return null
+  const color = statusColor.trim()
+  if (/^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$/.test(color)) return `#${color}`
+  return color
+}
+
+const getStatusStyle = (statusColor?: string | null): Record<string, string> => {
+  const color = normalizeStatusColor(statusColor)
+  if (!color) return {}
+  return {
+    backgroundColor: color,
+    borderColor: color,
+  }
+}
+
 const getFilename = (fileId: number | null | undefined): string | null => {
   if (!fileId) return null
   return filenames.value.get(fileId) || null
@@ -235,7 +251,11 @@ const handleDelete = async (row: IKit): Promise<void> => {
 
         <el-table-column prop="status_name" label="Статус" width="250">
           <template #default="{ row }">
-            <span class="status-chip" :class="getStatusClass(row.status_name)">
+            <span
+              class="status-chip"
+              :class="getStatusClass(row.status_name)"
+              :style="getStatusStyle(row.status_color)"
+            >
               {{ getStatusText(row.status_name) }}
             </span>
           </template>
