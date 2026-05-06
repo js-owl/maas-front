@@ -310,6 +310,10 @@ onMounted(() => {
   border-bottom: 1px solid var(--bgcolor);
 }
 
+.calcs-table :deep(.el-table__inner-wrapper::before) {
+  display: none;
+}
+
 .calcs-table :deep(.el-table__body .el-table__row td:first-child .cell) {
   color: #7d8083;
 }
