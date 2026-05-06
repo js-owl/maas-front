@@ -24,8 +24,12 @@ const deleteLoading = ref<number | null>(null)
 
 const excludedStatuses = ['cancelled', 'C3:LOSE']
 
+const isExcludedOrder = (order: KitOrder): boolean => {
+  return [order.status, order.status_name].some((status) => excludedStatuses.includes(status ?? ''))
+}
+
 const filteredOrders = computed(() => {
-  let result = allOrders.value.filter((order) => !excludedStatuses.includes(order.status_name ?? ''))
+  let result = allOrders.value.filter((order) => !isExcludedOrder(order))
 
   if (activeTab.value === 'paid') {
     result = result.filter((order) => order.status_name === 'completed' || order.status_name === 'C3:WIN')
