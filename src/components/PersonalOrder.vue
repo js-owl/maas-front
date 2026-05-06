@@ -12,6 +12,7 @@ import Button from './ui/Button.vue'
 import ButtonRound from './ui/ButtonRound.vue'
 import Select from './ui/Select.vue'
 import InputEdit from './ui/InputEdit.vue'
+import Radio from './ui/Radio.vue'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 import IconCalculate from '@/icons/IconCalculate.vue'
 import IconChat from '@/icons/IconChat.vue'
@@ -625,13 +626,14 @@ onMounted(() => {
           <div class="manufacturer-section">
             <div class="maas-subtitle">Выбор изготовителя</div>
             <el-radio-group v-model="selectedLocation" class="manufacturer-radio-group">
-              <el-radio
+              <Radio
                 v-for="manufacturer in manufacturerOptions"
                 :key="manufacturer.value"
                 :value="manufacturer.value"
+                class="manufacturer-radio"
               >
                 {{ manufacturer.label }}
-              </el-radio>
+              </Radio>
             </el-radio-group>
           </div>
 
@@ -852,32 +854,8 @@ onMounted(() => {
 
 .manufacturer-radio-group :deep(.el-radio) {
   height: auto;
-  margin-right: 0;
   color: #000;
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 16px;
   font-weight: 500;
-  line-height: 1;
-}
-
-.manufacturer-radio-group :deep(.el-radio__label) {
-  padding-left: 8px;
-}
-
-.manufacturer-radio-group :deep(.el-radio__inner) {
-  width: 18px;
-  height: 18px;
-  border-color: #aeb2b5;
-  background-color: transparent;
-}
-
-.manufacturer-radio-group :deep(.el-radio__input.is-checked .el-radio__inner) {
-  border-color: #aeb2b5;
-  background-color: #aeb2b5;
-}
-
-.manufacturer-radio-group :deep(.el-radio__input.is-checked + .el-radio__label) {
-  color: #000;
 }
 
 .status-value {
