@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 const examples = [
-  'https://www.figma.com/api/mcp/asset/b1adf59c-5b70-4f05-ad8f-0d3f4a59d149',
-  'https://www.figma.com/api/mcp/asset/e3dd8d48-b654-47ad-8601-d503a34da56b',
-  'https://www.figma.com/api/mcp/asset/904932f8-b3fc-4e18-9122-5dd04226e5ac',
-  'https://www.figma.com/api/mcp/asset/5c6b7665-b51f-4efd-9a73-694345dac3d0',
+  '/uslugiPages/pkm-example-1.png',
+  '/uslugiPages/pkm-example-2.png',
+  '/uslugiPages/pkm-example-3.png',
+  '/uslugiPages/pkm-example-4.png',
 ]
 
 const applications = [

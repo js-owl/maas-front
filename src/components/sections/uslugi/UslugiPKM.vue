@@ -24,7 +24,7 @@ const isRequirementsExpanded = ref(true)
         </div>
 
         <div class="uslugi-image-wrapper">
-          <img src="/uslugiPages/pkm.webp" alt="Полимерно-композитные материалы" class="uslugi-image" />
+          <img src="/uslugiPages/pkm-main.png" alt="Полимерно-композитные материалы" class="uslugi-image" />
         </div>
       </div>
 
