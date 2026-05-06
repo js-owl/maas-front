@@ -6,8 +6,6 @@ import { /* Edit, */ Delete /*, Notebook, Plus, Minus */ } from '@element-plus/i
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import { statusTexts } from '../helpers/status-text'
-import { locations } from '../helpers/get-location'
-import { useProfileStore } from '../stores/profile.store'
 const CadPreview = defineAsyncComponent(() => import('./cad/CadPreview.vue'))
 // import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
 import Button from './ui/Button.vue'
@@ -24,7 +22,6 @@ type KitOrder = IKit & {
 
 const route = useRoute()
 const router = useRouter()
-const profileStore = useProfileStore()
 
 const order = ref<KitOrder | null>(null)
 const isLoading = ref(false)
@@ -106,16 +103,8 @@ const orderStatus = computed(() => {
   return statusTexts[order.value.status_name] || order.value.status_name
 })
 
-const defaultLocation = computed(() => {
-  const companyName = profileStore.profile?.username
-  if (!companyName) return 'location_1'
-
-  const foundLocation = locations.find((loc) => loc.company === companyName)
-  return foundLocation?.location || 'location_1'
-})
-
 const selectedLocation = computed({
-  get: () => order.value?.location || defaultLocation.value,
+  get: () => order.value?.location || 'location_1',
   set: (value: string) => {
     if (!order.value) return
     order.value = {
