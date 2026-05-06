@@ -21,6 +21,23 @@ type KitOrder = IKit & {
   status_name?: string
 }
 
+type LocationItem = {
+  id: string
+  label: string
+}
+
+type LocationResponse = {
+  data?: {
+    locations?: LocationItem[]
+  }
+  locations?: LocationItem[]
+}
+
+type ManufacturerOption = {
+  label: string
+  value: string
+}
+
 const route = useRoute()
 const router = useRouter()
 
@@ -45,11 +62,7 @@ const orderTypeOptions = [
   { label: 'прочее', value: 'other' },
 ]
 
-const manufacturerOptions = [
-  { label: 'АО "ДМЗ"', value: 'location_1' },
-  { label: 'АО "КТ-Спектр"', value: 'location_2' },
-  { label: 'ЦКП', value: 'location_3' },
-]
+const manufacturerOptions = ref<ManufacturerOption[]>([])
 
 const orderId = computed(() => {
   const fromQuery = route.query.orderId
@@ -164,6 +177,28 @@ const loadCalcs = async () => {
   } catch (e) {
     console.error(e)
     ElMessage.error('Не удалось загрузить расчеты заказа')
+  }
+}
+
+const loadManufacturerOptions = async () => {
+  try {
+    const res = await req_json_auth('/locations', 'GET')
+    if (!res?.ok) throw new Error('Failed to load locations')
+
+    const data = (await res.json()) as LocationResponse
+    const locations = data.data?.locations ?? data.locations ?? []
+
+    if (!Array.isArray(locations)) throw new Error('Invalid locations response')
+
+    manufacturerOptions.value = locations.map((location) => ({
+      label: location.label,
+      value: location.id,
+    }))
+  } catch (e) {
+    console.error(e)
+    if (!manufacturerOptions.value.length) {
+      ElMessage.error('Не удалось загрузить список изготовителей')
+    }
   }
 }
 
@@ -448,6 +483,7 @@ const confirmOrder = async () => {
 }
 
 onMounted(() => {
+  void loadManufacturerOptions()
   void loadOrder()
 })
 </script>
