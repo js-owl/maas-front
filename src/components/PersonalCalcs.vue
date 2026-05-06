@@ -34,6 +34,7 @@ const router = useRouter()
 const isLoading = ref(false)
 const summary = ref<CalculationSummary | null>(null)
 const calcRows = ref<CalculationOrderRow[]>([])
+const DEFAULT_VAT_RATE_PERCENT = 20
 
 const kitId = computed(() => {
   const fromQuery = route.query.kitId
@@ -63,6 +64,19 @@ const getNetTotal = (row: CalculationOrderRow): number => {
 const getVat = (row: CalculationOrderRow): number => {
   return row.taxes ?? 0
 }
+
+const formatPercent = (value: number): string => {
+  return String(Math.round(value))
+}
+
+const vatRatePercent = computed(() => {
+  const rowWithNetTotal = calcRows.value.find(row => getNetTotal(row) > 0)
+  if (!rowWithNetTotal) return DEFAULT_VAT_RATE_PERCENT
+
+  return (getVat(rowWithNetTotal) / getNetTotal(rowWithNetTotal)) * 100
+})
+
+const vatColumnLabel = computed(() => `НДС ${formatPercent(vatRatePercent.value)}%, руб.`)
 
 const getTotalWithVat = (row: CalculationOrderRow): number => {
   return row.total_kit_price_with_taxes ?? getNetTotal(row) + getVat(row)
@@ -179,7 +193,7 @@ onMounted(() => {
             {{ formatMoney(getNetTotal(row)) }}
           </template>
         </el-table-column>
-        <el-table-column label="НДС 20%, руб." min-width="126" align="right">
+        <el-table-column :label="vatColumnLabel" min-width="126" align="right">
           <template #default="{ row }">
             {{ formatMoney(getVat(row)) }}
           </template>
