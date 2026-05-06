@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import Radio from '../ui/Radio.vue'
+
 const selected = defineModel({ type: String, required: true })
 
 const otks = [
@@ -12,14 +14,14 @@ const otks = [
 <template>
   <div class="otk-grid">
     <el-radio-group v-model="selected" class="otk-radio-group">
-      <el-radio
+      <Radio
         v-for="option in otks"
         :key="option.value"
-        :label="option.value"
+        :value="option.value"
         class="otk-radio"
       >
-        <span class="otk-label">{{ option.label }}</span>
-      </el-radio>
+        {{ option.label }}
+      </Radio>
     </el-radio-group>
   </div>
 </template>
@@ -38,55 +40,7 @@ const otks = [
 }
 
 .otk-radio {
-  margin-right: 0;
   width: 100%;
-  min-height: 20px;
-}
-
-.otk-label {
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 16px;
-  line-height: 1;
-  color: #000;
-  white-space: nowrap;
-}
-
-:deep(.otk-radio .el-radio__label) {
-  padding-left: 10px;
-}
-
-:deep(.otk-radio .el-radio__inner) {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: transparent;
-  border: 2px solid #cbd1d5;
-}
-
-:deep(.otk-radio .el-radio__inner::after) {
-  width: 10px;
-  height: 10px;
-}
-
-:deep(.otk-radio.is-checked .el-radio__inner) {
-  border-color: #cbd1d5;
-  background: #fff;
-}
-
-:deep(.otk-radio.is-checked .el-radio__inner::after) {
-  transform: translate(-50%, -50%) scale(1);
-  background-color: #cbd1d5;
-}
-
-:deep(.otk-radio .el-radio__input) {
-  display: inline-flex;
-  align-items: center;
-}
-
-:deep(.otk-radio .el-radio__input.is-checked + .el-radio__label) {
-  color: #000;
 }
 
 @media (max-width: 767px) {
@@ -95,8 +49,8 @@ const otks = [
     row-gap: 12px;
   }
 
-  .otk-label {
-    white-space: normal;
+  .otk-radio {
+    --radio-white-space: normal;
   }
 }
 </style>

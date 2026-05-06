@@ -109,6 +109,7 @@ declare module 'vue' {
     PersonalUsers: typeof import('./src/components/PersonalUsers.vue')['default']
     PlasticPreparation: typeof import('./src/components/coefficients/PlasticPreparation.vue')['default']
     ProcessSelect: typeof import('./src/components/coefficients/ProcessSelect.vue')['default']
+    Radio: typeof import('./src/components/ui/Radio.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SectionMilestones: typeof import('./src/components/sections/SectionMilestones.vue')['default']
