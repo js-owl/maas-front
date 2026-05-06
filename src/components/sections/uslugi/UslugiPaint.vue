@@ -5,10 +5,10 @@ import IconArrowDown from '@/icons/IconArrowDown.vue'
 const isRequirementsExpanded = ref(false)
 
 const examples = [
-  'https://www.figma.com/api/mcp/asset/d7d18fcd-f11d-407a-8290-301c8614b018',
-  'https://www.figma.com/api/mcp/asset/c6e4c37c-b208-4ffd-98d4-84fac5783b71',
-  'https://www.figma.com/api/mcp/asset/43ae5e32-4bff-4d79-963a-b9ef61a2e6b8',
-  'https://www.figma.com/api/mcp/asset/0318087d-e715-42f0-82a6-135b054b1149',
+  '/uslugiPages/paint-example-1.png',
+  '/uslugiPages/paint-example-2.png',
+  '/uslugiPages/paint-example-3.png',
+  '/uslugiPages/paint-example-4.png',
 ]
 
 const ralPaletteGroups = [
@@ -82,7 +82,7 @@ const getRalStyle = (code: string) => {
         </div>
 
         <div class="uslugi-image-wrapper">
-          <img src="/uslugiPages/paint.webp" alt="Порошковая покраска" class="uslugi-image" />
+          <img src="/uslugiPages/paint-main.png" alt="Порошковая покраска" class="uslugi-image" />
         </div>
       </div>
 
