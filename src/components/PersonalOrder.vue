@@ -16,10 +16,14 @@ import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 import IconCalculate from '@/icons/IconCalculate.vue'
 import IconChat from '@/icons/IconChat.vue'
 
+type KitOrder = IKit & {
+  status_name?: string
+}
+
 const route = useRoute()
 const router = useRouter()
 
-const order = ref<IKit | null>(null)
+const order = ref<KitOrder | null>(null)
 const isLoading = ref(false)
 const hasError = ref(false)
 
@@ -89,8 +93,8 @@ const createdDate = computed(() => formatDate(order.value?.created_at))
 const completionDate = computed(() => formatDate(order.value?.updated_at))
 
 const orderStatus = computed(() => {
-  if (!order.value?.status) return 'Ожидает оплаты'
-  return statusTexts[order.value.status] || order.value.status
+  if (!order.value?.status_name) return 'Ожидает оплаты'
+  return statusTexts[order.value.status_name] || order.value.status_name
 })
 
 // const fetchFilename = async (fileId: number): Promise<string | null> => {
@@ -151,7 +155,7 @@ const loadOrder = async () => {
   try {
     const res = await req_json_auth(`/kits/${kitId.value}`, 'GET')
     if (!res?.ok) throw new Error('Failed to load order')
-    const data = (await res.json()) as IKit
+    const data = (await res.json()) as KitOrder
     order.value = data
     quantity.value = data.quantity ?? 0
     filename.value = data.kit_name ?? ''

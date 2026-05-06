@@ -5,7 +5,7 @@ import { useWindowSize } from '@vueuse/core'
 import Select from '../ui/Select.vue'
 import Button from '../ui/Button.vue'
 import UploadFiles from '../UploadFiles.vue'
-import { useAuthStore } from '../../stores/auth.store'
+// import { useAuthStore } from '../../stores/auth.store'
 
 const props = withDefaults(
   defineProps<{
@@ -17,7 +17,7 @@ const props = withDefaults(
 )
 
 const router = useRouter()
-const authStore = useAuthStore()
+// const authStore = useAuthStore()
 
 const formModel = ref({
   name: '',
@@ -38,7 +38,7 @@ const orderTypeOptions = [
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
 
-const hasToken = computed(() => Boolean(authStore.getToken))
+// const hasToken = computed(() => Boolean(authStore.getToken))
 const hasExternalServiceId = computed(() => Boolean(props.service_id))
 const selectedServiceId = computed(
   () =>

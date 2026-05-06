@@ -10,8 +10,12 @@ import { Search, Delete, Plus, Refresh } from '@element-plus/icons-vue'
 import ButtonRound from './ui/ButtonRound.vue'
 import type { IKit } from '../interfaces/order.interface'
 
+type KitOrder = IKit & {
+  status_name?: string
+}
+
 const router = useRouter()
-const allOrders = ref<IKit[]>([])
+const allOrders = ref<KitOrder[]>([])
 const profileStore = useProfileStore()
 const filenames = ref<Map<number, string>>(new Map())
 const activeTab = ref('all')
@@ -21,14 +25,14 @@ const deleteLoading = ref<number | null>(null)
 const excludedStatuses = ['cancelled', 'C3:LOSE']
 
 const filteredOrders = computed(() => {
-  let result = allOrders.value.filter((order) => !excludedStatuses.includes(order.status ?? ''))
+  let result = allOrders.value.filter((order) => !excludedStatuses.includes(order.status_name ?? ''))
 
   if (activeTab.value === 'paid') {
-    result = result.filter((order) => order.status === 'completed' || order.status === 'C3:WIN')
+    result = result.filter((order) => order.status_name === 'completed' || order.status_name === 'C3:WIN')
   } else if (activeTab.value === 'unpaid') {
-    result = result.filter((order) => order.status === 'pending' || order.status === 'processing')
+    result = result.filter((order) => order.status_name === 'pending' || order.status_name === 'processing')
   } else if (activeTab.value === 'completed') {
-    result = result.filter((order) => order.status === 'completed' || order.status === 'C3:WIN')
+    result = result.filter((order) => order.status_name === 'completed' || order.status_name === 'C3:WIN')
   }
 
   if (searchQuery.value) {
@@ -44,7 +48,7 @@ const filteredOrders = computed(() => {
 
 const loadOrders = async () => {
   const res = await req_json_auth('/kits', 'GET')
-  const ordersData = await res?.json()
+  const ordersData = (await res?.json()) as KitOrder[]
   allOrders.value = ordersData
 }
 
@@ -229,17 +233,17 @@ const handleDelete = async (row: IKit): Promise<void> => {
           </template>
         </el-table-column>
 
-        <el-table-column prop="status" label="Статус" width="250">
+        <el-table-column prop="status_name" label="Статус" width="250">
           <template #default="{ row }">
-            <span class="status-chip" :class="getStatusClass(row.status)">
-              {{ getStatusText(row.status) }}
+            <span class="status-chip" :class="getStatusClass(row.status_name)">
+              {{ getStatusText(row.status_name) }}
             </span>
           </template>
         </el-table-column>
 
         <el-table-column prop="total_kit_price" label="Цена" width="120" align="right">
           <template #default="{ row }">
-            <span class="filename-text">{{ formatPrice(row.total_kit_price, row.status) }}</span>
+            <span class="filename-text">{{ formatPrice(row.total_kit_price, row.status_name) }}</span>
           </template>
         </el-table-column>
 

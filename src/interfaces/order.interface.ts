@@ -5,6 +5,7 @@ export interface IKit {
   user_id: number
   quantity: number
   status?: string
+  status_name?: string
   created_at?: string
   updated_at?: string
   bitrix_deal_id: number
