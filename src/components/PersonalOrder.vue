@@ -6,6 +6,8 @@ import { /* Edit, */ Delete /*, Notebook, Plus, Minus */ } from '@element-plus/i
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import { statusTexts } from '../helpers/status-text'
+import { locations } from '../helpers/get-location'
+import { useProfileStore } from '../stores/profile.store'
 const CadPreview = defineAsyncComponent(() => import('./cad/CadPreview.vue'))
 // import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
 import Button from './ui/Button.vue'
@@ -22,6 +24,7 @@ type KitOrder = IKit & {
 
 const route = useRoute()
 const router = useRouter()
+const profileStore = useProfileStore()
 
 const order = ref<KitOrder | null>(null)
 const isLoading = ref(false)
@@ -42,6 +45,12 @@ const orderTypeOptions = [
   { label: 'мехобработка', value: 'milling' },
   { label: '3D-печать', value: 'printing' },
   { label: 'прочее', value: 'other' },
+]
+
+const manufacturerOptions = [
+  { label: 'АО "ДМЗ"', value: 'location_1' },
+  { label: 'АО "КТ-Спектр"', value: 'location_2' },
+  { label: 'ЦКП', value: 'location_3' },
 ]
 
 const orderId = computed(() => {
@@ -95,6 +104,25 @@ const completionDate = computed(() => formatDate(order.value?.updated_at))
 const orderStatus = computed(() => {
   if (!order.value?.status_name) return 'Ожидает оплаты'
   return statusTexts[order.value.status_name] || order.value.status_name
+})
+
+const defaultLocation = computed(() => {
+  const companyName = profileStore.profile?.username
+  if (!companyName) return 'location_1'
+
+  const foundLocation = locations.find((loc) => loc.company === companyName)
+  return foundLocation?.location || 'location_1'
+})
+
+const selectedLocation = computed({
+  get: () => order.value?.location || defaultLocation.value,
+  set: (value: string) => {
+    if (!order.value) return
+    order.value = {
+      ...order.value,
+      location: value,
+    }
+  },
 })
 
 // const fetchFilename = async (fileId: number): Promise<string | null> => {
@@ -218,6 +246,7 @@ const updateKit = async (): Promise<Response | undefined> => {
     kit_name: order.value.kit_name,
     quantity: quantity.value,
     order_ids: order.value.order_ids,
+    location: selectedLocation.value,
   })
 }
 
@@ -409,20 +438,13 @@ const saveOrder = async () => {
   }
 }
 
-const productionLeadTime = computed(() => {
-  if (!order.value?.created_at || !order.value?.updated_at) return '7 рабочих дней'
-  const created = new Date(order.value.created_at)
-  const completed = new Date(order.value.updated_at)
-  if (Number.isNaN(created.getTime()) || Number.isNaN(completed.getTime())) return '7 рабочих дней'
-  const msInDay = 1000 * 60 * 60 * 24
-  const diffDays = Math.max(1, Math.round((completed.getTime() - created.getTime()) / msInDay))
-  return `${diffDays} рабочих дней`
-})
-
 const confirmOrder = async () => {
   if (!kitId.value) return
 
   try {
+    const updateRes = await updateKit()
+    if (!updateRes?.ok) throw new Error('Failed to save order before confirm')
+
     const res = await req_json_auth(`/kits/${kitId.value}/confirm`, 'PUT')
     if (!res?.ok) throw new Error('Failed to confirm order')
 
@@ -611,12 +633,17 @@ onMounted(() => {
             </div>
           </div>
 
-          <!-- Стоимость изготовления -->
-          <div class="cost-item">
-            <div class="maas-text" style="padding-top: 24px;">Сроки изготовления</div>
-            <div class="maas-subtitle">
-              {{ productionLeadTime }}
-            </div>
+          <div class="manufacturer-section">
+            <div class="maas-subtitle">Выбор изготовителя</div>
+            <el-radio-group v-model="selectedLocation" class="manufacturer-radio-group">
+              <el-radio
+                v-for="manufacturer in manufacturerOptions"
+                :key="manufacturer.value"
+                :value="manufacturer.value"
+              >
+                {{ manufacturer.label }}
+              </el-radio>
+            </el-radio-group>
           </div>
 
           <div class="cost-item">
@@ -815,6 +842,53 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.manufacturer-section {
+  padding: 24px 0;
+  border-top: 2px solid var(--button-bg);
+  border-bottom: 2px solid var(--button-bg);
+}
+
+.manufacturer-section .maas-subtitle {
+  margin-bottom: 12px;
+}
+
+.manufacturer-radio-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.manufacturer-radio-group :deep(.el-radio) {
+  height: auto;
+  margin-right: 0;
+  color: #000;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.manufacturer-radio-group :deep(.el-radio__label) {
+  padding-left: 8px;
+}
+
+.manufacturer-radio-group :deep(.el-radio__inner) {
+  width: 18px;
+  height: 18px;
+  border-color: #aeb2b5;
+  background-color: transparent;
+}
+
+.manufacturer-radio-group :deep(.el-radio__input.is-checked .el-radio__inner) {
+  border-color: #aeb2b5;
+  background-color: #aeb2b5;
+}
+
+.manufacturer-radio-group :deep(.el-radio__input.is-checked + .el-radio__label) {
+  color: #000;
 }
 
 .status-value {
