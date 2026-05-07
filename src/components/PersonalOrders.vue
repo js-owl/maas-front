@@ -371,14 +371,19 @@ const handleDelete = async (row: IKit): Promise<void> => {
 
 .search-input {
   width: 181px;
+  flex: 0 0 181px;
+  --el-input-height: 48px;
 }
 
 .search-input :deep(.el-input__wrapper) {
+  box-sizing: border-box;
+  height: 48px;
   background-color: var(--whity);
   border: 2px solid var(--button-bg);
   border-radius: 10px;
   box-shadow: none;
-  padding: 8px 16px;
+  justify-content: flex-end;
+  padding: 0 24px;
 }
 
 .search-input :deep(.el-input__wrapper:hover) {
@@ -391,14 +396,31 @@ const handleDelete = async (row: IKit): Promise<void> => {
 }
 
 .search-input :deep(.el-input__inner) {
+  flex: 0 1 auto;
+  width: 72px;
+  min-width: 72px;
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 20px;
   font-weight: 500;
+  line-height: 1;
+  text-align: right;
   color: #000;
+}
+
+.search-input :deep(.el-input__inner::placeholder) {
+  color: #000;
+  opacity: 1;
 }
 
 .search-input :deep(.el-input__prefix .el-icon) {
   color: #000;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+.search-input :deep(.el-input__prefix-inner) {
+  gap: 4px;
 }
 
 .orders-table {
