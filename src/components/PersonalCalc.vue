@@ -542,7 +542,7 @@ watch(
               <span class="property-value">{{ productProperties.dimensions || '-' }}</span>
             </div>
             <div class="property-item">
-              <span class="property-label">Объем детали, мм³</span>
+              <span class="property-label">Объем заготовки, мм³</span>
               <span class="property-divider" />
               <span class="property-value">{{ productProperties.partVolume || '-' }}</span>
             </div>

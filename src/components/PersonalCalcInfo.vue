@@ -52,7 +52,7 @@ const materialRows = computed(() => [
   { number: '1', label: 'Сырье и основные материалы', value: materialCosts.value.rawMaterials.matPrice },
   { number: '1.1', label: 'Информация о заготовке', value: '-' },
   { number: '1.2', label: 'Извлеченные габариты детали', value: materialCosts.value.rawMaterials.blankInfo.extractedDimensions },
-  { number: '1.3', label: 'Объем детали', value: materialCosts.value.rawMaterials.blankInfo.matVolume },
+  { number: '1.3', label: 'Объем заготовки', value: materialCosts.value.rawMaterials.blankInfo.matVolume },
   { number: '1.4', label: 'Норма расхода', value: materialCosts.value.rawMaterials.blankInfo.matWeight },
   { number: '1.5', label: 'Основной материал', value: materialCosts.value.rawMaterials.pricePerKg },
   { number: '2', label: 'Вспомогательные материалы', value: materialCosts.value.dopMatPrice },
@@ -60,7 +60,7 @@ const materialRows = computed(() => [
 
 const laborRows = computed(() => [
   { number: '1', label: 'Трудоемкость', value: laborCosts.value.totalTime },
-  { number: '2', label: 'Стоимость нормочаса', value: laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers },
+  { number: '2', label: 'ФОТ', value: laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers },
   { number: '2.1', label: 'Основная заработная плата', value: laborCosts.value.priceOfHourWithOthers.workPrice },
   { number: '2.2', label: 'Дополнительная заработная плата', value: laborCosts.value.priceOfHourWithOthers.dopSalary },
   { number: '2.3', label: 'Страховые взносы', value: laborCosts.value.priceOfHourWithOthers.insurancePrice },
