@@ -100,15 +100,22 @@ const totalWithDelivery = computed(() => {
 })
 
 const manufacturingLeadTime = computed(() => {
-  const maxCycle = calcRows.value.reduce((max, row) => {
-    const cycle = Number(row.manufacturing_cycle) || 0
-    return Math.max(max, cycle)
-  }, 0)
+  if (!order.value?.created_at || !order.value?.updated_at) return '—'
 
-  if (!maxCycle) return '—'
+  const createdAt = new Date(order.value.created_at)
+  const updatedAt = new Date(order.value.updated_at)
 
-  const lastTwoDigits = maxCycle % 100
-  const lastDigit = maxCycle % 10
+  if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) return '—'
+
+  const days = Math.max(0, Math.ceil((updatedAt.getTime() - createdAt.getTime()) / 86_400_000))
+  const lastTwoDigits = days % 100
+  const lastDigit = days % 10
+  const workingDayLabel =
+    lastTwoDigits >= 11 && lastTwoDigits <= 14
+      ? 'рабочих'
+      : lastDigit === 1
+        ? 'рабочий'
+        : 'рабочих'
   const dayLabel =
     lastTwoDigits >= 11 && lastTwoDigits <= 14
       ? 'дней'
@@ -118,7 +125,7 @@ const manufacturingLeadTime = computed(() => {
           ? 'дня'
           : 'дней'
 
-  return `${maxCycle} рабочих ${dayLabel}`
+  return `${days} ${workingDayLabel} ${dayLabel}`
 })
 
 const formatDate = (dateString?: string | null): string => {
