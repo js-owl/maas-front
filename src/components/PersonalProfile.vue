@@ -464,8 +464,6 @@ const contactFio = computed({
               </template>
               К главной странице
             </ButtonRound>
-          </div>
-          <div class="profile-footer-center">
             <ButtonRound width="250px" class="profile-orders-button" @click="goToOrders">
               Заказы и расчеты
             </ButtonRound>
@@ -513,10 +511,14 @@ const contactFio = computed({
 }
 
 .profile-footer-left,
-.profile-footer-center,
 .profile-footer-right {
   display: flex;
   align-items: center;
+}
+
+.profile-footer-left {
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .profile-back-button :deep(.btn),
