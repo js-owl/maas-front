@@ -95,8 +95,30 @@ const deliveryCost = computed(() => {
 })
 
 const totalWithDelivery = computed(() => {
-  const total = (order.value?.total_kit_price ?? 0) + Number(deliveryCost.value)
+  const total = (order.value?.total_kit_price ?? 0) + (order.value?.delivery_price ?? 0)
   return formatPrice(total)
+})
+
+const manufacturingLeadTime = computed(() => {
+  const maxCycle = calcRows.value.reduce((max, row) => {
+    const cycle = Number(row.manufacturing_cycle) || 0
+    return Math.max(max, cycle)
+  }, 0)
+
+  if (!maxCycle) return '—'
+
+  const lastTwoDigits = maxCycle % 100
+  const lastDigit = maxCycle % 10
+  const dayLabel =
+    lastTwoDigits >= 11 && lastTwoDigits <= 14
+      ? 'дней'
+      : lastDigit === 1
+        ? 'день'
+        : lastDigit >= 2 && lastDigit <= 4
+          ? 'дня'
+          : 'дней'
+
+  return `${maxCycle} рабочих ${dayLabel}`
 })
 
 const formatDate = (dateString?: string | null): string => {
@@ -673,6 +695,11 @@ onMounted(() => {
             </el-radio-group>
           </div>
 
+          <div class="cost-item manufacturing-time">
+            <div class="maas-text">Сроки изготовления</div>
+            <div class="maas-subtitle">{{ manufacturingLeadTime }}</div>
+          </div>
+
           <div class="cost-item">
             <div class="maas-text">Стоимость изготовления</div>
             <div class="maas-subtitle">
@@ -851,6 +878,22 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
+.summary-card .maas-text {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  color: #000;
+}
+
+.summary-card .maas-subtitle {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+  color: #000;
+}
+
 .status-section {
   display: flex;
   flex-direction: column;
@@ -934,7 +977,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 15px;
+  margin-top: 20px;
   /* margin-bottom: 24px; */
 }
 
