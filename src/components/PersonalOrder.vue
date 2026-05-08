@@ -690,7 +690,11 @@ onMounted(() => {
 
           <div class="manufacturer-section">
             <div class="maas-subtitle">Выбор изготовителя</div>
-            <el-radio-group v-model="selectedLocation" class="manufacturer-radio-group">
+            <el-radio-group
+              v-model="selectedLocation"
+              class="manufacturer-radio-group"
+              @change="saveOrder"
+            >
               <Radio
                 v-for="manufacturer in manufacturerOptions"
                 :key="manufacturer.value"
