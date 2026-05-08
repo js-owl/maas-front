@@ -243,14 +243,22 @@ const cancel = () => {
       Назад
     </ButtonRound>
 
-    <ButtonRound
-      width="300px"
-      :disabled="isDisabled || isSubmitting"
-      :loading="isSubmitting"
-      @click="submitOrder"
+    <el-tooltip
+      content="Необходимо авторизоваться"
+      placement="top"
+      :disabled="!isDisabled"
     >
-      {{ isNewOrder ? 'Сохранить изменения' : 'Сохранить изменения' }}
-    </ButtonRound>
+      <span class="auth-tooltip-trigger">
+        <ButtonRound
+          width="300px"
+          :disabled="isDisabled || isSubmitting"
+          :loading="isSubmitting"
+          @click="submitOrder"
+        >
+          {{ isNewOrder ? 'Сохранить изменения' : 'Сохранить изменения' }}
+        </ButtonRound>
+      </span>
+    </el-tooltip>
   </div>
 
   <DialogLogin v-model="isLoginDialogVisible" />
@@ -267,9 +275,17 @@ const cancel = () => {
   gap: 12px 20px;
 }
 
+.auth-tooltip-trigger {
+  display: inline-flex;
+}
+
 @media (max-width: 767px) {
   .calculate-submit2 {
     justify-content: center;
+  }
+
+  .auth-tooltip-trigger {
+    width: 100%;
   }
 
   .calculate-submit2 :deep(.btn) {
