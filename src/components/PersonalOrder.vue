@@ -16,6 +16,7 @@ import Radio from './ui/Radio.vue'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 import IconCalculate from '@/icons/IconCalculate.vue'
 import IconChat from '@/icons/IconChat.vue'
+import { orderTypeOptions } from '@/helpers/order-type-options'
 
 type KitOrder = IKit & {
   status_name?: string
@@ -54,13 +55,6 @@ const deleteLoading = ref<number | null>(null)
 const calcRows = ref<IOrderResponse[]>([])
 
 const selectedOrderType = ref<string>('')
-
-const orderTypeOptions = [
-  // { label: 'токарная', value: 'machining' },
-  { label: 'мехобработка', value: 'milling' },
-  { label: '3D-печать', value: 'printing' },
-  { label: 'прочее', value: 'other' },
-]
 
 const manufacturerOptions = ref<ManufacturerOption[]>([])
 
@@ -453,14 +447,7 @@ const handleOrderTypeChange = (value: string | number | boolean | object) => {
 
   const valueStr = String(value)
   const existingIds = Array.isArray(order.value.order_ids) ? order.value.order_ids : []
-
-  const pathMap: Record<string, string> = {
-    other: '/other',
-    milling: '/milling',
-    printing: '/printing',
-  }
-
-  const path = pathMap[valueStr] || '/other'
+  const path = orderTypeOptions.find((option) => option.value === valueStr)?.routePath || '/other'
 
   router.push({
     path,

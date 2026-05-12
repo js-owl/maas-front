@@ -5,6 +5,7 @@ import { useWindowSize } from '@vueuse/core'
 import Select from '../ui/Select.vue'
 import Button from '../ui/Button.vue'
 import UploadFiles from '../UploadFiles.vue'
+import { orderTypeOptions } from '@/helpers/order-type-options'
 // import { useAuthStore } from '../../stores/auth.store'
 
 const props = withDefaults(
@@ -29,12 +30,6 @@ let document_ids = ref<number[]>([])
 const stp_id = ref<number | null>(null)
 const selectedOrderType = ref<string>('')
 
-const orderTypeOptions = [
-  { label: 'мехобработка', value: '/milling', service_id: 'cnc-milling' },
-  { label: '3D-печать', value: '/printing', service_id: 'printing' },
-  { label: 'прочее', value: '/other', service_id: 'other' },
-]
-
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
 
@@ -42,13 +37,15 @@ const isMobile = computed(() => width.value < 768)
 const hasExternalServiceId = computed(() => Boolean(props.service_id))
 const selectedServiceId = computed(
   () =>
-    orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.service_id ?? ''
+    orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.serviceId ?? ''
 )
 const uploadServiceId = computed(() => props.service_id || selectedServiceId.value)
 const selectedRoutePath = computed(() => {
-  if (selectedOrderType.value) return selectedOrderType.value
+  if (selectedOrderType.value) {
+    return orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.routePath ?? ''
+  }
   if (!props.service_id) return ''
-  return orderTypeOptions.find((option) => option.service_id === props.service_id)?.value ?? ''
+  return orderTypeOptions.find((option) => option.serviceId === props.service_id)?.routePath ?? ''
 })
 
 const handleOrderTypeChange = (value: string | number | boolean | object) => {
