@@ -324,23 +324,31 @@ const handleDelete = async (row: IKit): Promise<void> => {
   margin: 0;
 }
 
+.filter-tabs :deep(.el-tabs__nav) {
+  align-items: flex-end;
+  height: 48px;
+}
+
 .filter-tabs :deep(.el-tabs__item) {
   border-bottom: 2px solid var(--button-bg);
   color: #7d8083;
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  padding: 0 0 8px;
+  height: 20px;
+  line-height: 20px;
+  padding: 0;
   margin-right: 20px;
 }
 
 .filter-tabs :deep(.el-tabs__item.is-active) {
+  border-bottom-color: var(--custom-red);
   color: var(--custom-red);
   font-weight: 500;
 }
 
 .filter-tabs :deep(.el-tabs__active-bar) {
-  background-color: var(--custom-red);
+  display: none;
 }
 
 .filter-tabs :deep(.el-tabs__nav-wrap::after) {
