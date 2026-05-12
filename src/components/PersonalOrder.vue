@@ -661,7 +661,7 @@ onMounted(() => {
               :value="option.value"
             />
           </Select>
-          <ButtonRound width="200px" @click="saveOrder">
+          <ButtonRound width="162px" @click="saveOrder">
             Сохранить
           </ButtonRound>
         </div>
