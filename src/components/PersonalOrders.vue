@@ -306,7 +306,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
   justify-content: space-between;
   align-items: flex-end;
   gap: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .filter-tabs {
