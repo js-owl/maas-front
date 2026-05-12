@@ -651,6 +651,7 @@ onMounted(() => {
             v-model="selectedOrderType"
             placeholder="Добавить деталь"
             width="266px"
+            class="order-type-select"
             @change="handleOrderTypeChange"
           >
             <el-option
@@ -873,6 +874,10 @@ onMounted(() => {
   justify-content: space-between;
   gap: 20px;
   margin-top: 40px;
+}
+
+.order-type-select {
+  margin-left: auto;
 }
 
 .summary-card {
@@ -1140,6 +1145,10 @@ onMounted(() => {
 
   .order-footer {
     flex-direction: column;
+  }
+
+  .order-type-select {
+    margin-left: 0;
   }
 }
 </style>
