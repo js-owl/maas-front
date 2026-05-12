@@ -247,7 +247,7 @@ function openServicePage(path: string) {
                 :offset="12"
               >
                 <template #reference>
-                  <el-button class="cabinet-btn montserrat-semibold">Личный кабинет</el-button>
+                  <el-button class="cabinet-btn montserrat-semibold">Вход / Регистрация</el-button>
                 </template>
                 <div class="cabinet-menu">
                   <button
