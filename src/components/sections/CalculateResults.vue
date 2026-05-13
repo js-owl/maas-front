@@ -38,12 +38,16 @@ const formatNumber = (value: number | string | null | undefined) => {
     <template v-else>
       <div class="price-section">
         <div class="card">
-          <div class="calc-res">Стоимость (без НДС)</div>
+          <div class="calc-res">Стоимость</div>
           <div class="price-line">
-            <span class="price">{{ formatNumber(props.result?.total_price) }} ₽</span>
+            <span class="price">{{ formatNumber(props.result?.total_price) }} ₽*</span>
             <span v-if="props.result && props.result.quantity > 1" class="per-item">
-              {{ formatNumber(props.result?.detail_price_one) }} ₽ за 1 шт.*
+              ({{ formatNumber(props.result?.detail_price_one) }} ₽ за 1 шт.)
             </span>
+          </div>
+          <div class="price-disclaimer">
+            <p>* Предварительный расчёт (без НДС). Финальная стоимость уточняется специалистами компании.</p>
+            <p>Цена не является публичной офертой.</p>
           </div>
         </div>
 
@@ -132,8 +136,8 @@ const formatNumber = (value: number | string | null | undefined) => {
 .card {
   background-color: var(--whity);
   color: black;
-  border-radius: 8px;
-  padding: 14px 12px;
+  border-radius: 10px;
+  padding: 14px 16px;
   margin-bottom: 10px;
 }
 
@@ -150,17 +154,31 @@ const formatNumber = (value: number | string | null | undefined) => {
 }
 
 .per-item {
-  margin-top: 4px;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 500;
   color: black;
 
 }
+
+.price-disclaimer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #55585b;
+}
+
+.price-disclaimer p {
+  margin: 0;
+}
+
 .calc-res {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
-  margin-bottom: 10px;
   color: black;
 }
 
@@ -186,6 +204,14 @@ const formatNumber = (value: number | string | null | undefined) => {
   .price {
     font-size: 24px;
     font-weight: 700;
+  }
+
+  .per-item {
+    font-size: 14px;
+  }
+
+  .price-disclaimer {
+    font-size: 12px;
   }
 
   .calculating-price-container {
