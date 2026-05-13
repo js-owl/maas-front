@@ -39,6 +39,24 @@ const isCabinetMenuVisible = ref(false)
 const isGuestCabinetMenuVisible = ref(false)
 const isServicesMenuVisible = ref(false)
 
+type ServiceMenuOption = {
+  label: string
+  routePath: string
+  itemClass: string
+  textClass?: string
+}
+
+const serviceMenuOptions = [
+  { label: 'Механообработка', routePath: '/milling', itemClass: 'mech-menu-item' },
+  {
+    label: '3D-печать',
+    routePath: '/printing',
+    itemClass: 'printing-menu-item',
+    textClass: 'printing-text',
+  },
+  { label: 'Прочее', routePath: '/other', itemClass: 'other-menu-item' },
+] satisfies ServiceMenuOption[]
+
 // Check token on component mount
 onMounted(() => {
   const rootStyles = getComputedStyle(document.documentElement)
@@ -211,25 +229,14 @@ function openServicePage(path: string) {
                 </template>
                 <div class="cabinet-menu">
                   <button
+                    v-for="serviceMenuOption in serviceMenuOptions"
+                    :key="serviceMenuOption.routePath"
                     type="button"
-                    class="cabinet-menu-item services-menu-item mech-menu-item montserrat-medium"
-                    @click="openServicePage('/milling')"
+                    class="cabinet-menu-item services-menu-item montserrat-medium"
+                    :class="serviceMenuOption.itemClass"
+                    @click="openServicePage(serviceMenuOption.routePath)"
                   >
-                    <span>Механообработка</span>
-                  </button>
-                  <button
-                    type="button"
-                    class="cabinet-menu-item services-menu-item printing-menu-item montserrat-medium"
-                    @click="openServicePage('/printing')"
-                  >
-                    <span class="printing-text">3D-печать</span>
-                  </button>
-                  <button
-                    type="button"
-                    class="cabinet-menu-item services-menu-item other-menu-item montserrat-medium"
-                    @click="openServicePage('/other')"
-                  >
-                    <span>Прочее</span>
+                    <span :class="serviceMenuOption.textClass">{{ serviceMenuOption.label }}</span>
                   </button>
                 </div>
               </el-popover>
