@@ -33,6 +33,7 @@ export interface IOrderBase {
   tolerance_id?: string
   finish_id?: string
   cover_id: string[]
+  composite_rig?: string
   process_id?: string
   n_dimensions?: number
   k_otk: string
