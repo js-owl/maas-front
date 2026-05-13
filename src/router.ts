@@ -72,6 +72,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/CalculateCompositePage.vue'),
     name: 'composite',
   },
+  {
+    path: '/galvanic',
+    component: () => import('./pages/CalculateGalvanicPage.vue'),
+    name: 'galvanic',
+  },
   // {
   //   path: '/milling2',
   //   component: () => import('./pages/CalculateMillingPage.vue'),
