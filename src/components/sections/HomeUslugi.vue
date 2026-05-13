@@ -20,7 +20,7 @@ const abilities = ref([
   },
   {
     id: 2,
-    title: '3Д-печать',
+    title: '3D-печать',
     link: '/print',
     isDevelopment: true,
     icon: markRaw(Icon3DView),
