@@ -292,7 +292,7 @@ watch(file_id, () => {
             <div class="milling-page__main">
               <div class="calc-two-columns">
                 <div class="milling-field-group">
-                  <div class="milling-field-title">Количество, шт</div>
+                  <div class="calc-title">Количество, шт</div>
                   <Input
                     v-model="quantityInput"
                     type="number"
@@ -300,7 +300,7 @@ watch(file_id, () => {
                   />
                 </div>
                 <div class="milling-field-group">
-                  <div class="milling-field-title">Сроки выполнения</div>
+                  <div class="calc-title">Сроки выполнения</div>
                   <DatePicker
                     v-model="manufacturing_deadline"
                     v-model:manufacturing-cycle="manufacturing_cycle"
@@ -310,17 +310,17 @@ watch(file_id, () => {
               </div>
 
               <div class="milling-field-group">
-                <div class="milling-field-title">Материал</div>
+                <div class="calc-title">Материал</div>
                 <SelectCalc v-model="material_id" :input-data="materials" />
               </div>
 
               <div class="calc-two-columns">
                 <div class="milling-field-block">
-                  <div class="milling-field-title">Наличие оснастки</div>
+                  <div class="calc-title">Наличие оснастки</div>
                   <CoefficientTooling v-model="composite_rig" />
                 </div>
                 <div class="milling-field-block">
-                  <div class="milling-field-title">Финишная обработка</div>
+                  <div class="calc-title">Финишная обработка</div>
                   <CoefficientCover2
                     v-model="cover_id"
                     :exclude-labels="['Гальваника']"
@@ -329,7 +329,7 @@ watch(file_id, () => {
               </div>
 
               <div class="milling-field-block milling-field-block--otk">
-                <div class="milling-field-title">Вид контроля</div>
+                <div class="calc-title">Вид контроля</div>
                 <CoefficientOtk2 v-model="k_otk" />
               </div>
 
@@ -341,7 +341,7 @@ watch(file_id, () => {
               </div>
 
               <div class="milling-field-block">
-                <div class="milling-field-title">Описание заказа</div>
+                <div class="calc-title">Описание заказа</div>
                 <el-input
                   v-model="special_instructions"
                   type="textarea"
@@ -431,13 +431,6 @@ watch(file_id, () => {
   gap: 20px;
 }
 
-.milling-field-title {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
-  line-height: 1;
-  color: #000;
-}
-
 .milling-actions {
   padding-top: 6px;
 }
@@ -521,7 +514,6 @@ watch(file_id, () => {
     max-width: 100%;
   }
 
-  .milling-field-title,
   .milling-upload__title {
     font-size: 18px;
     line-height: 1.2;

@@ -44,7 +44,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <p class="milling-field-title">Материал</p>
+    <p class="calc-title">Материал</p>
     <el-select
       v-model="selectedMaterial"
       value-key="label"
@@ -63,13 +63,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.milling-field-title {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 18px;
-  line-height: 1;
-  color: #000;
-}
-
 .full {
   width: 100%;
 }
@@ -86,9 +79,4 @@ onMounted(() => {
   padding: 10px;
 }
 
-@media (max-width: 767px) {
-  .milling-field-title {
-    font-size: 18px;
-  }
-}
 </style>
