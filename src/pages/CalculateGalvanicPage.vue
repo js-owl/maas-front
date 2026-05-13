@@ -31,7 +31,7 @@ const document_ids = ref<number[]>([])
 const length = ref(5800)
 const width = ref(830)
 const height = ref(1500)
-const quantity = ref(85)
+const quantity = ref(1)
 const quantityInput = computed({
   get: () => String(quantity.value),
   set: (value: string) => {
@@ -44,8 +44,30 @@ const material_id = ref('alum')
 const material_form = ref('part')
 const service_id = ref('electroplating')
 
-const process_id = ref('aluminum_alloys')
-const selectedCoverId = ref('anodic_oxidation_chromic')
+type SelectOption = {
+  value: string
+  label: string
+}
+
+type OperationAvailable = {
+  id: string
+  group: string
+  path: string[]
+  label: string
+  max_part_size_label: string
+  max_weight_kg: number
+}
+
+type OperationsAvailableResponse = {
+  values?: OperationAvailable[]
+  data?: {
+    values?: OperationAvailable[]
+  }
+}
+
+const operationsAvailable = ref<OperationAvailable[]>([])
+const process_id = ref('')
+const selectedCoverId = ref('')
 const cover_id = computed<string[]>({
   get: () => (selectedCoverId.value ? [selectedCoverId.value] : []),
   set: (value) => {
@@ -54,18 +76,45 @@ const cover_id = computed<string[]>({
 })
 const n_dimensions = ref(55)
 
-const coatingProcesses = [
-  { value: 'aluminum_alloys', label: 'Обработка алюминиевых сплавов' },
-]
+const coatingProcesses = computed<SelectOption[]>(() => {
+  const groups = new Set<string>()
 
-const coatingTypes = [
-  { value: 'anodic_oxidation_chromic', label: 'Анодная оксидация - наполнение в хромпике' },
-]
+  return operationsAvailable.value.reduce<SelectOption[]>((options, operation) => {
+    if (groups.has(operation.group)) return options
 
-const technicalRestrictions = [
-  'Макс. размер 1 ед. изделия, мм: 5800 x 830 x 1500',
-  'Макс вес 1 ед. изделия, кг: 600',
-]
+    groups.add(operation.group)
+    options.push({ value: operation.group, label: operation.group })
+    return options
+  }, [])
+})
+
+const selectedGroupOperations = computed(() =>
+  operationsAvailable.value.filter((operation) => operation.group === process_id.value)
+)
+
+const coatingTypes = computed<SelectOption[]>(() =>
+  selectedGroupOperations.value
+    .filter((operation) => operation.path.length > 0)
+    .map((operation) => ({
+      value: operation.id,
+      label: operation.path.length > 1 ? operation.path.join(' / ') : operation.path[0],
+    }))
+)
+
+const selectedOperation = computed(() =>
+  operationsAvailable.value.find(
+    (operation) => operation.group === process_id.value && operation.id === selectedCoverId.value
+  )
+)
+
+const technicalRestrictions = computed(() => {
+  if (!selectedOperation.value) return []
+
+  return [
+    `Макс. размер 1 ед. изделия, мм: ${selectedOperation.value.max_part_size_label}`,
+    `Макс вес 1 ед. изделия, кг: ${selectedOperation.value.max_weight_kg}`,
+  ]
+})
 
 const k_otk = ref('1.0')
 const k_cert = ref(['a', 'f'])
@@ -100,7 +149,8 @@ const payload = reactive({
 const result = ref<IOrderResponse | null>(null)
 
 const isInfoVisible = ref(false)
-const isLoading = ref<boolean>(true)
+const isLoading = ref<boolean>(false)
+let isInitializing = true
 
 const MIN_LOADING_MS = 1000
 let loadingStartedAt = 0
@@ -150,12 +200,15 @@ const calculationPayload = computed(() => {
 watch(
   calculationPayload,
   (newVal) => {
+    if (isInitializing || !process_id.value || !selectedCoverId.value) return
+
     sendData(newVal as unknown as IOrderPayload)
   },
   { deep: true }
 )
 
-onMounted(() => {
+onMounted(async () => {
+  await loadOperationsAvailable()
   manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
   if (order_id.value === 0) {
     const filesQuery = route.query.files
@@ -174,11 +227,42 @@ onMounted(() => {
       }
     }
 
-    sendData(calculationPayload.value as unknown as IOrderPayload)
+    isInitializing = false
+    if (process_id.value && selectedCoverId.value) {
+      sendData(calculationPayload.value as unknown as IOrderPayload)
+    }
   } else {
-    getOrder(order_id.value)
+    await getOrder(order_id.value)
+    isInitializing = false
+    if (process_id.value && selectedCoverId.value) {
+      sendData(calculationPayload.value as unknown as IOrderPayload)
+    }
   }
 })
+
+async function loadOperationsAvailable() {
+  try {
+    const response = await req_json_auth('/operations_available?service_id=electroplating', 'GET')
+    if (!response?.ok) return
+
+    const backendOperations = (await response.json()) as OperationsAvailableResponse
+    operationsAvailable.value = backendOperations.data?.values ?? backendOperations.values ?? []
+
+    if (!coatingProcesses.value.some((item) => item.value === process_id.value)) {
+      process_id.value = coatingProcesses.value[0]?.value ?? ''
+    }
+
+    syncSelectedCoverWithProcess()
+  } catch (error) {
+    console.error('Error loading electroplating operations:', error)
+  }
+}
+
+function syncSelectedCoverWithProcess() {
+  if (coatingTypes.value.some((item) => item.value === selectedCoverId.value)) return
+
+  selectedCoverId.value = coatingTypes.value[0]?.value ?? selectedGroupOperations.value[0]?.id ?? ''
+}
 
 async function sendData(currentPayload: IOrderPayload) {
   startLoading()
@@ -222,6 +306,14 @@ async function getOrder(id: number) {
     if (data.order_name) order_name.value = data.order_name
     if ((data as any).order_code) order_code.value = (data as any).order_code
 
+    if (!coatingProcesses.value.some((item) => item.value === process_id.value)) {
+      process_id.value =
+        operationsAvailable.value.find((operation) => operation.id === selectedCoverId.value)?.group ??
+        coatingProcesses.value[0]?.value ??
+        ''
+    }
+    syncSelectedCoverWithProcess()
+
     Object.assign(payload, {
       service_id: 'electroplating',
       order_name: order_name.value,
@@ -251,6 +343,10 @@ watch(service_id, () => {
   if (service_id.value !== 'electroplating') {
     service_id.value = 'electroplating'
   }
+})
+
+watch(process_id, () => {
+  syncSelectedCoverWithProcess()
 })
 
 watch(
@@ -292,7 +388,11 @@ watch(
                 <div class="calc-title">Вид покрытия</div>
                 <div class="galvanic-cover-fields">
                   <SelectCalc v-model="process_id" :input-data="coatingProcesses" />
-                  <SelectCalc v-model="selectedCoverId" :input-data="coatingTypes" />
+                  <SelectCalc
+                    v-if="coatingTypes.length"
+                    v-model="selectedCoverId"
+                    :input-data="coatingTypes"
+                  />
                 </div>
               </div>
 
