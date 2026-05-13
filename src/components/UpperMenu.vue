@@ -42,19 +42,12 @@ const isServicesMenuVisible = ref(false)
 type ServiceMenuOption = {
   label: string
   routePath: string
-  itemClass: string
-  textClass?: string
 }
 
 const serviceMenuOptions = [
-  { label: 'Механообработка', routePath: '/milling', itemClass: 'mech-menu-item' },
-  {
-    label: '3D-печать',
-    routePath: '/printing',
-    itemClass: 'printing-menu-item',
-    textClass: 'printing-text',
-  },
-  { label: 'Прочее', routePath: '/other', itemClass: 'other-menu-item' },
+  { label: 'Механообработка', routePath: '/milling' },
+  { label: '3D-печать', routePath: '/printing' },
+  { label: 'Прочее', routePath: '/other' },
 ] satisfies ServiceMenuOption[]
 
 // Check token on component mount
@@ -233,10 +226,9 @@ function openServicePage(path: string) {
                     :key="serviceMenuOption.routePath"
                     type="button"
                     class="cabinet-menu-item services-menu-item montserrat-medium"
-                    :class="serviceMenuOption.itemClass"
                     @click="openServicePage(serviceMenuOption.routePath)"
                   >
-                    <span :class="serviceMenuOption.textClass">{{ serviceMenuOption.label }}</span>
+                    <span>{{ serviceMenuOption.label }}</span>
                   </button>
                 </div>
               </el-popover>
