@@ -192,7 +192,7 @@ const onHaveAccount = () => {
     v-model="dialogFormVisible"
     class="dialog-registration"
     title="Регистрация клиента"
-    width="600"
+    width="557"
     :append-to-body="true"
     :modal-append-to-body="true"
     :z-index="4000"
@@ -211,6 +211,7 @@ const onHaveAccount = () => {
         ref="formRef"
         :model="form"
         :rules="rules"
+        class="dialog-registration-form"
         label-width="0"
         label-position="top"
         @submit.prevent="submitForm"
@@ -221,45 +222,53 @@ const onHaveAccount = () => {
             <el-radio-button value="legal">Компания</el-radio-button>
           </el-radio-group>
         </el-form-item> -->
-        <el-form-item prop="full_name">
-          <Input v-model="form.full_name" placeholder="Название компании" />
-        </el-form-item>
-        <el-form-item prop="username" :error="usernameError">
-          <Input v-model="form.username" placeholder="Логин" @input="usernameError = ''" />
-        </el-form-item>
+        <div class="form-field-group">
+          <el-form-item prop="full_name">
+            <Input v-model="form.full_name" placeholder="Название компании" />
+          </el-form-item>
+          <el-form-item prop="username" :error="usernameError">
+            <Input v-model="form.username" placeholder="Логин" @input="usernameError = ''" />
+          </el-form-item>
+        </div>
 
-        <el-form-item prop="email">
-          <Input v-model="form.email" placeholder="Email" type="email" />
-        </el-form-item>
+        <div class="form-field-group">
+          <el-form-item prop="email">
+            <Input v-model="form.email" placeholder="email@mail.ru" type="email" />
+          </el-form-item>
 
-
-
-        <el-form-item prop="phone_number">
-          <Input
-            v-model="form.phone_number"
-            placeholder="+7 (___) ___-__-__"
-            type="tel"
-            :formatter="formatPhoneDisplay"
-            :parser="parsePhoneToDigits"
-          />
-        </el-form-item>
+          <el-form-item prop="phone_number">
+            <Input
+              v-model="form.phone_number"
+              placeholder="+7 (___) ___-__-__"
+              type="tel"
+              :formatter="formatPhoneDisplay"
+              :parser="parsePhoneToDigits"
+            />
+          </el-form-item>
+        </div>
 
         <!-- <el-form-item v-if="form.user_type === 'legal'" prop="inn">
           <Input v-model="form.inn" placeholder="ИНН" />
         </el-form-item> -->
 
-        <el-form-item prop="password">
-          <Input v-model="form.password" placeholder="Пароль" type="password" />
-        </el-form-item>
+        <div class="form-field-group">
+          <el-form-item prop="password">
+            <Input v-model="form.password" placeholder="Пароль" type="password" />
+          </el-form-item>
 
-        <el-form-item prop="confirmPassword">
-          <Input v-model="form.confirmPassword" placeholder="Пароль" type="password" />
-        </el-form-item>
+          <el-form-item prop="confirmPassword">
+            <Input v-model="form.confirmPassword" placeholder="Пароль" type="password" />
+          </el-form-item>
+        </div>
       </el-form>
 
-      <div class="agreement-row">
-        <Checkbox v-model="isAgreementAccepted">
-          Я согласен с условиями обработки моих данных
+      <div class="agreements">
+        <Checkbox v-model="isAgreementAccepted" class="agreement-checkbox">
+          Я согласен с условиями Оферты
+        </Checkbox>
+        <Checkbox v-model="isAgreementAccepted" class="agreement-checkbox">
+          Я согласен на обработку моих персональных данных. С Политикой обработки персональных
+          данных ознакомлен
         </Checkbox>
       </div>
     </div>
@@ -267,9 +276,10 @@ const onHaveAccount = () => {
     <template #footer>
       <div class="dialog-footer">
         <div class="buttons">
-          <Button width="42%" @click="onHaveAccount">Есть аккаунт</Button>
+          <Button width="fit-content" flat @click="onHaveAccount">Есть аккаунт</Button>
           <Button
-            width="56%"
+            width="fit-content"
+            flat
             :loading="loading"
             :disabled="!isAgreementAccepted"
             @click="submitForm"
@@ -283,8 +293,21 @@ const onHaveAccount = () => {
 </template>
 
 <style scoped>
-:deep(.el-form-item) {
-  margin-bottom: 20px;
+:deep(.el-dialog__header) {
+  margin-right: 0;
+  padding: 0;
+}
+
+:deep(.el-dialog__body) {
+  padding: 40px 0 0;
+}
+
+:deep(.el-dialog__footer) {
+  padding: 40px 0 0;
+}
+
+.dialog-registration-form :deep(.el-form-item) {
+  margin-bottom: 0;
 }
 .user-type-toggle {
   display: flex;
@@ -316,37 +339,109 @@ const onHaveAccount = () => {
   color: white;
 }
 .dialog-header {
-  margin: 20px 0;
-  padding: 0 30px;
+  margin: 0;
+  padding: 0;
 }
 
 .body-class {
-  padding: 0 30px 30px;
+  padding: 0;
+}
+
+.dialog-registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  --input-bg: var(--whity);
+  --input-radius: 10px;
+  --input-font-family: 'Montserrat-Medium';
+  --input-text-color: var(--gray-footer);
+  --input-font-size: 18px;
+  --input-font-weight: 500;
+  --input-padding: 14px 16px;
+}
+
+.dialog-registration-form :deep(.el-input__placeholder) {
+  color: var(--gray-footer);
+}
+
+.dialog-registration-form :deep(.el-form-item__error) {
+  position: static;
+  padding-top: 6px;
+  line-height: 1.2;
+}
+
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .dialog-footer {
-  padding: 0px 30px 15px;
+  padding: 0;
 }
 
 .buttons {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-.agreement-row {
-  margin-top: 10px;
+.agreements {
+  margin-top: 20px;
   display: flex;
-  align-items: center;
-  --checkbox-font-size: 14px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.agreement-checkbox {
+  --checkbox-font-size: 12px;
   --checkbox-text-color: #000;
-  --checkbox-label-padding-left: 10px;
+  --checkbox-label-padding-left: 12px;
   --checkbox-font-family: 'Montserrat-Medium';
-  --checkbox-font-weight: 500;
-  --checkbox-label-size: 16px;
-  --checkbox-line-height: 1.2;
-  --checkbox-size: 18px;
+  --checkbox-font-weight: 400;
+  --checkbox-label-size: 12px;
+  --checkbox-line-height: 14px;
+  --checkbox-size: 24px;
+  --checkbox-border-width: 2px;
+  --checkbox-border-color: #7d8083;
+  --checkbox-bg-color: var(--bgcolor);
   --checkbox-radius: 4px;
+  --checkbox-checked-border-color: #7d8083;
+  --checkbox-checked-bg-color: var(--bgcolor);
+  --checkbox-check-width: 5px;
+  --checkbox-check-height: 10px;
+  --checkbox-check-border-width: 2px;
+  --checkbox-check-color: #000;
+  width: 100%;
+}
+
+.agreement-checkbox :deep(.el-checkbox__label) {
+  white-space: normal;
+}
+
+.buttons :deep(.btn.is-disabled) {
+  background: var(--gray-footer) !important;
+  color: #fff;
+  opacity: 1;
+}
+
+@media (max-width: 767px) {
+  :deep(.el-dialog__header) {
+    padding: 16px 16px 0;
+  }
+
+  :deep(.el-dialog__body) {
+    padding: 40px 16px 0;
+  }
+
+  :deep(.el-dialog__footer) {
+    padding: 40px 16px 16px;
+  }
+
+  .buttons {
+    gap: 12px;
+  }
 }
 </style>
 
