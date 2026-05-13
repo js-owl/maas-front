@@ -351,7 +351,7 @@ watch(file_id, () => {
       <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }" >
         <div class="milling-page__card">
           <div class="milling-page__main">
-            <div class="milling-field-grid">
+            <div class="calc-two-columns">
               <div class="milling-field-group">
                 <div class="milling-field-title">Количество, шт</div>
                 <Input
@@ -380,14 +380,6 @@ watch(file_id, () => {
               <SelectCalc v-model="service_id" :input-data="processes" />
             </div>
 
-            <!-- <div class="milling-field-grid">
-              <div class="milling-field-group">
-                <CoefficientFinish v-model="finish_id" />
-              </div>
-              <div class="milling-field-group">
-                <CoefficientTolerance v-model="tolerance_id" />
-              </div>
-            </div> -->
 
             <div class="milling-field-block">
               <div class="milling-field-title">Финишная обработка изделия</div>
@@ -487,12 +479,6 @@ watch(file_id, () => {
   flex-direction: column;
   gap: 24px;
   min-width: 0;
-}
-
-.milling-field-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
 }
 
 .milling-field-group,
@@ -597,11 +583,6 @@ watch(file_id, () => {
   .milling-field-block--otk {
     gap: 12px;
     max-width: 100%;
-  }
-
-  .milling-field-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
   }
 
   .milling-field-title,

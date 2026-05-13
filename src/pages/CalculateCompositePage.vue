@@ -290,7 +290,7 @@ watch(file_id, () => {
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
           <div class="milling-page__card">
             <div class="milling-page__main">
-              <div class="milling-field-grid">
+              <div class="calc-two-columns">
                 <div class="milling-field-group">
                   <div class="milling-field-title">Количество, шт</div>
                   <Input
@@ -314,7 +314,7 @@ watch(file_id, () => {
                 <SelectCalc v-model="material_id" :input-data="materials" />
               </div>
 
-              <div class="milling-field-grid">
+              <div class="calc-two-columns">
                 <div class="milling-field-block">
                   <div class="milling-field-title">Наличие оснастки</div>
                   <CoefficientTooling v-model="composite_rig" />
@@ -418,12 +418,6 @@ watch(file_id, () => {
   min-width: 0;
 }
 
-.milling-field-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
-
 .milling-field-group,
 .milling-field-block {
   display: flex;
@@ -525,11 +519,6 @@ watch(file_id, () => {
   .milling-field-block--otk {
     gap: 12px;
     max-width: 100%;
-  }
-
-  .milling-field-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
   }
 
   .milling-field-title,

@@ -300,7 +300,7 @@ watch(file_id, () => {
                 <div v-else class="printing-title__text">3D ПЕЧАТЬ</div>
               </div> -->
 
-              <div class="printing-field-grid">
+              <div class="calc-two-columns">
                 <div class="printing-field-group">
                   <div class="printing-field-title">Количество, шт</div>
                   <Input
@@ -471,12 +471,6 @@ watch(file_id, () => {
   font-size: 38px;
 }
 
-.printing-field-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
-
 .printing-field-group,
 .printing-field-block {
   padding: 5px 0;
@@ -586,11 +580,6 @@ watch(file_id, () => {
   .printing-field-block--otk {
     gap: 12px;
     max-width: 100%;
-  }
-
-  .printing-field-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
   }
 
   .printing-field-title,
