@@ -266,7 +266,16 @@ const onHaveAccount = () => {
 
       <div class="agreements">
         <Checkbox v-model="isAgreementAccepted" class="agreement-checkbox">
-          Я согласен с условиями Оферты
+          Я согласен с
+          <router-link
+            to="/license"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="agreement-link"
+            @click.stop
+          >
+            условиями Оферты
+          </router-link>
         </Checkbox>
         <Checkbox v-model="isPolicyAccepted" class="agreement-checkbox">
           Я согласен на обработку моих персональных данных. С Политикой обработки персональных
@@ -420,6 +429,11 @@ const onHaveAccount = () => {
 
 .agreement-checkbox :deep(.el-checkbox__label) {
   white-space: normal;
+}
+
+.agreement-link {
+  color: inherit;
+  text-decoration: underline;
 }
 
 .buttons :deep(.btn.is-disabled) {
