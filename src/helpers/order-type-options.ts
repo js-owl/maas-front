@@ -6,7 +6,9 @@ export type OrderTypeOption = {
 }
 
 export const orderTypeOptions = [
-  { label: 'мехобработка', value: 'milling', routePath: '/milling', serviceId: 'cnc-milling' },
+  { label: 'Механическая обработка', value: 'milling', routePath: '/milling', serviceId: 'cnc-milling' },
   { label: '3D-печать', value: 'printing', routePath: '/printing', serviceId: 'printing' },
-  { label: 'прочее', value: 'other', routePath: '/other', serviceId: 'other' },
+  { label: 'ПКМ', value: 'composite', routePath: '/composite', serviceId: 'composite' },
+  { label: 'Гальваника', value: 'galvanic', routePath: '/other', serviceId: 'other' },
+  { label: 'Прочее', value: 'other', routePath: '/other', serviceId: 'other' },
 ] satisfies OrderTypeOption[]

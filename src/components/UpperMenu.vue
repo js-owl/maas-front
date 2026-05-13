@@ -213,7 +213,7 @@ function openServicePage(path: string) {
                 <div class="cabinet-menu">
                   <button
                     v-for="orderTypeOption in orderTypeOptions"
-                    :key="orderTypeOption.routePath"
+                    :key="orderTypeOption.value"
                     type="button"
                     class="cabinet-menu-item services-menu-item montserrat-medium"
                     @click="openServicePage(orderTypeOption.routePath)"
