@@ -40,8 +40,8 @@ const quantityInput = computed({
   },
 })
 
-const material_id = ref('alum')
-const material_form = ref('part')
+const material_id = ref('alum_1163')
+const material_form = ref('sheet')
 const service_id = ref('electroplating')
 
 type SelectOption = {
@@ -67,11 +67,10 @@ type OperationsAvailableResponse = {
 
 const operationsAvailable = ref<OperationAvailable[]>([])
 const process_id = ref('')
-const selectedCoverId = ref('')
 const cover_id = computed<string[]>({
-  get: () => (selectedCoverId.value ? [selectedCoverId.value] : []),
+  get: () => (material_id.value ? [material_id.value] : []),
   set: (value) => {
-    selectedCoverId.value = value[0] ?? ''
+    material_id.value = value[0] ?? ''
   },
 })
 const n_dimensions = ref(55)
@@ -103,7 +102,7 @@ const coatingTypes = computed<SelectOption[]>(() =>
 
 const selectedOperation = computed(() =>
   operationsAvailable.value.find(
-    (operation) => operation.group === process_id.value && operation.id === selectedCoverId.value
+    (operation) => operation.group === process_id.value && operation.id === material_id.value
   )
 )
 
@@ -200,7 +199,7 @@ const calculationPayload = computed(() => {
 watch(
   calculationPayload,
   (newVal) => {
-    if (isInitializing || !process_id.value || !selectedCoverId.value) return
+    if (isInitializing || !process_id.value || !material_id.value) return
 
     sendData(newVal as unknown as IOrderPayload)
   },
@@ -228,13 +227,13 @@ onMounted(async () => {
     }
 
     isInitializing = false
-    if (process_id.value && selectedCoverId.value) {
+    if (process_id.value && material_id.value) {
       sendData(calculationPayload.value as unknown as IOrderPayload)
     }
   } else {
     await getOrder(order_id.value)
     isInitializing = false
-    if (process_id.value && selectedCoverId.value) {
+    if (process_id.value && material_id.value) {
       sendData(calculationPayload.value as unknown as IOrderPayload)
     }
   }
@@ -259,9 +258,9 @@ async function loadOperationsAvailable() {
 }
 
 function syncSelectedCoverWithProcess() {
-  if (coatingTypes.value.some((item) => item.value === selectedCoverId.value)) return
+  if (coatingTypes.value.some((item) => item.value === material_id.value)) return
 
-  selectedCoverId.value = coatingTypes.value[0]?.value ?? selectedGroupOperations.value[0]?.id ?? ''
+  material_id.value = coatingTypes.value[0]?.value ?? selectedGroupOperations.value[0]?.id ?? ''
 }
 
 async function sendData(currentPayload: IOrderPayload) {
@@ -293,10 +292,11 @@ async function getOrder(id: number) {
     if (data.width) width.value = data.width
     if (data.height) height.value = data.height
     if (data.quantity) quantity.value = data.quantity
+    const orderCoverId = data.cover_id ? (Array.isArray(data.cover_id) ? data.cover_id[0] : data.cover_id) : ''
     if (data.material_id) material_id.value = data.material_id
+    else if (orderCoverId) material_id.value = orderCoverId
     if (data.material_form) material_form.value = data.material_form
     if ((data as any).process_id) process_id.value = (data as any).process_id
-    if (data.cover_id) selectedCoverId.value = Array.isArray(data.cover_id) ? data.cover_id[0] : data.cover_id
     if (data.n_dimensions) n_dimensions.value = data.n_dimensions
     if (data.k_otk) k_otk.value = data.k_otk
     if (data.k_cert) k_cert.value = data.k_cert
@@ -308,7 +308,7 @@ async function getOrder(id: number) {
 
     if (!coatingProcesses.value.some((item) => item.value === process_id.value)) {
       process_id.value =
-        operationsAvailable.value.find((operation) => operation.id === selectedCoverId.value)?.group ??
+        operationsAvailable.value.find((operation) => operation.id === material_id.value)?.group ??
         coatingProcesses.value[0]?.value ??
         ''
     }
@@ -390,7 +390,7 @@ watch(
                   <SelectCalc v-model="process_id" :input-data="coatingProcesses" />
                   <SelectCalc
                     v-if="coatingTypes.length"
-                    v-model="selectedCoverId"
+                    v-model="material_id"
                     :input-data="coatingTypes"
                   />
                 </div>
