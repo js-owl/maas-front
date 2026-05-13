@@ -639,6 +639,7 @@ onMounted(() => {
             placeholder="Добавить деталь"
             width="266px"
             class="order-type-select"
+            dropdown-class="order-type-select-dropdown"
             @change="handleOrderTypeChange"
           >
             <el-option
@@ -646,7 +647,10 @@ onMounted(() => {
               :key="option.value"
               :label="option.label"
               :value="option.value"
-            />
+            >
+              <span class="order-type-option__label">{{ option.label }}</span>
+              <span class="order-type-option__chevron" aria-hidden="true" />
+            </el-option>
           </Select>
           <ButtonRound width="162px" @click="saveOrder">
             Сохранить
@@ -865,6 +869,32 @@ onMounted(() => {
 
 .order-type-select {
   margin-left: auto;
+}
+
+.order-type-option__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order-type-option__chevron {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-left: 20px;
+}
+
+.order-type-option__chevron::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  width: 7px;
+  height: 7px;
+  border-top: 1.5px solid #000;
+  border-right: 1.5px solid #000;
+  transform: rotate(45deg);
 }
 
 .summary-card {
@@ -1137,5 +1167,53 @@ onMounted(() => {
   .order-type-select {
     margin-left: 0;
   }
+}
+</style>
+
+<style>
+.order-type-select-dropdown.el-popper {
+  /* width: 320px !important;
+  min-width: 320px !important;
+  max-width: 320px !important; */
+  box-sizing: border-box;
+  padding: 20px !important;
+  background: #fff !important;
+  border: none !important;
+  border-radius: 20px !important;
+  box-shadow: none !important;
+}
+
+.order-type-select-dropdown .el-select-dropdown {
+  background: transparent;
+}
+
+.order-type-select-dropdown .el-select-dropdown__wrap {
+  max-height: none;
+}
+
+.order-type-select-dropdown .el-select-dropdown__list {
+  padding: 0 !important;
+}
+
+.order-type-select-dropdown .el-select-dropdown__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+  padding: 10px 0 !important;
+  color: #000 !important;
+  background: #fff !important;
+  font-family: 'Montserrat-Medium', sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+}
+
+.order-type-select-dropdown .el-select-dropdown__item.is-selected {
+  font-weight: 500 !important;
+}
+
+.order-type-select-dropdown .el-popper__arrow {
+  display: none;
 }
 </style>

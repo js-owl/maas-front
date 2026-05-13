@@ -14,6 +14,7 @@ const props = withDefaults(
     filterable?: boolean
     multiple?: boolean
     width?: string
+    dropdownClass?: string
   }>(),
   {
     size: 'large',
@@ -36,6 +37,7 @@ const emit = defineEmits<{
 }>()
 
 const selectClasses = computed(() => ['select-wrapper', 'full'])
+const popperClass = computed(() => ['select-dropdown', props.dropdownClass].filter(Boolean).join(' '))
 
 const handleUpdateModelValue = (value: string | number | boolean | object) => {
   emit('update:modelValue', value)
@@ -56,7 +58,7 @@ const handleChange = (value: string | number | boolean | object) => {
     :clearable="clearable"
     :filterable="filterable"
     :multiple="multiple"
-    popper-class="select-dropdown"
+    :popper-class="popperClass"
     :suffix-icon="IconArrowDown"
     :class="selectClasses"
     :style="{ width: props.width }"
