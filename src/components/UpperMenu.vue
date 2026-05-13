@@ -19,6 +19,7 @@ import IconEnter from '@/icons/IconEnter.vue'
 import IconProfile from '@/icons/IconProfile.vue'
 import IconChat from '@/icons/IconChat.vue'
 import IconExit from '@/icons/IconExit.vue'
+import { orderTypeOptions } from '@/helpers/order-type-options'
 
 const activeIndex = ref('1')
 
@@ -38,17 +39,6 @@ const isHomePage = computed(() => route.path === '/')
 const isCabinetMenuVisible = ref(false)
 const isGuestCabinetMenuVisible = ref(false)
 const isServicesMenuVisible = ref(false)
-
-type ServiceMenuOption = {
-  label: string
-  routePath: string
-}
-
-const serviceMenuOptions = [
-  { label: 'Механообработка', routePath: '/milling' },
-  { label: '3D-печать', routePath: '/printing' },
-  { label: 'Прочее', routePath: '/other' },
-] satisfies ServiceMenuOption[]
 
 // Check token on component mount
 onMounted(() => {
@@ -222,13 +212,13 @@ function openServicePage(path: string) {
                 </template>
                 <div class="cabinet-menu">
                   <button
-                    v-for="serviceMenuOption in serviceMenuOptions"
-                    :key="serviceMenuOption.routePath"
+                    v-for="orderTypeOption in orderTypeOptions"
+                    :key="orderTypeOption.routePath"
                     type="button"
                     class="cabinet-menu-item services-menu-item montserrat-medium"
-                    @click="openServicePage(serviceMenuOption.routePath)"
+                    @click="openServicePage(orderTypeOption.routePath)"
                   >
-                    <span>{{ serviceMenuOption.label }}</span>
+                    <span>{{ orderTypeOption.label }}</span>
                   </button>
                 </div>
               </el-popover>
