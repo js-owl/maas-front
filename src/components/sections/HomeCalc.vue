@@ -104,6 +104,7 @@ const submit = () => {
                 placeholder="Тип обработки"
                 aria-label="Тип обработки"
                 width="100%"
+                dropdown-class="home-calc-order-select-dropdown"
                 @change="handleOrderTypeChange"
               >
                 <el-option
@@ -111,7 +112,10 @@ const submit = () => {
                   :key="option.value"
                   :label="option.label"
                   :value="option.value"
-                />
+                >
+                  <span class="home-calc-order-option__label">{{ option.label }}</span>
+                  <span class="home-calc-order-option__chevron" aria-hidden="true" />
+                </el-option>
               </Select>
             </el-form-item>
             <Button
@@ -237,6 +241,32 @@ const submit = () => {
   border-radius: 24px;
 }
 
+.home-calc-order-option__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-calc-order-option__chevron {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-left: 20px;
+}
+
+.home-calc-order-option__chevron::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  width: 7px;
+  height: 7px;
+  border-top: 1.5px solid #000;
+  border-right: 1.5px solid #000;
+  transform: rotate(45deg);
+}
+
 @media (max-width: 768px) {
   .calc-left {
     padding-right: 0px;
@@ -255,5 +285,50 @@ const submit = () => {
   .calc-submit-button {
     flex-basis: auto;
   }
+}
+</style>
+
+<style>
+.home-calc-order-select-dropdown.el-popper {
+  box-sizing: border-box;
+  padding: 20px !important;
+  background: #fff !important;
+  border: none !important;
+  border-radius: 20px !important;
+  box-shadow: none !important;
+}
+
+.home-calc-order-select-dropdown .el-select-dropdown {
+  background: transparent;
+}
+
+.home-calc-order-select-dropdown .el-select-dropdown__wrap {
+  max-height: none;
+}
+
+.home-calc-order-select-dropdown .el-select-dropdown__list {
+  padding: 0 !important;
+}
+
+.home-calc-order-select-dropdown .el-select-dropdown__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+  padding: 10px 0 !important;
+  color: #000 !important;
+  background: #fff !important;
+  font-family: 'Montserrat-Medium', sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+}
+
+.home-calc-order-select-dropdown .el-select-dropdown__item.is-selected {
+  font-weight: 500 !important;
+}
+
+.home-calc-order-select-dropdown .el-popper__arrow {
+  display: none;
 }
 </style>
