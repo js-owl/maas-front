@@ -200,7 +200,7 @@ function openServicePage(path: string) {
                 v-model:visible="isServicesMenuVisible"
                 trigger="click"
                 placement="bottom-start"
-                width="349px"
+                width="321px"
                 :show-arrow="false"
                 popper-class="cabinet-menu-popper"
                 :offset="12"

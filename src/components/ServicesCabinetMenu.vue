@@ -24,23 +24,26 @@ const emit = defineEmits<{
 .cabinet-menu {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 3px;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 20px;
 }
 
 .cabinet-menu-item {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 20px;
   width: 100%;
+  height: 42px;
   border: none;
   background-color: transparent;
-  color: #14161a;
+  color: #000;
   font-size: 18px;
-  line-height: 1.2;
+  line-height: 1;
   text-align: left;
-  padding: 10px 5px;
-  border-radius: 12px;
+  padding: 10px 0;
   cursor: pointer;
 }
 
@@ -48,14 +51,14 @@ const emit = defineEmits<{
   background-color: #f3f4f6;
 }
 
-.services-menu-item {
-  justify-content: space-between;
-}
-
 .services-menu-item::after {
-  content: '›';
-  color: #55585b;
-  font-size: 24px;
-  line-height: 1;
+  content: '';
+  display: block;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 5L11 9L7 13' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
 }
 </style>
