@@ -116,6 +116,7 @@ declare module 'vue' {
     Select: typeof import('./src/components/ui/Select.vue')['default']
     SelectCalc: typeof import('./src/components/ui/SelectCalc.vue')['default']
     SelectFiles: typeof import('./src/components/ui/SelectFiles.vue')['default']
+    ServicesCabinetMenu: typeof import('./src/components/ServicesCabinetMenu.vue')['default']
     STLViewer: typeof import('./src/components/cad/STLViewer.vue')['default']
     STPViewer: typeof import('./src/components/cad/STPViewer.vue')['default']
     SuitableMachines: typeof import('./src/components/SuitableMachines.vue')['default']

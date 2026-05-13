@@ -19,7 +19,7 @@ import IconEnter from '@/icons/IconEnter.vue'
 import IconProfile from '@/icons/IconProfile.vue'
 import IconChat from '@/icons/IconChat.vue'
 import IconExit from '@/icons/IconExit.vue'
-import { orderTypeOptions } from '@/helpers/order-type-options'
+import ServicesCabinetMenu from './ServicesCabinetMenu.vue'
 
 const activeIndex = ref('1')
 
@@ -210,17 +210,7 @@ function openServicePage(path: string) {
                     Услуги
                   </el-button>
                 </template>
-                <div class="cabinet-menu">
-                  <button
-                    v-for="orderTypeOption in orderTypeOptions"
-                    :key="orderTypeOption.value"
-                    type="button"
-                    class="cabinet-menu-item services-menu-item montserrat-medium"
-                    @click="openServicePage(orderTypeOption.routePath)"
-                  >
-                    <span>{{ orderTypeOption.label }}</span>
-                  </button>
-                </div>
+                <ServicesCabinetMenu @open-service="openServicePage" />
               </el-popover>
 
               <!-- <el-button class="call-btn" @click="onCallRequest"> Заказать звонок </el-button> -->
@@ -563,17 +553,6 @@ function openServicePage(path: string) {
 
 .cabinet-menu-item:hover {
   background-color: #f3f4f6;
-}
-
-.services-menu-item {
-  justify-content: space-between;
-}
-
-.services-menu-item::after {
-  content: '›';
-  color: #55585b;
-  font-size: 24px;
-  line-height: 1;
 }
 
 .cabinet-menu-icon {
