@@ -278,8 +278,17 @@ const onHaveAccount = () => {
           </router-link>
         </Checkbox>
         <Checkbox v-model="isPolicyAccepted" class="agreement-checkbox">
-          Я согласен на обработку моих персональных данных. С Политикой обработки персональных
-          данных ознакомлен
+          Я согласен на обработку моих персональных данных. С
+          <router-link
+            to="/policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="agreement-link"
+            @click.stop
+          >
+            Политикой обработки персональных данных
+          </router-link>
+          ознакомлен
         </Checkbox>
       </div>
     </div>
