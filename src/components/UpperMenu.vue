@@ -154,6 +154,11 @@ function openGuestLogin() {
   isLoginVisible.value = true
 }
 
+function openLoginFromRegistration() {
+  isRegistrationVisible.value = false
+  isLoginVisible.value = true
+}
+
 function openServicePage(path: string) {
   isServicesMenuVisible.value = false
   router.push({ path })
@@ -337,7 +342,7 @@ function openServicePage(path: string) {
         </el-header>
       </el-col>
       <DialogLogin v-model="isLoginVisible" />
-      <DialogRegistration v-model="isRegistrationVisible" />
+      <DialogRegistration v-model="isRegistrationVisible" @open-login="openLoginFromRegistration" />
       <DialogCall v-model="isCallVisible" />
     </el-row>
 

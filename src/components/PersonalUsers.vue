@@ -3,6 +3,7 @@ import { onMounted, ref, watch } from 'vue'
 import { req_json_auth } from '../api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Delete, Edit, Plus, RefreshRight } from '@element-plus/icons-vue'
+import DialogLogin from './dialog/DialogLogin.vue'
 import DialogRegistration from './dialog/DialogRegistration.vue'
 import DialogEditUser from './dialog/DialogEditUser.vue'
 
@@ -30,6 +31,9 @@ const syncLoading = ref(false)
 
 // State to control registration dialog visibility
 const isRegistrationVisible = ref(false)
+
+// State to control login dialog visibility
+const isLoginVisible = ref(false)
 
 // State to control edit dialog visibility
 const isEditDialogVisible = ref(false)
@@ -73,6 +77,11 @@ watch(isRegistrationVisible, async (newValue, oldValue) => {
 // Handler to open registration dialog
 const handleAddUser = () => {
   isRegistrationVisible.value = true
+}
+
+const handleOpenLogin = () => {
+  isRegistrationVisible.value = false
+  isLoginVisible.value = true
 }
 
 // Handler to open edit dialog with selected user data
@@ -266,7 +275,8 @@ const handleDelete = async (user: IUser) => {
       </el-table>
     </el-col>
   </el-row>
-  <DialogRegistration v-model="isRegistrationVisible" />
+  <DialogLogin v-model="isLoginVisible" />
+  <DialogRegistration v-model="isRegistrationVisible" @open-login="handleOpenLogin" />
   <DialogEditUser v-model="isEditDialogVisible" :user="selectedUser" @updated="handleUserUpdated" />
 </template>
 
