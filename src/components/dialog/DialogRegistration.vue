@@ -46,6 +46,7 @@ const usernameError = ref('')
 const regStore = useRegStore()
 const loading = ref(false)
 const isAgreementAccepted = ref(false)
+const isPolicyAccepted = ref(false)
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
@@ -124,6 +125,7 @@ const rules = ref<FormRules<FormData>>({
 const closeDialog = () => {
   dialogFormVisible.value = false
   isAgreementAccepted.value = false
+  isPolicyAccepted.value = false
   // Reset form when closing
   form.value = {
     username: '',
@@ -144,10 +146,10 @@ const closeDialog = () => {
 
 const submitForm = async () => {
   if (!formRef.value) return
-  if (!isAgreementAccepted.value) {
+  if (!isAgreementAccepted.value || !isPolicyAccepted.value) {
     ElMessage({
       type: 'warning',
-      message: 'Подтвердите согласие на обработку данных',
+      message: 'Подтвердите согласие с условиями и обработкой данных',
     })
     return
   }
@@ -266,7 +268,7 @@ const onHaveAccount = () => {
         <Checkbox v-model="isAgreementAccepted" class="agreement-checkbox">
           Я согласен с условиями Оферты
         </Checkbox>
-        <Checkbox v-model="isAgreementAccepted" class="agreement-checkbox">
+        <Checkbox v-model="isPolicyAccepted" class="agreement-checkbox">
           Я согласен на обработку моих персональных данных. С Политикой обработки персональных
           данных ознакомлен
         </Checkbox>
@@ -281,7 +283,7 @@ const onHaveAccount = () => {
             width="fit-content"
             flat
             :loading="loading"
-            :disabled="!isAgreementAccepted"
+            :disabled="!isAgreementAccepted || !isPolicyAccepted"
             @click="submitForm"
           >
             {{ loading ? 'Регистрация...' : 'Зарегистрироваться' }}
