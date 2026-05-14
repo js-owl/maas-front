@@ -75,6 +75,14 @@ export interface IOrderResponse extends IOrderBase {
   order_id: number
   user_id: number
   document_ids: number[]
+  detail_price_calculation?: {
+    material_price?: number
+    salary_fund_with_taxes?: number
+    price_special_equipment?: number
+    detail_price_one?: number
+    detail_price_one_with_taxes?: number
+    taxes?: number
+  }
   composite_rig: string
   status: string
   mat_volume: number

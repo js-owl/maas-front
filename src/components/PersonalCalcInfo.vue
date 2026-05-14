@@ -51,6 +51,11 @@ const priceWithoutVat = ref('-')
 const vatCosts = ref('-')
 const totalCosts = ref('-')
 
+const formatPrice = (value?: number | null) => {
+  if (value == null) return '-'
+  return `${Number(value).toFixed(2)} руб`
+}
+
 const costRows = computed(() => [
   { number: '1', label: 'Затраты на материалы', value: materialCosts.value.matPriceFull },
   { number: '2', label: 'Затраты на оплату труда', value: laborCosts.value.sumCostsLabor },
@@ -79,9 +84,6 @@ const fetchOrder = async (id: number) => {
       orderName.value = orderData.order_name
     }
 
-    if (orderData.total_price_breakdown?.mat_price_full != null) {
-      materialCosts.value.matPriceFull = `${orderData.total_price_breakdown.mat_price_full.toFixed(2)} руб`
-    }
     if (orderData.total_price_breakdown?.mat_price != null) {
       materialCosts.value.rawMaterials.matPrice = `${orderData.total_price_breakdown.mat_price.toFixed(2)} руб`
     }
@@ -102,9 +104,6 @@ const fetchOrder = async (id: number) => {
       materialCosts.value.dopMatPrice = `${orderData.total_price_breakdown.dop_mat_price.toFixed(2)} руб`
     }
 
-    if (orderData.total_price_breakdown?.sum_costs_labor != null) {
-      laborCosts.value.sumCostsLabor = `${orderData.total_price_breakdown.sum_costs_labor.toFixed(2)} руб`
-    }
     if (orderData.total_time != null) {
       laborCosts.value.totalTime = `${orderData.total_time.toFixed(2)} ч`
     }
@@ -127,19 +126,13 @@ const fetchOrder = async (id: number) => {
       laborCosts.value.priceOfHourWithOthers.administrativeExpenses = `${orderData.total_price_breakdown.administrative_expenses.toFixed(2)} руб`
     }
 
-    if (orderData.total_price_breakdown?.price_special_equipment_to_quantity != null) {
-      toolingCosts.value = `${orderData.total_price_breakdown.price_special_equipment_to_quantity.toFixed(2)} руб`
-    }
-    if (orderData.total_price != null) {
-      priceWithoutVat.value = `${orderData.total_price.toFixed(2)} руб`
-      totalCosts.value = `${orderData.total_price.toFixed(2)} руб`
-    }
-    if (orderData.total_price_breakdown?.taxes != null) {
-      vatCosts.value = `${Number(orderData.total_price_breakdown.taxes).toFixed(2)} руб`
-    }
-    if (orderData.total_price_breakdown?.total_price_with_taxes != null) {
-      totalCosts.value = `${Number(orderData.total_price_breakdown.total_price_with_taxes).toFixed(2)} руб`
-    }
+    const detailPriceCalculation = orderData.detail_price_calculation
+    materialCosts.value.matPriceFull = formatPrice(detailPriceCalculation?.material_price)
+    laborCosts.value.sumCostsLabor = formatPrice(detailPriceCalculation?.salary_fund_with_taxes)
+    toolingCosts.value = formatPrice(detailPriceCalculation?.price_special_equipment)
+    priceWithoutVat.value = formatPrice(detailPriceCalculation?.detail_price_one)
+    vatCosts.value = formatPrice(detailPriceCalculation?.taxes)
+    totalCosts.value = formatPrice(detailPriceCalculation?.detail_price_one_with_taxes)
   } catch (error) {
     console.error('Error fetching order:', error)
     ElMessage.error('Ошибка при загрузке заказа')
