@@ -4,7 +4,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useProfileStore, type IProfile } from '../../stores/profile.store'
 import { useAuthStore } from '../../stores/auth.store'
-import { req_json_auth } from '../../api'
+import { req_json, req_json_auth } from '../../api'
+import { getLocalStpFileById } from '../../helpers/local-stp-files'
 import type {
   IKit,
   IOrderPayload,
@@ -101,6 +102,59 @@ const fetchOriginalFilename = async (fileId: number): Promise<string | null> => 
   return null
 }
 
+const stripFileExtension = (fileName: string | null): string | null => {
+  if (!fileName) return null
+
+  const lastDotIndex = fileName.lastIndexOf('.')
+  return lastDotIndex > 0 ? fileName.substring(0, lastDotIndex) : fileName
+}
+
+const extractFileId = (data: unknown): number => {
+  const fileData = data as { id?: number | string; file_id?: number | string }
+  const id = Number(fileData.id ?? fileData.file_id)
+
+  if (!Number.isFinite(id) || id <= 0) {
+    throw new Error('File upload response does not contain file id')
+  }
+
+  return id
+}
+
+const uploadLocalModel = async (fileId?: number): Promise<{ fileId?: number; fileName: string | null }> => {
+  const localFile = getLocalStpFileById(fileId)
+
+  if (!localFile) return { fileId, fileName: fileId ? await fetchOriginalFilename(fileId) : null }
+
+  const response = await req_json_auth('/files', 'POST', {
+    file_name: localFile.file_name,
+    file_type: localFile.file_type,
+    file_data: localFile.file_data,
+  })
+
+  const data = await response?.json()
+  return {
+    fileId: extractFileId(data),
+    fileName: localFile.file_name,
+  }
+}
+
+const buildOrderPayload = (fileId?: number): IOrderPostPayload => {
+  const { file_data: _fileData, file_name: _fileName, file_type: _fileType, ...payload } = props.payload
+
+  return {
+    ...payload,
+    file_id: fileId,
+    document_ids: props.payload.document_ids,
+  }
+}
+
+const recalculatePayload = async (payload: IOrderPostPayload): Promise<IOrderResponse | null> => {
+  const res = await req_json('/calculate-price', 'POST', payload)
+  if (!res?.ok) throw new Error('Calculate price failed')
+
+  return (await res.json()) as IOrderResponse
+}
+
 const submitOrder = async () => {
   if (!authStore.getToken) {
     isLoginDialogVisible.value = true
@@ -111,107 +165,101 @@ const submitOrder = async () => {
   isSubmitting.value = true
 
   try {
-  let targetKitId = kitId.value
-  await ensureProfileLoaded()
-  if (!isProfileComplete(profileStore.profile)) {
-    ElMessage.warning('Заполните профиль перед оформлением заказа')
-    router.push({ path: '/personal/profile' })
-    return
-  }
-
-  // Загружаем original_filename из файла
-  const fileId = props.payload.file_id
-  let originalFilename = fileId ? await fetchOriginalFilename(fileId) : null
-
-  // Отрезаем расширение (все, что после последней точки)
-  if (originalFilename) {
-    const lastDotIndex = originalFilename.lastIndexOf('.')
-    if (lastDotIndex > 0) {
-      originalFilename = originalFilename.substring(0, lastDotIndex)
+    let targetKitId = kitId.value
+    await ensureProfileLoaded()
+    if (!isProfileComplete(profileStore.profile)) {
+      ElMessage.warning('Заполните профиль перед оформлением заказа')
+      router.push({ path: '/personal/profile' })
+      return
     }
-  }
 
-  if (isNewOrder.value) {
-    try {
-      const postPayload: IOrderPostPayload = {
-        ...props.payload,
-        order_name: originalFilename || props.payload.order_name || 'Деталь',
-        special_instructions: props.specialInstructions,
-        document_ids: props.payload.document_ids,
+    const savedFile = await uploadLocalModel(props.payload.file_id)
+    const orderPayload = buildOrderPayload(savedFile.fileId)
+    const originalFilename = stripFileExtension(savedFile.fileName)
+    const calculationResult = await recalculatePayload(orderPayload)
+    if (calculationResult) emit('updateResult', calculationResult)
+
+    if (isNewOrder.value) {
+      try {
+        const postPayload: IOrderPostPayload = {
+          ...orderPayload,
+          order_name: originalFilename || props.payload.order_name || 'Деталь',
+          special_instructions: props.specialInstructions,
+        }
+        const res = await req_json_auth('/orders', 'POST', postPayload)
+        const data = (await res?.json()) as IOrderResponse
+        emit('updateResult', data)
+
+        if (targetKitId > 0) {
+          // Добавляем новый order_id в существующий kit
+          const updatedIds = Array.from(new Set([...existingOrderIds.value, data.order_id]))
+
+          try {
+            await req_json_auth(`/kits/${targetKitId}`, 'PUT', {
+              order_ids: updatedIds,
+            })
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('Error updating existing kit with new order_id', error)
+          }
+        } else {
+          // После успешного создания заказа создаем kit с значениями по умолчанию
+          const kitPayload: IKit = {
+            kit_name: data.order_name || originalFilename || '',
+            order_ids: [data.order_id],
+            user_id: data.user_id,
+            quantity: 1,
+            bitrix_deal_id: 1,
+            location: data.total_price_breakdown?.location || 'location_1',
+            kit_price: 0,
+            delivery_price: 0,
+            total_kit_price: 0,
+          }
+
+          try {
+            const kitRes = await req_json_auth('/kits', 'POST', kitPayload)
+            const createdKit = (await kitRes?.json()) as IKit | { kit_id?: number }
+            targetKitId = Number(createdKit?.kit_id) || 0
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('Error creating kit', error)
+          }
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error({ error })
+        ElMessage.error('Ошибка сохранения заказа')
+        return
       }
-      const res = await req_json_auth('/orders', 'POST', postPayload)
-      const data = (await res?.json()) as IOrderResponse
-      emit('updateResult', data)
-
-      if (targetKitId > 0) {
-        // Добавляем новый order_id в существующий kit
-        const updatedIds = Array.from(new Set([...existingOrderIds.value, data.order_id]))
-
-        try {
-          await req_json_auth(`/kits/${targetKitId}`, 'PUT', {
-            order_ids: updatedIds,
-          })
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error updating existing kit with new order_id', error)
-        }
-      } else {
-        // После успешного создания заказа создаем kit с значениями по умолчанию
-        const kitPayload: IKit = {
-          kit_name: data.order_name || originalFilename || '',
-          order_ids: [data.order_id],
-          user_id: data.user_id,
-          quantity: 1,
-          bitrix_deal_id: 1,
-          location: data.total_price_breakdown?.location || 'location_1',
-          kit_price: 0,
-          delivery_price: 0,
-          total_kit_price: 0,
-        }
-
-        try {
-          const kitRes = await req_json_auth('/kits', 'POST', kitPayload)
-          const createdKit = (await kitRes?.json()) as IKit | { kit_id?: number }
-          targetKitId = Number(createdKit?.kit_id) || 0
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error creating kit', error)
-        }
+    } else {
+      const id = props.orderId
+      try {
+        const res = await req_json_auth(`/orders/${id}`, 'PUT', {
+          ...orderPayload,
+          // при обновлении оставляем имя заказа таким, как оно передано в payload
+          order_name: props.payload.order_name || '',
+          special_instructions: props.specialInstructions,
+        })
+        const data = (await res?.json()) as IOrderResponse
+        emit('updateResult', data)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error({ error })
+        ElMessage.error('Ошибка сохранения заказа')
+        return
       }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error({ error })
     }
-  } else {
-    const id = props.orderId
-    try {
-      const res = await req_json_auth(`/orders/${id}`, 'PUT', {
-        ...props.payload,
-        // при обновлении оставляем имя заказа таким, как оно передано в payload
-        order_name: props.payload.order_name || '',
-        special_instructions: props.specialInstructions,
-      })
-      const data = (await res?.json()) as IOrderResponse
-      emit('updateResult', data)
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error({ error })
-    }
-  }
 
-  emit('showInfo')
+    emit('showInfo')
 
-  if (targetKitId > 0) {
     router.push({
       path: '/personal/order',
       query: { kitId: targetKitId.toString() },
     })
-  } else {
-    router.push({
-      path: '/personal/order',
-      query: { kitId: targetKitId.toString() },
-    })
-  }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error({ error })
+    ElMessage.error('Ошибка сохранения изменений')
   } finally {
     isSubmitting.value = false
   }
