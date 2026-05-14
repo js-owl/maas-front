@@ -83,43 +83,9 @@ const manufacturingCost = computed(() => {
   return formatPrice(order.value?.total_kit_price ?? 0)
 })
 
-const deliveryCost = computed(() => {
-  // TODO: заменить на реальные данные о доставке
-  return formatPrice(order.value?.delivery_price)
-})
-
 const totalWithDelivery = computed(() => {
   const total = (order.value?.total_kit_price ?? 0) + (order.value?.delivery_price ?? 0)
   return formatPrice(total)
-})
-
-const manufacturingLeadTime = computed(() => {
-  if (!order.value?.created_at || !order.value?.updated_at) return '—'
-
-  const createdAt = new Date(order.value.created_at)
-  const updatedAt = new Date(order.value.updated_at)
-
-  if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) return '—'
-
-  const days = Math.max(0, Math.ceil((updatedAt.getTime() - createdAt.getTime()) / 86_400_000))
-  const lastTwoDigits = days % 100
-  const lastDigit = days % 10
-  const workingDayLabel =
-    lastTwoDigits >= 11 && lastTwoDigits <= 14
-      ? 'рабочих'
-      : lastDigit === 1
-        ? 'рабочий'
-        : 'рабочих'
-  const dayLabel =
-    lastTwoDigits >= 11 && lastTwoDigits <= 14
-      ? 'дней'
-      : lastDigit === 1
-        ? 'день'
-        : lastDigit >= 2 && lastDigit <= 4
-          ? 'дня'
-          : 'дней'
-
-  return `${days} ${workingDayLabel} ${dayLabel}`
 })
 
 const formatDate = (dateString?: string | null): string => {
@@ -662,69 +628,61 @@ onMounted(() => {
       <!-- Правая карточка -->
       <div class="order-side">
         <div shadow="never" class="summary-card">
-          <!-- Статус и даты -->
-          <div class="status-section">
-            <div class="status-row">
-              <span class="maas-text">Статус</span>
-              <span class="status-value">{{ orderStatus }}</span>
-            </div>
-            <div class="date-group">
-              <div class="date-row">
-                <span class="maas-text">Дата создания</span>
-                <span class="status-value">{{ createdDate }}</span>
+          <div class="summary-content">
+            <!-- Статус и даты -->
+            <div class="status-section">
+              <div class="status-row">
+                <span class="maas-text">Статус</span>
+                <span class="status-value">{{ orderStatus }}</span>
               </div>
-              <div class="date-row">
-                <span class="maas-text">Дата завершения</span>
-                <span class="status-value">{{ completionDate }}</span>
+              <div class="date-group">
+                <div class="date-row">
+                  <span class="maas-text">Дата создания</span>
+                  <span class="status-value">{{ createdDate }}</span>
+                </div>
+                <div class="date-row">
+                  <span class="maas-text">Дата завершения</span>
+                  <span class="status-value">{{ completionDate }}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="manufacturer-section">
-            <div class="maas-subtitle">Выбор изготовителя</div>
-            <el-radio-group
-              v-model="selectedLocation"
-              class="manufacturer-radio-group"
-              @change="saveOrder"
-            >
-              <Radio
-                v-for="manufacturer in manufacturerOptions"
-                :key="manufacturer.value"
-                :value="manufacturer.value"
-                class="manufacturer-radio"
+            <div class="manufacturer-section">
+              <div class="maas-subtitle">Выбор изготовителя</div>
+              <el-radio-group
+                v-model="selectedLocation"
+                class="manufacturer-radio-group"
+                @change="saveOrder"
               >
-                {{ manufacturer.label }}
-              </Radio>
-            </el-radio-group>
-          </div>
+                <Radio
+                  v-for="manufacturer in manufacturerOptions"
+                  :key="manufacturer.value"
+                  :value="manufacturer.value"
+                  class="manufacturer-radio"
+                >
+                  {{ manufacturer.label }}
+                </Radio>
+              </el-radio-group>
+            </div>
 
-          <div class="cost-item manufacturing-time">
-            <div class="maas-text">Сроки изготовления</div>
-            <div class="maas-subtitle">{{ manufacturingLeadTime }}</div>
-          </div>
+            <div class="cost-section">
+              <div class="cost-item">
+                <div class="maas-text">Стоимость изготовления</div>
+                <div class="maas-subtitle">
+                  {{ manufacturingCost }} <span class="rub">руб.</span>
+                </div>
+              </div>
 
-          <div class="cost-item">
-            <div class="maas-text">Стоимость изготовления</div>
-            <div class="maas-subtitle">
-              {{ manufacturingCost }} <span class="rub">руб.</span>
+              <!-- Итого -->
+              <div class="cost-item total">
+                <div class="maas-text">Стоимость с учетом доставки</div>
+                <div class="maas-subtitle">
+                  {{ totalWithDelivery }} <span class="rub">руб.</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Доставка -->
-          <div class="cost-item">
-            <div class="maas-text">Доставка</div>
-            <div class="maas-subtitle">
-              {{ deliveryCost }} <span class="rub">руб.</span>
-            </div>
-          </div>
-
-          <!-- Итого -->
-          <div class="cost-item total">
-            <div class="maas-text">Стоимость с учетом доставки</div>
-            <div class="maas-subtitle">
-              {{ totalWithDelivery }} <span class="rub">руб.</span>
-            </div>
-          </div>
           <!-- Кнопка оплаты -->
           <div class="summary-actions">
             <Button @click="confirmOrder" class="pay-order-button">Создать заказ</Button>
@@ -904,11 +862,19 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 40px;
   padding: 20px;
   min-height: 100%;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.summary-content {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  width: 100%;
 }
 
 .summary-card .maas-text {
@@ -931,7 +897,9 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-bottom: 15px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--button-bg);
 }
 
 .status-row {
@@ -939,6 +907,8 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--button-bg);
 }
 
 .status-row::before,
@@ -964,20 +934,19 @@ onMounted(() => {
 }
 
 .manufacturer-section {
-  padding: 15px 0;
-  border-top: 2px solid var(--button-bg);
+  padding: 0 0 20px;
   border-bottom: 2px solid var(--button-bg);
 }
 
 .manufacturer-section .maas-subtitle {
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 .manufacturer-radio-group {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 10px;
 }
 
 .manufacturer-radio-group :deep(.el-radio) {
@@ -1006,26 +975,31 @@ onMounted(() => {
   white-space: nowrap;
 }
 
+.cost-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 20px;
+}
+
 .cost-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 20px;
-  /* margin-bottom: 24px; */
 }
 
 .cost-item.total {
-  margin-bottom: 24px;
+  margin-bottom: 0;
 }
 
 .rub {
   margin-left: 4px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
 }
 
 .summary-actions {
-  margin-top: 4px;
   display: flex;
   justify-content: center;
   width: 100%;
