@@ -47,25 +47,16 @@ const laborCosts = ref({
 })
 
 const toolingCosts = ref('-')
+const priceWithoutVat = ref('-')
+const vatCosts = ref('-')
+const totalCosts = ref('-')
 
-const materialRows = computed(() => [
-  { number: '1', label: 'Сырье и основные материалы', value: materialCosts.value.rawMaterials.matPrice },
-  { number: '1.1', label: 'Информация о заготовке', value: '-' },
-  { number: '1.2', label: 'Извлеченные габариты детали', value: materialCosts.value.rawMaterials.blankInfo.extractedDimensions },
-  { number: '1.3', label: 'Объем заготовки', value: materialCosts.value.rawMaterials.blankInfo.matVolume },
-  { number: '1.4', label: 'Норма расхода', value: materialCosts.value.rawMaterials.blankInfo.matWeight },
-  { number: '1.5', label: 'Основной материал', value: materialCosts.value.rawMaterials.pricePerKg },
-  { number: '2', label: 'Вспомогательные материалы', value: materialCosts.value.dopMatPrice },
-])
-
-const laborRows = computed(() => [
-  { number: '1', label: 'Трудоемкость', value: laborCosts.value.totalTime },
-  { number: '2', label: 'ФОТ', value: laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers },
-  { number: '2.1', label: 'Основная заработная плата', value: laborCosts.value.priceOfHourWithOthers.workPrice },
-  { number: '2.2', label: 'Дополнительная заработная плата', value: laborCosts.value.priceOfHourWithOthers.dopSalary },
-  { number: '2.3', label: 'Страховые взносы', value: laborCosts.value.priceOfHourWithOthers.insurancePrice },
-  { number: '2.4', label: 'Общепроизводственные затраты', value: laborCosts.value.priceOfHourWithOthers.overheadExpenses },
-  { number: '2.5', label: 'Общехозяйственные затраты', value: laborCosts.value.priceOfHourWithOthers.administrativeExpenses },
+const costRows = computed(() => [
+  { number: '1', label: 'Затраты на материалы', value: materialCosts.value.matPriceFull },
+  { number: '2', label: 'Затраты на оплату труда', value: laborCosts.value.sumCostsLabor },
+  { number: '3', label: 'Затраты на специальную технологическую оснастку', value: toolingCosts.value },
+  { number: '4', label: 'Цена без НДС', value: priceWithoutVat.value },
+  { number: '5', label: 'НДС', value: vatCosts.value },
 ])
 
 const fetchOrder = async (id: number) => {
@@ -139,6 +130,16 @@ const fetchOrder = async (id: number) => {
     if (orderData.total_price_breakdown?.price_special_equipment_to_quantity != null) {
       toolingCosts.value = `${orderData.total_price_breakdown.price_special_equipment_to_quantity.toFixed(2)} руб`
     }
+    if (orderData.total_price != null) {
+      priceWithoutVat.value = `${orderData.total_price.toFixed(2)} руб`
+      totalCosts.value = `${orderData.total_price.toFixed(2)} руб`
+    }
+    if (orderData.total_price_breakdown?.taxes != null) {
+      vatCosts.value = `${Number(orderData.total_price_breakdown.taxes).toFixed(2)} руб`
+    }
+    if (orderData.total_price_breakdown?.total_price_with_taxes != null) {
+      totalCosts.value = `${Number(orderData.total_price_breakdown.total_price_with_taxes).toFixed(2)} руб`
+    }
   } catch (error) {
     console.error('Error fetching order:', error)
     ElMessage.error('Ошибка при загрузке заказа')
@@ -189,12 +190,7 @@ onMounted(() => {
       </header>
 
       <div class="cost-section">
-        <div class="section-head">
-          <span class="section-name">Материальные затраты</span>
-          <span class="section-line"></span>
-          <span class="section-value">{{ materialCosts.matPriceFull }}</span>
-        </div>
-        <div v-for="row in materialRows" :key="`${row.number}-${row.label}`" class="cost-line">
+        <div v-for="row in costRows" :key="`${row.number}-${row.label}`" class="cost-line">
           <span class="line-number">{{ row.number }}</span>
           <span class="line-label">{{ row.label }}</span>
           <span class="line-dash"></span>
@@ -202,26 +198,10 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="cost-section">
-        <div class="section-head">
-          <span class="section-name">Затраты на оплату труда</span>
-          <span class="section-line"></span>
-          <span class="section-value">{{ laborCosts.sumCostsLabor }}</span>
-        </div>
-        <div v-for="row in laborRows" :key="`${row.number}-${row.label}`" class="cost-line">
-          <span class="line-number">{{ row.number }}</span>
-          <span class="line-label">{{ row.label }}</span>
-          <span class="line-dash"></span>
-          <span class="line-value">{{ row.value || '-' }}</span>
-        </div>
-      </div>
-
-      <div class="cost-section">
-        <div class="section-head">
-          <span class="section-name">Затраты на оснастку</span>
-          <span class="section-line"></span>
-          <span class="section-value">{{ toolingCosts }}</span>
-        </div>
+      <div class="total-section">
+        <span class="total-label">Итого</span>
+        <span class="section-line"></span>
+        <span class="section-value">{{ totalCosts }}</span>
       </div>
 
       <footer class="action-section">
@@ -284,6 +264,22 @@ onMounted(() => {
 
 .cost-section {
   margin-bottom: 40px;
+}
+
+.total-section {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 60px;
+}
+
+.total-label {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+  color: #000;
+  letter-spacing: 0;
 }
 
 .section-head {
@@ -430,7 +426,8 @@ onMounted(() => {
 @media (max-width: 768px) {
   .section-name,
   .section-value,
-  .document-number {
+  .document-number,
+  .total-label {
     font-size: 20px;
   }
 
