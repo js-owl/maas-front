@@ -1,12 +1,9 @@
 <script lang="ts" setup>
 import { ref, onBeforeUnmount } from "vue";
-import { API_BASE } from "../../api";
+import { fetchWithAuth } from "../../api";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { useAuthStore } from "../../stores/auth.store";
-
-const authStore = useAuthStore();
 
 type Props = {
   fileId: number;
@@ -53,14 +50,8 @@ async function loadOCCTLibrary(): Promise<void> {
 // Определение типа файла
 async function detectFileType(fileId: number): Promise<string | null> {
   try {
-    const headers = new Headers();
-    if (authStore.getToken) {
-      headers.append("Authorization", `Bearer ${authStore.getToken}`);
-    }
-
-    const res = await fetch(`${API_BASE}/files/${fileId}`, {
+    const res = await fetchWithAuth(`/files/${fileId}`, {
       method: "GET",
-      headers: headers,
     });
 
     if (!res.ok) {
@@ -250,16 +241,8 @@ function createPreviewFromGeometry(geometry: THREE.BufferGeometry): void {
 // Попытка загрузить превью с сервера
 async function loadPreviewFromServer(): Promise<boolean> {
   try {
-    const headers = new Headers();
-
-    // Add auth header only if user is authenticated
-    if (authStore.getToken) {
-      headers.append("Authorization", `Bearer ${authStore.getToken}`);
-    }
-
-    const res = await fetch(`${API_BASE}/files/${props.fileId}/preview`, {
+    const res = await fetchWithAuth(`/files/${props.fileId}/preview`, {
       method: "GET",
-      headers: headers,
     });
 
     if (!res.ok) {
@@ -298,12 +281,7 @@ async function generatePreview(): Promise<void> {
     const headers = new Headers();
     headers.append("Content-Type", "application/octet-stream");
 
-    // Add auth header only if user is authenticated
-    if (authStore.getToken) {
-      headers.append("Authorization", `Bearer ${authStore.getToken}`);
-    }
-
-    const res = await fetch(`${API_BASE}/files/${props.fileId}/download`, {
+    const res = await fetchWithAuth(`/files/${props.fileId}/download`, {
       method: "GET",
       headers: headers,
     });

@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import DialogLogin from './dialog/DialogLogin.vue'
 import DialogCall from './dialog/DialogCall.vue'
 import DialogRegistration from './dialog/DialogRegistration.vue'
 import { useAuthStore } from '../stores/auth.store'
 import { useRouter, useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
 import {
   Menu
 } from '@element-plus/icons-vue'
@@ -40,13 +39,19 @@ const isCabinetMenuVisible = ref(false)
 const isGuestCabinetMenuVisible = ref(false)
 const isServicesMenuVisible = ref(false)
 
-// Check token on component mount
+watch(
+  () => route.query.login,
+  (loginQuery) => {
+    if (loginQuery === '1') {
+      isLoginVisible.value = true
+    }
+  },
+  { immediate: true }
+)
+
 onMounted(() => {
   const rootStyles = getComputedStyle(document.documentElement)
   color.value = rootStyles.getPropertyValue('--bgcolor').trim()
-
-  checkTokenValidity()
-  const tokenCheckInterval = setInterval(checkTokenValidity, 5 * 60 * 1000)
 
   // Apply styles to printing and paint menu items if on home page
   if (isHomePage.value) {
@@ -84,42 +89,13 @@ onMounted(() => {
     })
 
     onUnmounted(() => {
-      clearInterval(tokenCheckInterval)
       unwatch()
-    })
-  } else {
-    onUnmounted(() => {
-      clearInterval(tokenCheckInterval)
     })
   }
 })
 
-// Function to check if JWT token is expired
-function isTokenExpired(token: string): boolean {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    const currentTime = Math.floor(Date.now() / 1000)
-    console.log('isTokenExpired', payload.exp - currentTime)
-    return payload.exp < currentTime
-  } catch (error) {
-    console.error('Error parsing token:', error)
-    return true // Consider invalid tokens as expired
-  }
-}
-
-// Function to check token validity and logout if expired
-function checkTokenValidity() {
-  const token = authStore.getToken
-  if (token && isTokenExpired(token)) {
-    console.log('Token expired, logging out...')
-    ElMessage.warning('Сессия истекла. Войдите в систему снова.')
-    authStore.clearToken()
-    router.push({ name: 'home' })
-  }
-}
-
-function onLogout() {
-  authStore.clearToken()
+async function onLogout() {
+  await authStore.logout()
   isCabinetMenuVisible.value = false
   router.push({ name: 'home' })
 }

@@ -1,13 +1,10 @@
 <script setup>
 import { ref, watch, computed, defineAsyncComponent } from "vue";
-import { API_BASE } from "../../api";
+import { fetchWithAuth } from "../../api";
 import { getLocalStpFileById } from "../../helpers/local-stp-files";
-import { useAuthStore } from "../../stores/auth.store";
 
 const STLViewer = defineAsyncComponent(() => import("./STLViewer.vue"));
 const STPViewer = defineAsyncComponent(() => import("./STPViewer.vue"));
-
-const authStore = useAuthStore();
 
 const file_id = defineModel();
 const detectedType = ref(null);
@@ -32,16 +29,8 @@ async function detectFileType(id) {
   isLoading.value = true;
   
   try {
-    const headers = new Headers();
-    
-    // Add auth header only if user is authenticated
-    if (authStore.getToken) {
-      headers.append("Authorization", `Bearer ${authStore.getToken}`);
-    }
-
-    const res = await fetch(`${API_BASE}/files/${id}`, {
+    const res = await fetchWithAuth(`/files/${id}`, {
       method: "GET",
-      headers: headers,
     });
     
     if (!res.ok) {

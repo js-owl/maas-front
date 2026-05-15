@@ -1,13 +1,10 @@
 <script setup>
-import { API_BASE } from '../../api'
+import { fetchWithAuth } from '../../api'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
-import { useAuthStore } from '../../stores/auth.store'
-
-const authStore = useAuthStore()
 
 const file_id = defineModel()
 
@@ -94,12 +91,7 @@ async function getModel() {
     const headers = new Headers()
     headers.append('Content-Type', 'application/octet-stream')
 
-    // Add auth header only if user is authenticated
-    if (authStore.getToken) {
-      headers.append('Authorization', `Bearer ${authStore.getToken}`)
-    }
-
-    const res = await fetch(`${API_BASE}/files/${file_id.value}/download`, {
+    const res = await fetchWithAuth(`/files/${file_id.value}/download`, {
       method: 'GET',
       headers: headers,
     })

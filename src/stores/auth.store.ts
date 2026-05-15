@@ -4,9 +4,11 @@ import { API_BASE } from "../api";
 import { useProfileStore } from "../stores/profile.store";
 import { useMaterialStore } from "../stores/material.store";
 
-interface LoginResponse {
+type AuthResponse = {
   access_token: string;
-}
+  token_type: string;
+  must_change_password: boolean;
+};
 
 const TOKEN_STORE_KEY = "token-store";
 const TOKEN_PERSISTENCE_KEY = "token-persistence";
@@ -17,6 +19,7 @@ const TOKEN_PERSISTENCE = {
 
 export const useAuthStore = defineStore("auth", () => {
   const token = ref<string>();
+  const mustChangePassword = ref(false);
 
   const initialStorageType =
     localStorage.getItem(TOKEN_PERSISTENCE_KEY) === TOKEN_PERSISTENCE.local
@@ -27,23 +30,27 @@ export const useAuthStore = defineStore("auth", () => {
     initialStorageType === TOKEN_PERSISTENCE.local
       ? localStorage.getItem(TOKEN_STORE_KEY)
       : sessionStorage.getItem(TOKEN_STORE_KEY);
+  const tokenPersistence = ref(initialStorageType);
 
   if (initialValue) {
     token.value = initialValue;
   }
 
   const getToken = computed(() => token.value);
+  const getMustChangePassword = computed(() => mustChangePassword.value);
 
-  function setToken(newToken: string, rememberMe = true) {
+  function setToken(newToken: string, rememberMe = tokenPersistence.value === TOKEN_PERSISTENCE.local) {
     token.value = newToken;
 
     if (rememberMe) {
+      tokenPersistence.value = TOKEN_PERSISTENCE.local;
       localStorage.setItem(TOKEN_STORE_KEY, newToken);
       sessionStorage.removeItem(TOKEN_STORE_KEY);
       localStorage.setItem(TOKEN_PERSISTENCE_KEY, TOKEN_PERSISTENCE.local);
       return;
     }
 
+    tokenPersistence.value = TOKEN_PERSISTENCE.session;
     sessionStorage.setItem(TOKEN_STORE_KEY, newToken);
     localStorage.removeItem(TOKEN_STORE_KEY);
     localStorage.setItem(TOKEN_PERSISTENCE_KEY, TOKEN_PERSISTENCE.session);
@@ -51,6 +58,8 @@ export const useAuthStore = defineStore("auth", () => {
 
   function clearToken() {
     token.value = undefined;
+    mustChangePassword.value = false;
+    tokenPersistence.value = TOKEN_PERSISTENCE.session;
     localStorage.removeItem(TOKEN_STORE_KEY);
     sessionStorage.removeItem(TOKEN_STORE_KEY);
     localStorage.removeItem(TOKEN_PERSISTENCE_KEY);
@@ -72,7 +81,11 @@ export const useAuthStore = defineStore("auth", () => {
     const res = await fetch(`${API_BASE}/login`, {
       method: "POST",
       headers: headers,
-      body: JSON.stringify(formData),
+      credentials: "include",
+      body: JSON.stringify({
+        ...formData,
+        remember_me: rememberMe,
+      }),
     });
     if (!res.ok) {
       let message = `Login failed: ${res.status} ${res.statusText}`;
@@ -91,12 +104,44 @@ export const useAuthStore = defineStore("auth", () => {
       throw new Error(message);
     }
 
-    const data = (await res.json()) as LoginResponse;
+    const data = (await res.json()) as AuthResponse;
     setToken(data.access_token, rememberMe);
+    mustChangePassword.value = data.must_change_password;
 
     const profileStore = useProfileStore();
     await profileStore.getProfile();
   }
 
-  return { getToken, setToken, clearToken, login };
+  async function logout() {
+    try {
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+
+      if (token.value) {
+        headers.append("Authorization", `Bearer ${token.value}`);
+      }
+
+      await fetch(`${API_BASE}/logout`, {
+        method: "POST",
+        headers,
+        credentials: "include",
+      });
+    } finally {
+      clearToken();
+    }
+  }
+
+  function setMustChangePassword(value: boolean) {
+    mustChangePassword.value = value;
+  }
+
+  return {
+    getToken,
+    getMustChangePassword,
+    setToken,
+    setMustChangePassword,
+    clearToken,
+    login,
+    logout,
+  };
 });

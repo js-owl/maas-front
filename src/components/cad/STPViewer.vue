@@ -3,13 +3,10 @@ import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick, watch } 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
-import { API_BASE } from '../../api'
+import { fetchWithAuth } from '../../api'
 import { getLocalStpFileById } from '../../helpers/local-stp-files'
-import { useAuthStore } from '../../stores/auth.store'
 
 const file_id = defineModel()
-
-const authStore = useAuthStore()
 
 // Reactive state
 const meshes = ref([])
@@ -386,16 +383,8 @@ async function loadFileFromServer(id) {
     loadingStatus.value = 'Загрузка файла с сервера...'
     loadingProgress.value = 10
 
-    const headers = new Headers()
-    
-    // Add auth header only if user is authenticated
-    if (authStore.getToken) {
-      headers.append('Authorization', `Bearer ${authStore.getToken}`)
-    }
-
-    const res = await fetch(`${API_BASE}/files/${id}/download`, {
+    const res = await fetchWithAuth(`/files/${id}/download`, {
       method: 'GET',
-      headers: headers,
     })
 
     if (!res.ok) {

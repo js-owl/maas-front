@@ -6,6 +6,93 @@ import router from './router'
 // Auto-detect based on environment
 export const API_BASE = import.meta.env.VITE_API_BASE || '/api/v3';
 
+type AuthResponse = {
+  access_token: string
+  token_type: string
+  must_change_password: boolean
+}
+
+let refreshTokenPromise: Promise<boolean> | null = null
+
+const redirectToLogin = () => {
+  const authStore = useAuthStore()
+  authStore.clearToken()
+
+  if (router.currentRoute.value.name !== 'home' || router.currentRoute.value.query.login !== '1') {
+    router.push({ name: 'home', query: { login: '1' } }).catch(() => undefined)
+  }
+}
+
+const refreshAccessToken = async (): Promise<boolean> => {
+  if (refreshTokenPromise) return refreshTokenPromise
+
+  refreshTokenPromise = (async () => {
+    const authStore = useAuthStore()
+    const res = await fetch(`${API_BASE}/refresh`, {
+      method: 'POST',
+      credentials: 'include',
+    })
+
+    if (res.status === 401 || !res.ok) return false
+
+    const data = (await res.json()) as AuthResponse
+    if (!data.access_token) return false
+
+    authStore.setToken(data.access_token)
+    authStore.setMustChangePassword(data.must_change_password)
+    return true
+  })().finally(() => {
+    refreshTokenPromise = null
+  })
+
+  return refreshTokenPromise
+}
+
+export async function fetchWithAuth(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<Response> {
+  const authStore = useAuthStore()
+  const headers = new Headers(options.headers)
+
+  if (authStore.getToken) {
+    headers.set('Authorization', `Bearer ${authStore.getToken}`)
+  }
+
+  const requestOptions: RequestInit = {
+    ...options,
+    headers,
+    credentials: options.credentials ?? 'include',
+  }
+
+  const res = await fetch(`${API_BASE}${endpoint}`, requestOptions)
+  if (res.status !== 401) return res
+
+  const refreshed = await refreshAccessToken()
+  if (!refreshed) {
+    redirectToLogin()
+    throw new Error('Authentification failed')
+  }
+
+  const retryHeaders = new Headers(options.headers)
+  if (authStore.getToken) {
+    retryHeaders.set('Authorization', `Bearer ${authStore.getToken}`)
+  }
+
+  const retryRes = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers: retryHeaders,
+    credentials: options.credentials ?? 'include',
+  })
+
+  if (retryRes.status === 401) {
+    redirectToLogin()
+    throw new Error('Authentification failed')
+  }
+
+  return retryRes
+}
+
 // Helper function to convert object to URL-encoded string
 // @deprecated - Use JSON format for v3.0.0 API
 const toUrlEncoded = (o: any): string => {
@@ -65,17 +152,12 @@ export async function req_urlencoded_auth(
 
     const body = data ? toUrlEncoded(data) : undefined
 
-    const res = await fetch(`${API_BASE}${endpoint}`, {
+    const res = await fetchWithAuth(endpoint, {
       method,
       headers,
       body,
     })
     console.log('req_urlencoded_auth', { res })
-    if (res.status === 401) {
-      authStore.clearToken()
-      router.push('/')
-      throw new Error('Authentification failed')
-    }
     if (res.status >= 500 && res.status < 600) {
       console.log('req_urlencoded', res.status)
       ElMessage.error('Ошибка сервера 500')
@@ -109,17 +191,12 @@ export async function req_json_auth(
 
     const body = data ? JSON.stringify(data) : undefined
 
-    const res = await fetch(`${API_BASE}${endpoint}`, {
+    const res = await fetchWithAuth(endpoint, {
       method,
       headers,
       body,
     })
     console.log('req_json_auth', { res })
-    if (res.status === 401) {
-      authStore.clearToken()
-      router.push('/')
-      throw new Error('Authentification failed')
-    }
     if (res.status >= 500 && res.status < 600) {
       console.log('req_urlencoded', res.status)
       ElMessage.error('Ошибка сервера 500')
