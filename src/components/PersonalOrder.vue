@@ -554,7 +554,7 @@ onMounted(() => {
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="Наименование" min-width="180">
+          <el-table-column label="Наименование" min-width="200">
             <template #default="{ row }">
               {{ row.order_name }}
             </template>
@@ -582,7 +582,7 @@ onMounted(() => {
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="Цена" width="96" align="right">
+          <el-table-column label="Цена" width="105" align="right">
             <template #default="{ row }">
               {{ formatPrice(row.total_price) }}
             </template>
