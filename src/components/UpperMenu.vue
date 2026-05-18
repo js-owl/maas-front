@@ -273,10 +273,10 @@ function openServicePage(path: string) {
                     <el-icon :size="22" class="cabinet-menu-icon"><IconCalculate color="#7в8083" /></el-icon>
                     <span>Расчеты и заказы</span>
                   </button>
-                  <button type="button" disabled class="cabinet-menu-item montserrat-medium" @click="openChatPage">
+                  <!-- <button type="button" disabled class="cabinet-menu-item montserrat-medium" @click="openChatPage">
                     <el-icon :size="22" class="cabinet-menu-icon"><IconChat /></el-icon>
                     <span>Чат</span>
-                  </button>
+                  </button> -->
                   <button type="button" class="cabinet-menu-item montserrat-medium" @click="requestCall">
                     <el-icon :size="22" class="cabinet-menu-icon"><IconCall /></el-icon>
                     <span>Заказать звонок</span>

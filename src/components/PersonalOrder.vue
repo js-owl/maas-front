@@ -511,12 +511,12 @@ onMounted(() => {
             </div>
           </div>
           <div class="order-quantity">
-            <ButtonRound width="164px" @click="handleOpenChat">
+            <!-- <ButtonRound width="164px" @click="handleOpenChat">
               <template #icon-left>
                 <IconChat color="#7d8083" />
               </template>
               Чат
-            </ButtonRound>
+            </ButtonRound> -->
             <ButtonRound width="214px" @click="handleOpenCalcs">
               <template #icon-left>
                 <IconCalculate color="#7d8083" />
