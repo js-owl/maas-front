@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { req_json_auth } from '../api'
 import { useProfileStore } from '../stores/profile.store'
+import { useAuthStore } from '../stores/auth.store'
 import { hidePrice } from '../helpers/hide-price'
 import { statusTexts } from '../helpers/status-text'
 import { Search, Delete, Plus, Refresh } from '@element-plus/icons-vue'
@@ -15,6 +16,7 @@ type KitOrder = IKit & {
 }
 
 const router = useRouter()
+const authStore = useAuthStore()
 const allOrders = ref<KitOrder[]>([])
 const profileStore = useProfileStore()
 const filenames = ref<Map<number, string>>(new Map())
@@ -143,8 +145,49 @@ const handleView = (row: IKit): void => {
   handleOpen(row)
 }
 
-const handleCreateOrder = (): void => {
-  ElMessage.info('Функция "Создать заказ" будет доступна позже')
+const createOrder = async () => {
+  if (!authStore.getToken) {
+    ElMessage.warning('Войдите в аккаунт')
+    return
+  }
+
+  const userId = allOrders.value.find((o) => o.user_id != null)?.user_id
+  if (userId == null) {
+    ElMessage.error('Не удалось определить пользователя')
+    return
+  }
+
+  const location = allOrders.value.find((o) => o.location)?.location || ''
+
+  try {
+    const kitPayload: IKit = {
+      kit_name: 'default-order',
+      order_ids: [],
+      user_id: userId,
+      quantity: 1,
+      bitrix_deal_id: 1,
+      location,
+      kit_price: 0,
+      delivery_price: 0,
+      total_kit_price: 0,
+    }
+
+    const res = await req_json_auth('/kits', 'POST', kitPayload)
+    if (!res?.ok) throw new Error('Failed to create kit')
+
+    const createdKit = (await res.json()) as IKit | { kit_id?: number }
+    const newKitId = Number(createdKit?.kit_id) || 0
+    if (!newKitId) throw new Error('No kit_id in response')
+
+    await router.push({
+      path: '/personal/order',
+      query: { kitId: newKitId.toString() },
+    })
+    ElMessage.success('Заказ создан')
+  } catch (e) {
+    console.error(e)
+    ElMessage.error('Не удалось создать заказ')
+  }
 }
 
 const handleRepeatOrder = (): void => {
@@ -195,7 +238,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
           <el-tab-pane label="Завершенные" name="completed" />
         </el-tabs>
         <div class="toolbar-actions">
-          <ButtonRound width="220px" @click="handleCreateOrder">
+          <ButtonRound width="220px" @click="createOrder">
             <template #icon-left>
               <el-icon><Plus /></el-icon>
             </template>
