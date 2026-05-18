@@ -17,6 +17,7 @@ import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 import IconCalculate from '@/icons/IconCalculate.vue'
 import IconChat from '@/icons/IconChat.vue'
 import { orderTypeOptions } from '@/helpers/order-type-options'
+import { useAuthStore } from '@/stores/auth.store'
 
 type KitOrder = IKit & {
   status_name?: string
@@ -41,6 +42,7 @@ type ManufacturerOption = {
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 
 const order = ref<KitOrder | null>(null)
 const isLoading = ref(false)
@@ -445,22 +447,48 @@ const saveOrder = async () => {
   }
 }
 
-const confirmOrder = async () => {
-  if (!kitId.value) return
+const createOrder = async () => {
+  if (!authStore.getToken) {
+    ElMessage.warning('Войдите в аккаунт')
+    return
+  }
+
+  const userId = order.value?.user_id
+  if (userId == null) {
+    ElMessage.error('Не удалось определить пользователя')
+    return
+  }
 
   try {
-    const updateRes = await updateKit()
-    if (!updateRes?.ok) throw new Error('Failed to save order before confirm')
+    const kitPayload: IKit = {
+      kit_name: filename.value || order.value?.kit_name || '',
+      order_ids: [],
+      user_id: userId,
+      quantity: 1,
+      bitrix_deal_id: 1,
+      location: order.value?.location || '',
+      kit_price: 0,
+      delivery_price: 0,
+      total_kit_price: 0,
+    }
 
-    const res = await req_json_auth(`/kits/${kitId.value}/confirm`, 'PUT')
-    if (!res?.ok) throw new Error('Failed to confirm order')
+    const res = await req_json_auth('/kits', 'POST', kitPayload)
+    if (!res?.ok) throw new Error('Failed to create kit')
 
+    const createdKit = (await res.json()) as IKit | { kit_id?: number }
+    const newKitId = Number(createdKit?.kit_id) || 0
+    if (!newKitId) throw new Error('No kit_id in response')
+
+    await router.push({
+      path: '/personal/order',
+      query: { kitId: newKitId.toString() },
+    })
     await loadOrder()
-    ElMessage.success('Заказ подтверждён')
+    ElMessage.success('Заказ создан')
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e)
-    ElMessage.error('Не удалось подтвердить заказ')
+    ElMessage.error('Не удалось создать заказ')
   }
 }
 
@@ -685,7 +713,7 @@ onMounted(() => {
 
           <!-- Кнопка оплаты -->
           <div class="summary-actions">
-            <Button @click="confirmOrder" class="pay-order-button">Создать заказ</Button>
+            <Button @click="createOrder" class="pay-order-button">Создать заказ</Button>
           </div>
         </div>
       </div>
