@@ -111,7 +111,7 @@ const technicalRestrictions = computed(() => {
 
   return [
     `Макс. размер 1 ед. изделия, мм: ${selectedOperation.value.max_part_size_label}`,
-    `Макс вес 1 ед. изделия, кг: ${selectedOperation.value.max_weight_kg}`,
+    `Макс. масса 1 ед. изделия, кг: ${selectedOperation.value.max_weight_kg}`,
   ]
 })
 
@@ -123,7 +123,8 @@ const special_instructions = ref('')
 
 const MS_IN_DAY = 24 * 60 * 60 * 1000
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
-const addDays = (date: Date, days: number) => new Date(startOfDay(date).getTime() + days * MS_IN_DAY)
+const addDays = (date: Date, days: number) =>
+  new Date(startOfDay(date).getTime() + days * MS_IN_DAY)
 
 const payload = reactive({
   service_id: 'electroplating',
@@ -292,7 +293,11 @@ async function getOrder(id: number) {
     if (data.width) width.value = data.width
     if (data.height) height.value = data.height
     if (data.quantity) quantity.value = data.quantity
-    const orderCoverId = data.cover_id ? (Array.isArray(data.cover_id) ? data.cover_id[0] : data.cover_id) : ''
+    const orderCoverId = data.cover_id
+      ? Array.isArray(data.cover_id)
+        ? data.cover_id[0]
+        : data.cover_id
+      : ''
     if (data.material_id) material_id.value = data.material_id
     else if (orderCoverId) material_id.value = orderCoverId
     if (data.material_form) material_form.value = data.material_form
@@ -368,11 +373,7 @@ watch(
               <div class="calc-two-columns">
                 <div class="milling-field-group">
                   <div class="calc-title">Количество, ед.</div>
-                  <Input
-                    v-model="quantityInput"
-                    type="number"
-                    placeholder="Введите количество"
-                  />
+                  <Input v-model="quantityInput" type="number" placeholder="Введите количество" />
                 </div>
                 <div class="milling-field-group">
                   <div class="calc-title">Сроки выполнения</div>
@@ -414,21 +415,13 @@ watch(
                 <CoefficientOtk2 v-model="k_otk" />
               </div>
 
-              <div
-                class="milling-field-block"
-                v-if="profileStore.profile?.username === 'admin'"
-              >
+              <div class="milling-field-block" v-if="profileStore.profile?.username === 'admin'">
                 <SuitableMachines :machines="result?.suitable_machines || []" />
               </div>
 
               <div class="milling-field-block galvanic-description">
                 <div class="calc-title">Описание заказа</div>
-                <el-input
-                  v-model="special_instructions"
-                  type="textarea"
-                  :rows="5"
-                  placeholder=""
-                />
+                <el-input v-model="special_instructions" type="textarea" :rows="5" placeholder="" />
               </div>
 
               <div class="milling-actions">
