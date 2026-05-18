@@ -15,7 +15,7 @@ import InputEdit from './ui/InputEdit.vue'
 import Radio from './ui/Radio.vue'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 import IconCalculate from '@/icons/IconCalculate.vue'
-import IconChat from '@/icons/IconChat.vue'
+// import IconChat from '@/icons/IconChat.vue'
 import { orderTypeOptions } from '@/helpers/order-type-options'
 import { useAuthStore } from '@/stores/auth.store'
 
@@ -406,9 +406,9 @@ const goBack = () => {
   router.push({ path: '/personal/orders' })
 }
 
-const handleOpenChat = () => {
-  ElMessage.info('Чат будет доступен позже')
-}
+// const handleOpenChat = () => {
+//   ElMessage.info('Чат будет доступен позже')
+// }
 
 const handleOrderTypeChange = (value: string | number | boolean | object) => {
   if (!order.value || !value) return

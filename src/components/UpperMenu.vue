@@ -16,7 +16,7 @@ import IconReg from '../icons/IconReg.vue'
 import IconCall from '@/icons/IconCall.vue'
 import IconEnter from '@/icons/IconEnter.vue'
 import IconProfile from '@/icons/IconProfile.vue'
-import IconChat from '@/icons/IconChat.vue'
+// import IconChat from '@/icons/IconChat.vue'
 import IconExit from '@/icons/IconExit.vue'
 import ServicesCabinetMenu from './ServicesCabinetMenu.vue'
 
@@ -110,10 +110,10 @@ function openOrdersPage() {
   router.push({ path: '/personal/orders' })
 }
 
-function openChatPage() {
-  isCabinetMenuVisible.value = false
-  router.push({ path: '/personal' })
-}
+// function openChatPage() {
+//   isCabinetMenuVisible.value = false
+//   router.push({ path: '/personal' })
+// }
 
 function requestCall() {
   isCabinetMenuVisible.value = false
