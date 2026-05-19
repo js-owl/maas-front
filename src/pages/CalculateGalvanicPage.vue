@@ -559,7 +559,7 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: auto;
+  /* margin-top: auto; */
 }
 
 .milling-upload__title {
