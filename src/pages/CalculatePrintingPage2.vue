@@ -50,15 +50,13 @@ const quantityInput = computed({
   },
 })
 
-let material_id = ref('PA11')
+let material_id = ref('')
 let material_form = ref('powder')
 const printing_technology = ref('sls')
 const printingTechnologies = ref<Array<{ value: string; label: string }>>([
   { value: 'sls', label: 'SLS (послойное лазерное спекание)' },
 ])
-const materials = ref<MaterialOption[]>([
-  { value: 'PA11', label: 'Полиамид PA11' },
-])
+const materials = ref<MaterialOption[]>([])
 
 let cover_id = ref<string[]>(['1'])
 let k_otk = ref('1.0')
@@ -195,7 +193,12 @@ async function loadMaterials() {
         materials: BackendMaterial[]
       }
       materials.value = transformMaterials(backendMaterials)
-      if (!materials.value.some((item) => item.value === material_id.value) && materials.value.length) {
+      if (order_id.value === 0 && materials.value.length) {
+        material_id.value = materials.value[0].value
+      } else if (
+        !materials.value.some((item) => item.value === material_id.value) &&
+        materials.value.length
+      ) {
         material_id.value = materials.value[0].value
       }
     }

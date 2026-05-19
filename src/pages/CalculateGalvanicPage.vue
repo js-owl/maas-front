@@ -40,7 +40,7 @@ const quantityInput = computed({
   },
 })
 
-const material_id = ref('alum_1163')
+const material_id = ref('')
 const material_form = ref('sheet')
 const service_id = ref('electroplating')
 
@@ -258,9 +258,19 @@ async function loadOperationsAvailable() {
 }
 
 function syncSelectedCoverWithProcess() {
+  const firstCoating =
+    coatingTypes.value[0]?.value ?? selectedGroupOperations.value[0]?.id ?? ''
+
+  if (order_id.value === 0 && firstCoating) {
+    material_id.value = firstCoating
+    return
+  }
+
   if (coatingTypes.value.some((item) => item.value === material_id.value)) return
 
-  material_id.value = coatingTypes.value[0]?.value ?? selectedGroupOperations.value[0]?.id ?? ''
+  if (firstCoating) {
+    material_id.value = firstCoating
+  }
 }
 
 async function sendData(currentPayload: IOrderPayload) {

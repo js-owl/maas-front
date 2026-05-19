@@ -57,11 +57,9 @@ const quantityInput = computed({
   },
 })
 
-let material_id = ref('alum_D16')
+let material_id = ref('')
 let material_form = ref('sheet')
-const materials = ref<Array<{ value: string; label: string }>>([
-  { value: 'alum_D16', label: 'Алюминий Д16' },
-])
+const materials = ref<Array<{ value: string; label: string }>>([])
 const tolerances = ref<Array<{ value: string; label: string }>>([])
 const finishes = ref<Array<{ value: string; label: string }>>([])
 const service_id = ref('cnc-milling')
@@ -215,7 +213,12 @@ async function loadMaterials() {
         materials: Array<{ id: string; label: string }>
       }
       materials.value = transformMaterials(backendMaterials)
-      if (!materials.value.some((item) => item.value === material_id.value) && materials.value.length) {
+      if (order_id.value === 0 && materials.value.length) {
+        material_id.value = materials.value[0].value
+      } else if (
+        !materials.value.some((item) => item.value === material_id.value) &&
+        materials.value.length
+      ) {
         material_id.value = materials.value[0].value
       }
     }
