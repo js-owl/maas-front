@@ -64,14 +64,6 @@ const MS_IN_DAY = 24 * 60 * 60 * 1000
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
 const addDays = (date: Date, days: number) => new Date(startOfDay(date).getTime() + days * MS_IN_DAY)
 
-const formatDeadline = (date: Date | null) => {
-  if (!date) return undefined
-  const d = startOfDay(date)
-  const month = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${d.getFullYear()}-${month}-${day}`
-}
-
 const parseDeadline = (value: string): Date | null => {
   const [datePart] = value.split('T')
   const [year, month, day] = datePart.split('-').map(Number)
@@ -146,7 +138,7 @@ const calculationPayload = computed(() => {
     n_dimensions: payload.n_dimensions,
     k_otk: payload.k_otk,
     k_cert: payload.k_cert,
-    deadline: formatDeadline(deadline.value),
+    deadline: deadline.value ?? undefined,
   }
 })
 
@@ -387,7 +379,7 @@ watch(file_id, () => {
                   :order-id="order_id"
                   :payload="{
                     ...payload,
-                    deadline: formatDeadline(deadline),
+                    deadline: deadline,
                   } as unknown as IOrderPayload"
                   :special-instructions="special_instructions"
                   @updateResult="onUpdateResult"
