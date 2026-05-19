@@ -38,6 +38,8 @@ export interface IOrderBase {
   n_dimensions?: number
   k_otk: string
   k_cert: string[]
+  manufacturing_cycle?: number
+  deadline?: string
   special_instructions?: string
   total_price_breakdown?: {
     location?: string

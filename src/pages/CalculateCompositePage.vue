@@ -57,12 +57,28 @@ const n_dimensions = ref(55)
 const k_otk = ref('1.0')
 const k_cert = ref(['a', 'f'])
 const manufacturing_cycle = ref<number>(0)
-const manufacturing_deadline = ref<Date | null>(null)
+const deadline = ref<Date | null>(null)
 const special_instructions = ref('')
 
 const MS_IN_DAY = 24 * 60 * 60 * 1000
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
 const addDays = (date: Date, days: number) => new Date(startOfDay(date).getTime() + days * MS_IN_DAY)
+
+const formatDeadline = (date: Date | null) => {
+  if (!date) return undefined
+  const d = startOfDay(date)
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${month}-${day}`
+}
+
+const parseDeadline = (value: string): Date | null => {
+  const [datePart] = value.split('T')
+  const [year, month, day] = datePart.split('-').map(Number)
+  if (!year || !month || !day) return null
+  const parsed = new Date(year, month - 1, day)
+  return Number.isNaN(parsed.getTime()) ? null : parsed
+}
 
 const payload = reactive({
   service_id: 'composite',
@@ -81,7 +97,6 @@ const payload = reactive({
   n_dimensions,
   k_otk,
   k_cert,
-  manufacturing_cycle,
 })
 
 const result = ref<IOrderResponse | null>(null)
@@ -131,7 +146,7 @@ const calculationPayload = computed(() => {
     n_dimensions: payload.n_dimensions,
     k_otk: payload.k_otk,
     k_cert: payload.k_cert,
-    manufacturing_cycle: payload.manufacturing_cycle,
+    deadline: formatDeadline(deadline.value),
   }
 })
 
@@ -147,7 +162,7 @@ watch(
 onMounted(async () => {
   try {
     await loadMaterials()
-    manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
+    deadline.value = addDays(new Date(), manufacturing_cycle.value)
     if (order_id.value === 0) {
       const filesQuery = route.query.files
       const stpParam = route.query.stp
@@ -245,7 +260,12 @@ async function getOrder(id: number) {
     if (data.k_otk) k_otk.value = data.k_otk
     if (data.k_cert) k_cert.value = data.k_cert
     if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
-    manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
+    if (data.deadline) {
+      const parsed = parseDeadline(data.deadline)
+      deadline.value = parsed ?? addDays(new Date(), manufacturing_cycle.value)
+    } else {
+      deadline.value = addDays(new Date(), manufacturing_cycle.value)
+    }
     if (data.special_instructions) special_instructions.value = data.special_instructions
     if (data.order_name) order_name.value = data.order_name
     if ((data as any).order_code) order_code.value = (data as any).order_code
@@ -267,7 +287,6 @@ async function getOrder(id: number) {
       n_dimensions: n_dimensions.value,
       k_otk: k_otk.value,
       k_cert: k_cert.value,
-      manufacturing_cycle: manufacturing_cycle.value,
     })
   } catch (error) {
     console.error({ error })
@@ -284,7 +303,7 @@ watch(service_id, () => {
 watch(
   manufacturing_cycle,
   (days) => {
-    manufacturing_deadline.value = addDays(new Date(), Math.max(0, Number(days) || 0))
+    deadline.value = addDays(new Date(), Math.max(0, Number(days) || 0))
   },
   { immediate: true }
 )
@@ -313,7 +332,7 @@ watch(file_id, () => {
                 <div class="milling-field-group">
                   <div class="calc-title">Сроки выполнения</div>
                   <DatePicker
-                    v-model="manufacturing_deadline"
+                    v-model="deadline"
                     v-model:manufacturing-cycle="manufacturing_cycle"
                     placeholder="Выберите дату"
                   />
@@ -366,7 +385,10 @@ watch(file_id, () => {
               <div class="milling-actions">
                 <CalculateSubmit2
                   :order-id="order_id"
-                  :payload="{ ...payload } as unknown as IOrderPayload"
+                  :payload="{
+                    ...payload,
+                    deadline: formatDeadline(deadline),
+                  } as unknown as IOrderPayload"
                   :special-instructions="special_instructions"
                   @updateResult="onUpdateResult"
                   @showInfo="isInfoVisible = true"
