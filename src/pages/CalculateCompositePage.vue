@@ -51,7 +51,7 @@ const materials = ref<Array<{ value: string; label: string }>>([])
 const service_id = ref('composite')
 
 const cover_id = ref<string[]>([])
-const is_need_special_equipment = ref(false)
+const is_need_special_equipment = ref(true)
 const n_dimensions = ref(55)
 
 const k_otk = ref('1.0')

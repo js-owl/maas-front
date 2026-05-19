@@ -35,6 +35,10 @@ const modelValue = defineModel<CheckboxValue | CheckboxValue[] | boolean>()
   line-height: normal;
 }
 
+.checkbox :deep(.el-checkbox__input.is-checked + .el-checkbox__label) {
+  color: #000;
+}
+
 .checkbox :deep(.el-checkbox__inner) {
   width: 20px;
   height: 21px;
