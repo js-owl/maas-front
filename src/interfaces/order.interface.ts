@@ -33,7 +33,7 @@ export interface IOrderBase {
   tolerance_id?: string
   finish_id?: string
   cover_id: string[]
-  composite_rig?: string
+  is_need_special_equipment?: boolean
   process_id?: string
   n_dimensions?: number
   k_otk: string
@@ -83,7 +83,7 @@ export interface IOrderResponse extends IOrderBase {
     detail_price_one_with_taxes?: number
     taxes?: number
   }
-  composite_rig: string
+  is_need_special_equipment?: boolean
   status: string
   mat_volume: number
   detail_price: number

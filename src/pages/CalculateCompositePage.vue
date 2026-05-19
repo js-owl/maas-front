@@ -10,7 +10,7 @@ import DatePicker from '../components/ui/DatePicker.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
-import CoefficientTooling from '../components/coefficients/CoefficientTooling.vue'
+import CheckboxСalc from '../components/ui/CheckboxСalc.vue'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
 import { useProfileStore } from '../stores/profile.store'
@@ -53,7 +53,7 @@ const materials = ref<Array<{ value: string; label: string }>>([
 const service_id = ref('composite')
 
 const cover_id = ref<string[]>([])
-const composite_rig = ref('1')
+const is_need_special_equipment = ref(false)
 const n_dimensions = ref(55)
 
 const k_otk = ref('1.0')
@@ -79,7 +79,7 @@ const payload = reactive({
   material_id,
   material_form,
   cover_id,
-  composite_rig,
+  is_need_special_equipment,
   n_dimensions,
   k_otk,
   k_cert,
@@ -128,7 +128,7 @@ const calculationPayload = computed(() => {
     material_id: payload.material_id,
     material_form: payload.material_form,
     cover_id: payload.cover_id,
-    composite_rig: payload.composite_rig,
+    is_need_special_equipment: payload.is_need_special_equipment,
     n_dimensions: payload.n_dimensions,
     k_otk: payload.k_otk,
     k_cert: payload.k_cert,
@@ -229,7 +229,9 @@ async function getOrder(id: number) {
     if (data.material_id) material_id.value = data.material_id
     if (data.material_form) material_form.value = data.material_form
     if (data.cover_id) cover_id.value = Array.isArray(data.cover_id) ? data.cover_id : [data.cover_id]
-    if (data.composite_rig) composite_rig.value = data.composite_rig
+    if (data.is_need_special_equipment !== undefined) {
+      is_need_special_equipment.value = Boolean(data.is_need_special_equipment)
+    }
     if (data.n_dimensions) n_dimensions.value = data.n_dimensions
     if (data.k_otk) k_otk.value = data.k_otk
     if (data.k_cert) k_cert.value = data.k_cert
@@ -252,7 +254,7 @@ async function getOrder(id: number) {
       material_id: material_id.value,
       material_form: material_form.value,
       cover_id: cover_id.value,
-      composite_rig: composite_rig.value,
+      is_need_special_equipment: is_need_special_equipment.value,
       n_dimensions: n_dimensions.value,
       k_otk: k_otk.value,
       k_cert: k_cert.value,
@@ -317,7 +319,9 @@ watch(file_id, () => {
               <div class="calc-two-columns">
                 <div class="milling-field-block">
                   <div class="calc-title">Наличие оснастки</div>
-                  <CoefficientTooling v-model="composite_rig" />
+                  <CheckboxСalc v-model="is_need_special_equipment">
+                    Требуется изготовление
+                  </CheckboxСalc>
                 </div>
                 <div class="milling-field-block">
                   <div class="calc-title">Финишная обработка</div>
