@@ -93,6 +93,7 @@ const result = ref<IOrderResponse | null>(null)
 
 let isInfoVisible = ref(false)
 const isLoading = ref<boolean>(true)
+const isBootstrapping = ref(true)
 
 const MIN_LOADING_MS = 1000
 let loadingStartedAt = 0
@@ -140,38 +141,43 @@ const calculationPayload = computed(() => {
 watch(
   calculationPayload,
   (newVal) => {
+    if (isBootstrapping.value) return
     sendData(newVal as unknown as IOrderPayload)
   },
   { deep: true }
 )
 
-onMounted(() => {
-  loadMaterials()
-  manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
-  if (order_id.value === 0) {
-    const filesQuery = route.query.files
-    const stpParam = route.query.stp
+onMounted(async () => {
+  try {
+    await loadMaterials()
+    manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
+    if (order_id.value === 0) {
+      const filesQuery = route.query.files
+      const stpParam = route.query.stp
 
-    const ids = parseFilesQueryToIds(filesQuery)
-    if (ids.length > 0) {
-      document_ids.value = ids
-    }
+      const ids = parseFilesQueryToIds(filesQuery)
+      if (ids.length > 0) {
+        document_ids.value = ids
+      }
 
-    if (filesQuery) {
-      if (stpParam) {
-        const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
-        const parsedStpId = Number(stpId)
-        if (!Number.isNaN(parsedStpId)) {
-          file_id.value = parsedStpId
+      if (filesQuery) {
+        if (stpParam) {
+          const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
+          const parsedStpId = Number(stpId)
+          if (!Number.isNaN(parsedStpId)) {
+            file_id.value = parsedStpId
+          }
         }
+      } else {
+        file_id.value = 1
       }
     } else {
-      file_id.value = 1
+      await getOrder(order_id.value)
     }
 
-    sendData(calculationPayload.value as unknown as IOrderPayload)
-  } else {
-    getOrder(order_id.value)
+    await sendData(calculationPayload.value as unknown as IOrderPayload)
+  } finally {
+    isBootstrapping.value = false
   }
 })
 
