@@ -45,11 +45,9 @@ const quantityInput = computed({
   },
 })
 
-const material_id = ref('alum_D16')
+const material_id = ref('')
 const material_form = ref('sheet')
-const materials = ref<Array<{ value: string; label: string }>>([
-  { value: 'alum_D16', label: 'Алюминий Д16' },
-])
+const materials = ref<Array<{ value: string; label: string }>>([])
 const service_id = ref('composite')
 
 const cover_id = ref<string[]>([])
@@ -144,8 +142,8 @@ watch(
   { deep: true }
 )
 
-onMounted(() => {
-  loadMaterials()
+onMounted(async () => {
+  await loadMaterials()
   manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
   if (order_id.value === 0) {
     const filesQuery = route.query.files
@@ -170,7 +168,7 @@ onMounted(() => {
 
     sendData(calculationPayload.value as unknown as IOrderPayload)
   } else {
-    getOrder(order_id.value)
+    await getOrder(order_id.value)
   }
 })
 
@@ -188,7 +186,12 @@ async function loadMaterials() {
         materials: Array<{ id: string; label: string }>
       }
       materials.value = transformMaterials(backendMaterials)
-      if (!materials.value.some((item) => item.value === material_id.value) && materials.value.length) {
+      if (order_id.value === 0 && materials.value.length) {
+        material_id.value = materials.value[0].value
+      } else if (
+        !materials.value.some((item) => item.value === material_id.value) &&
+        materials.value.length
+      ) {
         material_id.value = materials.value[0].value
       }
     }
