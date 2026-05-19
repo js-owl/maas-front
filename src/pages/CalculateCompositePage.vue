@@ -21,6 +21,7 @@ import UploadFiles2 from '@/components/UploadFiles2.vue'
 import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
 import Loader from '../components/ui/Loader.vue'
+import { formatManufacturingDeadline, parseManufacturingDeadline } from '../helpers/deadline'
 
 const profileStore = useProfileStore()
 
@@ -56,8 +57,7 @@ const n_dimensions = ref(55)
 
 const k_otk = ref('1.0')
 const k_cert = ref(['a', 'f'])
-const manufacturing_cycle = ref<number>(0)
-const deadline = ref<Date | null>(null)
+const manufacturing_deadline = ref<Date | null>(null)
 const special_instructions = ref('')
 
 const payload = reactive({
@@ -126,7 +126,7 @@ const calculationPayload = computed(() => {
     n_dimensions: payload.n_dimensions,
     k_otk: payload.k_otk,
     k_cert: payload.k_cert,
-    deadline: deadline.value ?? undefined,
+    manufacturing_deadline: formatManufacturingDeadline(manufacturing_deadline.value),
   }
 })
 
@@ -238,8 +238,7 @@ async function getOrder(id: number) {
     if (data.n_dimensions) n_dimensions.value = data.n_dimensions
     if (data.k_otk) k_otk.value = data.k_otk
     if (data.k_cert) k_cert.value = data.k_cert
-    if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
-    if (data.deadline) deadline.value = new Date(data.deadline)
+    manufacturing_deadline.value = parseManufacturingDeadline(data)
     if (data.special_instructions) special_instructions.value = data.special_instructions
     if (data.order_name) order_name.value = data.order_name
     if ((data as any).order_code) order_code.value = (data as any).order_code
@@ -298,8 +297,7 @@ watch(file_id, () => {
                 <div class="milling-field-group">
                   <div class="calc-title">Сроки выполнения</div>
                   <DatePicker
-                    v-model="deadline"
-                    v-model:manufacturing-cycle="manufacturing_cycle"
+                    v-model="manufacturing_deadline"
                     placeholder="Выберите дату"
                   />
                 </div>
@@ -353,7 +351,7 @@ watch(file_id, () => {
                   :order-id="order_id"
                   :payload="{
                     ...payload,
-                    deadline: deadline,
+                    manufacturing_deadline: formatManufacturingDeadline(manufacturing_deadline),
                   } as unknown as IOrderPayload"
                   :special-instructions="special_instructions"
                   @updateResult="onUpdateResult"

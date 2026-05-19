@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { req_json, req_json_auth } from '../api'
 import { getLocalStpFileById } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
+import { formatManufacturingDeadline, parseManufacturingDeadline } from '../helpers/deadline'
 
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 // import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
@@ -61,13 +62,8 @@ const materials = ref<MaterialOption[]>([])
 let cover_id = ref<string[]>(['1'])
 let k_otk = ref('1.0')
 let k_cert = ref(['a', 'f'])
-let manufacturing_cycle = ref<number>(0)
 let manufacturing_deadline = ref<Date | null>(null)
 let special_instructions = ref('')
-
-const MS_IN_DAY = 24 * 60 * 60 * 1000
-const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
-const addDays = (date: Date, days: number) => new Date(startOfDay(date).getTime() + days * MS_IN_DAY)
 
 const payload = reactive({
   service_id: 'printing',
@@ -84,7 +80,6 @@ const payload = reactive({
   cover_id,
   k_otk,
   k_cert,
-  manufacturing_cycle,
 })
 
 const result = ref<IOrderResponse | null>(null)
@@ -132,7 +127,7 @@ const calculationPayload = computed(() => {
     cover_id: payload.cover_id,
     k_otk: payload.k_otk,
     k_cert: payload.k_cert,
-    manufacturing_cycle: payload.manufacturing_cycle,
+    manufacturing_deadline: formatManufacturingDeadline(manufacturing_deadline.value),
   }
 })
 
@@ -148,7 +143,7 @@ watch(
 onMounted(async () => {
   try {
     await loadMaterials()
-    manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
+    manufacturing_deadline.value = new Date()
     if (order_id.value === 0) {
       const filesQuery = route.query.files
       const stpParam = route.query.stp
@@ -242,8 +237,7 @@ async function getOrder(id: number) {
       cover_id.value = Array.isArray(data.cover_id) ? data.cover_id : [data.cover_id]
     if (data.k_otk) k_otk.value = data.k_otk
     if (data.k_cert) k_cert.value = data.k_cert
-    if (data.manufacturing_cycle) manufacturing_cycle.value = data.manufacturing_cycle
-    manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
+    manufacturing_deadline.value = parseManufacturingDeadline(data)
     if (data.special_instructions) special_instructions.value = data.special_instructions
     if (data.order_name) order_name.value = data.order_name
     if ((data as any).order_code) order_code.value = (data as any).order_code
@@ -263,21 +257,12 @@ async function getOrder(id: number) {
       cover_id: cover_id.value,
       k_otk: k_otk.value,
       k_cert: k_cert.value,
-      manufacturing_cycle: manufacturing_cycle.value,
     })
   } catch (error) {
     console.error({ error })
   }
   await stopLoading()
 }
-
-watch(
-  manufacturing_cycle,
-  (days) => {
-    manufacturing_deadline.value = addDays(new Date(), Math.max(0, Number(days) || 0))
-  },
-  { immediate: true }
-)
 
 watch(file_id, () => {
   cadViewerKey.value += 1
@@ -322,7 +307,6 @@ watch(file_id, () => {
                   <div class="printing-field-title">Сроки выполнения</div>
                   <DatePicker
                     v-model="manufacturing_deadline"
-                    v-model:manufacturing-cycle="manufacturing_cycle"
                     placeholder="Выберите дату"
                   />
                 </div>
@@ -373,7 +357,10 @@ watch(file_id, () => {
               <div class="printing-actions">
                 <CalculateSubmit2
                   :order-id="order_id"
-                  :payload="{ ...payload } as unknown as IOrderPayload"
+                  :payload="{
+                    ...payload,
+                    manufacturing_deadline: formatManufacturingDeadline(manufacturing_deadline),
+                  } as unknown as IOrderPayload"
                   :special-instructions="special_instructions"
                   @updateResult="onUpdateResult"
                   @showInfo="isInfoVisible = true"

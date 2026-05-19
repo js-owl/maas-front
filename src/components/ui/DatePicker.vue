@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import ru from 'element-plus/es/locale/lang/ru'
 import dayjs from 'dayjs'
 import updateLocale from 'dayjs/plugin/updateLocale'
@@ -9,7 +9,6 @@ import IconDate from '@/icons/IconDate.vue'
 const props = withDefaults(
   defineProps<{
     modelValue: Date | null
-    manufacturingCycle: number
     placeholder?: string
   }>(),
   {
@@ -19,20 +18,12 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: Date | null): void
-  (e: 'update:manufacturingCycle', value: number): void
 }>()
 
 dayjs.extend(updateLocale)
 dayjs.updateLocale('ru', { weekStart: 1 })
 
-const MS_IN_DAY = 24 * 60 * 60 * 1000
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
-
-const calculateDaysUntil = (targetDate: Date) => {
-  const today = startOfDay(new Date())
-  const deadline = startOfDay(targetDate)
-  return Math.max(0, Math.ceil((deadline.getTime() - today.getTime()) / MS_IN_DAY))
-}
 
 const isPastDateDisabled = (date: Date) => startOfDay(date).getTime() < startOfDay(new Date()).getTime()
 
@@ -44,19 +35,6 @@ const deadline = computed({
     emit('update:modelValue', value)
   },
 })
-
-watch(
-  () => props.modelValue,
-  (value) => {
-    if (!value) {
-      emit('update:manufacturingCycle', 0)
-      return
-    }
-
-    emit('update:manufacturingCycle', calculateDaysUntil(value))
-  },
-  { immediate: true }
-)
 </script>
 
 <template>
