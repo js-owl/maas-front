@@ -150,7 +150,7 @@ const result = ref<IOrderResponse | null>(null)
 
 const isInfoVisible = ref(false)
 const isLoading = ref<boolean>(false)
-let isInitializing = true
+const isBootstrapping = ref(true)
 
 const MIN_LOADING_MS = 1000
 let loadingStartedAt = 0
@@ -200,7 +200,7 @@ const calculationPayload = computed(() => {
 watch(
   calculationPayload,
   (newVal) => {
-    if (isInitializing || !process_id.value || !material_id.value) return
+    if (isBootstrapping.value || !process_id.value || !material_id.value) return
 
     sendData(newVal as unknown as IOrderPayload)
   },
@@ -208,35 +208,34 @@ watch(
 )
 
 onMounted(async () => {
-  await loadOperationsAvailable()
-  manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
-  if (order_id.value === 0) {
-    const filesQuery = route.query.files
-    const stpParam = route.query.stp
+  try {
+    await loadOperationsAvailable()
+    manufacturing_deadline.value = addDays(new Date(), manufacturing_cycle.value)
+    if (order_id.value === 0) {
+      const filesQuery = route.query.files
+      const stpParam = route.query.stp
 
-    const ids = parseFilesQueryToIds(filesQuery)
-    if (ids.length > 0) {
-      document_ids.value = ids
-    }
-
-    if (filesQuery && stpParam) {
-      const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
-      const parsedStpId = Number(stpId)
-      if (!Number.isNaN(parsedStpId)) {
-        file_id.value = parsedStpId
+      const ids = parseFilesQueryToIds(filesQuery)
+      if (ids.length > 0) {
+        document_ids.value = ids
       }
+
+      if (filesQuery && stpParam) {
+        const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
+        const parsedStpId = Number(stpId)
+        if (!Number.isNaN(parsedStpId)) {
+          file_id.value = parsedStpId
+        }
+      }
+    } else {
+      await getOrder(order_id.value)
     }
 
-    isInitializing = false
     if (process_id.value && material_id.value) {
-      sendData(calculationPayload.value as unknown as IOrderPayload)
+      await sendData(calculationPayload.value as unknown as IOrderPayload)
     }
-  } else {
-    await getOrder(order_id.value)
-    isInitializing = false
-    if (process_id.value && material_id.value) {
-      sendData(calculationPayload.value as unknown as IOrderPayload)
-    }
+  } finally {
+    isBootstrapping.value = false
   }
 })
 
