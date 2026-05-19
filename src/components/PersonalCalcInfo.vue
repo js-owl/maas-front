@@ -178,7 +178,7 @@ onMounted(() => {
   <div class="calc-info-page" v-loading="isLoading">
     <section class="calc-info-container">
       <header class="calc-header">
-        <div class="document-number">Заказ №{{ orderId }}</div>
+        <div class="document-number">Заказ №{{ kitId }}</div>
         <InputEdit v-model="orderName" :font-size="'24px'" @update:model-value="handleOrderNameUpdate" />
       </header>
 
