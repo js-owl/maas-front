@@ -640,10 +640,11 @@ onMounted(() => {
                   <span class="maas-text">Дата создания</span>
                   <span class="status-value">{{ createdDate }}</span>
                 </div>
-                <!-- <div class="date-row">
+                <div class="date-row">
                   <span class="maas-text">Дата завершения</span>
-                  <span class="status-value">{{ completionDate }}</span>
-                </div> -->
+                  <span class="status-value">-</span>
+                  <!-- <span class="status-value">{{ completionDate }}</span> -->
+                </div>
               </div>
             </div>
 
@@ -674,12 +675,12 @@ onMounted(() => {
               </div>
 
               <!-- Итого -->
-              <div class="cost-item total">
+              <!-- <div class="cost-item total">
                 <div class="maas-text">Стоимость с учетом доставки</div>
                 <div class="maas-subtitle">
                   {{ totalWithDelivery }} <span class="rub">руб.</span>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
 
