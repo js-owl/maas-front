@@ -4,6 +4,12 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { req_json } from '../../api'
 import { useWindowSize } from '@vueuse/core'
+import {
+  createPhoneNumberValidator,
+  formatPhoneDisplay,
+  isRuPhoneOnlyPrefix,
+  parsePhoneToDigits,
+} from '../../composables/usePhoneValidation'
 import Input from '../ui/Input.vue'
 import Button from '../ui/Button.vue'
 import Checkbox from '../ui/Checkbox.vue'
@@ -25,7 +31,7 @@ interface FormData {
 const formRef = ref<FormInstance>()
 const form = ref<FormData>({
   name: '',
-  phone: '',
+  phone: '7',
   product: '',
   time: '',
   additional: '',
@@ -34,68 +40,12 @@ const form = ref<FormData>({
 
 const loading = ref(false)
 
-const validatePhone = (_rule: any, value: string, callback: (error?: Error) => void) => {
-  if (!value) {
-    callback()
-    return
-  }
-
-  // Получаем чистый номер (только цифры)
-  const cleanNumber = value.replace(/\D/g, '')
-
-  // Проверяем только длину номера: от 10 до 15 цифр
-  const isValid = cleanNumber.length >= 10 && cleanNumber.length <= 15
-
-  if (!isValid) {
-    callback(new Error('Номер телефона должен содержать от 10 до 15 цифр'))
-  } else {
-    callback()
-  }
-}
-
 const validateAgreement = (_rule: any, value: boolean, callback: (error?: Error) => void) => {
   if (!value) {
     callback(new Error('Необходимо согласиться с условиями'))
   } else {
     callback()
   }
-}
-
-// Функции для маски телефона
-const formatPhone = (value: string) => {
-  if (!value) return value
-
-  // Убираем все нечисловые символы
-  const numbers = value.replace(/\D/g, '')
-
-  // Нормализуем номер
-  let cleanNumber = numbers
-  if (numbers.startsWith('8') && numbers.length === 11) {
-    cleanNumber = '7' + numbers.slice(1)
-  } else if (numbers.startsWith('9') && numbers.length === 10) {
-    cleanNumber = '7' + numbers
-  }
-
-  // Форматируем номер
-  if (cleanNumber.length <= 1) return cleanNumber
-  if (cleanNumber.length <= 4) return `+7 (${cleanNumber.slice(1)}`
-  if (cleanNumber.length <= 7) return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4)}`
-  if (cleanNumber.length <= 9)
-    return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4, 7)}-${cleanNumber.slice(7)}`
-  return `+7 (${cleanNumber.slice(1, 4)}) ${cleanNumber.slice(4, 7)}-${cleanNumber.slice(
-    7,
-    9
-  )}-${cleanNumber.slice(9, 11)}`
-}
-
-const parsePhone = (value: string) => {
-  if (!value) return value
-
-  // Убираем все нечисловые символы
-  const numbers = value.replace(/\D/g, '')
-
-  // Если номер начинается с 8, заменяем на 7
-  return numbers.startsWith('8') ? '7' + numbers.slice(1) : numbers
 }
 
 const rules = ref<FormRules<FormData>>({
@@ -108,12 +58,8 @@ const rules = ref<FormRules<FormData>>({
     },
   ],
   phone: [
-    {
-      required: true,
-      message: 'Пожалуйста, введите номер телефона',
-      trigger: 'blur',
-    },
-    { validator: validatePhone, trigger: 'blur' },
+    { required: true, message: 'Пожалуйста, введите номер телефона', trigger: 'blur' },
+    { validator: createPhoneNumberValidator({ allowEmpty: false }), trigger: ['blur', 'change'] },
   ],
   time: [
     {
@@ -130,7 +76,7 @@ const closeDialog = () => {
   // Reset form when closing
   form.value = {
     name: '',
-    phone: '',
+    phone: '7',
     product: '',
     time: '',
     additional: '',
@@ -151,8 +97,11 @@ const submitForm = async () => {
 
     console.log('Call request submitted:', form.value)
 
-    // Отправляем данные на бэкенд
-    await req_json('/call-request', 'POST', form.value)
+    const payload = {
+      ...form.value,
+      phone: isRuPhoneOnlyPrefix(form.value.phone) ? '' : form.value.phone,
+    }
+    await req_json('/call-request', 'POST', payload)
 
     ElMessage({
       type: 'success',
@@ -210,8 +159,8 @@ const submitForm = async () => {
             v-model="form.phone"
             placeholder="+7 (___) ___-__-__"
             type="tel"
-            :formatter="(value: string) => formatPhone(value)"
-            :parser="(value: string) => parsePhone(value)"
+            :formatter="formatPhoneDisplay"
+            :parser="parsePhoneToDigits"
           />
         </el-form-item>
 
