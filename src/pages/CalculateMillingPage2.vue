@@ -399,7 +399,7 @@ watch(
                 :order-id="order_id"
                 :payload="{
                   ...payload,
-                  deadline: formatDeadline(deadline),
+                  // deadline: formatDeadline(deadline),
                 } as unknown as IOrderPayload"
                 :special-instructions="special_instructions"
                 @updateResult="onUpdateResult"
