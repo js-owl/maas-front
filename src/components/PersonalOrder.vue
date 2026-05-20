@@ -640,10 +640,10 @@ onMounted(() => {
                   <span class="maas-text">Дата создания</span>
                   <span class="status-value">{{ createdDate }}</span>
                 </div>
-                <div class="date-row">
+                <!-- <div class="date-row">
                   <span class="maas-text">Дата завершения</span>
                   <span class="status-value">{{ completionDate }}</span>
-                </div>
+                </div> -->
               </div>
             </div>
 
