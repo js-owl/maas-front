@@ -149,8 +149,11 @@ const handleOrderNameUpdate = (value: string) => {
 
 const handleGoBack = () => {
   router.push({
-    name: 'personal-calcs',
-    query: { kitId: kitId.value?.toString() ?? '' },
+    name: 'personal-calc',
+    query: {
+      kitId: kitId.value?.toString() ?? '',
+      orderId: orderId.value.toString(),
+    },
   })
 }
 
