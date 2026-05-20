@@ -77,12 +77,12 @@ export interface IOrderResponse extends IOrderBase {
   user_id: number
   document_ids: number[]
   detail_price_calculation?: {
-    material_price?: number
-    salary_fund_with_taxes?: number
-    price_special_equipment?: number
-    detail_price_one?: number
-    detail_price_one_with_taxes?: number
-    taxes?: number
+    material_price?: number | string
+    salary_fund_with_taxes?: number | string
+    price_special_equipment?: number | string
+    detail_price_one?: number | string
+    detail_price_one_with_taxes?: number | string
+    taxes?: number | string
   }
   is_need_special_equipment?: boolean
   status: string

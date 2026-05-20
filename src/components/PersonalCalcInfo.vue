@@ -51,9 +51,11 @@ const priceWithoutVat = ref('-')
 const vatCosts = ref('-')
 const totalCosts = ref('-')
 
-const formatPrice = (value?: number | null) => {
-  if (value == null) return '-'
-  return `${Number(value).toFixed(2)} руб`
+const formatPrice = (value?: number | string | null) => {
+  if (value == null || value === '') return '-'
+  const num = Number(value)
+  if (Number.isNaN(num)) return '-'
+  return `${num.toFixed(2)} руб`
 }
 
 const costRows = computed(() => [
