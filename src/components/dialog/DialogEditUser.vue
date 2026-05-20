@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
-import { createPhoneNumberValidator, normalizePhoneInput } from '../../composables/usePhoneValidation'
+import {
+  createPhoneNumberValidator,
+  isRuPhoneOnlyPrefix,
+  normalizePhoneInput,
+} from '../../composables/usePhoneValidation'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { useWindowSize } from '@vueuse/core'
@@ -170,7 +174,9 @@ const submitForm = async () => {
     }
 
     if (form.value.full_name) updateData.full_name = form.value.full_name
-    if (form.value.phone_number) updateData.phone_number = form.value.phone_number
+    if (form.value.phone_number && !isRuPhoneOnlyPrefix(form.value.phone_number)) {
+      updateData.phone_number = form.value.phone_number
+    }
     if (form.value.inn) updateData.inn = form.value.inn
 
     // Make PUT request to update user using user_id endpoint

@@ -37,7 +37,7 @@ const form = ref<FormData>({
   user_type: 'legal',
   email: '',
   full_name: '',
-  phone_number: '',
+  phone_number: '7',
   inn: '',
 })
 
@@ -134,7 +134,7 @@ const closeDialog = () => {
     user_type: 'individual',
     email: '',
     full_name: '',
-    phone_number: '',
+    phone_number: '7',
     inn: '',
   }
   usernameError.value = ''

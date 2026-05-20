@@ -7,6 +7,7 @@ import { useProfileStore, type IProfile } from '../stores/profile.store'
 import router from '../router'
 import {
   createPhoneNumberValidator,
+  ensureRuPhoneModelValue,
   formatPhoneDisplay,
   parsePhoneToDigits,
 } from '../composables/usePhoneValidation'
@@ -18,9 +19,15 @@ const formRef = ref<FormInstance>()
 const isSaving = ref(false)
 const activeTab = ref('individual')
 
+const applyPhoneDefaults = (profile: IProfile) => {
+  profile.phone_number = ensureRuPhoneModelValue(profile.phone_number)
+  profile.personal_phone_number = ensureRuPhoneModelValue(profile.personal_phone_number)
+}
+
 onMounted(async () => {
   if (profileStore.profile) {
     profileForm.value = Object.assign({}, profileStore.profile)
+    if (profileForm.value) applyPhoneDefaults(profileForm.value)
     const profile = profileStore.profile as IProfile
     if (profile && profile.user_type) activeTab.value = profile.user_type
     else if (profileForm.value) (profileForm.value as IProfile).user_type = activeTab.value
@@ -28,6 +35,7 @@ onMounted(async () => {
     await profileStore.getProfile()
     if (profileStore.profile) {
       profileForm.value = Object.assign({}, profileStore.profile)
+      if (profileForm.value) applyPhoneDefaults(profileForm.value)
       const profile = profileStore.profile as IProfile
       if (profile && profile.user_type) activeTab.value = profile.user_type
       else if (profileForm.value) (profileForm.value as IProfile).user_type = activeTab.value
@@ -184,6 +192,7 @@ async function onUpdate() {
 
     if (isUpdated && profileStore.profile) {
       profileForm.value = { ...profileStore.profile }
+      if (profileForm.value) applyPhoneDefaults(profileForm.value)
       router.push({ path: '/personal/profile' })
     }
   } catch (error) {
