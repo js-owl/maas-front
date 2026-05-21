@@ -168,9 +168,9 @@ const submitForm = async () => {
           <Input v-model="form.product" placeholder="Интересующая услуга" />
         </el-form-item>
 
-        <el-form-item prop="time">
+        <!-- <el-form-item prop="time">
           <Input v-model="form.time" placeholder="Когда вам позвонить?" />
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item prop="additional">
           <Input v-model="form.additional" placeholder="Дополнительная информация" />
