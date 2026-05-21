@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { uploadDocument, fileToBase64 } from '../api'
-import { saveFile3D } from '../helpers/local-stp-files'
+import { getLocalStpFileById, saveFile3D } from '../helpers/local-stp-files'
 // import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from '../stores/auth.store'
 // import DialogLogin from './dialog/DialogLogin.vue'
@@ -33,6 +33,15 @@ const fileInput = ref<HTMLInputElement>()
 
 const isUploading = computed(() => uploadingCount.value > 0)
 const isAuthenticated = computed(() => Boolean(authStore.getToken))
+const guestUploadedFileName = computed(() => {
+  if (isAuthenticated.value || props.stp_id == null) return null
+  return getLocalStpFileById(props.stp_id)?.file_name ?? null
+})
+const uploadMainText = computed(() => {
+  if (isUploading.value) return 'Загрузка...'
+  if (guestUploadedFileName.value) return guestUploadedFileName.value
+  return 'Перетащите или выберите файл'
+})
 
 const isDisabled = () => {
   return isUploading.value
@@ -176,7 +185,7 @@ const handleDragOver = (event: DragEvent) => {
           :style="{ color }"
           style="font-size: 20px; font-weight: 600"
         >
-          {{ isUploading ? 'Загрузка...' : 'Перетащите или выберите файл' }}
+          {{ uploadMainText }}
         </div>
         <template v-if="!props.hideFormatsText">
           <template v-if="isAuthenticated">
@@ -187,7 +196,7 @@ const handleDragOver = (event: DragEvent) => {
               Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
             </div>
           </template>
-          <div v-else class="upload-subtitle">
+          <div v-else-if="!guestUploadedFileName" class="upload-subtitle">
             Без авторизации можно загружать только STP-файлы.
           </div>
         </template>
