@@ -318,12 +318,23 @@ const handleRepeatOrder = async (): Promise<void> => {
   repeatLoading.value = true
 
   try {
-    const newKitId = await duplicateKit(selected[0])
-    await router.push({
-      path: '/personal/order',
-      query: { kitId: newKitId.toString() },
-    })
-    ElMessage.success('Копия заказа создана')
+    const newKitIds: number[] = []
+    for (const source of selected) {
+      newKitIds.push(await duplicateKit(source))
+    }
+
+    await loadOrders()
+    ordersTableRef.value?.clearSelection()
+
+    if (newKitIds.length === 1) {
+      await router.push({
+        path: '/personal/order',
+        query: { kitId: newKitIds[0].toString() },
+      })
+      ElMessage.success('Копия заказа создана')
+    } else {
+      ElMessage.success(`Создано копий: ${newKitIds.length}`)
+    }
   } catch (e) {
     console.error(e)
     ElMessage.error('Не удалось повторить заказ')
