@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox, type TableInstance } from 'element-plus'
 import { req_json_auth } from '../api'
 import { useProfileStore } from '../stores/profile.store'
 import { useAuthStore } from '../stores/auth.store'
@@ -9,7 +9,7 @@ import { hidePrice } from '../helpers/hide-price'
 import { statusTexts } from '../helpers/status-text'
 import { Search, Delete, Plus, Refresh } from '@element-plus/icons-vue'
 import ButtonRound from './ui/ButtonRound.vue'
-import type { IKit } from '../interfaces/order.interface'
+import type { IKit, IOrderPostPayload, IOrderResponse } from '../interfaces/order.interface'
 
 type KitOrder = IKit & {
   status_name?: string
@@ -23,6 +23,8 @@ const filenames = ref<Map<number, string>>(new Map())
 const activeTab = ref('all')
 const searchQuery = ref('')
 const deleteLoading = ref<number | null>(null)
+const repeatLoading = ref(false)
+const ordersTableRef = ref<TableInstance>()
 
 const excludedStatuses = ['cancelled', 'C3:LOSE']
 
@@ -190,8 +192,144 @@ const createOrder = async () => {
   }
 }
 
-const handleRepeatOrder = (): void => {
-  ElMessage.info('Функция "Повторить" будет доступна позже')
+const ORDER_COPY_FIELDS = [
+  'service_id',
+  'order_name',
+  'order_code',
+  'file_id',
+  'file_type',
+  'file_name',
+  'quantity',
+  'length',
+  'width',
+  'height',
+  'material_id',
+  'material_form',
+  'tolerance_id',
+  'finish_id',
+  'cover_id',
+  'is_need_special_equipment',
+  'process_id',
+  'n_dimensions',
+  'k_otk',
+  'k_cert',
+  'deadline',
+  'special_instructions',
+] as const satisfies ReadonlyArray<keyof IOrderPostPayload>
+
+const buildOrderCopyPayload = (order: IOrderResponse): IOrderPostPayload => {
+  const payload = {
+    service_id: order.service_id,
+    quantity: order.quantity,
+    length: order.length,
+    width: order.width,
+    height: order.height,
+    material_id: order.material_id,
+    material_form: order.material_form,
+    cover_id: Array.isArray(order.cover_id) ? order.cover_id : [],
+    k_otk: order.k_otk,
+    k_cert: order.k_cert ?? [],
+    document_ids: order.document_ids ?? [],
+  } as IOrderPostPayload
+
+  for (const key of ORDER_COPY_FIELDS) {
+    const value = order[key as keyof IOrderResponse]
+    if (value !== undefined) {
+      Object.assign(payload, { [key]: value })
+    }
+  }
+
+  return payload
+}
+
+const duplicateOrders = async (orderIds: number[]): Promise<number[]> => {
+  const newIds: number[] = []
+
+  for (const id of orderIds) {
+    const res = await req_json_auth(`/orders/${id}`, 'GET')
+    if (!res?.ok) throw new Error(`Failed to load order ${id}`)
+
+    const order = (await res.json()) as IOrderResponse
+    const postPayload: IOrderPostPayload = {
+      ...buildOrderCopyPayload(order),
+      order_name: order.order_name || 'Деталь',
+      special_instructions: order.special_instructions,
+    }
+
+    const createRes = await req_json_auth('/orders', 'POST', postPayload)
+    if (!createRes?.ok) throw new Error(`Failed to duplicate order ${id}`)
+
+    const created = (await createRes.json()) as IOrderResponse
+    newIds.push(created.order_id)
+  }
+
+  return newIds
+}
+
+const duplicateKit = async (source: KitOrder): Promise<number> => {
+  const sourceKitId = source.kit_id
+  if (!sourceKitId) throw new Error('No kit_id')
+
+  const res = await req_json_auth(`/kits/${sourceKitId}`, 'GET')
+  if (!res?.ok) throw new Error('Failed to load kit')
+
+  const kit = (await res.json()) as KitOrder
+  const orderIds = kit.order_ids ?? []
+  const newOrderIds = orderIds.length ? await duplicateOrders(orderIds) : []
+
+  const kitPayload: IKit = {
+    kit_name: kit.kit_name || 'default-order',
+    order_ids: newOrderIds,
+    user_id: kit.user_id,
+    quantity: kit.quantity ?? 1,
+    bitrix_deal_id: kit.bitrix_deal_id ?? 1,
+    location: kit.location || '',
+    kit_price: 0,
+    delivery_price: 0,
+    total_kit_price: 0,
+  }
+
+  const createRes = await req_json_auth('/kits', 'POST', kitPayload)
+  if (!createRes?.ok) throw new Error('Failed to create kit copy')
+
+  const createdKit = (await createRes.json()) as IKit | { kit_id?: number }
+  const newKitId = Number(createdKit?.kit_id) || 0
+  if (!newKitId) throw new Error('No kit_id in response')
+
+  return newKitId
+}
+
+const handleRepeatOrder = async (): Promise<void> => {
+  const selected = (ordersTableRef.value?.getSelectionRows() ?? []) as KitOrder[]
+  if (!selected.length) {
+    await ElMessageBox.alert('Необходимо выбрать заказ', 'Внимание', {
+      confirmButtonText: 'OK',
+      type: 'warning',
+    })
+    return
+  }
+
+  if (!authStore.getToken) {
+    ElMessage.warning('Войдите в аккаунт')
+    return
+  }
+
+  if (repeatLoading.value) return
+  repeatLoading.value = true
+
+  try {
+    const newKitId = await duplicateKit(selected[0])
+    await router.push({
+      path: '/personal/order',
+      query: { kitId: newKitId.toString() },
+    })
+    ElMessage.success('Копия заказа создана')
+  } catch (e) {
+    console.error(e)
+    ElMessage.error('Не удалось повторить заказ')
+  } finally {
+    repeatLoading.value = false
+  }
 }
 
 const handleDelete = async (row: IKit): Promise<void> => {
@@ -244,7 +382,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
             </template>
             Создать заказ
           </ButtonRound>
-          <ButtonRound width="170px" @click="handleRepeatOrder">
+          <ButtonRound width="170px" :loading="repeatLoading" @click="handleRepeatOrder">
             <template #icon-left>
               <el-icon><Refresh /></el-icon>
             </template>
@@ -261,6 +399,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
       </div>
 
       <el-table
+        ref="ordersTableRef"
         class="orders-table"
         :data="filteredOrders"
         :default-sort="{ prop: 'kit_id', order: 'descending' }"
