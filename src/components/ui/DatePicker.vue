@@ -10,9 +10,11 @@ const props = withDefaults(
   defineProps<{
     modelValue: Date | null
     placeholder?: string
+    disabled?: boolean
   }>(),
   {
     placeholder: 'до ДД.ММ.ГГГГ',
+    disabled: true,
   }
 )
 
@@ -45,6 +47,7 @@ const deadline = computed({
           v-model="deadline"
           type="date"
           format="[до ]DD.MM.YYYY"
+          :disabled="disabled"
           :disabled-date="isPastDateDisabled"
           :placeholder="placeholder"
           popper-class="milling-date-picker-popper"

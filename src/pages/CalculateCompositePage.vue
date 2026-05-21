@@ -299,6 +299,7 @@ watch(file_id, () => {
                   <DatePicker
                     v-model="deadline"
                     placeholder="Выберите дату"
+                    disabled
                   />
                 </div>
               </div>
