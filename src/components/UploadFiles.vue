@@ -3,9 +3,11 @@ import { computed, ref } from 'vue'
 import { uploadDocument, fileToBase64 } from '../api'
 import { saveFile3D } from '../helpers/local-stp-files'
 // import IconDrawing from "../icons/IconDrawing.vue";
-// import { useAuthStore } from '../stores/auth.store'
+import { useAuthStore } from '../stores/auth.store'
 // import DialogLogin from './dialog/DialogLogin.vue'
 import { ElMessage } from 'element-plus'
+
+const GUEST_STP_ONLY_MESSAGE = 'Без авторизации можно загружать только STP-файлы.'
 
 const document_ids = defineModel<number[]>({ default: [] })
 const props = withDefaults(
@@ -24,20 +26,43 @@ const emit = defineEmits<{
   (e: 'update:stp_id', value: number | null): void
 }>()
 
-// const authStore = useAuthStore()
+const authStore = useAuthStore()
 // const isLoginDialogVisible = ref(false)
 const uploadingCount = ref(0)
 const fileInput = ref<HTMLInputElement>()
 
 const isUploading = computed(() => uploadingCount.value > 0)
+const isAuthenticated = computed(() => Boolean(authStore.getToken))
 
 const isDisabled = () => {
-  // if (authStore.getToken) return false
   return isUploading.value
 }
 
-const processUploadedFile = async (file: File) => {
+const rejectGuestFile = (file: File): boolean => {
   const extension = file.name.split('.').pop()?.toLowerCase()
+  if (extension !== 'stp') {
+    ElMessage.warning(GUEST_STP_ONLY_MESSAGE)
+    return true
+  }
+  if (props.stp_id != null) {
+    ElMessage.warning('Без авторизации можно загрузить только один STP-файл.')
+    return true
+  }
+  return false
+}
+
+const processUploadedFile = async (file: File): Promise<boolean> => {
+  const extension = file.name.split('.').pop()?.toLowerCase()
+
+  if (!isAuthenticated.value) {
+    if (rejectGuestFile(file)) return false
+
+    const base64Data = await fileToBase64(file)
+    const id = saveFile3D(file.name, base64Data, 'stp')
+    emit('update:stp_id', id)
+    return true
+  }
+
   const isStp = extension === 'stp'
   const hasMainStp = props.stp_id != null
 
@@ -48,7 +73,7 @@ const processUploadedFile = async (file: File) => {
     const id = saveFile3D(file.name, base64Data, extension || 'stp')
 
     emit('update:stp_id', id)
-    return
+    return true
   }
 
   // Все остальные файлы (включая последующие STP) отправляем как документы
@@ -60,11 +85,12 @@ const processUploadedFile = async (file: File) => {
   const id = Number((data as any).document_id)
 
   if (!Array.isArray(document_ids.value)) document_ids.value = []
-  if (!Number.isFinite(id)) return
+  if (!Number.isFinite(id)) return false
 
   if (!document_ids.value.includes(id)) {
     document_ids.value.push(id)
   }
+  return true
 }
 
 const handleFilesUpload = async (files: FileList | File[]) => {
@@ -78,8 +104,8 @@ const handleFilesUpload = async (files: FileList | File[]) => {
   for (const file of list) {
     uploadingCount.value += 1
     try {
-      await processUploadedFile(file)
-      ElMessage.success('Документ успешно загружен!')
+      const uploaded = await processUploadedFile(file)
+      if (uploaded) ElMessage.success('Документ успешно загружен!')
     } catch (error) {
       console.error('Document upload error:', error)
       ElMessage.error('Ошибка загрузки документа')
@@ -153,11 +179,16 @@ const handleDragOver = (event: DragEvent) => {
           {{ isUploading ? 'Загрузка...' : 'Перетащите или выберите файл' }}
         </div>
         <template v-if="!props.hideFormatsText">
-          <div class="upload-subtitle">
-            Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
-          </div>
-          <div class="upload-subtitle">
-            Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
+          <template v-if="isAuthenticated">
+            <div class="upload-subtitle">
+              Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
+            </div>
+            <div class="upload-subtitle">
+              Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
+            </div>
+          </template>
+          <div v-else class="upload-subtitle">
+            Без авторизации можно загружать только STP-файлы.
           </div>
         </template>
         <input
@@ -165,7 +196,8 @@ const handleDragOver = (event: DragEvent) => {
           @change="handleFileChange"
           style="display: none"
           ref="fileInput"
-          multiple
+          :multiple="isAuthenticated"
+          :accept="isAuthenticated ? undefined : '.stp'"
           aria-label="Загрузка файлов для расчёта"
           :disabled="isDisabled() || isUploading"
         />
