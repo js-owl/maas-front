@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, onMounted, watch } from 'vue'
 import { useAuthStore } from '../../stores/auth.store'
 import DialogRegistration from './DialogRegistration.vue'
 import Button from '../ui/Button.vue'
@@ -9,12 +9,51 @@ import { useWindowSize } from '@vueuse/core'
 
 let dialogFormVisible = defineModel<boolean>()
 
+const LOGIN_CREDENTIALS_KEY = 'login-credentials'
+
 const formData = reactive({
   username: '',
   password: '',
 })
 
 const isRememberMe = ref(false)
+
+function loadSavedCredentials() {
+  try {
+    const raw = localStorage.getItem(LOGIN_CREDENTIALS_KEY)
+    if (!raw) return
+    const saved = JSON.parse(raw) as { username?: string; password?: string }
+    formData.username = saved.username ?? ''
+    formData.password = saved.password ?? ''
+    isRememberMe.value = true
+  } catch {
+    localStorage.removeItem(LOGIN_CREDENTIALS_KEY)
+  }
+}
+
+function saveCredentials() {
+  if (!isRememberMe.value) {
+    localStorage.removeItem(LOGIN_CREDENTIALS_KEY)
+    return
+  }
+  localStorage.setItem(
+    LOGIN_CREDENTIALS_KEY,
+    JSON.stringify({
+      username: formData.username,
+      password: formData.password,
+    }),
+  )
+}
+
+onMounted(loadSavedCredentials)
+
+watch(isRememberMe, (remember) => {
+  if (!remember) localStorage.removeItem(LOGIN_CREDENTIALS_KEY)
+})
+
+watch(dialogFormVisible, (visible) => {
+  if (visible) loadSavedCredentials()
+})
 const loginError = ref('')
 
 const isRegistrationVisible = ref(false)
@@ -33,8 +72,11 @@ const onSubmit = async () => {
     await authStore.login(formData, isRememberMe.value)
     console.log('Dialog-login: token', authStore.getToken)
 
-    formData.username = ''
-    formData.password = ''
+    saveCredentials()
+    if (!isRememberMe.value) {
+      formData.username = ''
+      formData.password = ''
+    }
     loginError.value = ''
     dialogFormVisible.value = false
   } catch (e) {
