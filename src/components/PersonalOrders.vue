@@ -302,10 +302,7 @@ const duplicateKit = async (source: KitOrder): Promise<number> => {
 const handleRepeatOrder = async (): Promise<void> => {
   const selected = (ordersTableRef.value?.getSelectionRows() ?? []) as KitOrder[]
   if (!selected.length) {
-    await ElMessageBox.alert('Необходимо выбрать заказ', 'Внимание', {
-      confirmButtonText: 'OK',
-      type: 'warning',
-    })
+    ElMessage.warning('Необходимо выбрать заказ')
     return
   }
 
