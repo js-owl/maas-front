@@ -83,10 +83,10 @@ const manufacturingCost = computed(() => {
   return formatPrice(order.value?.total_kit_price ?? 0)
 })
 
-const totalWithDelivery = computed(() => {
-  const total = (order.value?.total_kit_price ?? 0) + (order.value?.delivery_price ?? 0)
-  return formatPrice(total)
-})
+// const totalWithDelivery = computed(() => {
+//   const total = (order.value?.total_kit_price ?? 0) + (order.value?.delivery_price ?? 0)
+//   return formatPrice(total)
+// })
 
 const formatDate = (dateString?: string | null): string => {
   if (!dateString) return ''
@@ -99,7 +99,7 @@ const formatDate = (dateString?: string | null): string => {
 }
 
 const createdDate = computed(() => formatDate(order.value?.created_at))
-const completionDate = computed(() => formatDate(order.value?.updated_at))
+// const completionDate = computed(() => formatDate(order.value?.updated_at))
 
 const orderStatus = computed(() => {
   if (!order.value?.status_name) return 'Ожидает оплаты'
@@ -287,7 +287,6 @@ const handleOpenCalculation = (row: any): void => {
 //     query: { kitId: kitId.value.toString(), orderId: row.order_id.toString() },
 //   })
 // }
-
 
 // const updateOrderQuantity = async (row: IOrderResponse, newQuantity: number): Promise<void> => {
 //   if (newQuantity < 1) {
@@ -479,7 +478,11 @@ onMounted(() => {
           <div class="order-title">
             <div class="maas-subtitle">Заказ №{{ kitId }}</div>
             <div class="order-name-wrapper">
-              <InputEdit v-model="filename" :font-size="'24px'" @update:model-value="handleFilenameUpdate" />
+              <InputEdit
+                v-model="filename"
+                :font-size="'24px'"
+                @update:model-value="handleFilenameUpdate"
+              />
             </div>
           </div>
           <div class="order-quantity">
@@ -502,7 +505,7 @@ onMounted(() => {
         <el-table
           class="order-table"
           :data="calcRows"
-          style="margin-top: 10px; width: 100%;"
+          style="margin-top: 10px; width: 100%"
           v-loading="isLoading"
           empty-text="Нет данных по деталям"
         >
@@ -595,11 +598,11 @@ onMounted(() => {
 
         <div class="order-footer">
           <ButtonRound width="274px" @click="goBack">
-              <template #icon-left>
-                 <IconArrowLeft color="#333" />
-              </template>
-               Расчеты и заказы
-            </ButtonRound>
+            <template #icon-left>
+              <IconArrowLeft color="#333" />
+            </template>
+            Расчеты и заказы
+          </ButtonRound>
           <Select
             v-model="selectedOrderType"
             placeholder="Добавить деталь"
@@ -618,9 +621,7 @@ onMounted(() => {
               <span class="order-type-option__chevron" aria-hidden="true" />
             </el-option>
           </Select>
-          <ButtonRound width="162px" @click="saveOrder">
-            Сохранить
-          </ButtonRound>
+          <ButtonRound width="162px" @click="saveOrder"> Сохранить </ButtonRound>
         </div>
         <!-- </el-card> -->
       </div>
