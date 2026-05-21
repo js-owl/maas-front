@@ -106,6 +106,8 @@ const orderStatus = computed(() => {
   return statusTexts[order.value.status_name] || order.value.status_name
 })
 
+const canConfirmOrder = computed(() => order.value?.status === 'AWAITING_CONFIRMATION')
+
 const selectedLocation = computed({
   get: () => order.value?.location || 'location_1',
   set: (value: string) => {
@@ -685,8 +687,8 @@ onMounted(() => {
             </div>
           </div>
 
-          <!-- Кнопка оплаты -->
-          <div class="summary-actions">
+          <!-- Кнопка подтверждения -->
+          <div v-if="canConfirmOrder" class="summary-actions">
             <Button @click="confirmOrder" class="pay-order-button">Подтвердить заказ</Button>
           </div>
         </div>
