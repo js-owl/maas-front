@@ -466,11 +466,6 @@ async function getOrder(id: number) {
   width: 100%;
 }
 
-.other-page__fields .calc-quantity {
-  width: 200px;
-  max-width: 100%;
-}
-
 .other-page__bottom {
   display: flex;
   flex-direction: column;
@@ -565,10 +560,6 @@ async function getOrder(id: number) {
 
   .other-page__fields {
     gap: 16px;
-  }
-
-  .other-page__fields .calc-quantity {
-    width: 100%;
   }
 
   .other-page__bottom {
