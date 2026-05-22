@@ -302,9 +302,9 @@ watch(
                 <div v-else class="printing-title__text">3D ПЕЧАТЬ</div>
               </div> -->
 
-              <div class="calc-quantity-technology">
+              <div class="calc-quantity-material">
                 <div class="calc-quantity">
-                  <div class="calc-title">Количество, ед.</div>
+                  <div class="calc-title">Количество, шт</div>
                   <Input
                     v-model="quantityInput"
                     type="number"
@@ -426,18 +426,18 @@ watch(
   min-width: 0;
 }
 
-.calc-quantity-technology {
+.calc-quantity-material {
   display: grid;
   grid-template-columns: 200px minmax(0, 1fr);
   gap: 20px;
   align-items: end;
 }
 
-.calc-quantity-technology .printing-field-group {
+.calc-quantity-material .printing-field-group {
   padding: 0;
 }
 
-.calc-quantity-technology :deep(.el-select__wrapper) {
+.calc-quantity-material :deep(.el-select__wrapper) {
   min-height: 48px;
   height: 48px;
   padding: 12px 24px;
@@ -576,7 +576,7 @@ watch(
     gap: 16px;
   }
 
-  .calc-quantity-technology {
+  .calc-quantity-material {
     grid-template-columns: 1fr;
     gap: 14px;
   }
