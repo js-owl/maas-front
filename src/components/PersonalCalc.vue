@@ -13,6 +13,12 @@ import { useMaterialStore } from '../stores/material.store'
 import { useCoefficientsStore } from '../stores/coefficients.store'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 import IconCalculate from '@/icons/IconCalculate.vue'
+import {
+  buildPersonalCalcPropertyValues,
+  getPersonalCalcPropertyFields,
+  type PersonalCalcPropertyValues,
+} from '../helpers/personal-calc-properties'
+import { orderTypeOptions } from '../helpers/order-type-options'
 
 type OtherService = {
   id: string
@@ -78,15 +84,52 @@ const quantity = ref(8)
 // Manufacturing time in days
 const manufacturingTime = ref(3)
 
-// Product properties - stores various attributes of the product
-const productProperties = ref({
-  serviceId: '', // ID услуги (Service ID)
-  dimensions: '', // Размеры (Dimensions)
-  partVolume: '', // Объем детали (Part volume)
-  billableWeight: '', // Масса материала на 1 деталь
-  material: '', // Материал (Material)
-  coating: '', // Покрытие (Coating)
+const propertyValues = ref<PersonalCalcPropertyValues>({})
+
+const propertyRows = computed(() => {
+  const serviceId = orderData.value?.service_id
+  return getPersonalCalcPropertyFields(serviceId).map((field) => ({
+    ...field,
+    value: propertyValues.value[field.key] || '-',
+  }))
 })
+
+type ElectroplatingOperation = {
+  id: string
+  group: string
+  path: string[]
+  label: string
+}
+
+const resolveElectroplatingCoatingLabel = async (
+  processId?: string,
+  materialId?: string
+): Promise<string | undefined> => {
+  if (!processId && !materialId) return undefined
+
+  try {
+    const response = await req_json_auth('/operations_available?service_id=electroplating', 'GET')
+    if (!response?.ok) return undefined
+
+    const payload = await response.json()
+    const operations = (Array.isArray(payload?.values)
+      ? payload.values
+      : Array.isArray(payload?.data?.values)
+        ? payload.data.values
+        : []) as ElectroplatingOperation[]
+
+    const operation = operations.find(
+      (item) => item.group === processId && item.id === materialId
+    )
+    if (!operation) return undefined
+
+    if (operation.path.length > 1) return operation.path.join(' / ')
+    if (operation.path.length === 1) return operation.path[0]
+    return operation.label
+  } catch {
+    return undefined
+  }
+}
 
 
 // Format price without decimal (for total cost)
@@ -267,6 +310,24 @@ const handleEdit = () => {
         query,
       })
       break
+    case 'composite':
+      router.push({
+        path: '/composite',
+        query,
+      })
+      break
+    case 'electroplating':
+      router.push({
+        path: '/galvanic',
+        query,
+      })
+      break
+    case 'other':
+      router.push({
+        path: '/other',
+        query,
+      })
+      break
     default:
       router.push({
         path: '/other',
@@ -366,42 +427,29 @@ const fetchOrder = async (id: number) => {
       if (fetchedOrderData.manufacturing_cycle)
         manufacturingTime.value = fetchedOrderData.manufacturing_cycle
 
-      // Map product properties
-      if (fetchedOrderData.service_id) {
-        // Find service label by service field (not id) from other_services
-        const foundService = otherServices.value.find(
-          (service) => service.service === fetchedOrderData.service_id
-        )
-        productProperties.value.serviceId = foundService?.label ?? fetchedOrderData.service_id
-      }
-      if (fetchedOrderData.length && fetchedOrderData.width && fetchedOrderData.height) {
-        productProperties.value.dimensions = `${fetchedOrderData.length} × ${fetchedOrderData.width} × ${fetchedOrderData.height}`
-      }
-      if (fetchedOrderData.mat_volume) {
-        const volumeInCm3 = fetchedOrderData.mat_volume * 1_000_000
-        productProperties.value.partVolume = `${volumeInCm3.toFixed(2)} см³`
-      }
-      if (fetchedOrderData.total_price_breakdown?.billable_weight_kg != null) {
-        productProperties.value.billableWeight = `${fetchedOrderData.total_price_breakdown.billable_weight_kg.toFixed(2)} кг`
-      }
-      if (fetchedOrderData.material_id) {
-        const foundMaterial = materialStore.materials.find(
-          (m) => m.value === fetchedOrderData.material_id
-        )
-        productProperties.value.material = foundMaterial?.label ?? fetchedOrderData.material_id
-      }
+      const foundService = otherServices.value.find(
+        (service) => service.service === fetchedOrderData.service_id
+      )
+      const foundMaterial = materialStore.materials.find(
+        (material) => material.value === fetchedOrderData.material_id
+      )
+      const serviceTypeLabel = orderTypeOptions.find(
+        (option) => option.serviceId === fetchedOrderData.service_id
+      )?.label
+      const coatingTypeLabel = await resolveElectroplatingCoatingLabel(
+        fetchedOrderData.process_id,
+        fetchedOrderData.material_id
+      )
 
-      // Map cover_id (array of ids) to coating labels from coefficients store
-      if (Array.isArray(fetchedOrderData.cover_id) && fetchedOrderData.cover_id.length) {
-        const coverLabels = fetchedOrderData.cover_id
-          .map(
-            (id) => coefficientsStore.coefficients.cover.find((cover) => cover.value === id)?.label
-          )
-          .filter((label): label is string => Boolean(label))
-
-        productProperties.value.coating =
-          coverLabels.join(', ') || fetchedOrderData.cover_id.join(', ')
-      }
+      propertyValues.value = buildPersonalCalcPropertyValues({
+        order: fetchedOrderData,
+        serviceLabel: serviceTypeLabel ?? foundService?.label ?? fetchedOrderData.service_id,
+        materialLabel: foundMaterial?.label ?? fetchedOrderData.material_id,
+        technologyLabel:
+          fetchedOrderData.service_id === 'other' ? foundService?.label : undefined,
+        coatingTypeLabel,
+        coefficients: coefficientsStore.coefficients,
+      })
 
       // Update order name and code if they exist
       if (fetchedOrderData.order_name) {
@@ -531,45 +579,14 @@ watch(
           </div>
 
           <div class="properties-section">
-            <div class="property-item">
-              <span class="property-label">Услуга</span>
+            <div
+              v-for="row in propertyRows"
+              :key="row.key"
+              class="property-item"
+            >
+              <span class="property-label">{{ row.label }}</span>
               <span class="property-divider" />
-              <span class="property-value">{{ productProperties.serviceId || '-' }}</span>
-            </div>
-            <div class="property-item">
-              <span class="property-label">Размер, мм</span>
-              <span class="property-divider" />
-              <span class="property-value">{{ productProperties.dimensions || '-' }}</span>
-            </div>
-            <div class="property-item">
-              <span class="property-label">Объем заготовки, мм³</span>
-              <span class="property-divider" />
-              <span class="property-value">{{ productProperties.partVolume || '-' }}</span>
-            </div>
-            <div class="property-item">
-              <span class="property-label">Масса материала на 1 деталь</span>
-              <span class="property-divider" />
-              <span class="property-value">{{ productProperties.billableWeight || '-' }}</span>
-            </div>
-            <div class="property-item">
-              <span class="property-label">Материал</span>
-              <span class="property-divider" />
-              <span class="property-value">{{ productProperties.material || '-' }}</span>
-            </div>
-            <div class="property-item">
-              <span class="property-label">Постобработка</span>
-              <span class="property-divider" />
-              <span class="property-value">{{ productProperties.coating || '-' }}</span>
-            </div>
-            <div class="property-item">
-              <span class="property-label">Материал покрытия</span>
-              <span class="property-divider" />
-              <span class="property-value">{{ productProperties.coating || '-' }}</span>
-            </div>
-            <div class="property-item">
-              <span class="property-label">Площадь покраски, мм³</span>
-              <span class="property-divider" />
-              <span class="property-value">-</span>
+              <span class="property-value" :class="row.valueClass">{{ row.value }}</span>
             </div>
           </div>
 
@@ -742,6 +759,12 @@ watch(
   color: #000000;
   text-align: right;
   white-space: nowrap;
+}
+
+.property-value--compact {
+  font-size: 16px;
+  white-space: normal;
+  max-width: 45%;
 }
 
 .summary-card {
