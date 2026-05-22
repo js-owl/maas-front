@@ -470,6 +470,29 @@ watch(
   display: grid;
   grid-template-columns: 200px minmax(0, 1fr);
   gap: 20px;
+  align-items: end;
+}
+
+.calc-quantity-material .milling-field-group {
+  padding: 0;
+}
+
+.calc-quantity-material :deep(.input .el-input__wrapper),
+.calc-quantity-material :deep(.el-select__wrapper) {
+  min-height: 48px;
+  height: 48px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background-color: var(--whity);
+  box-shadow: none;
+  border: none;
+  box-sizing: border-box;
+}
+
+.calc-quantity-material :deep(.input .el-input__inner) {
+  height: 24px;
+  line-height: 24px;
+  color: #000;
 }
 
 .milling-field-group,
