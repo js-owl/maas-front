@@ -7,8 +7,6 @@ import { parseFilesQueryToIds } from '../helpers/parse-files'
 import { formatDeadline, parseDeadline } from '../helpers/deadline'
 
 import Input from '../components/ui/Input.vue'
-import DatePicker from '../components/ui/DatePicker.vue'
-
 import SelectCalc from '../components/ui/SelectCalc.vue'
 
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
@@ -320,6 +318,15 @@ watch(
     cadViewerKey.value += 1
   }
 )
+
+watch(
+  () => result.value?.manufacturing_cycle,
+  (cycle) => {
+    if (cycle) {
+      deadline.value = parseDeadline({ manufacturing_cycle: cycle })
+    }
+  }
+)
 </script>
 
 <template>
@@ -329,7 +336,7 @@ watch(
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
           <div class="milling-page__card">
             <div class="milling-page__main">
-            <div class="calc-two-columns">
+            <div class="calc-quantity-material">
               <div class="milling-field-group">
                 <div class="calc-title">Количество, шт</div>
                 <Input
@@ -339,17 +346,9 @@ watch(
                 />
               </div>
               <div class="milling-field-group">
-                <div class="calc-title">Сроки выполнения</div>
-                <DatePicker
-                  v-model="deadline"
-                  placeholder="Выберите дату"
-                />
+                <div class="calc-title">Материал</div>
+                <SelectCalc v-model="material_id" :input-data="materials" />
               </div>
-            </div>
-
-            <div class="milling-field-group">
-              <div class="calc-title">Материал</div>
-              <SelectCalc v-model="material_id" :input-data="materials" />
             </div>
 
             <div class="calc-two-columns">
@@ -463,8 +462,14 @@ watch(
 .milling-page__main {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 40px;
   min-width: 0;
+}
+
+.calc-quantity-material {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 20px;
 }
 
 .milling-field-group,
@@ -550,6 +555,11 @@ watch(
 
   .milling-page__main {
     gap: 16px;
+  }
+
+  .calc-quantity-material {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .milling-field-group,
