@@ -2,7 +2,7 @@
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper pkm-info">
+    <div class="pkm-info">
       <div class="uslugi-section pkm-section">
         <div class="uslugi-text pkm-text">
           <div class="uslugi-title pkm-title">Изделия из полимерно-композиционных материалов</div>
@@ -45,7 +45,10 @@
 
 <style scoped>
 .pkm-info {
+  background-color: #fff;
+  border-radius: 20px;
   box-shadow: 0 10px 15px 0 var(--button-bg);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 80px;
@@ -80,6 +83,11 @@
 .pkm-lead span {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
+}
+
+.technical-requirements .uslugi-table-title {
+  line-height: 29px;
+  margin: 0;
 }
 
 .technical-requirements {

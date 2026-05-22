@@ -21,7 +21,7 @@ const advantages = [
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper pkm-advantages">
+    <div class="pkm-advantages">
       <div class="uslugi-table-title">Преимущества</div>
 
       <div class="advantages-grid">
@@ -36,12 +36,20 @@ const advantages = [
 
 <style scoped>
 .pkm-advantages {
+  background-color: #fff;
+  border-radius: 20px;
+  box-sizing: border-box;
   box-shadow: none;
   display: flex;
   flex-direction: column;
   gap: 20px;
   margin-bottom: 40px;
   padding: 40px;
+}
+
+.pkm-advantages .uslugi-table-title {
+  line-height: 29px;
+  margin: 0;
 }
 
 .advantages-grid {
