@@ -10,7 +10,6 @@ import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
 import Input from '../components/ui/Input.vue'
-import DatePicker from '../components/ui/DatePicker.vue'
 
 import { useRoute } from 'vue-router'
 import UploadFiles2 from '@/components/UploadFiles2.vue'
@@ -267,6 +266,15 @@ async function getOrder(id: number) {
 watch(file_id, () => {
   cadViewerKey.value += 1
 })
+
+watch(
+  () => result.value?.manufacturing_cycle,
+  (cycle) => {
+    if (cycle) {
+      deadline.value = parseDeadline({ manufacturing_cycle: cycle })
+    }
+  }
+)
 </script>
 
 <template>
@@ -294,9 +302,9 @@ watch(file_id, () => {
                 <div v-else class="printing-title__text">3D ПЕЧАТЬ</div>
               </div> -->
 
-              <div class="calc-two-columns">
+              <div class="calc-quantity-technology">
                 <div class="calc-quantity">
-                  <div class="calc-title">Количество, шт</div>
+                  <div class="calc-title">Количество, ед.</div>
                   <Input
                     v-model="quantityInput"
                     type="number"
@@ -304,31 +312,23 @@ watch(file_id, () => {
                   />
                 </div>
                 <div class="printing-field-group">
-                  <div class="printing-field-title">Сроки выполнения</div>
-                  <DatePicker
-                    v-model="deadline"
-                    placeholder="Выберите дату"
-                  />
+                  <div class="calc-title">Технология печати</div>
+                  <SelectCalc v-model="printing_technology" :input-data="printingTechnologies" />
                 </div>
               </div>
 
               <div class="printing-field-group">
-                <div class="printing-field-title">Материал</div>
+                <div class="calc-title">Материал</div>
                 <SelectCalc v-model="material_id" :input-data="materials" />
               </div>
 
-              <div class="printing-field-group">
-                <div class="printing-field-title">Технология печати</div>
-                <SelectCalc v-model="printing_technology" :input-data="printingTechnologies" />
-              </div>
-
               <div class="printing-field-block">
-                <div class="printing-field-title">Финишная обработка изделия</div>
+                <div class="calc-title">Финишная обработка изделия</div>
                 <CoefficientCover2 v-model="cover_id" :exclude-labels="['Гальваника']" />
               </div>
 
               <div class="printing-field-block printing-field-block--otk">
-                <div class="printing-field-title">Вид контроля</div>
+                <div class="calc-title">Вид контроля</div>
                 <CoefficientOtk2 v-model="k_otk" />
               </div>
 
@@ -337,7 +337,7 @@ watch(file_id, () => {
               </div> -->
 
               <div class="printing-field-block">
-                <div class="printing-field-title">Описание заказа</div>
+                <div class="calc-title">Описание заказа</div>
                 <el-input
                   v-model="special_instructions"
                   type="textarea"
@@ -376,7 +376,7 @@ watch(file_id, () => {
               </div>
 
               <div class="printing-upload">
-                <div class="printing-upload__title">Загрузите файлы</div>
+                <div class="calc-title">Загрузите файлы</div>
                 <UploadFiles2
                   v-model="document_ids"
                   color="#000"
@@ -422,8 +422,30 @@ watch(file_id, () => {
 .printing-page__main {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 40px;
   min-width: 0;
+}
+
+.calc-quantity-technology {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 20px;
+  align-items: end;
+}
+
+.calc-quantity-technology .printing-field-group {
+  padding: 0;
+}
+
+.calc-quantity-technology :deep(.el-select__wrapper) {
+  min-height: 48px;
+  height: 48px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background-color: var(--whity);
+  box-shadow: none;
+  border: none;
+  box-sizing: border-box;
 }
 
 .printing-title {
@@ -480,13 +502,6 @@ watch(file_id, () => {
   gap: 20px;
 }
 
-.printing-field-title {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
-  line-height: 1;
-  color: #000;
-}
-
 .printing-actions {
   padding-top: 6px;
 }
@@ -511,12 +526,6 @@ watch(file_id, () => {
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.printing-upload__title {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
-  color: #000;
 }
 
 .upload-files-bordered :deep(.upload) {
@@ -567,6 +576,11 @@ watch(file_id, () => {
     gap: 16px;
   }
 
+  .calc-quantity-technology {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
   .printing-field-group,
   .printing-field-block {
     gap: 8px;
@@ -576,12 +590,6 @@ watch(file_id, () => {
   .printing-field-block--otk {
     gap: 12px;
     max-width: 100%;
-  }
-
-  .printing-field-title,
-  .printing-upload__title {
-    font-size: 18px;
-    line-height: 1.2;
   }
 
   .printing-title {
