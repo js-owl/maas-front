@@ -426,6 +426,24 @@ watch(file_id, () => {
 
 .milling-field-group--40 {
   width: 40%;
+  padding: 0;
+}
+
+.milling-field-group--40 :deep(.input .el-input__wrapper) {
+  min-height: 48px;
+  height: 48px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background-color: var(--whity);
+  box-shadow: none;
+  border: none;
+  box-sizing: border-box;
+}
+
+.milling-field-group--40 :deep(.input .el-input__inner) {
+  height: 24px;
+  line-height: 24px;
+  color: #000;
 }
 
 .milling-field-block--otk {
