@@ -4,10 +4,7 @@ import { useRoute } from 'vue-router'
 import { req_json, req_json_auth } from '../api'
 import { getLocalStpFileById } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
-import { formatDeadline, parseDeadline } from '../helpers/deadline'
-
 import Input from '../components/ui/Input.vue'
-import DatePicker from '../components/ui/DatePicker.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 import { useProfileStore } from '../stores/profile.store'
@@ -118,7 +115,6 @@ const technicalRestrictions = computed(() => {
 
 const k_otk = ref('1.0')
 const k_cert = ref(['a', 'f'])
-const deadline = ref<Date | null>(null)
 const special_instructions = ref('')
 
 const payload = reactive({
@@ -187,7 +183,6 @@ const calculationPayload = computed(() => {
     n_dimensions: payload.n_dimensions,
     k_otk: payload.k_otk,
     k_cert: payload.k_cert,
-    deadline: formatDeadline(deadline.value),
   }
 })
 
@@ -204,7 +199,6 @@ watch(
 onMounted(async () => {
   try {
     await loadOperationsAvailable()
-    deadline.value = new Date()
     if (order_id.value === 0) {
       const filesQuery = route.query.files
       const stpParam = route.query.stp
@@ -308,7 +302,6 @@ async function getOrder(id: number) {
     if (data.n_dimensions) n_dimensions.value = data.n_dimensions
     if (data.k_otk) k_otk.value = data.k_otk
     if (data.k_cert) k_cert.value = data.k_cert
-    deadline.value = parseDeadline(data)
     if (data.special_instructions) special_instructions.value = data.special_instructions
     if (data.order_name) order_name.value = data.order_name
     if ((data as any).order_code) order_code.value = (data as any).order_code
@@ -364,18 +357,9 @@ watch(process_id, () => {
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
           <div class="milling-page__card">
             <div class="milling-page__main galvanic-page__main">
-              <div class="calc-two-columns">
-                <div class="calc-quantity">
-                  <div class="calc-title">Количество, ед.</div>
-                  <Input v-model="quantityInput" type="number" placeholder="Введите количество" />
-                </div>
-                <div class="milling-field-group">
-                  <div class="calc-title">Сроки выполнения</div>
-                  <DatePicker
-                    v-model="deadline"
-                    placeholder="Выберите дату"
-                  />
-                </div>
+              <div class="calc-quantity">
+                <div class="calc-title">Количество, ед.</div>
+                <Input v-model="quantityInput" type="number" placeholder="Введите количество" />
               </div>
 
               <div class="milling-field-block">
@@ -420,10 +404,7 @@ watch(process_id, () => {
               <div class="milling-actions">
                 <CalculateSubmit2
                   :order-id="order_id"
-                  :payload="{
-                    ...payload,
-                    // deadline: formatDeadline(deadline),
-                  } as unknown as IOrderPayload"
+                  :payload="payload as unknown as IOrderPayload"
                   :special-instructions="special_instructions"
                   @updateResult="onUpdateResult"
                   @showInfo="isInfoVisible = true"
