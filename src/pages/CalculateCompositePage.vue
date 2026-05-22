@@ -6,7 +6,7 @@ import { getLocalStpFileById } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
 
 import Input from '../components/ui/Input.vue'
-import DatePicker from '../components/ui/DatePicker.vue'
+// import DatePicker from '../components/ui/DatePicker.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
@@ -285,24 +285,22 @@ watch(file_id, () => {
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
           <div class="milling-page__card">
             <div class="milling-page__main">
-              <div class="calc-two-columns">
-                <div class="milling-field-group">
-                   <div class="calc-title">Количество, шт</div>
-                  <Input
-                    v-model="quantityInput"
-                    type="number"
-                    placeholder="Введите количество"
-                  />
-                </div>
-                <div class="milling-field-group">
-                  <div class="calc-title">Сроки выполнения</div>
-                  <DatePicker
-                    v-model="deadline"
-                    placeholder="Выберите дату"
-                    disabled
-                  />
-                </div>
+              <div class="milling-field-group milling-field-group--40">
+                <div class="calc-title">Количество, шт</div>
+                <Input
+                  v-model="quantityInput"
+                  type="number"
+                  placeholder="Введите количество"
+                />
               </div>
+              <!-- <div class="milling-field-group">
+                <div class="calc-title">Сроки выполнения</div>
+                <DatePicker
+                  v-model="deadline"
+                  placeholder="Выберите дату"
+                  disabled
+                />
+              </div> -->
 
               <div class="milling-field-group">
                 <div class="calc-title">Материал</div>
@@ -426,6 +424,10 @@ watch(file_id, () => {
   padding: 5px 0;
 }
 
+.milling-field-group--40 {
+  width: 40%;
+}
+
 .milling-field-block--otk {
   max-width: 822px;
   gap: 20px;
@@ -507,6 +509,10 @@ watch(file_id, () => {
   .milling-field-block {
     gap: 8px;
     padding: 2px 0;
+  }
+
+  .milling-field-group--40 {
+    width: 100%;
   }
 
   .milling-field-block--otk {
