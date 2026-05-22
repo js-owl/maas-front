@@ -337,7 +337,7 @@ watch(
           <div class="milling-page__card">
             <div class="milling-page__main">
             <div class="calc-quantity-material">
-              <div class="milling-field-group">
+              <div class="calc-quantity">
                 <div class="calc-title">Количество, шт</div>
                 <Input
                   v-model="quantityInput"
@@ -477,7 +477,6 @@ watch(
   padding: 0;
 }
 
-.calc-quantity-material :deep(.input .el-input__wrapper),
 .calc-quantity-material :deep(.el-select__wrapper) {
   min-height: 48px;
   height: 48px;
@@ -487,12 +486,6 @@ watch(
   box-shadow: none;
   border: none;
   box-sizing: border-box;
-}
-
-.calc-quantity-material :deep(.input .el-input__inner) {
-  height: 24px;
-  line-height: 24px;
-  color: #000;
 }
 
 .milling-field-group,

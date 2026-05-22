@@ -365,7 +365,7 @@ watch(process_id, () => {
           <div class="milling-page__card">
             <div class="milling-page__main galvanic-page__main">
               <div class="calc-two-columns">
-                <div class="milling-field-group">
+                <div class="calc-quantity">
                   <div class="calc-title">Количество, ед.</div>
                   <Input v-model="quantityInput" type="number" placeholder="Введите количество" />
                 </div>

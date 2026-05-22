@@ -295,8 +295,8 @@ watch(file_id, () => {
               </div> -->
 
               <div class="calc-two-columns">
-                <div class="printing-field-group">
-                  <div class="printing-field-title">Количество, шт</div>
+                <div class="calc-quantity">
+                  <div class="calc-title">Количество, шт</div>
                   <Input
                     v-model="quantityInput"
                     type="number"

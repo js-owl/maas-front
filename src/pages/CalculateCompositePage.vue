@@ -285,7 +285,7 @@ watch(file_id, () => {
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
           <div class="milling-page__card">
             <div class="milling-page__main">
-              <div class="milling-field-group milling-field-group--40">
+              <div class="calc-quantity">
                 <div class="calc-title">Количество, шт</div>
                 <Input
                   v-model="quantityInput"
@@ -424,28 +424,6 @@ watch(file_id, () => {
   padding: 5px 0;
 }
 
-.milling-field-group--40 {
-  width: 40%;
-  padding: 0;
-}
-
-.milling-field-group--40 :deep(.input .el-input__wrapper) {
-  min-height: 48px;
-  height: 48px;
-  padding: 12px 24px;
-  border-radius: 10px;
-  background-color: var(--whity);
-  box-shadow: none;
-  border: none;
-  box-sizing: border-box;
-}
-
-.milling-field-group--40 :deep(.input .el-input__inner) {
-  height: 24px;
-  line-height: 24px;
-  color: #000;
-}
-
 .milling-field-block--otk {
   max-width: 822px;
   gap: 20px;
@@ -527,10 +505,6 @@ watch(file_id, () => {
   .milling-field-block {
     gap: 8px;
     padding: 2px 0;
-  }
-
-  .milling-field-group--40 {
-    width: 100%;
   }
 
   .milling-field-block--otk {
