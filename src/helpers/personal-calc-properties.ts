@@ -3,6 +3,8 @@ import type { IOrderResponse } from '../interfaces/order.interface'
 export type PersonalCalcPropertyKey =
   | 'service'
   | 'material'
+  | 'base'
+  | 'impregnation'
   | 'dimensions'
   | 'partVolume'
   | 'billableWeight'
@@ -13,6 +15,9 @@ export type PersonalCalcPropertyKey =
   | 'technology'
   | 'coatingType'
   | 'specialEquipment'
+  | 'tooling'
+
+export const COMPOSITE_SERVICE_LABEL = 'Изготовление из полимерно-композитных материалов'
 
 export type PersonalCalcPropertyField = {
   key: PersonalCalcPropertyKey
@@ -51,13 +56,12 @@ const PRINTING_FIELDS: PersonalCalcPropertyField[] = [
 
 const COMPOSITE_FIELDS: PersonalCalcPropertyField[] = [
   { key: 'service', label: 'Услуга' },
-  { key: 'material', label: 'Материал' },
+  { key: 'base', label: 'Основа' },
+  { key: 'impregnation', label: 'Пропитка' },
   { key: 'dimensions', label: 'Габаритные размеры, мм' },
-  { key: 'partVolume', label: 'Объем заготовки' },
-  { key: 'billableWeight', label: 'Масса материала на 1 деталь' },
-  { key: 'specialEquipment', label: 'Наличие оснастки' },
   { key: 'finishTreatment', label: 'Финишная обработка' },
   { key: 'controlType', label: 'Вид контроля', valueClass: 'property-value--compact' },
+  { key: 'tooling', label: 'Оснастка', valueClass: 'property-value--compact' },
 ]
 
 const ELECTROPLATING_FIELDS: PersonalCalcPropertyField[] = [
@@ -99,12 +103,60 @@ type BuildPropertyValuesOptions = {
   order: IOrderResponse
   serviceLabel?: string
   materialLabel?: string
+  baseLabel?: string
+  impregnationLabel?: string
   technologyLabel?: string
   coatingTypeLabel?: string
   coefficients: {
     finish: CoefficientItem[]
     cover: CoefficientItem[]
     tolerance: CoefficientItem[]
+  }
+}
+
+const formatCompositeTooling = (isNeedSpecialEquipment?: boolean): string | undefined => {
+  if (isNeedSpecialEquipment == null) return undefined
+  return isNeedSpecialEquipment ? 'Изготовителя' : 'Заказчика'
+}
+
+type CompositeMaterialOption = {
+  value: string
+  label: string
+  impregnation?: string
+  impregnation_label?: string
+}
+
+export const resolveCompositeMaterialLabels = (
+  order: IOrderResponse,
+  materials: CompositeMaterialOption[]
+): { base?: string; impregnation?: string } => {
+  const material = materials.find((item) => item.value === order.material_id)
+  const orderRecord = order as IOrderResponse & {
+    impregnation_id?: string
+    impregnation_label?: string
+  }
+
+  if (orderRecord.impregnation_label) {
+    return {
+      base: material?.label ?? order.material_id,
+      impregnation: orderRecord.impregnation_label,
+    }
+  }
+
+  if (material?.impregnation_label || material?.impregnation) {
+    return {
+      base: material.label,
+      impregnation: material.impregnation_label ?? material.impregnation,
+    }
+  }
+
+  if (material?.label?.includes(' / ')) {
+    const [base, impregnation] = material.label.split(' / ').map((part) => part.trim())
+    return { base, impregnation }
+  }
+
+  return {
+    base: material?.label ?? order.material_id,
   }
 }
 
@@ -152,18 +204,32 @@ export const buildPersonalCalcPropertyValues = ({
   order,
   serviceLabel,
   materialLabel,
+  baseLabel,
+  impregnationLabel,
   technologyLabel,
   coatingTypeLabel,
   coefficients,
 }: BuildPropertyValuesOptions): PersonalCalcPropertyValues => {
   const values: PersonalCalcPropertyValues = {}
+  const isComposite = order.service_id === 'composite'
 
   if (serviceLabel || order.service_id) {
-    values.service = serviceLabel ?? order.service_id
+    values.service = isComposite
+      ? COMPOSITE_SERVICE_LABEL
+      : (serviceLabel ?? order.service_id)
   }
-  if (materialLabel || order.material_id) {
+
+  if (isComposite) {
+    if (baseLabel || order.material_id) {
+      values.base = baseLabel ?? order.material_id
+    }
+    if (impregnationLabel) {
+      values.impregnation = impregnationLabel
+    }
+  } else if (materialLabel || order.material_id) {
     values.material = materialLabel ?? order.material_id
   }
+
   if (technologyLabel) {
     values.technology = technologyLabel
   }
@@ -193,7 +259,10 @@ export const buildPersonalCalcPropertyValues = ({
     values.controlType = OTK_LABELS[order.k_otk] ?? order.k_otk
   }
 
-  if (order.is_need_special_equipment != null) {
+  if (isComposite) {
+    const tooling = formatCompositeTooling(order.is_need_special_equipment)
+    if (tooling) values.tooling = tooling
+  } else if (order.is_need_special_equipment != null) {
     values.specialEquipment = order.is_need_special_equipment
       ? 'Требуется изготовление'
       : 'Не требуется'

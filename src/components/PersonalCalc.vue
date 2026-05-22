@@ -16,6 +16,7 @@ import IconCalculate from '@/icons/IconCalculate.vue'
 import {
   buildPersonalCalcPropertyValues,
   getPersonalCalcPropertyFields,
+  resolveCompositeMaterialLabels,
   type PersonalCalcPropertyValues,
 } from '../helpers/personal-calc-properties'
 import { orderTypeOptions } from '../helpers/order-type-options'
@@ -395,8 +396,18 @@ const fetchOrder = async (id: number) => {
 
   isLoading.value = true
   try {
-    // Ensure materials are loaded to resolve material label
-    if (!materialStore.materials.length) {
+    // Ensure materials are loaded to resolve material labels
+    const response = await req_json_auth(`/orders/${id}`, 'GET')
+    if (!response?.ok) {
+      ElMessage.error('Не удалось загрузить данные заказа')
+      return
+    }
+
+    const fetchedOrderData = (await response.json()) as IOrderResponse
+
+    if (fetchedOrderData.service_id === 'composite') {
+      await materialStore.loadMaterials('composite')
+    } else if (!materialStore.materials.length) {
       await materialStore.setAllMaterials()
     }
 
@@ -412,57 +423,57 @@ const fetchOrder = async (id: number) => {
     // Load other services to resolve service label
     await loadOtherServices()
 
-    const response = await req_json_auth(`/orders/${id}`, 'GET')
-    if (response?.ok) {
-      const fetchedOrderData = (await response.json()) as IOrderResponse
-      orderData.value = fetchedOrderData
+    orderData.value = fetchedOrderData
 
-      // Update file ID for CAD viewer
-      fileId.value = fetchedOrderData.file_id || null
+    // Update file ID for CAD viewer
+    fileId.value = fetchedOrderData.file_id || null
 
-      // Map order data to component state
-      if (fetchedOrderData.quantity) quantity.value = fetchedOrderData.quantity
-      if (fetchedOrderData.detail_price_one)
-        manufacturingCost.value = fetchedOrderData.detail_price_one
-      if (fetchedOrderData.manufacturing_cycle)
-        manufacturingTime.value = fetchedOrderData.manufacturing_cycle
+    // Map order data to component state
+    if (fetchedOrderData.quantity) quantity.value = fetchedOrderData.quantity
+    if (fetchedOrderData.detail_price_one)
+      manufacturingCost.value = fetchedOrderData.detail_price_one
+    if (fetchedOrderData.manufacturing_cycle)
+      manufacturingTime.value = fetchedOrderData.manufacturing_cycle
 
-      const foundService = otherServices.value.find(
-        (service) => service.service === fetchedOrderData.service_id
-      )
-      const foundMaterial = materialStore.materials.find(
-        (material) => material.value === fetchedOrderData.material_id
-      )
-      const serviceTypeLabel = orderTypeOptions.find(
-        (option) => option.serviceId === fetchedOrderData.service_id
-      )?.label
-      const coatingTypeLabel = await resolveElectroplatingCoatingLabel(
-        fetchedOrderData.process_id,
-        fetchedOrderData.material_id
-      )
+    const foundService = otherServices.value.find(
+      (service) => service.service === fetchedOrderData.service_id
+    )
+    const foundMaterial = materialStore.materials.find(
+      (material) => material.value === fetchedOrderData.material_id
+    )
+    const serviceTypeLabel = orderTypeOptions.find(
+      (option) => option.serviceId === fetchedOrderData.service_id
+    )?.label
+    const coatingTypeLabel = await resolveElectroplatingCoatingLabel(
+      fetchedOrderData.process_id,
+      fetchedOrderData.material_id
+    )
+    const compositeLabels =
+      fetchedOrderData.service_id === 'composite'
+        ? resolveCompositeMaterialLabels(fetchedOrderData, materialStore.materials)
+        : null
 
-      propertyValues.value = buildPersonalCalcPropertyValues({
-        order: fetchedOrderData,
-        serviceLabel: serviceTypeLabel ?? foundService?.label ?? fetchedOrderData.service_id,
-        materialLabel: foundMaterial?.label ?? fetchedOrderData.material_id,
-        technologyLabel:
-          fetchedOrderData.service_id === 'other' ? foundService?.label : undefined,
-        coatingTypeLabel,
-        coefficients: coefficientsStore.coefficients,
-      })
+    propertyValues.value = buildPersonalCalcPropertyValues({
+      order: fetchedOrderData,
+      serviceLabel: serviceTypeLabel ?? foundService?.label ?? fetchedOrderData.service_id,
+      materialLabel: foundMaterial?.label ?? fetchedOrderData.material_id,
+      baseLabel: compositeLabels?.base,
+      impregnationLabel: compositeLabels?.impregnation,
+      technologyLabel:
+        fetchedOrderData.service_id === 'other' ? foundService?.label : undefined,
+      coatingTypeLabel,
+      coefficients: coefficientsStore.coefficients,
+    })
 
-      // Update order name and code if they exist
-      if (fetchedOrderData.order_name) {
-        order_name.value = fetchedOrderData.order_name
-      }
-      if (fetchedOrderData.order_code) {
-        order_code.value = fetchedOrderData.order_code
-      }
-
-      await loadUploadedDocuments(fetchedOrderData.document_ids)
-    } else {
-      ElMessage.error('Не удалось загрузить данные заказа')
+    // Update order name and code if they exist
+    if (fetchedOrderData.order_name) {
+      order_name.value = fetchedOrderData.order_name
     }
+    if (fetchedOrderData.order_code) {
+      order_code.value = fetchedOrderData.order_code
+    }
+
+    await loadUploadedDocuments(fetchedOrderData.document_ids)
   } catch (error) {
     console.error('Error fetching order:', error)
     ElMessage.error('Ошибка при загрузке заказа')
