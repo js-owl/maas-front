@@ -13,6 +13,7 @@ declare module 'vue' {
     CadPreview: typeof import('./src/components/cad/CadPreview.vue')['default']
     CadShowById: typeof import('./src/components/cad/CadShowById.vue')['default']
     CalculateBasePage: typeof import('./src/components/CalculateBasePage.vue')['default']
+    CalculateGalvanicPrice: typeof import('./src/components/sections/CalculateGalvanicPrice.vue')['default']
     CalculateResults: typeof import('./src/components/sections/CalculateResults.vue')['default']
     CalculateSubmit: typeof import('./src/components/sections/CalculateSubmit.vue')['default']
     CalculateSubmit2: typeof import('./src/components/sections/CalculateSubmit2.vue')['default']

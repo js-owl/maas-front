@@ -9,7 +9,7 @@ import SelectCalc from '../components/ui/SelectCalc.vue'
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 import { useProfileStore } from '../stores/profile.store'
 import SuitableMachines from '../components/SuitableMachines.vue'
-import CalculateResults from '../components/sections/CalculateResults.vue'
+import CalculateGalvanicPrice from '../components/sections/CalculateGalvanicPrice.vue'
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
 import UploadFiles2 from '@/components/UploadFiles2.vue'
 import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
@@ -413,7 +413,7 @@ watch(process_id, () => {
             </div>
 
             <aside class="milling-page__aside">
-              <CalculateResults :result="result" />
+              <CalculateGalvanicPrice />
 
               <div class="milling-upload">
                 <div class="milling-upload__title">Загрузите файлы</div>
