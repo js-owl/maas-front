@@ -1,11 +1,4 @@
 <script lang="ts" setup>
-const examples = [
-  '/uslugiPages/pkm-example-1.png',
-  '/uslugiPages/pkm-example-2.png',
-  '/uslugiPages/pkm-example-3.png',
-  '/uslugiPages/pkm-example-4.png',
-]
-
 const applications = [
   'Авиация',
   'Машиностроение',
@@ -21,12 +14,7 @@ const applications = [
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper pkm-examples">
-      <div class="uslugi-table-title">Примеры работ</div>
-      <div class="examples-grid">
-        <img v-for="(example, index) in examples" :key="index" :src="example" alt="Пример работ ПКМ" />
-      </div>
-
+    <div class="uslugi-wrapper pkm-applications">
       <div class="uslugi-table-title">Применение</div>
       <div class="application-tags">
         <div v-for="application in applications" :key="application" class="application-tag">
@@ -38,28 +26,13 @@ const applications = [
 </template>
 
 <style scoped>
-.uslugi-wrapper {
+.pkm-applications {
   box-shadow: 0 10px 15px 0 var(--button-bg);
-  padding: 40px;
-}
-
-.pkm-examples {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.examples-grid {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(4, 1fr);
-}
-
-.examples-grid img {
-  border-radius: 10px;
-  height: 240px;
-  object-fit: cover;
-  width: 100%;
+  margin-bottom: 40px;
+  padding: 40px;
 }
 
 .application-tags {
@@ -81,23 +54,9 @@ const applications = [
   padding: 10px 20px;
 }
 
-@media (max-width: 1200px) {
-  .examples-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 @media (max-width: 767px) {
-  .uslugi-wrapper {
+  .pkm-applications {
     padding: 20px;
-  }
-
-  .examples-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .examples-grid img {
-    height: 200px;
   }
 
   .application-tag {
