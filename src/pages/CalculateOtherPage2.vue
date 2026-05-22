@@ -7,8 +7,6 @@ import { parseFilesQueryToIds } from '../helpers/parse-files'
 import { formatDeadline, parseDeadline } from '../helpers/deadline'
 
 import Input from '../components/ui/Input.vue'
-import DatePicker from '../components/ui/DatePicker.vue'
-
 import SelectCalc from '../components/ui/SelectCalc.vue'
 
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
@@ -22,19 +20,14 @@ import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 // import UploadModel from '../components/cad/UploadModel.vue'
 // import UploadDrawings from '../components/UploadDrawings.vue'
 // import DocumentShowByIds from '../components/DocumentShowByIds.vue'
-// @ts-ignore
-import CadShowById from '../components/cad/CadShowById.vue'
 import { useProfileStore } from '../stores/profile.store'
-// import DialogInfoPayment from '../components/dialog/DialogInfoPayment.vue'
 import SuitableMachines from '../components/SuitableMachines.vue'
-import CalculateResults from '../components/sections/CalculateResults.vue'
-// import CalculateSubmit from '../components/sections/CalculateSubmit.vue'
-// import Height from "../components/coefficients/Height.vue";
+import CalculateResultSpecialist from '../components/sections/CalculateResultSpecialist.vue'
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
 import UploadFiles2 from '@/components/UploadFiles2.vue'
 import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
-// import Loader from '../components/ui/Loader.vue'
+import Loader from '../components/ui/Loader.vue'
 
 const profileStore = useProfileStore()
 
@@ -44,7 +37,6 @@ let order_name = ref('')
 let order_code = ref('3000.000.001')
 
 let file_id = ref<number | undefined>(undefined)
-const cadViewerKey = ref(0)
 let document_ids = ref<number[]>([])
 
 let length = ref(120)
@@ -340,120 +332,96 @@ async function getOrder(id: number) {
   await stopLoading()
 }
 
-watch(file_id, () => {
-  cadViewerKey.value += 1
-})
 </script>
 
 <template>
-  <section
-    class="milling-page"
-    v-loading="isLoading"
-    element-loading-text="Пересчитываем стоимость..."
-  >
-    <el-row :gutter="0" class="milling-page__row">
-      <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }" >
-        <div class="milling-page__card">
-          <div class="milling-page__main">
-            <div class="calc-two-columns">
-              <div class="calc-quantity">
-                <div class="calc-title">Количество, шт</div>
-                <Input
-                  v-model="quantityInput"
-                  type="number"
-                  placeholder="Введите количество"
-                />
+  <Loader :loading="isLoading" text="Расчет цены...">
+    <section class="milling-page">
+      <el-row :gutter="0" class="milling-page__row">
+        <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
+          <div class="milling-page__card">
+            <div class="milling-page__main other-page__main">
+              <div class="other-page__fields">
+                <div class="calc-quantity">
+                  <div class="calc-title">Количество, ед.</div>
+                  <Input
+                    v-model="quantityInput"
+                    type="number"
+                    placeholder="Введите количество"
+                  />
+                </div>
+
+                <div class="milling-field-group">
+                  <div class="calc-title">Материал</div>
+                  <SelectCalc v-model="material_id" :input-data="materials" />
+                </div>
+
+                <div class="milling-field-group">
+                  <div class="calc-title">Технология</div>
+                  <SelectCalc v-model="service_id" :input-data="processes" />
+                </div>
+
+                <div class="milling-field-block">
+                  <div class="calc-title">Финишная обработка изделия</div>
+                  <CoefficientCover2 v-model="cover_id" />
+                </div>
+
+                <div class="milling-field-block milling-field-block--otk">
+                  <div class="calc-title">Вид контроля</div>
+                  <CoefficientOtk2 v-model="k_otk" />
+                </div>
+
+                <div
+                  class="milling-field-block"
+                  v-if="profileStore.profile?.username === 'admin'"
+                >
+                  <SuitableMachines :machines="result?.suitable_machines || []" />
+                </div>
               </div>
-              <div class="milling-field-group">
-                <div class="calc-title">Сроки выполнения</div>
-                <DatePicker
-                  v-model="deadline"
-                  placeholder="Выберите дату"
-                />
+
+              <div class="other-page__bottom">
+                <div class="milling-field-block other-description">
+                  <div class="calc-title">Описание заказа</div>
+                  <el-input
+                    v-model="special_instructions"
+                    type="textarea"
+                    :rows="5"
+                    placeholder=""
+                  />
+                </div>
+
+                <div class="milling-actions">
+                  <CalculateSubmit2
+                    :order-id="order_id"
+                    :payload="payload as unknown as IOrderPayload"
+                    :special-instructions="special_instructions"
+                    @updateResult="onUpdateResult"
+                    @showInfo="isInfoVisible = true"
+                  />
+                </div>
               </div>
             </div>
 
-            <div class="milling-field-group">
-              <div class="calc-title">Материал</div>
-              <SelectCalc v-model="material_id" :input-data="materials" />
-            </div>
+            <aside class="milling-page__aside">
+              <CalculateResultSpecialist />
 
-            <div class="milling-field-group">
-              <div class="calc-title">Технология</div>
-              <SelectCalc v-model="service_id" :input-data="processes" />
-            </div>
-
-
-            <div class="milling-field-block">
-              <div class="calc-title">Финишная обработка изделия</div>
-              <CoefficientCover2 v-model="cover_id" />
-            </div>
-
-            <div class="milling-field-block milling-field-block--otk">
-              <div class="calc-title">Вид контроля</div>
-              <CoefficientOtk2 v-model="k_otk" />
-            </div>
-
-            <!-- <div class="milling-field-block">
-              <CoefficientCertificate v-model="k_cert" />
-            </div> -->
-
-            <div
-              class="milling-field-block"
-              v-if="profileStore.profile?.username === 'admin'"
-            >
-              <SuitableMachines :machines="result?.suitable_machines || []" />
-            </div>
-
-            <div class="milling-field-block">
-              <div class="calc-title">Описание заказа</div>
-              <el-input
-                v-model="special_instructions"
-                type="textarea"
-                :rows="5"
-                placeholder=""
-              />
-            </div>
-
-            <div class="milling-actions">
-              <CalculateSubmit2
-                :order-id="order_id"
-                :payload="{
-                  ...payload,
-                  // deadline: formatDeadline(deadline),
-                } as unknown as IOrderPayload"
-                :special-instructions="special_instructions"
-                @updateResult="onUpdateResult"
-                @showInfo="isInfoVisible = true"
-              />
-            </div>
+              <div class="milling-upload">
+                <div class="milling-upload__title">Загрузите файлы</div>
+                <UploadFiles2
+                  v-model="document_ids"
+                  color="#000"
+                  :hide-formats-text="true"
+                  v-model:stp_id="file_id"
+                  class="upload-files-bordered"
+                />
+                <DocumentShowByIds2 v-model="document_ids" />
+              </div>
+            </aside>
           </div>
-
-          <aside class="milling-page__aside">
-            <CalculateResults :result="result" />
-
-            <div v-if="file_id" class="milling-cad">
-              <CadShowById :key="cadViewerKey" v-model="file_id" />
-            </div>
-
-            <div class="milling-upload">
-              <div class="milling-upload__title">Загрузите файлы</div>
-              <UploadFiles2
-                v-model="document_ids"
-                color="#000"
-                :hide-formats-text="true"
-                v-model:stp_id="file_id"
-                class="upload-files-bordered"
-              />
-              <!-- <UploadModel v-model="file_id" color="#000" />
-              <UploadDrawings v-model="document_ids" color="#000" /> -->
-              <DocumentShowByIds2 v-model="document_ids" />
-            </div>
-          </aside>
-        </div>
-      </el-col>
-    </el-row>
-  </section>
+        </el-col>
+      </el-row>
+    </section>
+  </Loader>
 </template>
 
 <style scoped>
@@ -487,6 +455,34 @@ watch(file_id, () => {
   min-width: 0;
 }
 
+.other-page__main {
+  gap: 80px;
+}
+
+.other-page__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+}
+
+.other-page__fields .calc-quantity {
+  width: 200px;
+  max-width: 100%;
+}
+
+.other-page__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  margin-top: auto;
+}
+
+.other-description {
+  padding: 0;
+}
+
 .milling-field-group,
 .milling-field-block {
   display: flex;
@@ -512,12 +508,6 @@ watch(file_id, () => {
   flex-direction: column;
   gap: 20px;
   min-width: 0;
-}
-
-.milling-cad {
-  border-radius: 10px;
-  overflow: hidden;
-  background: #fff;
 }
 
 .milling-upload {
@@ -568,8 +558,21 @@ watch(file_id, () => {
     overflow-x: hidden;
   }
 
-  .milling-page__main {
+  .milling-page__main,
+  .other-page__main {
     gap: 16px;
+  }
+
+  .other-page__fields {
+    gap: 16px;
+  }
+
+  .other-page__fields .calc-quantity {
+    width: 100%;
+  }
+
+  .other-page__bottom {
+    gap: 14px;
   }
 
   .milling-field-group,
@@ -600,10 +603,6 @@ watch(file_id, () => {
 
   .milling-actions {
     padding-top: 0;
-  }
-
-  .milling-cad {
-    border-radius: 8px;
   }
 
   :deep(.el-textarea__inner) {
