@@ -157,8 +157,7 @@ const ELECTROPLATING_FIELDS: PersonalCalcPropertyField[] = [
 
 const OTHER_FIELDS: PersonalCalcPropertyField[] = [
   { key: 'service', label: 'Услуга' },
-  { key: 'material', label: 'Материал' },
-  { key: 'technology', label: 'Технология' },
+  { key: 'material', label: 'Материал заготовки' },
   { key: 'dimensions', label: 'Габаритные размеры, мм' },
   { key: 'partVolume', label: 'Объем заготовки' },
   { key: 'billableWeight', label: 'Масса материала на 1 деталь' },
