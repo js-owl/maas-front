@@ -114,9 +114,9 @@ type BuildPropertyValuesOptions = {
   }
 }
 
-const formatCompositeTooling = (isNeedSpecialEquipment?: boolean): string | undefined => {
+const formatCompositeTooling = (isNeedSpecialEquipment?: boolean | number): string | undefined => {
   if (isNeedSpecialEquipment == null) return undefined
-  return isNeedSpecialEquipment ? 'Изготовителя' : 'Заказчика'
+  return Boolean(isNeedSpecialEquipment) ? 'Требуется изготовление' : 'Не требуется'
 }
 
 type CompositeMaterialOption = {
