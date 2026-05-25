@@ -19,6 +19,19 @@ export type PersonalCalcPropertyKey =
 
 export const COMPOSITE_SERVICE_LABEL = 'Изготовление из полимерно-композитных материалов'
 
+export const PRINTING_SERVICE_BASE_LABEL = '3D печать'
+
+const PRINTING_TECHNOLOGY_LABELS: Record<string, string> = {
+  sls: 'SLS',
+}
+
+export const formatPrintingServiceLabel = (processId?: string): string => {
+  const technologyKey = processId?.trim().toLowerCase() || 'sls'
+  const technology =
+    PRINTING_TECHNOLOGY_LABELS[technologyKey] ?? technologyKey.toUpperCase()
+  return `${PRINTING_SERVICE_BASE_LABEL} (${technology})`
+}
+
 export type PersonalCalcPropertyField = {
   key: PersonalCalcPropertyKey
   label: string
@@ -214,9 +227,13 @@ export const buildPersonalCalcPropertyValues = ({
   const isComposite = order.service_id === 'composite'
 
   if (serviceLabel || order.service_id) {
-    values.service = isComposite
-      ? COMPOSITE_SERVICE_LABEL
-      : (serviceLabel ?? order.service_id)
+    if (isComposite) {
+      values.service = COMPOSITE_SERVICE_LABEL
+    } else if (order.service_id === 'printing') {
+      values.service = formatPrintingServiceLabel(order.process_id)
+    } else {
+      values.service = serviceLabel ?? order.service_id
+    }
   }
 
   if (isComposite) {

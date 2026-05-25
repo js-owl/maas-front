@@ -407,6 +407,8 @@ const fetchOrder = async (id: number) => {
 
     if (fetchedOrderData.service_id === 'composite') {
       await materialStore.loadMaterials('composite')
+    } else if (fetchedOrderData.service_id === 'printing') {
+      await materialStore.loadMaterials('printing')
     } else if (!materialStore.materials.length) {
       await materialStore.setAllMaterials()
     }
