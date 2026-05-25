@@ -17,7 +17,7 @@ const profileStore = useProfileStore()
 const profileForm = ref<IProfile>()
 const formRef = ref<FormInstance>()
 const isSaving = ref(false)
-const activeTab = ref('individual')
+const activeTab = ref('legal')
 
 const applyPhoneDefaults = (profile: IProfile) => {
   profile.phone_number = ensureRuPhoneModelValue(profile.phone_number)
