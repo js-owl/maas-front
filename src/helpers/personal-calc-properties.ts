@@ -56,6 +56,44 @@ export type ElectroplatingOperation = {
   label: string
 }
 
+export type OtherServiceItem = {
+  id: string
+  label: string
+  service: string
+}
+
+export const normalizeOtherServicesResponse = (
+  data: OtherServiceItem[] | { other_services?: OtherServiceItem[] } | null | undefined
+): OtherServiceItem[] => {
+  if (Array.isArray(data)) return data
+  if (Array.isArray(data?.other_services)) return data.other_services
+  return []
+}
+
+export const resolveOtherServiceLabel = (
+  order: IOrderResponse,
+  otherServices: OtherServiceItem[]
+): string | undefined => {
+  const lookupKeys = [
+    order.service_id !== 'other' ? order.service_id : undefined,
+    order.process_id,
+  ].filter(Boolean) as string[]
+
+  const found = otherServices.find((item) =>
+    lookupKeys.some((key) => item.service === key || item.id === key)
+  )
+  return found?.label
+}
+
+export const isOtherLikeServiceId = (
+  serviceId?: string,
+  otherServices?: OtherServiceItem[]
+): boolean => {
+  if (!serviceId) return false
+  if (serviceId === 'other') return true
+  return Boolean(otherServices?.some((item) => item.service === serviceId))
+}
+
 export const formatElectroplatingCoatingLabel = (path: string[], label?: string): string | undefined => {
   if (path.length > 1) return path.join(' - ')
   if (path.length === 1) return path[0]
@@ -137,9 +175,14 @@ const SERVICE_PROPERTY_FIELDS: Record<string, PersonalCalcPropertyField[]> = {
   other: OTHER_FIELDS,
 }
 
-export const getPersonalCalcPropertyFields = (serviceId?: string): PersonalCalcPropertyField[] => {
+export const getPersonalCalcPropertyFields = (
+  serviceId?: string,
+  otherServices?: OtherServiceItem[]
+): PersonalCalcPropertyField[] => {
   if (!serviceId) return MACHINING_FIELDS
-  return SERVICE_PROPERTY_FIELDS[serviceId] ?? MACHINING_FIELDS
+  if (SERVICE_PROPERTY_FIELDS[serviceId]) return SERVICE_PROPERTY_FIELDS[serviceId]
+  if (isOtherLikeServiceId(serviceId, otherServices)) return OTHER_FIELDS
+  return MACHINING_FIELDS
 }
 
 type CoefficientItem = { value: string; label: string }

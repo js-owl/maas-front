@@ -18,16 +18,15 @@ import {
   getPersonalCalcPropertyFields,
   resolveCompositeMaterialLabels,
   resolveElectroplatingLabelsFromOperation,
+  normalizeOtherServicesResponse,
+  resolveOtherServiceLabel,
   type ElectroplatingOperation,
+  type OtherServiceItem,
   type PersonalCalcPropertyValues,
 } from '../helpers/personal-calc-properties'
 import { orderTypeOptions } from '../helpers/order-type-options'
 
-type OtherService = {
-  id: string
-  label: string
-  service: string
-}
+type OtherService = OtherServiceItem
 
 type OtherServicesResponse = {
   other_services: OtherService[]
@@ -91,7 +90,7 @@ const propertyValues = ref<PersonalCalcPropertyValues>({})
 
 const propertyRows = computed(() => {
   const serviceId = orderData.value?.service_id
-  return getPersonalCalcPropertyFields(serviceId).map((field) => ({
+  return getPersonalCalcPropertyFields(serviceId, otherServices.value).map((field) => ({
     ...field,
     value: propertyValues.value[field.key] || '-',
   }))
@@ -333,9 +332,6 @@ const handleEdit = () => {
 
 // Load other services from API
 const loadOtherServices = async () => {
-  if (otherServices.value.length > 0) return
-
-  // Default services that are always available
   const defaultServices: OtherService[] = [
     {
       id: '101',
@@ -352,24 +348,21 @@ const loadOtherServices = async () => {
   try {
     const res = await req_json('/other_services', 'GET')
     if (res?.ok) {
-      const data = (await res.json()) as OtherServicesResponse
-      if (data?.other_services && Array.isArray(data.other_services)) {
-        // Merge default services with API services, avoiding duplicates by service field
+      const data = (await res.json()) as OtherServicesResponse | OtherService[]
+      const apiServices = normalizeOtherServicesResponse(data)
+      if (apiServices.length) {
         const serviceMap = new Map<string, OtherService>()
-        
-        // Add default services first
+
         defaultServices.forEach((service) => {
           serviceMap.set(service.service, service)
         })
-        
-        // Add API services, they will override defaults if service field matches
-        data.other_services.forEach((service) => {
+
+        apiServices.forEach((service) => {
           serviceMap.set(service.service, service)
         })
-        
+
         otherServices.value = Array.from(serviceMap.values())
       } else {
-        // If API didn't return valid data, use defaults
         otherServices.value = defaultServices
       }
     } else {
@@ -430,15 +423,14 @@ const fetchOrder = async (id: number) => {
     if (fetchedOrderData.manufacturing_cycle)
       manufacturingTime.value = fetchedOrderData.manufacturing_cycle
 
-    const foundService = otherServices.value.find(
-      (service) => service.service === fetchedOrderData.service_id
-    )
+    const otherServiceLabel = resolveOtherServiceLabel(fetchedOrderData, otherServices.value)
     const foundMaterial = materialStore.materials.find(
       (material) => material.value === fetchedOrderData.material_id
     )
-    const serviceTypeLabel = orderTypeOptions.find(
+    const orderTypeLabel = orderTypeOptions.find(
       (option) => option.serviceId === fetchedOrderData.service_id
     )?.label
+    const serviceTypeLabel = otherServiceLabel ?? orderTypeLabel
     const electroplatingLabels =
       fetchedOrderData.service_id === 'electroplating'
         ? await resolveElectroplatingLabels(fetchedOrderData.material_id)
@@ -450,13 +442,11 @@ const fetchOrder = async (id: number) => {
 
     propertyValues.value = buildPersonalCalcPropertyValues({
       order: fetchedOrderData,
-      serviceLabel: serviceTypeLabel ?? foundService?.label ?? fetchedOrderData.service_id,
+      serviceLabel: serviceTypeLabel ?? fetchedOrderData.service_id,
       materialLabel: foundMaterial?.label ?? fetchedOrderData.material_id,
       blankMaterialLabel: electroplatingLabels.blankMaterialLabel,
       baseLabel: compositeLabels?.base,
       impregnationLabel: compositeLabels?.impregnation,
-      technologyLabel:
-        fetchedOrderData.service_id === 'other' ? foundService?.label : undefined,
       coatingTypeLabel: electroplatingLabels.coatingTypeLabel,
       coefficients: coefficientsStore.coefficients,
     })
