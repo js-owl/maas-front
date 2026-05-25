@@ -147,13 +147,24 @@ const handleView = (row: IKit): void => {
   handleOpen(row)
 }
 
+const resolveUserId = async (): Promise<number | null> => {
+  const fromOrder = allOrders.value.find((o) => o.user_id != null)?.user_id
+  if (fromOrder != null) return fromOrder
+
+  if (profileStore.profile?.id == null) {
+    await profileStore.getProfile()
+  }
+
+  return profileStore.profile?.id ?? null
+}
+
 const createOrder = async () => {
   if (!authStore.getToken) {
     ElMessage.warning('Войдите в аккаунт')
     return
   }
 
-  const userId = allOrders.value.find((o) => o.user_id != null)?.user_id
+  const userId = await resolveUserId()
   if (userId == null) {
     ElMessage.error('Не удалось определить пользователя')
     return

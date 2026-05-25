@@ -4,6 +4,7 @@ import { req_json_auth } from "../api";
 import { ElMessage } from "element-plus";
 
 export type IProfile = {
+  id?: number;
   username: string;
   email: string;
   phone_number?: string;
