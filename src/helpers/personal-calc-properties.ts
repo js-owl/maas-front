@@ -21,6 +21,8 @@ export const COMPOSITE_SERVICE_LABEL = 'Изготовление из полим
 
 export const PRINTING_SERVICE_BASE_LABEL = '3D печать'
 
+export const ELECTROPLATING_SERVICE_LABEL = 'Гальваническое покрытие'
+
 const PRINTING_TECHNOLOGY_LABELS: Record<string, string> = {
   sls: 'SLS',
 }
@@ -30,6 +32,34 @@ export const formatPrintingServiceLabel = (processId?: string): string => {
   const technology =
     PRINTING_TECHNOLOGY_LABELS[technologyKey] ?? technologyKey.toUpperCase()
   return `${PRINTING_SERVICE_BASE_LABEL} (${technology})`
+}
+
+export const resolveElectroplatingLabelsFromOperation = (
+  operation: ElectroplatingOperation | undefined,
+  materialId?: string
+): { coatingTypeLabel?: string; blankMaterialLabel?: string } => {
+  if (!operation) {
+    return materialId ? { coatingTypeLabel: materialId } : {}
+  }
+
+  return {
+    coatingTypeLabel:
+      formatElectroplatingCoatingLabel(operation.path, operation.label) ?? materialId,
+    blankMaterialLabel: operation.group || undefined,
+  }
+}
+
+export type ElectroplatingOperation = {
+  id: string
+  group: string
+  path: string[]
+  label: string
+}
+
+export const formatElectroplatingCoatingLabel = (path: string[], label?: string): string | undefined => {
+  if (path.length > 1) return path.join(' - ')
+  if (path.length === 1) return path[0]
+  return label
 }
 
 export type PersonalCalcPropertyField = {
@@ -79,7 +109,11 @@ const COMPOSITE_FIELDS: PersonalCalcPropertyField[] = [
 
 const ELECTROPLATING_FIELDS: PersonalCalcPropertyField[] = [
   { key: 'service', label: 'Услуга' },
-  { key: 'coatingType', label: 'Вид покрытия' },
+  { key: 'material', label: 'Материал заготовки', valueClass: 'property-value--compact' },
+  { key: 'dimensions', label: 'Габаритные размеры, мм' },
+  { key: 'partVolume', label: 'Объем заготовки' },
+  { key: 'billableWeight', label: 'Масса материала на 1 деталь' },
+  { key: 'coatingType', label: 'Вид покрытия', valueClass: 'property-value--compact' },
   { key: 'controlType', label: 'Вид контроля', valueClass: 'property-value--compact' },
 ]
 
@@ -116,6 +150,7 @@ type BuildPropertyValuesOptions = {
   order: IOrderResponse
   serviceLabel?: string
   materialLabel?: string
+  blankMaterialLabel?: string
   baseLabel?: string
   impregnationLabel?: string
   technologyLabel?: string
@@ -217,6 +252,7 @@ export const buildPersonalCalcPropertyValues = ({
   order,
   serviceLabel,
   materialLabel,
+  blankMaterialLabel,
   baseLabel,
   impregnationLabel,
   technologyLabel,
@@ -225,12 +261,15 @@ export const buildPersonalCalcPropertyValues = ({
 }: BuildPropertyValuesOptions): PersonalCalcPropertyValues => {
   const values: PersonalCalcPropertyValues = {}
   const isComposite = order.service_id === 'composite'
+  const isElectroplating = order.service_id === 'electroplating'
 
   if (serviceLabel || order.service_id) {
     if (isComposite) {
       values.service = COMPOSITE_SERVICE_LABEL
     } else if (order.service_id === 'printing') {
       values.service = formatPrintingServiceLabel(order.process_id)
+    } else if (isElectroplating) {
+      values.service = ELECTROPLATING_SERVICE_LABEL
     } else {
       values.service = serviceLabel ?? order.service_id
     }
@@ -242,6 +281,10 @@ export const buildPersonalCalcPropertyValues = ({
     }
     if (impregnationLabel) {
       values.impregnation = impregnationLabel
+    }
+  } else if (isElectroplating) {
+    if (blankMaterialLabel) {
+      values.material = blankMaterialLabel
     }
   } else if (materialLabel || order.material_id) {
     values.material = materialLabel ?? order.material_id

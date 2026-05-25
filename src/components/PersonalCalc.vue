@@ -17,6 +17,8 @@ import {
   buildPersonalCalcPropertyValues,
   getPersonalCalcPropertyFields,
   resolveCompositeMaterialLabels,
+  resolveElectroplatingLabelsFromOperation,
+  type ElectroplatingOperation,
   type PersonalCalcPropertyValues,
 } from '../helpers/personal-calc-properties'
 import { orderTypeOptions } from '../helpers/order-type-options'
@@ -95,22 +97,19 @@ const propertyRows = computed(() => {
   }))
 })
 
-type ElectroplatingOperation = {
-  id: string
-  group: string
-  path: string[]
-  label: string
+type ElectroplatingLabels = {
+  coatingTypeLabel?: string
+  blankMaterialLabel?: string
 }
 
-const resolveElectroplatingCoatingLabel = async (
-  processId?: string,
+const resolveElectroplatingLabels = async (
   materialId?: string
-): Promise<string | undefined> => {
-  if (!processId && !materialId) return undefined
+): Promise<ElectroplatingLabels> => {
+  if (!materialId) return {}
 
   try {
     const response = await req_json_auth('/operations_available?service_id=electroplating', 'GET')
-    if (!response?.ok) return undefined
+    if (!response?.ok) return { coatingTypeLabel: materialId }
 
     const payload = await response.json()
     const operations = (Array.isArray(payload?.values)
@@ -119,16 +118,10 @@ const resolveElectroplatingCoatingLabel = async (
         ? payload.data.values
         : []) as ElectroplatingOperation[]
 
-    const operation = operations.find(
-      (item) => item.group === processId && item.id === materialId
-    )
-    if (!operation) return undefined
-
-    if (operation.path.length > 1) return operation.path.join(' / ')
-    if (operation.path.length === 1) return operation.path[0]
-    return operation.label
+    const operation = operations.find((item) => item.id === materialId)
+    return resolveElectroplatingLabelsFromOperation(operation, materialId)
   } catch {
-    return undefined
+    return { coatingTypeLabel: materialId }
   }
 }
 
@@ -446,10 +439,10 @@ const fetchOrder = async (id: number) => {
     const serviceTypeLabel = orderTypeOptions.find(
       (option) => option.serviceId === fetchedOrderData.service_id
     )?.label
-    const coatingTypeLabel = await resolveElectroplatingCoatingLabel(
-      fetchedOrderData.process_id,
-      fetchedOrderData.material_id
-    )
+    const electroplatingLabels =
+      fetchedOrderData.service_id === 'electroplating'
+        ? await resolveElectroplatingLabels(fetchedOrderData.material_id)
+        : {}
     const compositeLabels =
       fetchedOrderData.service_id === 'composite'
         ? resolveCompositeMaterialLabels(fetchedOrderData, materialStore.materials)
@@ -459,11 +452,12 @@ const fetchOrder = async (id: number) => {
       order: fetchedOrderData,
       serviceLabel: serviceTypeLabel ?? foundService?.label ?? fetchedOrderData.service_id,
       materialLabel: foundMaterial?.label ?? fetchedOrderData.material_id,
+      blankMaterialLabel: electroplatingLabels.blankMaterialLabel,
       baseLabel: compositeLabels?.base,
       impregnationLabel: compositeLabels?.impregnation,
       technologyLabel:
         fetchedOrderData.service_id === 'other' ? foundService?.label : undefined,
-      coatingTypeLabel,
+      coatingTypeLabel: electroplatingLabels.coatingTypeLabel,
       coefficients: coefficientsStore.coefficients,
     })
 
