@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { uploadDocument, fileToBase64 } from '../api'
+import { computed, ref, watch } from 'vue'
+import { uploadDocument, fileToBase64, req_json_auth } from '../api'
 import { getLocalStpFileById, saveFile3D } from '../helpers/local-stp-files'
 // import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from '../stores/auth.store'
@@ -8,6 +8,18 @@ import { useAuthStore } from '../stores/auth.store'
 import { ElMessage } from 'element-plus'
 
 const GUEST_STP_ONLY_MESSAGE = 'Без авторизации можно загружать только STP-файлы.'
+
+type DocumentInfo = {
+  id: number
+  original_filename: string
+}
+
+type UploadedFileItem = {
+  key: string
+  name: string
+  type: 'stp' | 'document'
+  id: number
+}
 
 const document_ids = defineModel<number[]>({ default: [] })
 const props = withDefaults(
@@ -30,6 +42,7 @@ const authStore = useAuthStore()
 // const isLoginDialogVisible = ref(false)
 const uploadingCount = ref(0)
 const fileInput = ref<HTMLInputElement>()
+const loadedDocuments = ref<DocumentInfo[]>([])
 
 const isUploading = computed(() => uploadingCount.value > 0)
 const isAuthenticated = computed(() => Boolean(authStore.getToken))
@@ -37,11 +50,73 @@ const uploadedStpFileName = computed(() => {
   if (props.stp_id == null) return null
   return getLocalStpFileById(props.stp_id)?.file_name ?? null
 })
+const uploadedFilesList = computed<UploadedFileItem[]>(() => {
+  if (!isAuthenticated.value) return []
+
+  const items: UploadedFileItem[] = []
+
+  if (props.stp_id != null) {
+    const stp = getLocalStpFileById(props.stp_id)
+    if (stp) {
+      items.push({
+        key: `stp-${stp.id}`,
+        name: stp.file_name,
+        type: 'stp',
+        id: stp.id,
+      })
+    }
+  }
+
+  for (const doc of loadedDocuments.value) {
+    items.push({
+      key: `doc-${doc.id}`,
+      name: doc.original_filename,
+      type: 'document',
+      id: doc.id,
+    })
+  }
+
+  return items
+})
+const hasUploadedFiles = computed(() => {
+  if (isAuthenticated.value) return uploadedFilesList.value.length > 0
+  return Boolean(uploadedStpFileName.value)
+})
 const uploadMainText = computed(() => {
   if (isUploading.value) return 'Загрузка...'
-  if (uploadedStpFileName.value) return uploadedStpFileName.value
+  if (!isAuthenticated.value && uploadedStpFileName.value) return uploadedStpFileName.value
   return 'Перетащите или выберите файл'
 })
+
+async function loadDocumentsByIds(ids: number[]) {
+  if (ids.length === 0) {
+    loadedDocuments.value = []
+    return
+  }
+
+  const documentPromises = ids.map(async (documentId) => {
+    try {
+      const r = await req_json_auth(`/documents/${documentId}`, 'GET')
+      const data = (await r?.json()) as DocumentInfo
+      return { id: data.id, original_filename: data.original_filename }
+    } catch (e) {
+      console.error(`Error loading document ${documentId}:`, e)
+      return null
+    }
+  })
+
+  const documents = await Promise.all(documentPromises)
+  loadedDocuments.value = documents.filter((d): d is DocumentInfo => d !== null)
+}
+
+watch(
+  document_ids,
+  (ids) => {
+    if (!isAuthenticated.value) return
+    loadDocumentsByIds(ids ?? [])
+  },
+  { deep: true, immediate: true }
+)
 
 const isDisabled = () => {
   return isUploading.value
@@ -98,6 +173,10 @@ const processUploadedFile = async (file: File): Promise<boolean> => {
 
   if (!document_ids.value.includes(id)) {
     document_ids.value.push(id)
+  }
+
+  if (!loadedDocuments.value.some((doc) => doc.id === id)) {
+    loadedDocuments.value.push({ id, original_filename: file.name })
   }
   return true
 }
@@ -173,14 +252,30 @@ const handleDragOver = (event: DragEvent) => {
     <div
       class="upload"
       :style="{ '--border-color': color }"
-      :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
+      :class="{
+        'is-disabled': isDisabled(),
+        'is-uploading': isUploading,
+        'has-files': hasUploadedFiles,
+      }"
       @click="handleUploadClick"
       @drop="handleDrop"
       @dragover="handleDragOver"
     >
       <div class="custom">
         <!-- <IconDrawing :color="color" style="display: block; width: 30px; height: 30px" /> -->
+        <template v-if="isAuthenticated && uploadedFilesList.length && !isUploading">
+          <div
+            v-for="file in uploadedFilesList"
+            :key="file.key"
+            class="el-upload__text montserrat-semibold"
+            :style="{ color }"
+            style="font-size: 20px; font-weight: 600"
+          >
+            {{ file.name }}
+          </div>
+        </template>
         <div
+          v-else
           class="el-upload__text montserrat-semibold"
           :style="{ color }"
           style="font-size: 20px; font-weight: 600"
@@ -188,7 +283,7 @@ const handleDragOver = (event: DragEvent) => {
           {{ uploadMainText }}
         </div>
         <template v-if="!props.hideFormatsText">
-          <template v-if="isAuthenticated && !uploadedStpFileName">
+          <template v-if="isAuthenticated && !hasUploadedFiles">
             <div class="upload-subtitle">
               Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
             </div>
@@ -196,7 +291,7 @@ const handleDragOver = (event: DragEvent) => {
               Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
             </div>
           </template>
-          <div v-else-if="!uploadedStpFileName" class="upload-subtitle">
+          <div v-else-if="!hasUploadedFiles" class="upload-subtitle">
             Без авторизации можно загружать только STP-файлы.
           </div>
         </template>
@@ -230,6 +325,12 @@ const handleDragOver = (event: DragEvent) => {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+.upload.has-files {
+  height: auto;
+  min-height: 110px;
+  overflow: visible;
 }
 
 .upload:hover:not(.is-disabled) {
