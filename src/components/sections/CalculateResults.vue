@@ -11,6 +11,10 @@ const props = defineProps({
     required: false,
     default: null,
   },
+  showManufacturingTime: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const profileStore = useProfileStore()
@@ -51,7 +55,7 @@ const formatNumber = (value: number | string | null | undefined) => {
           </div>
         </div>
 
-        <div class="card">
+        <div v-if="props.showManufacturingTime" class="card">
           <div class="calc-res">Время изготовления</div>
           <div class="price-line">
             <span class="price">{{ props.result?.manufacturing_cycle ?? '—' }}</span>
