@@ -3,7 +3,7 @@ import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox, type TableInstance } from 'element-plus'
 import { req_json_auth } from '../api'
-import { useProfileStore } from '../stores/profile.store'
+import { useProfileStore, type IProfile } from '../stores/profile.store'
 import { useAuthStore } from '../stores/auth.store'
 import { hidePrice } from '../helpers/hide-price'
 import { statusTexts } from '../helpers/status-text'
@@ -147,6 +147,33 @@ const handleView = (row: IKit): void => {
   handleOpen(row)
 }
 
+const isProfileComplete = (profile?: IProfile): boolean => {
+  if (!profile) return false
+  const required: Array<keyof IProfile> = [
+    'email',
+    'full_name',
+    'postal',
+    'region',
+    'city_name',
+    'street',
+    'building',
+  ]
+  return required.every((key) => {
+    const v = profile[key] as unknown as string | undefined
+    return typeof v === 'string' && v.trim().length > 0
+  })
+}
+
+const ensureProfileLoaded = async () => {
+  if (!profileStore.profile) {
+    try {
+      await profileStore.getProfile()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+}
+
 const resolveUserId = async (): Promise<number | null> => {
   const fromOrder = allOrders.value.find((o) => o.user_id != null)?.user_id
   if (fromOrder != null) return fromOrder
@@ -161,6 +188,12 @@ const resolveUserId = async (): Promise<number | null> => {
 const createOrder = async () => {
   if (!authStore.getToken) {
     ElMessage.warning('Войдите в аккаунт')
+    return
+  }
+
+  await ensureProfileLoaded()
+  if (!isProfileComplete(profileStore.profile)) {
+    ElMessage.warning('Заполните профиль перед созданием заказа')
     return
   }
 
