@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from "vue";
+// import { defineAsyncComponent, ref } from "vue";
 import IconLogo from "../icons/IconLogo.vue";
 import VersionInfo from "./VersionInfo.vue";
 
-const DialogCall = defineAsyncComponent(() => import('./dialog/DialogCall.vue'))
+// const DialogCall = defineAsyncComponent(() => import('./dialog/DialogCall.vue'))
 
-const isCallDialogVisible = ref(false);
+// const isCallDialogVisible = ref(false);
 
-const openCallDialog = () => {
-  isCallDialogVisible.value = true;
-};
+// const openCallDialog = () => {
+//   isCallDialogVisible.value = true;
+// };
 </script>
 
 <template>
@@ -40,9 +40,9 @@ const openCallDialog = () => {
               <a href="tel:+74959214242" class="footer-link">
                 +7 (495) 921-42-42
               </a>
-              <a href="#" class="footer-link" @click.prevent="openCallDialog">
+              <!-- <a href="#" class="footer-link" @click.prevent="openCallDialog">
                 Заказать звонок
-              </a>
+              </a> -->
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@ const openCallDialog = () => {
       </div>
     </el-col>
   </el-row>
-  <DialogCall v-model="isCallDialogVisible" />
+  <!-- <DialogCall v-model="isCallDialogVisible" /> -->
 </template>
 
 <style scoped>

@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import DialogLogin from './dialog/DialogLogin.vue'
-import DialogCall from './dialog/DialogCall.vue'
+// import DialogCall from './dialog/DialogCall.vue'
 import DialogRegistration from './dialog/DialogRegistration.vue'
 import { useAuthStore } from '../stores/auth.store'
 import { useRouter, useRoute } from 'vue-router'
@@ -13,7 +13,7 @@ import IconLogoHeader from '../icons/IconLogoHeader.vue'
 import IconLogoHeader2 from '../icons/IconLogoHeader2.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
 import IconReg from '../icons/IconReg.vue'
-import IconCall from '@/icons/IconCall.vue'
+// import IconCall from '@/icons/IconCall.vue'
 import IconEnter from '@/icons/IconEnter.vue'
 import IconProfile from '@/icons/IconProfile.vue'
 // import IconChat from '@/icons/IconChat.vue'
@@ -23,7 +23,7 @@ import ServicesCabinetMenu from './ServicesCabinetMenu.vue'
 const activeIndex = ref('1')
 
 const isLoginVisible = ref(false)
-const isCallVisible = ref(false)
+// const isCallVisible = ref(false)
 const isRegistrationVisible = ref(false)
 
 const authStore = useAuthStore()
@@ -115,11 +115,11 @@ function openOrdersPage() {
 //   router.push({ path: '/personal' })
 // }
 
-function requestCall() {
-  isCabinetMenuVisible.value = false
-  isGuestCabinetMenuVisible.value = false
-  isCallVisible.value = true
-}
+// function requestCall() {
+//   isCabinetMenuVisible.value = false
+//   isGuestCabinetMenuVisible.value = false
+//   isCallVisible.value = true
+// }
 
 function openGuestRegistration() {
   isGuestCabinetMenuVisible.value = false
@@ -218,14 +218,14 @@ function openServicePage(path: string) {
                     <el-icon :size="22" class="cabinet-menu-icon"><IconReg /></el-icon>
                     <span>Регистрация</span>
                   </button>
-                  <button
+                  <!-- <button
                     type="button"
                     class="cabinet-menu-item montserrat-medium"
                     @click="requestCall"
                   >
                     <el-icon :size="22" class="cabinet-menu-icon"><IconCall /></el-icon>
                     <span>Заказать звонок</span>
-                  </button>
+                  </button> -->
                   <button
                     type="button"
                     class="cabinet-menu-item montserrat-medium"
@@ -277,10 +277,10 @@ function openServicePage(path: string) {
                     <el-icon :size="22" class="cabinet-menu-icon"><IconChat /></el-icon>
                     <span>Чат</span>
                   </button> -->
-                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="requestCall">
+                  <!-- <button type="button" class="cabinet-menu-item montserrat-medium" @click="requestCall">
                     <el-icon :size="22" class="cabinet-menu-icon"><IconCall /></el-icon>
                     <span>Заказать звонок</span>
-                  </button>
+                  </button> -->
                   <button type="button" class="cabinet-menu-item montserrat-medium" @click="onLogout">
                     <el-icon :size="22" class="cabinet-menu-icon"><IconExit /></el-icon>
                     <span>Выход из аккаунта</span>
@@ -298,7 +298,7 @@ function openServicePage(path: string) {
       </el-col>
       <DialogLogin v-model="isLoginVisible" />
       <DialogRegistration v-model="isRegistrationVisible" @open-login="openLoginFromRegistration" />
-      <DialogCall v-model="isCallVisible" />
+      <!-- <DialogCall v-model="isCallVisible" /> -->
     </el-row>
 
     <!-- Hero content on home page -->
