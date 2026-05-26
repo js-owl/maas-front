@@ -33,13 +33,13 @@ const fileInput = ref<HTMLInputElement>()
 
 const isUploading = computed(() => uploadingCount.value > 0)
 const isAuthenticated = computed(() => Boolean(authStore.getToken))
-const guestUploadedFileName = computed(() => {
-  if (isAuthenticated.value || props.stp_id == null) return null
+const uploadedStpFileName = computed(() => {
+  if (props.stp_id == null) return null
   return getLocalStpFileById(props.stp_id)?.file_name ?? null
 })
 const uploadMainText = computed(() => {
   if (isUploading.value) return 'Загрузка...'
-  if (guestUploadedFileName.value) return guestUploadedFileName.value
+  if (uploadedStpFileName.value) return uploadedStpFileName.value
   return 'Перетащите или выберите файл'
 })
 
@@ -188,7 +188,7 @@ const handleDragOver = (event: DragEvent) => {
           {{ uploadMainText }}
         </div>
         <template v-if="!props.hideFormatsText">
-          <template v-if="isAuthenticated">
+          <template v-if="isAuthenticated && !uploadedStpFileName">
             <div class="upload-subtitle">
               Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
             </div>
@@ -196,7 +196,7 @@ const handleDragOver = (event: DragEvent) => {
               Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
             </div>
           </template>
-          <div v-else-if="!guestUploadedFileName" class="upload-subtitle">
+          <div v-else-if="!uploadedStpFileName" class="upload-subtitle">
             Без авторизации можно загружать только STP-файлы.
           </div>
         </template>
