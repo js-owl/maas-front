@@ -122,12 +122,31 @@ const onOpenLogin = () => {
       </div>
     </template>
     <div class="body-class">
-      <el-form class="dialog-login-form" :model="formData">
+      <el-form
+        id="dialog-login-form"
+        class="dialog-login-form"
+        :model="formData"
+        autocomplete="on"
+        @submit.prevent="onSubmit"
+      >
         <el-form-item>
-          <Input v-model="formData.username" placeholder="Логин" />
+          <Input
+            id="login-username"
+            v-model="formData.username"
+            name="username"
+            autocomplete="username"
+            placeholder="Логин"
+          />
         </el-form-item>
         <el-form-item>
-          <Input v-model="formData.password" type="password" placeholder="Пароль" />
+          <Input
+            id="login-password"
+            v-model="formData.password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Пароль"
+          />
         </el-form-item>
       </el-form>
       <div class="remember-row">
@@ -139,7 +158,7 @@ const onOpenLogin = () => {
     <template #footer>
       <div class="dialog-footer">
         <div class="buttons">
-          <Button width="fit-content" flat @click="onSubmit">Войти</Button>
+          <Button form="dialog-login-form" width="fit-content" flat @click="onSubmit">Войти</Button>
           <Button v-if="true" width="fit-content" flat @click="onRegistration"> Регистрация </Button>
         </div>
         <!-- <div class="restore" @click="onRestore">Восстановить пароль</div> -->

@@ -15,6 +15,9 @@ const props = withDefaults(
     fontSize?: string
     formatter?: (value: string) => string
     parser?: (value: string) => string
+    autocomplete?: string
+    name?: string
+    id?: string
   }>(),
   {
     modelValue: '',
@@ -24,6 +27,9 @@ const props = withDefaults(
     clearable: false,
     width: '100%',
     fontSize: '16px',
+    autocomplete: undefined,
+    name: undefined,
+    id: undefined,
   }
 )
 
@@ -64,6 +70,9 @@ const handleChange = (value: string) => {
     :style="{ width: props.width, '--input-font-size': props.fontSize }"
   >
     <el-input
+      :id="id"
+      :name="name"
+      :autocomplete="autocomplete"
       :model-value="modelValue"
       :placeholder="placeholder"
       :type="resolvedType"
