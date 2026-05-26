@@ -468,7 +468,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
 
         <el-table-column prop="total_kit_price" label="Цена" width="120" align="right">
           <template #default="{ row }">
-            <span class="filename-text">{{ formatPrice(row.total_kit_price, row.status_name) }}</span>
+            <span class="filename-text">{{ formatPrice(row.total_kit_price) }}</span>
           </template>
         </el-table-column>
 
