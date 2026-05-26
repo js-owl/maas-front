@@ -23,7 +23,6 @@ interface FormData {
   name: string
   phone: string
   product: string
-  time: string
   additional: string
   agreement: boolean
 }
@@ -33,7 +32,6 @@ const form = ref<FormData>({
   name: '',
   phone: '7',
   product: '',
-  time: '',
   additional: '',
   agreement: false,
 })
@@ -61,28 +59,18 @@ const rules = ref<FormRules<FormData>>({
     { required: true, message: 'Пожалуйста, введите номер телефона', trigger: 'blur' },
     { validator: createPhoneNumberValidator({ allowEmpty: false }), trigger: ['blur', 'change'] },
   ],
-  time: [
-    {
-      required: true,
-      message: 'Пожалуйста, выберите удобное время',
-      trigger: 'change',
-    },
-  ],
   agreement: [{ validator: validateAgreement, trigger: 'change' }],
 })
 
 const closeDialog = () => {
   dialogFormVisible.value = false
-  // Reset form when closing
   form.value = {
     name: '',
     phone: '7',
     product: '',
-    time: '',
     additional: '',
     agreement: false,
   }
-  // Clear validation errors
   if (formRef.value) {
     formRef.value.clearValidate()
   }
@@ -95,8 +83,6 @@ const submitForm = async () => {
     await formRef.value.validate()
     loading.value = true
 
-    console.log('Call request submitted:', form.value)
-
     const payload = {
       ...form.value,
       phone: isRuPhoneOnlyPrefix(form.value.phone) ? '' : form.value.phone,
@@ -108,7 +94,6 @@ const submitForm = async () => {
       message: 'Заявка на звонок отправлена! Мы свяжемся с вами в ближайшее время.',
     })
 
-    // Close dialog and reset form
     closeDialog()
   } catch (error) {
     console.error('Form submission failed:', error)
@@ -150,38 +135,55 @@ const submitForm = async () => {
         label-position="top"
         @submit.prevent="submitForm"
       >
-        <el-form-item prop="name">
-          <Input v-model="form.name" placeholder="Имя" />
-        </el-form-item>
+        <div class="form-field-group">
+          <el-form-item prop="name">
+            <Input v-model="form.name" placeholder="Имя" />
+          </el-form-item>
 
-        <el-form-item prop="phone">
-          <Input
-            v-model="form.phone"
-            placeholder="+7 (___) ___-__-__"
-            type="tel"
-            :formatter="formatPhoneDisplay"
-            :parser="parsePhoneToDigits"
-          />
-        </el-form-item>
+          <el-form-item prop="phone">
+            <Input
+              v-model="form.phone"
+              placeholder="+7 (___) ___-__-__"
+              type="tel"
+              :formatter="formatPhoneDisplay"
+              :parser="parsePhoneToDigits"
+            />
+          </el-form-item>
+        </div>
 
-        <el-form-item prop="product">
-          <Input v-model="form.product" placeholder="Интересующая услуга" />
-        </el-form-item>
+        <div class="form-field-group">
+          <el-form-item prop="product">
+            <Input v-model="form.product" placeholder="Интересующая услуга" />
+          </el-form-item>
 
-        <!-- <el-form-item prop="time">
-          <Input v-model="form.time" placeholder="Когда вам позвонить?" />
-        </el-form-item> -->
-
-        <el-form-item prop="additional">
-          <Input v-model="form.additional" placeholder="Дополнительная информация" />
-        </el-form-item>
+          <el-form-item prop="additional">
+            <Input v-model="form.additional" placeholder="Дополнительная информация" />
+          </el-form-item>
+        </div>
 
         <el-form-item prop="agreement" class="agreement-row">
-          <Checkbox v-model="form.agreement">
-            Я согласен с
-            <router-link to="/offer-client" class="agreement-link" @click.stop="closeDialog">
-              "Пользовательскими соглашениями Аэромакс"
+          <Checkbox v-model="form.agreement" class="agreement-checkbox">
+            Отправляя данную форму, вы соглашаетесь с
+            <router-link
+              to="/policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="agreement-link"
+              @click.stop
+            >
+              политикой конфиденциальности
             </router-link>
+            и
+            <router-link
+              to="/offer-client"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="agreement-link"
+              @click.stop
+            >
+              правилами нашего сайта
+            </router-link>
+            .
           </Checkbox>
         </el-form-item>
       </el-form>
@@ -207,19 +209,19 @@ const submitForm = async () => {
 <style scoped>
 :deep(.el-dialog__header) {
   margin-right: 0;
-  padding: 40px 40px 0;
+  padding: 0;
 }
 
 :deep(.el-dialog__body) {
-  padding: 40px 40px 0;
+  padding: 40px 0 0;
 }
 
 :deep(.el-dialog__footer) {
-  padding: 0 40px 40px;
+  padding: 40px 0 0;
 }
 
-:deep(.el-form-item) {
-  margin-bottom: 10px;
+.dialog-call-form :deep(.el-form-item) {
+  margin-bottom: 0;
 }
 
 .dialog-header {
@@ -231,33 +233,16 @@ const submitForm = async () => {
   padding: 0;
 }
 
-.agreement-row {
-  margin-top: 20px;
-  margin-bottom: 0;
-}
-
-.agreement-row :deep(.checkbox) {
-  --checkbox-font-size: 12px;
-  --checkbox-text-color: #000;
-  --checkbox-label-padding-left: 12px;
-  --checkbox-font-family: 'Montserrat-Medium';
-  --checkbox-font-weight: 400;
-  --checkbox-label-size: 12px;
-  --checkbox-line-height: 14px;
-  --checkbox-size: 24px;
-  --checkbox-border-width: 2px;
-  --checkbox-border-color: #7d8083;
-  --checkbox-bg-color: var(--bgcolor);
-  --checkbox-radius: 4px;
-  --checkbox-checked-border-color: #7d8083;
-  --checkbox-checked-bg-color: var(--bgcolor);
-  --checkbox-check-width: 5px;
-  --checkbox-check-height: 10px;
-  --checkbox-check-border-width: 2px;
-  --checkbox-check-color: #000;
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .dialog-call-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   --input-bg: var(--whity);
   --input-radius: 10px;
   --input-font-family: 'Montserrat-Medium';
@@ -278,40 +263,62 @@ const submitForm = async () => {
   line-height: 1.2;
 }
 
+.agreement-row {
+  margin-bottom: 0;
+}
+
+.agreement-checkbox {
+  --checkbox-font-size: 12px;
+  --checkbox-text-color: #000;
+  --checkbox-label-padding-left: 12px;
+  --checkbox-font-family: 'Montserrat-Regular';
+  --checkbox-font-weight: 400;
+  --checkbox-label-size: 12px;
+  --checkbox-line-height: 14px;
+  --checkbox-size: 24px;
+  --checkbox-border-width: 2px;
+  --checkbox-border-color: #7d8083;
+  --checkbox-bg-color: var(--bgcolor);
+  --checkbox-radius: 4px;
+  --checkbox-checked-border-color: #7d8083;
+  --checkbox-checked-bg-color: var(--bgcolor);
+  --checkbox-check-width: 5px;
+  --checkbox-check-height: 10px;
+  --checkbox-check-border-width: 2px;
+  --checkbox-check-color: #000;
+  width: 100%;
+}
+
+.agreement-checkbox :deep(.el-checkbox__label) {
+  white-space: normal;
+}
+
 .agreement-link {
   color: inherit;
   text-decoration: underline;
 }
 
 .dialog-footer {
-  text-align: left;
-  padding: 40px 0 0;
+  padding: 0;
+}
+
+.dialog-footer :deep(.btn.is-disabled) {
+  background: var(--gray-footer) !important;
+  color: #fff;
+  opacity: 1;
 }
 
 @media (max-width: 767px) {
-  :deep(.el-dialog__header) {
-    padding: 16px 16px 0;
-  }
-
   :deep(.el-dialog__body) {
-    padding: 24px 16px 0;
+    padding: 24px 0 0;
   }
 
   :deep(.el-dialog__footer) {
-    padding: 0 16px 16px;
+    padding: 24px 0 0;
   }
 
-  .dialog-header {
-    margin: 0;
-    padding: 0;
-  }
-
-  .body-class {
-    padding: 0;
-  }
-
-  .dialog-footer {
-    padding-top: 24px;
+  .dialog-call-form {
+    max-width: none;
   }
 }
 </style>
@@ -326,5 +333,11 @@ const submitForm = async () => {
   border-radius: 20px !important;
   background: #fff;
   overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  .dialog-call {
+    padding: 16px;
+  }
 }
 </style>
