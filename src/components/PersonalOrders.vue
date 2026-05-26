@@ -448,13 +448,13 @@ const handleDelete = async (row: IKit): Promise<void> => {
             <span class="filename-text">{{ formatDate(row.created_at) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="Дата завер." width="150">
+        <!-- <el-table-column label="Дата завер." width="150">
           <template #default="{ row }">
             <span class="filename-text">{{ formatDate(row.updated_at) }}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
 
-        <el-table-column prop="status_name" label="Статус" width="250">
+        <el-table-column prop="status_name" label="Статус" width="350">
           <template #default="{ row }">
             <span
               class="status-chip"
