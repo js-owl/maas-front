@@ -334,31 +334,14 @@ const contactFio = computed({
                 <div class="maas-title" style="margin: 0 0 30px;">Профиль</div>
               </el-col>
             </el-row>
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item prop="payment_company_name">
-                  <Input v-model="profileForm.payment_company_name" placeholder="Наименование организации / ИП" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="username">
-                  <Input v-model="profileForm.username" placeholder="Отображаемое название" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-            </el-row>
           </div>
 
           <div v-if="profileForm" class="profile-section">
-            <div class="maas-subtitle" style="margin-bottom: 20px;">Данные компании</div>
+            <div class="maas-subtitle" style="margin-bottom: 20px;">Данные организации</div>
             <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item prop="payment_inn">
-                  <Input v-model="profileForm.payment_inn" placeholder="ИНН" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="payment_kpp">
-                  <Input v-model="profileForm.payment_kpp" placeholder="ОГРН / ОГРНИП" fontSize="20px" />
+              <el-col :span="24">
+                <el-form-item prop="payment_company_name">
+                  <Input v-model="profileForm.payment_company_name" placeholder="Наименование организации / ИП" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -377,13 +360,23 @@ const contactFio = computed({
                   <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
                 </el-form-item>
               </el-col>
+              <el-col :span="12">
+                <el-form-item prop="payment_inn">
+                  <Input v-model="profileForm.payment_inn" placeholder="ИНН" fontSize="20px" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item prop="payment_kpp">
+                  <Input v-model="profileForm.payment_kpp" placeholder="ОГРН / ОГРНИП" fontSize="20px" />
+                </el-form-item>
+              </el-col>
             </el-row>
           </div>
 
           <div v-if="profileForm" class="profile-section">
             <div class="maas-subtitle" style="margin-bottom: 20px;">Контактное лицо</div>
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="24">
                 <el-form-item prop="last_name">
                   <Input v-model="contactFio" placeholder="ФИО" fontSize="20px" />
                 </el-form-item>
@@ -392,11 +385,16 @@ const contactFio = computed({
                 <el-form-item prop="personal_phone_number">
                   <Input
                     v-model="profileForm.personal_phone_number"
-                    placeholder="+7 (___) ___-__-__" fontSize="20px"  
+                    placeholder="Телефон" fontSize="20px"
                     type="tel"
                     :formatter="formatPhoneDisplay"
                     :parser="parsePhoneToDigits"
                   />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item>
+                  <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
                 </el-form-item>
               </el-col>
             </el-row>
