@@ -167,6 +167,7 @@ const submitOrder = async () => {
     await ensureProfileLoaded()
     if (!isProfileComplete(profileStore.profile)) {
       ElMessage.warning('Заполните профиль перед оформлением заказа')
+      await new Promise((resolve) => setTimeout(resolve, 2000))
       const profileUrl = router.resolve({ path: '/personal/profile' }).href
       window.open(profileUrl, '_blank', 'noopener,noreferrer')
       return
