@@ -21,13 +21,21 @@ const isRememberMe = ref(false)
 function loadSavedCredentials() {
   try {
     const raw = localStorage.getItem(LOGIN_CREDENTIALS_KEY)
-    if (!raw) return
+    if (!raw) {
+      formData.username = ''
+      formData.password = ''
+      isRememberMe.value = false
+      return
+    }
     const saved = JSON.parse(raw) as { username?: string; password?: string }
     formData.username = saved.username ?? ''
     formData.password = saved.password ?? ''
     isRememberMe.value = true
   } catch {
     localStorage.removeItem(LOGIN_CREDENTIALS_KEY)
+    formData.username = ''
+    formData.password = ''
+    isRememberMe.value = false
   }
 }
 
@@ -48,7 +56,11 @@ function saveCredentials() {
 onMounted(loadSavedCredentials)
 
 watch(isRememberMe, (remember) => {
-  if (!remember) localStorage.removeItem(LOGIN_CREDENTIALS_KEY)
+  if (!remember) {
+    localStorage.removeItem(LOGIN_CREDENTIALS_KEY)
+    formData.username = ''
+    formData.password = ''
+  }
 })
 
 watch(dialogFormVisible, (visible) => {
