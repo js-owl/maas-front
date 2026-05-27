@@ -77,13 +77,11 @@ const isProfileComplete = (profile?: IProfile): boolean => {
 }
 
 const ensureProfileLoaded = async () => {
-  if (!profileStore.profile) {
-    try {
-      await profileStore.getProfile()
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e)
-    }
+  try {
+    await profileStore.getProfile()
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
   }
 }
 
@@ -169,7 +167,8 @@ const submitOrder = async () => {
     await ensureProfileLoaded()
     if (!isProfileComplete(profileStore.profile)) {
       ElMessage.warning('Заполните профиль перед оформлением заказа')
-      router.push({ path: '/personal/profile' })
+      const profileUrl = router.resolve({ path: '/personal/profile' }).href
+      window.open(profileUrl, '_blank', 'noopener,noreferrer')
       return
     }
 
