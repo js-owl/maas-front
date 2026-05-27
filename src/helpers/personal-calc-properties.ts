@@ -94,6 +94,31 @@ export const isOtherLikeServiceId = (
   return Boolean(otherServices?.some((item) => item.service === serviceId))
 }
 
+const MATERIAL_PROCESS_BY_SERVICE: Record<string, string> = {
+  composite: 'composite',
+  printing: 'printing',
+  'cnc-milling': 'cnc-milling',
+  'cnc-lathe': 'cnc-lathe',
+  other: 'cnc-milling',
+}
+
+export const resolveMaterialProcessForService = (
+  serviceId?: string,
+  otherServices?: OtherServiceItem[]
+): string | undefined => {
+  if (!serviceId || serviceId === 'electroplating') return undefined
+
+  if (MATERIAL_PROCESS_BY_SERVICE[serviceId]) {
+    return MATERIAL_PROCESS_BY_SERVICE[serviceId]
+  }
+
+  if (isOtherLikeServiceId(serviceId, otherServices)) {
+    return 'cnc-milling'
+  }
+
+  return undefined
+}
+
 export const formatElectroplatingCoatingLabel = (path: string[], label?: string): string | undefined => {
   if (path.length > 1) return path.join(' - ')
   if (path.length === 1) return path[0]

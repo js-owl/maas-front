@@ -20,6 +20,7 @@ import {
   resolveElectroplatingLabelsFromOperation,
   normalizeOtherServicesResponse,
   resolveOtherServiceLabel,
+  resolveMaterialProcessForService,
   type ElectroplatingOperation,
   type OtherServiceItem,
   type PersonalCalcPropertyValues,
@@ -391,10 +392,15 @@ const fetchOrder = async (id: number) => {
 
     const fetchedOrderData = (await response.json()) as IOrderResponse
 
-    if (fetchedOrderData.service_id === 'composite') {
-      await materialStore.loadMaterials('composite')
-    } else if (fetchedOrderData.service_id === 'printing') {
-      await materialStore.loadMaterials('printing')
+    // Load other services to resolve service label and material process
+    await loadOtherServices()
+
+    const materialProcess = resolveMaterialProcessForService(
+      fetchedOrderData.service_id,
+      otherServices.value
+    )
+    if (materialProcess) {
+      await materialStore.loadMaterials(materialProcess)
     } else if (!materialStore.materials.length) {
       await materialStore.setAllMaterials()
     }
@@ -407,9 +413,6 @@ const fetchOrder = async (id: number) => {
     ) {
       await coefficientsStore.setAllCoefficients()
     }
-
-    // Load other services to resolve service label
-    await loadOtherServices()
 
     orderData.value = fetchedOrderData
 
