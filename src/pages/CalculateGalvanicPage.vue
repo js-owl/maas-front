@@ -80,14 +80,21 @@ const coatingProcesses = computed<SelectOption[]>(() => {
     if (groups.has(operation.group)) return options
 
     groups.add(operation.group)
-    options.push({ value: operation.group, label: operation.group })
+    options.push({ value: operation.id, label: operation.group })
     return options
   }, [])
 })
 
-const selectedGroupOperations = computed(() =>
-  operationsAvailable.value.filter((operation) => operation.group === process_id.value)
+const selectedProcessOperation = computed(() =>
+  operationsAvailable.value.find((operation) => operation.id === process_id.value)
 )
+
+const selectedGroupOperations = computed(() => {
+  const group = selectedProcessOperation.value?.group
+  if (!group) return []
+
+  return operationsAvailable.value.filter((operation) => operation.group === group)
+})
 
 const coatingTypes = computed<SelectOption[]>(() =>
   selectedGroupOperations.value
@@ -99,9 +106,7 @@ const coatingTypes = computed<SelectOption[]>(() =>
 )
 
 const selectedOperation = computed(() =>
-  operationsAvailable.value.find(
-    (operation) => operation.group === process_id.value && operation.id === material_id.value
-  )
+  operationsAvailable.value.find((operation) => operation.id === material_id.value)
 )
 
 const technicalRestrictions = computed(() => {
@@ -307,8 +312,16 @@ async function getOrder(id: number) {
     if ((data as any).order_code) order_code.value = (data as any).order_code
 
     if (!coatingProcesses.value.some((item) => item.value === process_id.value)) {
+      const materialOperation = operationsAvailable.value.find(
+        (operation) => operation.id === material_id.value
+      )
       process_id.value =
-        operationsAvailable.value.find((operation) => operation.id === material_id.value)?.group ??
+        coatingProcesses.value.find((item) => {
+          const processOperation = operationsAvailable.value.find(
+            (operation) => operation.id === item.value
+          )
+          return processOperation?.group === materialOperation?.group
+        })?.value ??
         coatingProcesses.value[0]?.value ??
         ''
     }
