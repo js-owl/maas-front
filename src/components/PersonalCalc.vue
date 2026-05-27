@@ -340,7 +340,7 @@ const loadOtherServices = async () => {
     },
     {
       id: '102',
-      label: 'Механообработка',
+      label: 'Механическая обработка',
       service: 'cnc-milling',
     },
   ]
