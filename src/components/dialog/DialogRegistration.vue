@@ -226,7 +226,7 @@ const onHaveAccount = () => {
         </el-form-item> -->
         <div class="form-field-group">
           <el-form-item prop="full_name">
-            <Input v-model="form.full_name" placeholder="Название компании" />
+            <Input v-model="form.full_name" placeholder="ФИО" />
           </el-form-item>
           <el-form-item prop="username" :error="usernameError">
             <Input v-model="form.username" placeholder="Логин" @input="usernameError = ''" />
