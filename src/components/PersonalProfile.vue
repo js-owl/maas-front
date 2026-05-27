@@ -9,6 +9,7 @@ import {
   createPhoneNumberValidator,
   ensureRuPhoneModelValue,
   formatPhoneDisplay,
+  isRuPhoneOnlyPrefix,
   parsePhoneToDigits,
 } from '../composables/usePhoneValidation'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
@@ -19,9 +20,19 @@ const formRef = ref<FormInstance>()
 const isSaving = ref(false)
 const activeTab = ref('legal')
 
+/** При регистрации указывается один телефон — дублируем в оба поля профиля юр. лица. */
 const applyPhoneDefaults = (profile: IProfile) => {
   profile.phone_number = ensureRuPhoneModelValue(profile.phone_number)
   profile.personal_phone_number = ensureRuPhoneModelValue(profile.personal_phone_number)
+
+  const hasOrgPhone = !isRuPhoneOnlyPrefix(profile.phone_number)
+  const hasPersonalPhone = !isRuPhoneOnlyPrefix(profile.personal_phone_number)
+
+  if (hasOrgPhone && !hasPersonalPhone) {
+    profile.personal_phone_number = profile.phone_number
+  } else if (hasPersonalPhone && !hasOrgPhone) {
+    profile.phone_number = profile.personal_phone_number
+  }
 }
 
 onMounted(async () => {
