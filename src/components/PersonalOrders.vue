@@ -108,7 +108,8 @@ const statusClasses: Record<string, string> = {
 }
 
 const getStatusText = (status: string): string => {
-  return statusTexts[status] || status
+  const text = statusTexts[status] || status
+  return text.length > 30 ? `${text.slice(0, 30)}...` : text
 }
 
 const getStatusClass = (status: string): string => {

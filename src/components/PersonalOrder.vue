@@ -102,8 +102,10 @@ const createdDate = computed(() => formatDate(order.value?.created_at))
 // const completionDate = computed(() => formatDate(order.value?.updated_at))
 
 const orderStatus = computed(() => {
-  if (!order.value?.status_name) return 'Ожидает оплаты'
-  return statusTexts[order.value.status_name] || order.value.status_name
+  const text = !order.value?.status_name
+    ? 'Ожидает оплаты'
+    : statusTexts[order.value.status_name] || order.value.status_name
+  return text.length > 20 ? `${text.slice(0, 20)}...` : text
 })
 
 const canConfirmOrder = computed(() => order.value?.status === 'AWAITING_CONFIRMATION')
