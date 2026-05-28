@@ -114,6 +114,11 @@ const byPath: Record<string, RouteSeo> = {
     description:
       'Политика ООО «Аэромакс» в отношении обработки персональных данных при использовании сайта и сервиса.',
   },
+  '/confirm-email': {
+    title: 'Подтверждение email — Аэромакс',
+    description: 'Подтверждение адреса электронной почты в сервисе MaaS.',
+    robots: 'noindex, nofollow',
+  },
 }
 
 const personalSeo: RouteSeo = {
@@ -134,6 +139,9 @@ export function resolveRouteSeo(path: string, routeName: string | symbol | undef
   }
   if (path.startsWith('/personal')) {
     return personalSeo
+  }
+  if (routeName === 'confirm-email' || path === '/confirm-email') {
+    return byPath['/confirm-email'] ?? notFoundSeo
   }
   return byPath[path] ?? notFoundSeo
 }

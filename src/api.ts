@@ -1,6 +1,7 @@
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from './stores/auth.store'
 import router from './router'
+import { isEmailVerificationDetail } from './helpers/email-verification'
 
 // API Base URLs
 // Auto-detect based on environment
@@ -14,13 +15,40 @@ type AuthResponse = {
 
 let refreshTokenPromise: Promise<boolean> | null = null
 
-const redirectToLogin = () => {
+const redirectToLogin = (options?: { verify?: boolean }) => {
   const authStore = useAuthStore()
   authStore.clearToken()
 
-  if (router.currentRoute.value.name !== 'home' || router.currentRoute.value.query.login !== '1') {
-    router.push({ name: 'home', query: { login: '1' } }).catch(() => undefined)
+  const query: Record<string, string> = { login: '1' }
+  if (options?.verify) query.verify = '1'
+
+  const current = router.currentRoute.value
+  const sameTarget =
+    current.name === 'home' &&
+    current.query.login === '1' &&
+    (!options?.verify || current.query.verify === '1')
+
+  if (!sameTarget) {
+    router.push({ name: 'home', query }).catch(() => undefined)
   }
+}
+
+async function parseResponseDetail(res: Response): Promise<string> {
+  try {
+    const data = await res.json()
+    const detail = data?.detail ?? data?.message ?? ''
+    return typeof detail === 'string' ? detail : JSON.stringify(detail)
+  } catch {
+    return ''
+  }
+}
+
+export async function handleEmailVerificationBlocked(res: Response): Promise<boolean> {
+  if (res.status !== 403) return false
+  const detail = await parseResponseDetail(res.clone())
+  if (!isEmailVerificationDetail(detail)) return false
+  redirectToLogin({ verify: true })
+  return true
 }
 
 const refreshAccessToken = async (): Promise<boolean> => {
@@ -32,6 +60,8 @@ const refreshAccessToken = async (): Promise<boolean> => {
       method: 'POST',
       credentials: 'include',
     })
+
+    if (res.status === 403 && (await handleEmailVerificationBlocked(res))) return false
 
     if (res.status === 401 || !res.ok) return false
 
@@ -66,6 +96,9 @@ export async function fetchWithAuth(
   }
 
   const res = await fetch(`${API_BASE}${endpoint}`, requestOptions)
+  if (res.status === 403 && (await handleEmailVerificationBlocked(res))) {
+    throw new Error('Email not verified')
+  }
   if (res.status !== 401) return res
 
   const refreshed = await refreshAccessToken()
@@ -219,7 +252,8 @@ export async function req_json_auth(
 export async function req_json(
   endpoint: string,
   method: string = 'POST',
-  data?: any
+  data?: any,
+  allowErrorStatuses: number[] = []
 ): Promise<Response | undefined> {
   try {
     const headers = new Headers()
@@ -237,6 +271,9 @@ export async function req_json(
       console.log('req_urlencoded', res.status)
       ElMessage.error('Ошибка сервера 500')
       throw new Error('Server error')
+    }
+    if (allowErrorStatuses.includes(res.status)) {
+      return res
     }
     if (!res.ok) {
       throw new Error('http error')

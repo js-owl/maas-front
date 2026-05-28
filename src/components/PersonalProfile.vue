@@ -3,7 +3,10 @@ import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { computed, onMounted, ref, watch } from 'vue'
 import Input from './ui/Input.vue'
 import ButtonRound from './ui/ButtonRound.vue'
+import Button from './ui/Button.vue'
 import { useProfileStore, type IProfile } from '../stores/profile.store'
+import { useEmailStore } from '../stores/email.store'
+import { UI_MESSAGES } from '../helpers/email-verification'
 import router from '../router'
 import {
   createPhoneNumberValidator,
@@ -15,10 +18,38 @@ import {
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 
 const profileStore = useProfileStore()
+const emailStore = useEmailStore()
 const profileForm = ref<IProfile>()
 const formRef = ref<FormInstance>()
 const isSaving = ref(false)
+const isResendingEmail = ref(false)
 const activeTab = ref('legal')
+
+const isAdmin = computed(() => profileStore.profile?.username === 'admin')
+
+const showEmailVerificationBanner = computed(() => {
+  if (isAdmin.value) return false
+  return profileStore.profile?.email_verified === false
+})
+
+const canResendConfirmation = computed(() => emailStore.canResend())
+
+const onResendConfirmation = async () => {
+  const email = profileForm.value?.email?.trim()
+  if (!email) {
+    ElMessage.warning('Укажите email в профиле')
+    return
+  }
+  isResendingEmail.value = true
+  try {
+    const result = await emailStore.sendConfirmation(email)
+    ElMessage.success(result.message)
+  } catch (e) {
+    ElMessage.error(e instanceof Error ? e.message : 'Не удалось отправить письмо')
+  } finally {
+    isResendingEmail.value = false
+  }
+}
 
 /** При регистрации указывается один телефон — дублируем в оба поля профиля юр. лица. */
 const applyPhoneDefaults = (profile: IProfile) => {
@@ -272,6 +303,24 @@ const contactFio = computed({
       @submit.prevent
     >
       <el-col :span="24">
+        <el-alert
+          v-if="showEmailVerificationBanner"
+          type="warning"
+          :closable="false"
+          show-icon
+          class="email-verification-alert"
+          :title="UI_MESSAGES.profileEmailNotVerified"
+        >
+          <Button
+            width="fit-content"
+            flat
+            :loading="isResendingEmail"
+            :disabled="!canResendConfirmation"
+            @click="onResendConfirmation"
+          >
+            Отправить письмо повторно
+          </Button>
+        </el-alert>
         <div v-if="activeTab === 'individual'">
           <div v-if="profileForm" class="profile-section">
             <el-row :gutter="20">
@@ -568,6 +617,17 @@ const contactFio = computed({
   --bgcolor: #d0d4da;
   border-radius: 24px;
   font-weight: 500;
+}
+
+.email-verification-alert {
+  margin-bottom: 24px;
+}
+
+.email-verification-alert :deep(.el-alert__content) {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
 }
 </style>
 

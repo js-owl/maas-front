@@ -7,6 +7,8 @@ export type IProfile = {
   id?: number;
   username: string;
   email: string;
+  email_verified?: boolean;
+  email_verified_at?: string | null;
   phone_number?: string;
   full_name: string;
   last_name?: string;

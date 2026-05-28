@@ -1,24 +1,24 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
 import { API_BASE } from "../api";
+import { normalizeEmail } from "../helpers/email-verification";
 
-interface RegResponse {
-  access_token: string;
-}
+export type RegisterResult = {
+  email: string;
+};
 
 export const useRegStore = defineStore("reg", () => {
-  const token = ref<string>();
-
-  async function register(formData: any) {
+  async function register(formData: any): Promise<RegisterResult> {
     console.log("reg.store: register", { formData });
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
+
+    const email = normalizeEmail(formData.value.email || "");
 
     const payload = {
       username: formData.value.username,
       password: formData.value.password,
       user_type: formData.value.user_type,
-      email: formData.value.email || undefined,
+      email: email || undefined,
       full_name: formData.value.full_name || undefined,
       phone_number:
         formData.value.phone_number && formData.value.phone_number !== '7'
@@ -42,7 +42,6 @@ export const useRegStore = defineStore("reg", () => {
           (errorData && (errorData.detail || errorData.message)) || "";
         const detailStr =
           typeof detail === "string" ? detail : JSON.stringify(detail);
-        // Определяем кейс "пользователь уже существует"
         if (
           res.status === 409 ||
           /exist|already|уже существует/i.test(detailStr)
@@ -53,15 +52,18 @@ export const useRegStore = defineStore("reg", () => {
           errorMessage = detailStr;
         }
       } catch (e) {
-        // Если не удалось распарсить json, оставляем дефолтное сообщение
+        if (e instanceof Error && e.message === "Такой пользователь уже существует") {
+          throw e;
+        }
       }
       throw new Error(errorMessage);
     }
 
-    const data = (await res.json()) as RegResponse;
-    console.log("reg.store", { data });
-    token.value = data.access_token;
+    await res.json();
+    console.log("reg.store: registration complete");
+
+    return { email };
   }
 
-  return { token, register };
+  return { register };
 });
