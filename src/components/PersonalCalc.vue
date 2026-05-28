@@ -79,7 +79,7 @@ const order_name = ref('')
 const order_code = ref('')
 
 // Manufacturing cost per unit in rubles
-const manufacturingCost = ref(10526)
+const manufacturingCost = ref(0)
 
 // Quantity of items to manufacture
 const quantity = ref(8)
