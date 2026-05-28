@@ -33,6 +33,10 @@ const applyPhoneDefaults = (profile: IProfile) => {
   } else if (hasPersonalPhone && !hasOrgPhone) {
     profile.phone_number = profile.personal_phone_number
   }
+
+  if (profile.user_type === 'legal' && !(profile.company_email ?? '').trim()) {
+    profile.company_email = 'a@a.ru'
+  }
 }
 
 onMounted(async () => {
