@@ -25,6 +25,15 @@ const formData = reactive({
 })
 
 const isRememberMe = ref(false)
+const loginError = ref('')
+const showEmailVerification = ref(false)
+const resendEmail = ref('')
+const isResending = ref(false)
+const isRegistrationVisible = ref(false)
+
+const authStore = useAuthStore()
+const emailStore = useEmailStore()
+const route = useRoute()
 
 function loadSavedCredentials() {
   try {
@@ -96,16 +105,6 @@ watch(
     }
   },
 )
-const loginError = ref('')
-const showEmailVerification = ref(false)
-const resendEmail = ref('')
-const isResending = ref(false)
-
-const isRegistrationVisible = ref(false)
-
-const authStore = useAuthStore()
-const emailStore = useEmailStore()
-const route = useRoute()
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
