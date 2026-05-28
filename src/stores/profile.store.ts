@@ -27,6 +27,7 @@ export type IProfile = {
   payment_cor_account: string;
   payment_account: string;
   payment_company_name: string;
+  company_email?: string;
   personal_phone_number?: string;
 };
 

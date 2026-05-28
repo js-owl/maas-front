@@ -125,6 +125,19 @@ const validatePaymentBankName = (_rule: any, value: string, callback: (error?: E
   else callback()
 }
 
+const validateCompanyEmail = (_rule: any, value: string, callback: (error?: Error) => void) => {
+  const normalizedValue = value?.trim() ?? ''
+
+  if (profileForm.value?.user_type !== 'legal') {
+    callback()
+    return
+  }
+  if (!normalizedValue) callback(new Error('Введите email'))
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedValue))
+    callback(new Error('Введите корректный email'))
+  else callback()
+}
+
 const phoneValidator = createPhoneNumberValidator({ allowEmpty: false })
 
 const requiredTrimmed =
@@ -156,6 +169,7 @@ const rules = ref<FormRules<IProfile>>({
     { required: true, message: 'Введите email', trigger: 'blur' },
     { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
   ],
+  company_email: [{ validator: validateCompanyEmail, trigger: ['blur', 'change'] }],
   phone_number: [
     { required: true, message: 'Введите телефон', trigger: 'blur' },
     { validator: phoneValidator, trigger: ['blur', 'change'] },
@@ -367,8 +381,8 @@ const contactFio = computed({
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item prop="email">
-                  <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
+                <el-form-item prop="company_email">
+                  <Input v-model="profileForm.company_email" placeholder="E-mail" type="email" fontSize="20px" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
