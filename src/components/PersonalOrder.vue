@@ -83,6 +83,10 @@ const manufacturingCost = computed(() => {
   return formatPrice(order.value?.total_kit_price ?? 0)
 })
 
+const hasZeroDetailPrice = computed(() =>
+  calcRows.value.some((row) => Number(row.detail_price) === 0)
+)
+
 // const totalWithDelivery = computed(() => {
 //   const total = (order.value?.total_kit_price ?? 0) + (order.value?.delivery_price ?? 0)
 //   return formatPrice(total)
@@ -676,6 +680,9 @@ onMounted(() => {
                 <div class="maas-text">Стоимость изготовления</div>
                 <div class="maas-subtitle">
                   {{ manufacturingCost }} <span class="rub">руб.</span>
+                </div>
+                <div v-if="hasZeroDetailPrice" class="maas-text">
+                  Часть деталей заказа автоматически не оценена. Уточним цену заказа в ближайшее время.
                 </div>
               </div>
 
