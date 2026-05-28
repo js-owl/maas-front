@@ -107,12 +107,14 @@ const statusClasses: Record<string, string> = {
   cancelled: 'status-chip--cancelled',
 }
 
-const getStatusText = (status: string): string => {
+const getStatusText = (status?: string | null): string => {
+  if (!status) return ''
   const text = statusTexts[status] || status
   return text.length > 30 ? `${text.slice(0, 30)}...` : text
 }
 
-const getStatusClass = (status: string): string => {
+const getStatusClass = (status?: string | null): string => {
+  if (!status) return 'status-chip--default'
   return statusClasses[status] || 'status-chip--default'
 }
 
@@ -421,10 +423,10 @@ const handleDelete = async (row: IKit): Promise<void> => {
     <div class="orders-card">
       <div class="orders-toolbar">
         <el-tabs v-model="activeTab" class="filter-tabs">
-          <el-tab-pane label="Все" name="all" />
-          <el-tab-pane label="Оплаченные" name="paid" />
-          <el-tab-pane label="Неоплаченные" name="unpaid" />
-          <el-tab-pane label="Завершенные" name="completed" />
+          <el-tab-pane label="Все" name="all"></el-tab-pane>
+          <el-tab-pane label="Оплаченные" name="paid"></el-tab-pane>
+          <el-tab-pane label="Неоплаченные" name="unpaid"></el-tab-pane>
+          <el-tab-pane label="Завершенные" name="completed"></el-tab-pane>
         </el-tabs>
         <div class="toolbar-actions">
           <ButtonRound width="220px" @click="createOrder">

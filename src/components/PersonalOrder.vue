@@ -568,13 +568,13 @@ onMounted(() => {
           </el-table-column>
 
           <el-table-column label="" width="52" align="center">
-            <template #default="row">
+            <template #default="{ row }">
               <div class="action-buttons">
                 <!-- <el-button
                   link
                   type="primary"
                   size="small"
-                  @click="handleOpenCalcInfo(row.row)"
+                  @click="handleOpenCalcInfo(row)"
                   :icon="Notebook"
                   title="Калькуляция"
                 /> -->
@@ -582,15 +582,15 @@ onMounted(() => {
                   link
                   type="primary"
                   size="small"
-                  @click="handleEdit(row.row)"
+                  @click="handleEdit(row)"
                   :icon="Edit"
                   title="Редактировать"
                 /> -->
                 <el-button
                   link
                   type="primary"
-                  @click="handleDelete(row.row)"
-                  :loading="deleteLoading === row.row.order_id"
+                  @click="handleDelete(row)"
+                  :loading="deleteLoading === row.order_id"
                   :icon="Delete"
                   title="Удалить"
                   class="delete-button"
