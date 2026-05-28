@@ -681,8 +681,11 @@ onMounted(() => {
                 <div class="maas-subtitle">
                   {{ manufacturingCost }} <span class="rub">руб.</span>
                 </div>
-                <div v-if="hasZeroDetailPrice" class="maas-text">
-                  Часть деталей заказа автоматически не оценена. Уточним цену заказа в ближайшее время.
+                <div v-if="hasZeroDetailPrice" class="price-disclaimer">
+                  <p>
+                    Часть деталей заказа автоматически не оценена. Уточним цену заказа в ближайшее
+                    время.
+                  </p>
                 </div>
               </div>
 
@@ -1005,6 +1008,21 @@ onMounted(() => {
   margin-bottom: 0;
 }
 
+.price-disclaimer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #55585b;
+}
+
+.price-disclaimer p {
+  margin: 0;
+}
+
 .rub {
   margin-left: 4px;
   font-size: inherit;
@@ -1153,6 +1171,10 @@ onMounted(() => {
 
   .order-type-select {
     margin-left: 0;
+  }
+
+  .price-disclaimer {
+    font-size: 12px;
   }
 }
 </style>
