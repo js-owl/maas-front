@@ -50,35 +50,33 @@ const steps: Step[] = [
 </script>
 
 <template>
-  <section class="section-basic home-milestones">
-    <div class="milestones-container">
-      <div class="milestones-wrap">
-        <div class="maas-title">Как создать заказ?</div>
-        <div class="steps">
-          <div v-for="step in steps" :key="step.id" class="step-card">
-            <div class="step-number">
-              <component :is="step.icon" />
-            </div>
-            <div class="step-content">
-              <div class="maas-subtitle">{{ step.title }}</div>
-              <p class="maas-text">
-                <template v-if="step.highlightWord">
-                  {{ step.description.split(step.highlightWord)[0] }}
-                  <button
-                    v-if="step.highlightLink === 'registration'"
-                    type="button"
-                    class="step-description-highlight step-description-link"
-                    @click="isLoginVisible = true"
-                  >
-                    {{ step.highlightWord }}
-                  </button>
-                  <span v-else class="step-description-highlight">{{ step.highlightWord }}</span>
-                  {{ step.description.split(step.highlightWord)[1] }}
-                </template>
-                <template v-else>{{ step.description }}</template>
-              </p>
-            </div>
+  <section class="home-milestones">
+    <div class="milestones-wrap">
+      <h2 class="maas-title milestones-title">Как создать заказ?</h2>
+
+      <div class="steps">
+        <div v-for="step in steps" :key="step.id" class="step-card">
+          <div class="step-content">
+            <div class="maas-subtitle step-title">{{ step.title }}</div>
+            <p class="maas-text step-description">
+              <template v-if="step.highlightWord">
+                {{ step.description.split(step.highlightWord)[0] }}
+                <button
+                  v-if="step.highlightLink === 'registration'"
+                  type="button"
+                  class="step-description-highlight step-description-link"
+                  @click="isLoginVisible = true"
+                >
+                  {{ step.highlightWord }}
+                </button>
+                <span v-else class="step-description-highlight">{{ step.highlightWord }}</span>
+                {{ step.description.split(step.highlightWord)[1] }}
+              </template>
+              <template v-else>{{ step.description }}</template>
+            </p>
           </div>
+
+          <component :is="step.icon" class="step-icon" aria-hidden="true" focusable="false" />
         </div>
       </div>
     </div>
@@ -88,90 +86,86 @@ const steps: Step[] = [
 
 <style scoped>
 .home-milestones {
-  padding: 5px 0;
-}
-
-.milestones-container {
-  width: 100%;
+  margin: 0 0 40px;
+  padding: 0;
 }
 
 .milestones-wrap {
-  background: #ffffff;
-  border-radius: 16px;
+  background-color: #ffffff;
+  border-radius: 20px;
   padding: 40px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  box-shadow: 0 11px 15px var(--button-bg);
+}
+
+.milestones-title {
+  margin: 0;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: normal;
+  color: #d4354f;
 }
 
 .steps {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px 20px;
-}
-
-.steps-title {
-  font-size: 38px;
-  font-weight: 600;
-  color: #000000;
-  line-height: 1.1;
-  text-align: left;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  height: 300px;
 }
 
 .step-card {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 20px;
-  background: #f4f6f8;
-  border-radius: 12px;
-  padding: 20px 24px;
-  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); */
-  align-items: start;
-}
-
-.step-number {
-  width: 70px;
-  height: 70px;
-  border-radius: 10px;
-  background: #e0e0e0;
-  color: #666666;
-  font-weight: 700;
-  font-size: 40px;
+  background-color: var(--bgcolor);
+  border-radius: 20px;
+  padding: 30px 20px;
+  height: 100%;
+  min-height: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .step-content {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
+  min-height: 0;
 }
 
 .step-title {
+  margin: 0;
   font-size: 24px;
-  color: #000000;
-  line-height: 1.2;
+  line-height: normal;
+  text-transform: uppercase;
+  word-break: break-word;
 }
 
 .step-description {
   margin: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
   font-size: 18px;
+  font-weight: 500;
+  line-height: normal;
   color: #000000;
-  line-height: 1.4;
+  word-break: break-word;
 }
 
 .step-description-highlight {
-  color: #ce132f;
-  font-weight: 700;
+  color: #e84261;
+  font-family: inherit;
+  font-weight: 500;
 }
 
 .step-description-link {
   background: none;
   border: none;
   padding: 0;
+  margin: 0;
   font: inherit;
+  color: #e84261;
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -181,79 +175,52 @@ const steps: Step[] = [
   text-decoration: none;
 }
 
-@media (max-width: 1199px) {
-  .milestones-wrap {
-    padding: 32px;
-    gap: 24px;
-  }
+.step-icon {
+  display: none;
+}
 
-  .steps-title {
-    font-size: 32px;
+@media (max-width: 1199px) {
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: auto;
   }
 
   .step-card {
-    grid-template-columns: 70px 1fr;
-    padding: 18px 20px;
-  }
-
-  .step-number {
-    width: 64px;
-    height: 64px;
-    font-size: 36px;
-  }
-}
-
-@media (max-width: 1023px) {
-  .home-milestones {
-    padding: 32px 0;
-  }
-
-  .steps {
-    grid-template-columns: 1fr;
-  }
-
-  .milestones-wrap {
-    padding: 24px;
-    gap: 24px;
-  }
-
-  .steps-title {
-    font-size: 28px;
+    min-height: 300px;
   }
 }
 
 @media (max-width: 767px) {
   .home-milestones {
-    padding: 24px 0;
+    margin-bottom: 40px;
   }
 
   .milestones-wrap {
+    border-radius: 0;
     padding: 20px;
     gap: 20px;
   }
 
-  .steps-title {
+  .milestones-title {
     font-size: 24px;
   }
 
-  .step-card {
-    grid-template-columns: 60px 1fr;
-    gap: 16px;
-    padding: 16px 18px;
+  .steps {
+    grid-template-columns: 1fr;
+    height: auto;
   }
 
-  .step-number {
-    width: 56px;
-    height: 56px;
-    font-size: 32px;
+  .step-card {
+    min-height: 0;
+    padding: 30px 20px;
   }
 
   .step-title {
-    font-size: 16px;
+    font-size: 24px;
   }
 
   .step-description {
-    font-size: 13px;
+    font-size: 18px;
   }
 }
 </style>
