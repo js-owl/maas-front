@@ -193,11 +193,35 @@ onMounted(async () => {
   }
 })
 
+const getMaterialFamilyRuLabel = (rawFamily: string) => {
+  const key = rawFamily.trim().toLowerCase()
+
+  const dictionary: Record<string, string> = {
+    steel: 'Сталь',
+    stainless: 'Нержавеющая сталь',
+    'stainless steel': 'Нержавеющая сталь',
+    alum: 'Алюминий',
+    aluminium: 'Алюминий',
+    titanium: 'Титан',
+    copper: 'Медь',
+    latun: 'Латунь',
+    bronze: 'Бронза',
+    plastic: 'Пластики',
+    plastics: 'Пластики',
+    wood: 'Дерево',
+    composite: 'Композиты',
+    composites: 'Композиты',
+  }
+
+  return dictionary[key] ?? rawFamily
+}
+
 const transformMaterials = (data: { materials: Array<{ id: string; label: string; family?: string | null }> }) => {
   const groups = new Map<string, MaterialOption[]>()
 
   for (const item of data.materials) {
-    const family = (item.family ?? '').trim() || 'Без группы'
+    const backendFamily = (item.family ?? '').trim()
+    const family = backendFamily ? getMaterialFamilyRuLabel(backendFamily) : 'Без группы'
     const arr = groups.get(family) ?? []
     arr.push({ value: item.id, label: item.label })
     groups.set(family, arr)
