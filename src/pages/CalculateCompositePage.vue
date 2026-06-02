@@ -10,6 +10,7 @@ import Input from '../components/ui/Input.vue'
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 import CheckboxСalc from '../components/ui/CheckboxСalc.vue'
+import SelectGroup from '../components/ui/SelectGroup.vue'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
 import { useProfileStore } from '../stores/profile.store'
@@ -302,12 +303,10 @@ watch(file_id, () => {
 
               <div class="milling-field-group">
                 <div class="calc-title">Материал</div>
-                <el-select-v2
+                <SelectGroup
                   v-model="material_id"
-                  filterable
                   :options="materials"
                   placeholder="Выберите материал"
-                  style="width: 100%"
                 />
               </div>
 
