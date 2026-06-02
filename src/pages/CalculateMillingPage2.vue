@@ -58,7 +58,9 @@ const quantityInput = computed({
 
 let material_id = ref('')
 let material_form = ref('sheet')
-const materials = ref<Array<{ value: string; label: string }>>([])
+type MaterialOption = { value: string; label: string }
+type MaterialOptionGroup = { label: string; options: MaterialOption[] }
+const materials = ref<Array<MaterialOptionGroup>>([])
 const tolerances = ref<Array<{ value: string; label: string }>>([])
 const finishes = ref<Array<{ value: string; label: string }>>([])
 const service_id = ref('cnc-milling')
@@ -191,27 +193,37 @@ onMounted(async () => {
   }
 })
 
-const transformMaterials = (data: { materials: Array<{ id: string; label: string }> }) =>
-  data.materials.map((item) => ({
-    value: item.id,
-    label: item.label,
-  }))
+const transformMaterials = (data: { materials: Array<{ id: string; label: string; family?: string | null }> }) => {
+  const groups = new Map<string, MaterialOption[]>()
+
+  for (const item of data.materials) {
+    const family = (item.family ?? '').trim() || 'Без группы'
+    const arr = groups.get(family) ?? []
+    arr.push({ value: item.id, label: item.label })
+    groups.set(family, arr)
+  }
+
+  return Array.from(groups.entries())
+    .sort(([a], [b]) => a.localeCompare(b, 'ru'))
+    .map(([label, options]) => ({
+      label,
+      options: options.sort((a, b) => a.label.localeCompare(b.label, 'ru')),
+    }))
+}
 
 async function loadMaterials() {
   try {
     const response = await req_json_auth('/materials?process=cnc-milling', 'GET')
     if (response?.ok) {
       const backendMaterials = (await response.json()) as {
-        materials: Array<{ id: string; label: string }>
+        materials: Array<{ id: string; label: string; family?: string | null }>
       }
       materials.value = transformMaterials(backendMaterials)
-      if (order_id.value === 0 && materials.value.length) {
-        material_id.value = materials.value[0].value
-      } else if (
-        !materials.value.some((item) => item.value === material_id.value) &&
-        materials.value.length
-      ) {
-        material_id.value = materials.value[0].value
+      const flat = materials.value.flatMap((g) => g.options)
+      if (order_id.value === 0 && flat.length) {
+        material_id.value = flat[0].value
+      } else if (!flat.some((item) => item.value === material_id.value) && flat.length) {
+        material_id.value = flat[0].value
       }
     }
   } catch (error) {
@@ -347,7 +359,13 @@ watch(
               </div>
               <div class="milling-field-group">
                 <div class="calc-title">Материал</div>
-                <SelectCalc v-model="material_id" :input-data="materials" />
+                <el-select-v2
+                  v-model="material_id"
+                  filterable
+                  :options="materials"
+                  placeholder="Выберите материал"
+                  style="width: 100%"
+                />
               </div>
             </div>
 
