@@ -10,6 +10,7 @@ import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 // import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 import Input from '../components/ui/Input.vue'
+import SelectGroup from '../components/ui/SelectGroup.vue'
 
 import { useRoute } from 'vue-router'
 import UploadFiles2 from '@/components/UploadFiles2.vue'
@@ -315,13 +316,11 @@ watch(
 
               <div class="printing-field-group">
                 <div class="calc-title">Материал</div>
-                <el-select-v2
+                <SelectGroup
                   class="printing-select"
                   v-model="material_id"
-                  filterable
                   :options="materials"
                   placeholder="Выберите материал"
-                  style="width: 100%"
                 />
               </div>
 

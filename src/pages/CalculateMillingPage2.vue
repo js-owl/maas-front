@@ -9,6 +9,7 @@ import { toMaterialOptionGroupsByFamily } from '../helpers/material-family'
 
 import Input from '../components/ui/Input.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
+import SelectGroup from '../components/ui/SelectGroup.vue'
 
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 // import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
@@ -345,12 +346,10 @@ watch(
               </div>
               <div class="milling-field-group">
                 <div class="calc-title">Материал</div>
-                <el-select-v2
+                <SelectGroup
                   v-model="material_id"
-                  filterable
                   :options="materials"
                   placeholder="Выберите материал"
-                  style="width: 100%"
                 />
               </div>
             </div>
