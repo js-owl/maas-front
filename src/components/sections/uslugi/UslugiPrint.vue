@@ -43,10 +43,6 @@ import UslugiTable from '@/components/sections/uslugi/UslugiTable.vue'
             <td>530 x 530 x 550</td>
             <td>STL, CLI</td>
           </tr>
-          <tr>
-            <td>?</td>
-            <td>?</td>
-          </tr>
         </UslugiTable>
 
         <UslugiTable
