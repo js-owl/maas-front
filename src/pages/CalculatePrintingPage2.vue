@@ -4,11 +4,11 @@ import { req_json, req_json_auth } from '../api'
 import { getLocalStpFileById } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
 import { formatDeadline, parseDeadline } from '../helpers/deadline'
+import { toMaterialOptionGroupsByFamily } from '../helpers/material-family'
 
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 // import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
-import SelectCalc from '../components/ui/SelectCalc.vue'
 import Input from '../components/ui/Input.vue'
 
 import { useRoute } from 'vue-router'
@@ -24,8 +24,9 @@ import CalculateSubmit2 from '../components/sections/CalculateSubmit2.vue'
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
 import Loader from '../components/ui/Loader.vue'
 
-type BackendMaterial = { id: string; label: string }
+type BackendMaterial = { id: string; label: string; family?: string | null }
 type MaterialOption = { value: string; label: string }
+type MaterialOptionGroup = { label: string; options: MaterialOption[] }
 
 const profileStore = useProfileStore()
 
@@ -56,7 +57,7 @@ const printing_technology = ref('sls')
 const printingTechnologies = ref<Array<{ value: string; label: string }>>([
   { value: 'sls', label: 'SLS (послойное лазерное спекание)' },
 ])
-const materials = ref<MaterialOption[]>([])
+const materials = ref<MaterialOptionGroup[]>([])
 
 let cover_id = ref<string[]>(['1'])
 let k_otk = ref('1.0')
@@ -174,10 +175,7 @@ onMounted(async () => {
 })
 
 const transformMaterials = (data: { materials: BackendMaterial[] }) =>
-  data.materials.map((item: BackendMaterial): MaterialOption => ({
-    value: item.id,
-    label: item.label,
-  }))
+  toMaterialOptionGroupsByFamily(data.materials)
 
 async function loadMaterials() {
   try {
@@ -187,13 +185,11 @@ async function loadMaterials() {
         materials: BackendMaterial[]
       }
       materials.value = transformMaterials(backendMaterials)
-      if (order_id.value === 0 && materials.value.length) {
-        material_id.value = materials.value[0].value
-      } else if (
-        !materials.value.some((item) => item.value === material_id.value) &&
-        materials.value.length
-      ) {
-        material_id.value = materials.value[0].value
+      const flat = materials.value.flatMap((g) => g.options)
+      if (order_id.value === 0 && flat.length) {
+        material_id.value = flat[0].value
+      } else if (!flat.some((item) => item.value === material_id.value) && flat.length) {
+        material_id.value = flat[0].value
       }
     }
   } catch (error) {
@@ -319,7 +315,13 @@ watch(
 
               <div class="printing-field-group">
                 <div class="calc-title">Материал</div>
-                <SelectCalc v-model="material_id" :input-data="materials" />
+                <el-select-v2
+                  v-model="material_id"
+                  filterable
+                  :options="materials"
+                  placeholder="Выберите материал"
+                  style="width: 100%"
+                />
               </div>
 
               <div class="printing-field-block">

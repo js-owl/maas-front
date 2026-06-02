@@ -5,6 +5,7 @@ import { req_json, req_json_auth } from '../api'
 import { getLocalStpFileById } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
 import { formatDeadline, parseDeadline } from '../helpers/deadline'
+import { toMaterialOptionGroupsByFamily } from '../helpers/material-family'
 
 import Input from '../components/ui/Input.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
@@ -193,47 +194,8 @@ onMounted(async () => {
   }
 })
 
-const getMaterialFamilyRuLabel = (rawFamily: string) => {
-  const key = rawFamily.trim().toLowerCase()
-
-  const dictionary: Record<string, string> = {
-    steel: 'Сталь',
-    stainless: 'Нержавеющая сталь',
-    'stainless steel': 'Нержавеющая сталь',
-    alum: 'Алюминий',
-    aluminium: 'Алюминий',
-    titanium: 'Титан',
-    copper: 'Медь',
-    latun: 'Латунь',
-    bronze: 'Бронза',
-    plastic: 'Пластики',
-    plastics: 'Пластики',
-    wood: 'Дерево',
-    composite: 'Композиты',
-    composites: 'Композиты',
-  }
-
-  return dictionary[key] ?? rawFamily
-}
-
-const transformMaterials = (data: { materials: Array<{ id: string; label: string; family?: string | null }> }) => {
-  const groups = new Map<string, MaterialOption[]>()
-
-  for (const item of data.materials) {
-    const backendFamily = (item.family ?? '').trim()
-    const family = backendFamily ? getMaterialFamilyRuLabel(backendFamily) : 'Без группы'
-    const arr = groups.get(family) ?? []
-    arr.push({ value: item.id, label: item.label })
-    groups.set(family, arr)
-  }
-
-  return Array.from(groups.entries())
-    .sort(([a], [b]) => a.localeCompare(b, 'ru'))
-    .map(([label, options]) => ({
-      label,
-      options: options.sort((a, b) => a.label.localeCompare(b.label, 'ru')),
-    }))
-}
+const transformMaterials = (data: { materials: Array<{ id: string; label: string; family?: string | null }> }) =>
+  toMaterialOptionGroupsByFamily(data.materials)
 
 async function loadMaterials() {
   try {
