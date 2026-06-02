@@ -316,6 +316,7 @@ watch(
               <div class="printing-field-group">
                 <div class="calc-title">Материал</div>
                 <el-select-v2
+                  class="printing-select"
                   v-model="material_id"
                   filterable
                   :options="materials"
@@ -440,6 +441,17 @@ watch(
 }
 
 .calc-quantity-material :deep(.el-select__wrapper) {
+  min-height: 48px;
+  height: 48px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background-color: var(--whity);
+  box-shadow: none;
+  border: none;
+  box-sizing: border-box;
+}
+
+.printing-select :deep(.el-select__wrapper) {
   min-height: 48px;
   height: 48px;
   padding: 12px 24px;
