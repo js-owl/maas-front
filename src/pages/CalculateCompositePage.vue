@@ -7,7 +7,6 @@ import { parseFilesQueryToIds } from '../helpers/parse-files'
 
 import Input from '../components/ui/Input.vue'
 // import DatePicker from '../components/ui/DatePicker.vue'
-import SelectCalc from '../components/ui/SelectCalc.vue'
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 import CheckboxСalc from '../components/ui/CheckboxСalc.vue'
@@ -22,6 +21,7 @@ import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
 import Loader from '../components/ui/Loader.vue'
 import { formatDeadline, parseDeadline } from '../helpers/deadline'
+import { toMaterialOptionGroupsByFamily } from '../helpers/material-family'
 
 const profileStore = useProfileStore()
 
@@ -48,7 +48,10 @@ const quantityInput = computed({
 
 const material_id = ref('')
 const material_form = ref('sheet')
-const materials = ref<Array<{ value: string; label: string }>>([])
+type BackendMaterial = { id: string; label: string; family?: string | null }
+type MaterialOption = { value: string; label: string }
+type MaterialOptionGroup = { label: string; options: MaterialOption[] }
+const materials = ref<MaterialOptionGroup[]>([])
 const service_id = ref('composite')
 
 const cover_id = ref<string[]>([])
@@ -172,27 +175,22 @@ onMounted(async () => {
   }
 })
 
-const transformMaterials = (data: { materials: Array<{ id: string; label: string }> }) =>
-  data.materials.map((item) => ({
-    value: item.id,
-    label: item.label,
-  }))
+const transformMaterials = (data: { materials: BackendMaterial[] }) =>
+  toMaterialOptionGroupsByFamily(data.materials)
 
 async function loadMaterials() {
   try {
     const response = await req_json_auth('/materials?process=composite', 'GET')
     if (response?.ok) {
       const backendMaterials = (await response.json()) as {
-        materials: Array<{ id: string; label: string }>
+        materials: BackendMaterial[]
       }
       materials.value = transformMaterials(backendMaterials)
-      if (order_id.value === 0 && materials.value.length) {
-        material_id.value = materials.value[0].value
-      } else if (
-        !materials.value.some((item) => item.value === material_id.value) &&
-        materials.value.length
-      ) {
-        material_id.value = materials.value[0].value
+      const flat = materials.value.flatMap((g) => g.options)
+      if (order_id.value === 0 && flat.length) {
+        material_id.value = flat[0].value
+      } else if (!flat.some((item) => item.value === material_id.value) && flat.length) {
+        material_id.value = flat[0].value
       }
     }
   } catch (error) {
@@ -304,7 +302,13 @@ watch(file_id, () => {
 
               <div class="milling-field-group">
                 <div class="calc-title">Материал</div>
-                <SelectCalc v-model="material_id" :input-data="materials" />
+                <el-select-v2
+                  v-model="material_id"
+                  filterable
+                  :options="materials"
+                  placeholder="Выберите материал"
+                  style="width: 100%"
+                />
               </div>
 
               <div class="calc-two-columns">
@@ -422,6 +426,18 @@ watch(file_id, () => {
   flex-direction: column;
   gap: 10px;
   padding: 5px 0;
+}
+
+/* el-select-v2 (Material) — match milling v2 styling */
+:deep(.el-select__wrapper) {
+  min-height: 48px;
+  height: 48px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background-color: var(--whity);
+  box-shadow: none;
+  border: none;
+  box-sizing: border-box;
 }
 
 .milling-field-block--otk {
