@@ -14,7 +14,7 @@ export const getMaterialFamilyRuLabel = (rawFamily: string) => {
     steel: 'Сталь',
     stainless: 'Нержавеющая сталь',
     'stainless steel': 'Нержавеющая сталь',
-    aluminum: 'Алюминий',
+    alum: 'Алюминий',
     aluminium: 'Алюминий',
     titanium: 'Титан',
     copper: 'Медь',
@@ -22,9 +22,10 @@ export const getMaterialFamilyRuLabel = (rawFamily: string) => {
     bronze: 'Бронза',
     plastic: 'Пластики',
     plastics: 'Пластики',
-    wood: 'Дерево',
+    glass: 'Стекло',
     composite: 'Композиты',
-    composites: 'Композиты',
+    'pre-preg': 'Препрег',
+    other: 'Другое',
   }
 
   return dictionary[key] ?? rawFamily
