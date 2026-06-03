@@ -254,7 +254,7 @@ const policyCards = policySections.reduce<PolicyCard[]>((cards, section) => {
 }
 
 .footer-text {
-  font-family: Arial, sans-serif;
+  font-family: 'Montserrat-Regular', sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 14px;
