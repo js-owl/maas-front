@@ -183,7 +183,7 @@ function openServicePage(path: string) {
               >
                 <template #reference>
                   <el-button class="cabinet-btn services-title montserrat-semibold">
-                    Услуги
+                    Быстрый расчет
                   </el-button>
                 </template>
                 <ServicesCabinetMenu @open-service="openServicePage" />
