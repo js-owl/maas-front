@@ -79,7 +79,7 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
 
 <template>
   <section class="section-basic uslugi-section2">
-    <div class="uslugi-title">Услуги</div>
+    <h2 class="maas-title uslugi-title">Услуги</h2>
 
     <div class="services-grid">
       <div
@@ -190,7 +190,11 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
 }
 
 .uslugi-title {
-  font-size: 38px;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: normal;
+  color: #d4354f;
 }
 .development-text {
   font-size: 18px;
@@ -238,6 +242,10 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
 }
 
 @media (max-width: 768px) {
+  .uslugi-title {
+    font-size: 24px;
+  }
+
   .uslugi-section2 {
     margin-top: 24px;
   }
