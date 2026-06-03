@@ -81,7 +81,7 @@ const submit = () => {
   <section class="section-basic">
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
-        <div class="maas-title">Производство под вашу потребность</div>
+        <h2 class="maas-title calc-title">Производство под вашу потребность</h2>
         <p class="maas-text">
           Проведем расчет стоимости детали по 3D-модели или чертежу в течение 5 рабочих дней, а
           также вы получите анализ и рекомендации по оптимизации процесса изготовления
@@ -148,6 +148,15 @@ const submit = () => {
   padding-right: 10px;
   width: calc((100% - 20px) / 2);
   box-sizing: border-box;
+}
+
+.calc-title {
+  margin: 0;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: normal;
+  color: #d4354f;
 }
 .calc-left .lead {
   color: #4c4c4c;
@@ -268,6 +277,10 @@ const submit = () => {
 }
 
 @media (max-width: 768px) {
+  .calc-title {
+    font-size: 24px;
+  }
+
   .calc-left {
     padding-right: 0px;
     width: 100%;
