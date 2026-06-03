@@ -124,7 +124,6 @@ const calculationPayload = computed(() => {
     width: payload.width,
     height: payload.height,
     material_id: payload.material_id,
-    material_form: payload.material_form,
     cover_id: payload.cover_id,
     is_need_special_equipment: payload.is_need_special_equipment,
     n_dimensions: payload.n_dimensions,
