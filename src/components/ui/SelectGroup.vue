@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import IconArrowDown from '@/icons/IconArrowDown.vue'
 
 type SelectOption = { value: string | number; label: string }
 type SelectOptionGroup = { label: string; options: SelectOption[] }
@@ -36,6 +37,7 @@ const model = computed({
       :filterable="filterable"
       :options="options"
       :placeholder="placeholder"
+      :suffix-icon="IconArrowDown"
       size="large"
       class="full"
       :style="{ width }"
@@ -67,11 +69,6 @@ const model = computed({
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
   font-weight: 500;
-}
-
-:deep(.el-select__caret) {
-  color: var(--button);
-  font-size: 20px;
 }
 
 :deep(.el-select:hover .el-select__wrapper),
