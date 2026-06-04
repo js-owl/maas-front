@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import IconArrowDown from '@/icons/IconArrowDown.vue'
+
 type SelectCalcOption = {
   value: string
   label: string
@@ -23,6 +25,7 @@ const selectedValue = defineModel<string>()
       v-model="selectedValue"
       value-key="label"
       :placeholder="placeholder"
+      :suffix-icon="IconArrowDown"
       size="large"
       class="full"
     >
@@ -60,11 +63,6 @@ const selectedValue = defineModel<string>()
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
   font-weight: 500;
-}
-
-:deep(.el-select__caret) {
-  color: var(--button);
-  font-size: 20px;
 }
 
 :deep(.el-select:hover .el-select__wrapper),
