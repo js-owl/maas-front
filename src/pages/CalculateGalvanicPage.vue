@@ -4,17 +4,22 @@ import { useRoute } from 'vue-router'
 import { req_json, req_json_auth } from '../api'
 import { getLocalStpFileById } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
+import { locations } from '../helpers/get-location'
 import Input from '../components/ui/Input.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
+import SelectGroup from '../components/ui/SelectGroup.vue'
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 import { useProfileStore } from '../stores/profile.store'
 import SuitableMachines from '../components/SuitableMachines.vue'
-import CalculateResultSpecialist from '../components/sections/CalculateResultSpecialist.vue'
+import CalculateResults from '../components/sections/CalculateResults.vue'
 import type { IOrderPayload, IOrderResponse } from '../interfaces/order.interface'
 import UploadFiles2 from '@/components/UploadFiles2.vue'
 import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
 import Loader from '../components/ui/Loader.vue'
+import { toMaterialOptionGroupsByFamily } from '../helpers/material-family'
+// @ts-ignore
+import CadShowById from '../components/cad/CadShowById.vue'
 
 const profileStore = useProfileStore()
 
@@ -24,11 +29,9 @@ const order_name = ref('')
 const order_code = ref('3000.000.001')
 
 const file_id = ref<number | undefined>(undefined)
+const cadViewerKey = ref(0)
 const document_ids = ref<number[]>([])
 
-const length = ref(5800)
-const width = ref(830)
-const height = ref(1500)
 const quantity = ref(1)
 const quantityInput = computed({
   get: () => String(quantity.value),
@@ -39,8 +42,12 @@ const quantityInput = computed({
 })
 
 const material_id = ref('')
-const material_form = ref('sheet')
-const service_id = ref('electroplating')
+type BackendMaterial = { id: string; label: string; family?: string | null }
+type MaterialOption = { value: string; label: string }
+type MaterialOptionGroup = { label: string; options: MaterialOption[] }
+const materials = ref<MaterialOptionGroup[]>([])
+
+const service_id = ref('electroplating_auto')
 
 type SelectOption = {
   value: string
@@ -65,13 +72,17 @@ type OperationsAvailableResponse = {
 
 const operationsAvailable = ref<OperationAvailable[]>([])
 const process_id = ref('')
-const cover_id = computed<string[]>({
-  get: () => (material_id.value ? [material_id.value] : []),
-  set: (value) => {
-    material_id.value = value[0] ?? ''
+const electroplating_process_id = ref('')
+
+const coating_thickness_microns = ref(9)
+const coatingThicknessInput = computed({
+  get: () => String(coating_thickness_microns.value),
+  set: (value: string) => {
+    const parsedValue = Number(value)
+    coating_thickness_microns.value =
+      Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 9
   },
 })
-const n_dimensions = ref(55)
 
 const coatingProcesses = computed<SelectOption[]>(() => {
   const groups = new Set<string>()
@@ -106,7 +117,7 @@ const coatingTypes = computed<SelectOption[]>(() =>
 )
 
 const selectedOperation = computed(() =>
-  operationsAvailable.value.find((operation) => operation.id === material_id.value)
+  operationsAvailable.value.find((operation) => operation.id === electroplating_process_id.value)
 )
 
 const technicalRestrictions = computed(() => {
@@ -118,33 +129,35 @@ const technicalRestrictions = computed(() => {
   ]
 })
 
+const location = computed(() => {
+  const companyName = profileStore.profile?.username
+  if (!companyName) return 'location_1'
+
+  const foundLocation = locations.find((loc) => loc.company === companyName)
+  return foundLocation?.location || 'location_1'
+})
+
 const k_otk = ref('1.0')
-const k_cert = ref(['a', 'f'])
 const special_instructions = ref('')
 
 const payload = reactive({
-  service_id: 'electroplating',
+  service_id: 'electroplating_auto',
   order_name,
   order_code,
+  location,
   file_id,
   document_ids,
   quantity,
-  length,
-  width,
-  height,
   material_id,
-  material_form,
-  process_id,
-  cover_id,
-  n_dimensions,
+  electroplating_process_id,
+  coating_thickness_microns,
   k_otk,
-  k_cert,
 })
 
 const result = ref<IOrderResponse | null>(null)
 
 const isInfoVisible = ref(false)
-const isLoading = ref<boolean>(false)
+const isLoading = ref<boolean>(true)
 const isBootstrapping = ref(true)
 
 const MIN_LOADING_MS = 1000
@@ -175,26 +188,21 @@ const calculationPayload = computed(() => {
 
   return {
     service_id: payload.service_id,
+    location: payload.location,
     ...fileFields,
     document_ids: payload.document_ids,
     quantity: payload.quantity,
-    length: payload.length,
-    width: payload.width,
-    height: payload.height,
     material_id: payload.material_id,
-    material_form: payload.material_form,
-    process_id: payload.process_id,
-    cover_id: payload.cover_id,
-    n_dimensions: payload.n_dimensions,
-    k_otk: payload.k_otk,
-    k_cert: payload.k_cert,
+    electroplating_process_id: payload.electroplating_process_id,
+    coating_thickness_microns: payload.coating_thickness_microns,
+    k_otk: Number(payload.k_otk) || 1,
   }
 })
 
 watch(
   calculationPayload,
   (newVal) => {
-    if (isBootstrapping.value || !process_id.value || !material_id.value) return
+    if (isBootstrapping.value || !electroplating_process_id.value || !material_id.value) return
 
     sendData(newVal as unknown as IOrderPayload)
   },
@@ -203,7 +211,7 @@ watch(
 
 onMounted(async () => {
   try {
-    await loadOperationsAvailable()
+    await Promise.all([loadMaterials(), loadOperationsAvailable()])
     if (order_id.value === 0) {
       const filesQuery = route.query.files
       const stpParam = route.query.stp
@@ -213,18 +221,22 @@ onMounted(async () => {
         document_ids.value = ids
       }
 
-      if (filesQuery && stpParam) {
-        const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
-        const parsedStpId = Number(stpId)
-        if (!Number.isNaN(parsedStpId)) {
-          file_id.value = parsedStpId
+      if (filesQuery) {
+        if (stpParam) {
+          const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
+          const parsedStpId = Number(stpId)
+          if (!Number.isNaN(parsedStpId)) {
+            file_id.value = parsedStpId
+          }
         }
+      } else {
+        file_id.value = 2
       }
     } else {
       await getOrder(order_id.value)
     }
 
-    if (process_id.value && material_id.value) {
+    if (electroplating_process_id.value && material_id.value) {
       await sendData(calculationPayload.value as unknown as IOrderPayload)
     }
   } finally {
@@ -232,9 +244,35 @@ onMounted(async () => {
   }
 })
 
+const transformMaterials = (data: { materials: BackendMaterial[] }) =>
+  toMaterialOptionGroupsByFamily(data.materials)
+
+async function loadMaterials() {
+  try {
+    const response = await req_json_auth('/materials?process=electroplating_auto', 'GET')
+    if (!response?.ok) return
+
+    const backendMaterials = (await response.json()) as {
+      materials: BackendMaterial[]
+    }
+    materials.value = transformMaterials(backendMaterials)
+    const flat = materials.value.flatMap((g) => g.options)
+    if (order_id.value === 0 && flat.length) {
+      material_id.value = flat[0].value
+    } else if (!flat.some((item) => item.value === material_id.value) && flat.length) {
+      material_id.value = flat[0].value
+    }
+  } catch (error) {
+    console.error('Error loading materials:', error)
+  }
+}
+
 async function loadOperationsAvailable() {
   try {
-    const response = await req_json_auth('/operations_available?service_id=electroplating', 'GET')
+    const response = await req_json_auth(
+      '/operations_available?service_id=electroplating_auto',
+      'GET'
+    )
     if (!response?.ok) return
 
     const backendOperations = (await response.json()) as OperationsAvailableResponse
@@ -244,25 +282,25 @@ async function loadOperationsAvailable() {
       process_id.value = coatingProcesses.value[0]?.value ?? ''
     }
 
-    syncSelectedCoverWithProcess()
+    syncSelectedProcess()
   } catch (error) {
     console.error('Error loading electroplating operations:', error)
   }
 }
 
-function syncSelectedCoverWithProcess() {
+function syncSelectedProcess() {
   const firstCoating =
     coatingTypes.value[0]?.value ?? selectedGroupOperations.value[0]?.id ?? ''
 
   if (order_id.value === 0 && firstCoating) {
-    material_id.value = firstCoating
+    electroplating_process_id.value = firstCoating
     return
   }
 
-  if (coatingTypes.value.some((item) => item.value === material_id.value)) return
+  if (coatingTypes.value.some((item) => item.value === electroplating_process_id.value)) return
 
   if (firstCoating) {
-    material_id.value = firstCoating
+    electroplating_process_id.value = firstCoating
   }
 }
 
@@ -291,59 +329,57 @@ async function getOrder(id: number) {
 
     if (data.file_id) file_id.value = data.file_id
     if (data.document_ids) document_ids.value = data.document_ids
-    if (data.length) length.value = data.length
-    if (data.width) width.value = data.width
-    if (data.height) height.value = data.height
     if (data.quantity) quantity.value = data.quantity
-    const orderCoverId = data.cover_id
-      ? Array.isArray(data.cover_id)
-        ? data.cover_id[0]
-        : data.cover_id
-      : ''
     if (data.material_id) material_id.value = data.material_id
-    else if (orderCoverId) material_id.value = orderCoverId
-    if (data.material_form) material_form.value = data.material_form
-    if ((data as any).process_id) process_id.value = (data as any).process_id
-    if (data.n_dimensions) n_dimensions.value = data.n_dimensions
-    if (data.k_otk) k_otk.value = data.k_otk
-    if (data.k_cert) k_cert.value = data.k_cert
+
+    const orderProcessId =
+      (data as { electroplating_process_id?: string }).electroplating_process_id ??
+      data.cover_id
+        ? Array.isArray(data.cover_id)
+          ? data.cover_id[0]
+          : data.cover_id
+        : data.material_id && operationsAvailable.value.some((op) => op.id === data.material_id)
+          ? data.material_id
+          : ''
+
+    if (orderProcessId) electroplating_process_id.value = orderProcessId
+
+    const thickness = (data as { coating_thickness_microns?: number }).coating_thickness_microns
+    if (thickness) coating_thickness_microns.value = thickness
+
+    if (data.k_otk) k_otk.value = String(data.k_otk)
     if (data.special_instructions) special_instructions.value = data.special_instructions
     if (data.order_name) order_name.value = data.order_name
-    if ((data as any).order_code) order_code.value = (data as any).order_code
+    if ((data as { order_code?: string }).order_code) order_code.value = (data as { order_code?: string }).order_code!
 
     if (!coatingProcesses.value.some((item) => item.value === process_id.value)) {
-      const materialOperation = operationsAvailable.value.find(
-        (operation) => operation.id === material_id.value
+      const processOperation = operationsAvailable.value.find(
+        (operation) => operation.id === electroplating_process_id.value
       )
       process_id.value =
         coatingProcesses.value.find((item) => {
-          const processOperation = operationsAvailable.value.find(
+          const groupOperation = operationsAvailable.value.find(
             (operation) => operation.id === item.value
           )
-          return processOperation?.group === materialOperation?.group
+          return groupOperation?.group === processOperation?.group
         })?.value ??
         coatingProcesses.value[0]?.value ??
         ''
     }
-    syncSelectedCoverWithProcess()
+    syncSelectedProcess()
 
     Object.assign(payload, {
-      service_id: 'electroplating',
+      service_id: 'electroplating_auto',
       order_name: order_name.value,
       order_code: order_code.value,
+      location: location.value,
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
-      length: length.value,
-      width: width.value,
-      height: height.value,
       material_id: material_id.value,
-      material_form: material_form.value,
-      process_id: process_id.value,
-      cover_id: cover_id.value,
-      n_dimensions: n_dimensions.value,
+      electroplating_process_id: electroplating_process_id.value,
+      coating_thickness_microns: coating_thickness_microns.value,
       k_otk: k_otk.value,
-      k_cert: k_cert.value,
     })
   } catch (error) {
     console.error({ error })
@@ -352,15 +388,18 @@ async function getOrder(id: number) {
 }
 
 watch(service_id, () => {
-  if (service_id.value !== 'electroplating') {
-    service_id.value = 'electroplating'
+  if (service_id.value !== 'electroplating_auto') {
+    service_id.value = 'electroplating_auto'
   }
 })
 
 watch(process_id, () => {
-  syncSelectedCoverWithProcess()
+  syncSelectedProcess()
 })
 
+watch(file_id, () => {
+  cadViewerKey.value += 1
+})
 </script>
 
 <template>
@@ -371,8 +410,17 @@ watch(process_id, () => {
           <div class="milling-page__card">
             <div class="milling-page__main galvanic-page__main">
               <div class="calc-quantity">
-                <div class="calc-title">Количество, ед.</div>
+                <div class="calc-title">Количество, шт</div>
                 <Input v-model="quantityInput" type="number" placeholder="Введите количество" />
+              </div>
+
+              <div class="milling-field-group">
+                <div class="calc-title">Материал заготовки</div>
+                <SelectGroup
+                  v-model="material_id"
+                  :options="materials"
+                  placeholder="Выберите материал"
+                />
               </div>
 
               <div class="milling-field-block">
@@ -381,13 +429,22 @@ watch(process_id, () => {
                   <SelectCalc v-model="process_id" :input-data="coatingProcesses" />
                   <SelectCalc
                     v-if="coatingTypes.length"
-                    v-model="material_id"
+                    v-model="electroplating_process_id"
                     :input-data="coatingTypes"
                   />
                 </div>
               </div>
 
               <div class="milling-field-block">
+                <div class="calc-title">Толщина покрытия, мкм</div>
+                <Input
+                  v-model="coatingThicknessInput"
+                  type="number"
+                  placeholder="Введите толщину"
+                />
+              </div>
+
+              <div v-if="technicalRestrictions.length" class="milling-field-block">
                 <div class="calc-title">Технические ограничения</div>
                 <div class="galvanic-restrictions">
                   <div
@@ -409,7 +466,7 @@ watch(process_id, () => {
                 <SuitableMachines :machines="result?.suitable_machines || []" />
               </div>
 
-              <div class="milling-field-block galvanic-description">
+              <div class="milling-field-block">
                 <div class="calc-title">Описание заказа</div>
                 <el-input v-model="special_instructions" type="textarea" :rows="5" placeholder="" />
               </div>
@@ -426,7 +483,11 @@ watch(process_id, () => {
             </div>
 
             <aside class="milling-page__aside">
-              <CalculateResultSpecialist />
+              <CalculateResults :result="result" />
+
+              <div v-if="file_id" class="milling-cad">
+                <CadShowById :key="cadViewerKey" v-model="file_id" />
+              </div>
 
               <div class="milling-upload">
                 <div class="milling-upload__title">Загрузите файлы</div>
@@ -490,6 +551,17 @@ watch(process_id, () => {
   padding: 5px 0;
 }
 
+:deep(.el-select__wrapper) {
+  min-height: 48px;
+  height: 48px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background-color: var(--whity);
+  box-shadow: none;
+  border: none;
+  box-sizing: border-box;
+}
+
 .milling-field-block--otk {
   max-width: 822px;
   gap: 20px;
@@ -518,10 +590,6 @@ watch(process_id, () => {
   color: #000;
 }
 
-.galvanic-description {
-  margin-top: auto;
-}
-
 .milling-actions {
   padding-top: 6px;
 }
@@ -536,11 +604,16 @@ watch(process_id, () => {
   min-width: 0;
 }
 
+.milling-cad {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
 .milling-upload {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  /* margin-top: auto; */
 }
 
 .milling-upload__title {
@@ -625,6 +698,10 @@ watch(process_id, () => {
 
   .milling-actions {
     padding-top: 0;
+  }
+
+  .milling-cad {
+    border-radius: 8px;
   }
 
   :deep(.el-textarea__inner) {
