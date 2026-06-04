@@ -450,15 +450,6 @@ watch(file_id, () => {
                 <Input v-model="quantityInput" type="number" placeholder="Введите количество" />
               </div>
 
-              <div class="milling-field-group">
-                <div class="calc-title">Материал заготовки</div>
-                <SelectGroup
-                  v-model="material_id"
-                  :options="materials"
-                  placeholder="Выберите материал"
-                />
-              </div>
-
               <div class="milling-field-block">
                 <div class="calc-title">Вид покрытия</div>
                 <div class="galvanic-cover-fields">
@@ -469,6 +460,15 @@ watch(file_id, () => {
                     :input-data="coatingTypes"
                   />
                 </div>
+              </div>
+
+              <div class="milling-field-group">
+                <div class="calc-title">Материал заготовки</div>
+                <SelectGroup
+                  v-model="material_id"
+                  :options="materials"
+                  placeholder="Выберите материал"
+                />
               </div>
 
               <div class="milling-field-block">
