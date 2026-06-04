@@ -159,6 +159,12 @@ const result = ref<IOrderResponse | null>(null)
 const isInfoVisible = ref(false)
 const isLoading = ref<boolean>(true)
 const isBootstrapping = ref(true)
+const isMaterialsLoading = ref(false)
+
+const isMaterialInList = computed(() => {
+  const flat = materials.value.flatMap((g) => g.options)
+  return flat.some((item) => item.value === material_id.value)
+})
 
 const MIN_LOADING_MS = 1000
 let loadingStartedAt = 0
@@ -200,9 +206,27 @@ const calculationPayload = computed(() => {
 })
 
 watch(
+  electroplating_process_id,
+  (id, oldId) => {
+    if (!id || isBootstrapping.value || id === oldId) return
+    isMaterialsLoading.value = true
+    materials.value = []
+  },
+  { flush: 'sync' }
+)
+
+watch(
   calculationPayload,
   (newVal) => {
-    if (isBootstrapping.value || !electroplating_process_id.value || !material_id.value) return
+    if (
+      isBootstrapping.value ||
+      isMaterialsLoading.value ||
+      !electroplating_process_id.value ||
+      !material_id.value ||
+      !isMaterialInList.value
+    ) {
+      return
+    }
 
     sendData(newVal as unknown as IOrderPayload)
   },
@@ -236,10 +260,6 @@ onMounted(async () => {
       await getOrder(order_id.value)
     }
     await loadMaterials()
-
-    if (electroplating_process_id.value && material_id.value) {
-      await sendData(calculationPayload.value as unknown as IOrderPayload)
-    }
   } finally {
     isBootstrapping.value = false
   }
@@ -249,6 +269,12 @@ const transformMaterials = (data: { materials: BackendMaterial[] }) =>
   toMaterialOptionGroupsByFamily(data.materials)
 
 async function loadMaterials() {
+  if (!electroplating_process_id.value) {
+    materials.value = []
+    return
+  }
+
+  isMaterialsLoading.value = true
   try {
     const response = await req_json_auth(
       `/materials?process=electroplating_auto&electroplating_process_id=${encodeURIComponent(electroplating_process_id.value)}`,
@@ -261,13 +287,14 @@ async function loadMaterials() {
     }
     materials.value = transformMaterials(backendMaterials)
     const flat = materials.value.flatMap((g) => g.options)
-    if (order_id.value === 0 && flat.length) {
-      material_id.value = flat[0].value
-    } else if (!flat.some((item) => item.value === material_id.value) && flat.length) {
-      material_id.value = flat[0].value
-    }
+    if (!flat.length) return
+
+    material_id.value = flat[0].value
+    await sendData(calculationPayload.value as unknown as IOrderPayload)
   } catch (error) {
     console.error('Error loading materials:', error)
+  } finally {
+    isMaterialsLoading.value = false
   }
 }
 
@@ -401,9 +428,9 @@ watch(process_id, () => {
   syncSelectedProcess()
 })
 
-watch(electroplating_process_id, (id) => {
+watch(electroplating_process_id, async (id) => {
   if (!id || isBootstrapping.value) return
-  loadMaterials()
+  await loadMaterials()
 })
 
 watch(file_id, () => {
