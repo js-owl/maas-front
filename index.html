@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -40,7 +40,6 @@
       ;(function () {
         var METRIKA_ID = 108781948
         var SCRIPT_SRC = 'https://mc.yandex.ru/metrika/tag.js'
-        /** Delay after window.load before loading tag.js (ms). Keeps Metrika off critical path / lab scores. */
         var METRIKA_DELAY_MS = 2500
         var CONSENT_KEYS = ['analytics_consent', 'cookie_consent_analytics', 'ym_consent']
         var metrikaScheduleStarted = false
@@ -54,16 +53,13 @@
                 return true
               }
             }
-          } catch (e) {
-            // localStorage may be unavailable in some privacy modes
-          }
+          } catch (e) {}
           return false
         }
 
         function injectMetrika() {
           if (metrikaInjected) return
           metrikaInjected = true
-
           ;(function (m, e, t, r, i, k, a) {
             m[i] =
               m[i] ||
@@ -76,11 +72,11 @@
                 return
               }
             }
-            ;(k = e.createElement(t)),
+            ;((k = e.createElement(t)),
               (a = e.getElementsByTagName(t)[0]),
               (k.async = 1),
               (k.src = r),
-              a.parentNode.insertBefore(k, a)
+              a.parentNode.insertBefore(k, a))
           })(window, document, 'script', SCRIPT_SRC, 'ym')
 
           ym(METRIKA_ID, 'init', {
@@ -92,7 +88,6 @@
           })
         }
 
-        /** After full page load + METRIKA_DELAY_MS — меньше влияние на FCP/LCP/TBT в лабораторных прогонах; cache TTL у mc.yandex.ru по-прежнему не контролируем. */
         function startMetrika() {
           if (metrikaScheduleStarted) return
           metrikaScheduleStarted = true
@@ -108,14 +103,10 @@
           }
         }
 
-        // Optional API for consent banner integrations:
-        // window.__grantAnalyticsConsent() { localStorage.setItem('analytics_consent', 'true'); ... }
         window.__grantAnalyticsConsent = function () {
           try {
             localStorage.setItem('analytics_consent', 'true')
-          } catch (e) {
-            // ignore
-          }
+          } catch (e) {}
           startMetrika()
         }
 
@@ -127,6 +118,18 @@
       })()
     </script>
     <!-- /Yandex.Metrika counter -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JD61PLVKZ9"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+
+      gtag('config', 'G-JD61PLVKZ9')
+    </script>
   </head>
   <body>
     <div id="app"></div>
