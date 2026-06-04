@@ -195,7 +195,7 @@ const calculationPayload = computed(() => {
     material_id: payload.material_id,
     electroplating_process_id: payload.electroplating_process_id,
     coating_thickness_microns: payload.coating_thickness_microns,
-    k_otk: Number(payload.k_otk) || 1,
+    k_otk: String(payload.k_otk),
   }
 })
 
