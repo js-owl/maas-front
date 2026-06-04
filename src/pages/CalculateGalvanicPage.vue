@@ -211,7 +211,7 @@ watch(
 
 onMounted(async () => {
   try {
-    await Promise.all([loadMaterials(), loadOperationsAvailable()])
+    await loadOperationsAvailable()
     if (order_id.value === 0) {
       const filesQuery = route.query.files
       const stpParam = route.query.stp
@@ -235,6 +235,7 @@ onMounted(async () => {
     } else {
       await getOrder(order_id.value)
     }
+    await loadMaterials()
 
     if (electroplating_process_id.value && material_id.value) {
       await sendData(calculationPayload.value as unknown as IOrderPayload)
@@ -249,7 +250,10 @@ const transformMaterials = (data: { materials: BackendMaterial[] }) =>
 
 async function loadMaterials() {
   try {
-    const response = await req_json_auth('/materials?process=electroplating_auto', 'GET')
+    const response = await req_json_auth(
+      `/materials?process=electroplating_auto&electroplating_process_id=${encodeURIComponent(electroplating_process_id.value)}`,
+      'GET'
+    )
     if (!response?.ok) return
 
     const backendMaterials = (await response.json()) as {
@@ -395,6 +399,11 @@ watch(service_id, () => {
 
 watch(process_id, () => {
   syncSelectedProcess()
+})
+
+watch(electroplating_process_id, (id) => {
+  if (!id || isBootstrapping.value) return
+  loadMaterials()
 })
 
 watch(file_id, () => {
