@@ -7,7 +7,6 @@ import { parseFilesQueryToIds } from '../helpers/parse-files'
 import { locations } from '../helpers/get-location'
 import Input from '../components/ui/Input.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
-import SelectGroup from '../components/ui/SelectGroup.vue'
 import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 import { useProfileStore } from '../stores/profile.store'
 import SuitableMachines from '../components/SuitableMachines.vue'
@@ -17,7 +16,6 @@ import UploadFiles2 from '@/components/UploadFiles2.vue'
 import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
 import Loader from '../components/ui/Loader.vue'
-import { toMaterialOptionGroupsByFamily } from '../helpers/material-family'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
 
@@ -41,18 +39,28 @@ const quantityInput = computed({
   },
 })
 
-const material_id = ref('')
-type BackendMaterial = { id: string; label: string; family?: string | null }
-type MaterialOption = { value: string; label: string }
-type MaterialOptionGroup = { label: string; options: MaterialOption[] }
-const materials = ref<MaterialOptionGroup[]>([])
-
-const service_id = ref('electroplating_auto')
+const electroplating_family = ref('')
 
 type SelectOption = {
   value: string
   label: string
 }
+
+type ElectroplatingMaterialFamily = {
+  id: string
+  label: string
+  density_kg_dm3?: number
+  allowed_processes?: string[]
+}
+type ElectroplatingMaterialFamiliesResponse = {
+  values?: ElectroplatingMaterialFamily[]
+  data?: {
+    values?: ElectroplatingMaterialFamily[]
+  }
+}
+const materialFamilies = ref<SelectOption[]>([])
+
+const service_id = ref('electroplating_auto')
 
 type OperationAvailable = {
   id: string
@@ -148,7 +156,7 @@ const payload = reactive({
   file_id,
   document_ids,
   quantity,
-  material_id,
+  electroplating_family,
   electroplating_process_id,
   coating_thickness_microns,
   k_otk,
@@ -161,10 +169,9 @@ const isLoading = ref<boolean>(true)
 const isBootstrapping = ref(true)
 const isMaterialsLoading = ref(false)
 
-const isMaterialInList = computed(() => {
-  const flat = materials.value.flatMap((g) => g.options)
-  return flat.some((item) => item.value === material_id.value)
-})
+const isFamilyInList = computed(() =>
+  materialFamilies.value.some((item) => item.value === electroplating_family.value)
+)
 
 const MIN_LOADING_MS = 1000
 let loadingStartedAt = 0
@@ -198,7 +205,7 @@ const calculationPayload = computed(() => {
     ...fileFields,
     document_ids: payload.document_ids,
     quantity: payload.quantity,
-    material_id: payload.material_id,
+    electroplating_family: payload.electroplating_family,
     electroplating_process_id: payload.electroplating_process_id,
     coating_thickness_microns: payload.coating_thickness_microns,
     k_otk: String(payload.k_otk),
@@ -210,7 +217,7 @@ watch(
   (id, oldId) => {
     if (!id || isBootstrapping.value || id === oldId) return
     isMaterialsLoading.value = true
-    materials.value = []
+    materialFamilies.value = []
   },
   { flush: 'sync' }
 )
@@ -222,8 +229,8 @@ watch(
       isBootstrapping.value ||
       isMaterialsLoading.value ||
       !electroplating_process_id.value ||
-      !material_id.value ||
-      !isMaterialInList.value
+      !electroplating_family.value ||
+      !isFamilyInList.value
     ) {
       return
     }
@@ -259,40 +266,44 @@ onMounted(async () => {
     } else {
       await getOrder(order_id.value)
     }
-    await loadMaterials()
+    await loadMaterialFamilies()
   } finally {
     isBootstrapping.value = false
   }
 })
 
-const transformMaterials = (data: { materials: BackendMaterial[] }) =>
-  toMaterialOptionGroupsByFamily(data.materials)
-
-async function loadMaterials() {
+async function loadMaterialFamilies() {
   if (!electroplating_process_id.value) {
-    materials.value = []
+    materialFamilies.value = []
     return
   }
 
   isMaterialsLoading.value = true
   try {
     const response = await req_json_auth(
-      `/materials?process=electroplating_auto&electroplating_process_id=${encodeURIComponent(electroplating_process_id.value)}`,
-      'GET'
+      `/electroplating_material_families?electroplating_process_id=${encodeURIComponent(electroplating_process_id.value)}`,
+      'GET',
     )
     if (!response?.ok) return
 
-    const backendMaterials = (await response.json()) as {
-      materials: BackendMaterial[]
-    }
-    materials.value = transformMaterials(backendMaterials)
-    const flat = materials.value.flatMap((g) => g.options)
-    if (!flat.length) return
+    const body = (await response.json()) as ElectroplatingMaterialFamiliesResponse
+    const values = body.data?.values ?? body.values ?? []
+    materialFamilies.value = values.map((item) => ({
+      value: item.id,
+      label: item.label,
+    }))
+    if (!materialFamilies.value.length) return
 
-    material_id.value = flat[0].value
+    if (
+      order_id.value === 0 ||
+      !materialFamilies.value.some((item) => item.value === electroplating_family.value)
+    ) {
+      electroplating_family.value = materialFamilies.value[0].value
+    }
+
     await sendData(calculationPayload.value as unknown as IOrderPayload)
   } catch (error) {
-    console.error('Error loading materials:', error)
+    console.error('Error loading electroplating material families:', error)
   } finally {
     isMaterialsLoading.value = false
   }
@@ -361,22 +372,29 @@ async function getOrder(id: number) {
     if (data.file_id) file_id.value = data.file_id
     if (data.document_ids) document_ids.value = data.document_ids
     if (data.quantity) quantity.value = data.quantity
-    if (data.material_id) material_id.value = data.material_id
+
+    const galvanicOrder = data as {
+      electroplating_family?: string
+      electroplating_process_id?: string
+      coating_thickness_microns?: number
+    }
+    if (galvanicOrder.electroplating_family) {
+      electroplating_family.value = galvanicOrder.electroplating_family
+    }
 
     const orderProcessId =
-      (data as { electroplating_process_id?: string }).electroplating_process_id ??
-      data.cover_id
+      galvanicOrder.electroplating_process_id ??
+      (data.cover_id
         ? Array.isArray(data.cover_id)
           ? data.cover_id[0]
           : data.cover_id
-        : data.material_id && operationsAvailable.value.some((op) => op.id === data.material_id)
-          ? data.material_id
-          : ''
+        : '')
 
     if (orderProcessId) electroplating_process_id.value = orderProcessId
 
-    const thickness = (data as { coating_thickness_microns?: number }).coating_thickness_microns
-    if (thickness) coating_thickness_microns.value = thickness
+    if (galvanicOrder.coating_thickness_microns) {
+      coating_thickness_microns.value = galvanicOrder.coating_thickness_microns
+    }
 
     if (data.k_otk) k_otk.value = String(data.k_otk)
     if (data.special_instructions) special_instructions.value = data.special_instructions
@@ -407,7 +425,7 @@ async function getOrder(id: number) {
       file_id: file_id.value,
       document_ids: document_ids.value,
       quantity: quantity.value,
-      material_id: material_id.value,
+      electroplating_family: electroplating_family.value,
       electroplating_process_id: electroplating_process_id.value,
       coating_thickness_microns: coating_thickness_microns.value,
       k_otk: k_otk.value,
@@ -430,7 +448,7 @@ watch(process_id, () => {
 
 watch(electroplating_process_id, async (id) => {
   if (!id || isBootstrapping.value) return
-  await loadMaterials()
+  await loadMaterialFamilies()
 })
 
 watch(file_id, () => {
@@ -463,11 +481,10 @@ watch(file_id, () => {
               </div>
 
               <div class="milling-field-group">
-                <div class="calc-title">Материал заготовки</div>
-                <SelectGroup
-                  v-model="material_id"
-                  :options="materials"
-                  placeholder="Выберите материал"
+                <div class="calc-title">Материал детали</div>
+                <SelectCalc
+                  v-model="electroplating_family"
+                  :input-data="materialFamilies"
                 />
               </div>
 
