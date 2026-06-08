@@ -81,7 +81,11 @@ const submit = () => {
   <section class="section-basic calc-section">
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
-        <h2 class="calc-title">Комплекс предприятий полного цикла</h2>
+        <h2 class="calc-title">
+          <span class="calc-title-line">Комплекс</span>
+          <span class="calc-title-line">предприятий</span>
+          <span class="calc-title-line">полного цикла</span>
+        </h2>
         <div class="calc-description">
           <p class="calc-text">
             Мы — комплекс предприятий полного цикла. Производим детали любой сложности по вашим
@@ -175,16 +179,24 @@ const submit = () => {
 
 .calc-title {
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   font-family: 'Montserrat-Black', sans-serif;
   font-size: 64px;
   font-weight: 900;
   line-height: normal;
   color: #000000;
-  text-decoration: underline;
+}
+
+.calc-title-line {
+  display: block;
+  width: fit-content;
+  text-decoration-line: underline;
   text-decoration-color: #d4354f;
   text-decoration-thickness: 9%;
-  text-underline-offset: 0;
-  word-break: break-word;
+  text-underline-offset: 0.14em;
+  text-decoration-skip-ink: none;
 }
 
 .calc-description {
