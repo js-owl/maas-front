@@ -23,33 +23,58 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- https://www.figma.com/design/Ptb80TGgpGXXHPGVWOKhdH/MaaS?node-id=1641-91&t=wkAQmWBg5peO3d60-0 -->
-  <!-- https://www.figma.com/design/gmTpeZTQOqlccm1oIfFu2D/MaaS-%D0%9C%D0%B0%D0%BA%D0%B5%D1%82-%D0%94%D0%BB%D1%8F-Frontend?node-id=4183-189 -->
-  <div style="background-color: var(--bgcolor)">
-    <div v-if="!isMobile">
-      <el-row>
-        <el-col :offset="3" :span="18">
-          <!-- <HomeModel /> -->
-          <HomeUslugi />
+  <!-- https://www.figma.com/design/3aK9MoWiPd2N2GC4OVNFSR/MaaS-Frontend--Copy-?node-id=4469-14269 -->
+  <div class="home-page">
+    <el-row v-if="!isMobile">
+      <el-col :offset="3" :span="18">
+        <div class="home-page__sections">
           <HomeCalc v-if="showHomeCalc" />
-          <HomeMilestones />
-          <!-- <HomeAbout /> -->
-          <HomeAdvantages />
-        </el-col>
-      </el-row>
-    </div>
-    <template v-else>
-      <!-- <HomeModel /> -->
-      <el-row>
-        <el-col :offset="0" :span="24">
           <HomeUslugi />
-          <HomeCalc v-if="showHomeCalc" />
           <HomeMilestones />
-          <!-- <HomeAbout /> -->
-
           <HomeAdvantages />
-        </el-col>
-      </el-row>
-    </template>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row v-else>
+      <el-col :offset="0" :span="24">
+        <div class="home-page__sections home-page__sections--mobile">
+          <HomeCalc v-if="showHomeCalc" />
+          <HomeUslugi />
+          <HomeMilestones />
+          <HomeAdvantages />
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
+
+<style scoped>
+.home-page {
+  background-color: var(--bgcolor);
+}
+
+.home-page__sections {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  position: relative;
+  z-index: 2;
+  padding-bottom: 40px;
+}
+
+.home-page__sections :deep(.uslugi-section2.section-basic),
+.home-page__sections :deep(.home-milestones),
+.home-page__sections :deep(.home-advantages) {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.home-page__sections :deep(.calc-section) {
+  margin-bottom: 0 !important;
+}
+
+.home-page__sections--mobile {
+  margin-top: 0;
+  padding-bottom: 40px;
+}
+</style>

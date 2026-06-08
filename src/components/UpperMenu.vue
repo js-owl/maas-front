@@ -9,7 +9,6 @@ import { useRouter, useRoute } from 'vue-router'
 import {
   Menu
 } from '@element-plus/icons-vue'
-import IconLogoHeader from '../icons/IconLogoHeader.vue'
 import IconLogoHeader2 from '../icons/IconLogoHeader2.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
 import IconReg from '../icons/IconReg.vue'
@@ -154,22 +153,20 @@ function openServicePage(path: string) {
 </script>
 
 <template>
-  <div class="uppermenu-wrapper" :class="{ 'fullscreen-bg': isHomePage }">
-    <div v-if="isHomePage" class="background-overlay"></div>
+  <div class="uppermenu-wrapper" :class="{ 'uppermenu-wrapper--home': isHomePage }">
     <el-row :gutter="0" class="uppermenu-row">
       <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
         <el-header class="uppermenu-header">
           <div class="left-wrap">
             <el-button v-if="isMobile" class="burger-btn" text @click="isDrawerOpen = true">
-              <el-icon size="26" color="#fff">
+              <el-icon size="26" color="#333">
                 <Menu />
               </el-icon>
             </el-button>
 
             <div v-if="!isMobile" class="menu-container">
               <el-button class="logo-btn" @click="router.push({ path: '/' })" aria-label="Перейти на главную">
-                <IconLogoHeader v-if="isHomePage" class="logo-icon" />
-                <IconLogoHeader2 v-else class="logo-icon" />
+                <IconLogoHeader2 class="logo-icon" />
               </el-button>
 
               <el-popover
@@ -301,23 +298,6 @@ function openServicePage(path: string) {
       <!-- <DialogCall v-model="isCallVisible" /> -->
     </el-row>
 
-    <!-- Hero content on home page -->
-    <div v-if="isHomePage" class="hero-content">
-      <el-row :gutter="0">
-        <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-          <h1 class="hero-title">
-            КОМПЛЕКС ПРЕДПРИЯТИЙ<br />
-            ПОЛНОГО ЦИКЛА
-          </h1>
-          <!-- <p class="hero-description">
-            АЭРОМАКС - комплекс предприятий для выполнения<br />
-            задач в области механообработки, работы<br />
-            с полимерными и композиционными материалами.
-          </p>
-          <p class="hero-slogan">Оптимизируйте, развивайте и производите.</p> -->
-        </el-col>
-      </el-row>
-    </div>
   </div>
 
   <el-drawer v-model="isDrawerOpen" direction="ltr" :with-header="false" size="80%">
@@ -373,6 +353,15 @@ function openServicePage(path: string) {
   width: 100%;
   background-color: var(--bgcolor);
   padding: 10px 0;
+}
+
+.uppermenu-wrapper--home {
+  padding: 60px 0 0;
+}
+
+.uppermenu-wrapper--home .uppermenu-header {
+  height: 53px;
+  /* padding: 0 20px; */
 }
 
 .uppermenu-wrapper.fullscreen-bg {
@@ -712,6 +701,10 @@ function openServicePage(path: string) {
 @media (max-width: 767px) {
   .uppermenu-wrapper {
     min-height: auto;
+  }
+
+  .uppermenu-wrapper--home {
+    padding: 20px 0 0;
   }
 
   .uppermenu-header {

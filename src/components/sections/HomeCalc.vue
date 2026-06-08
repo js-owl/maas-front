@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
 import Select from '../ui/Select.vue'
 import Button from '../ui/Button.vue'
@@ -17,7 +17,9 @@ const props = withDefaults(
   }
 )
 
+const route = useRoute()
 const router = useRouter()
+const isHomePage = computed(() => route.path === '/')
 // const authStore = useAuthStore()
 
 const formModel = ref({
@@ -78,7 +80,7 @@ const submit = () => {
 </script>
 
 <template>
-  <section class="section-basic calc-section">
+  <section class="section-basic calc-section" :class="{ 'calc-section--home': isHomePage }">
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
         <h2 class="calc-title">
@@ -91,6 +93,7 @@ const submit = () => {
             Мы — комплекс предприятий полного цикла. Производим детали любой сложности по вашим
             чертежам: от единичного экземпляра до серии.
           </p>
+          <br>
           <p class="calc-text">
             От чертежа до готового изделия - без посредников и лишних звонков.
           </p>
@@ -154,6 +157,10 @@ const submit = () => {
   border-radius: 20px;
   box-shadow: 0 11px 7.5px #cbd1d5;
   box-sizing: border-box;
+}
+
+.calc-section.section-basic.calc-section--home {
+  margin-top: 78px;
 }
 
 .calc-wrap {
@@ -368,6 +375,10 @@ const submit = () => {
 }
 
 @media (max-width: 768px) {
+  .calc-section.section-basic.calc-section--home {
+    margin-top: 24px;
+  }
+
   .calc-section.section-basic {
     border-radius: 0;
     padding: 20px;
