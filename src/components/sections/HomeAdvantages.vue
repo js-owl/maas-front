@@ -80,7 +80,19 @@ const advantages = ref([
 
               <div class="item-number" aria-hidden="true">{{ advantage.id }}</div>
 
-              <div class="maas-subtitle item-title">{{ advantage.title }}</div>
+              <div
+                class="maas-subtitle item-title"
+                :class="{ 'item-title--first': advantage.id === 1 }"
+              >{{ advantage.title }}</div>
+
+              <img
+                src="@/assets/advantage-chevron.svg"
+                alt=""
+                class="item-chevron"
+                aria-hidden="true"
+                width="16"
+                height="39"
+              />
 
             </div>
 
@@ -216,15 +228,15 @@ const advantages = ref([
 
   box-sizing: border-box;
 
-  width: 50px;
+  width: 48px;
 
-  height: 50px;
+  height: 48px;
 
-  padding: 10px;
+  padding: 6px;
+
+  border: 2px solid #ffffff;
 
   border-radius: 10px;
-
-  background-color: rgba(255, 255, 255, 0.5);
 
   display: flex;
 
@@ -232,15 +244,15 @@ const advantages = ref([
 
   justify-content: center;
 
-  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-family: 'Montserrat-Medium', sans-serif;
 
-  font-size: 36px;
+  font-size: 30px;
 
-  font-weight: 600;
+  font-weight: 500;
 
   line-height: normal;
 
-  color: #d4354f;
+  color: #ffffff;
 
   text-align: center;
 
@@ -256,11 +268,11 @@ const advantages = ref([
 
   min-width: 0;
 
-  font-family: 'Montserrat-Black', sans-serif;
+  font-family: 'Montserrat-SemiBold', sans-serif;
 
   font-size: 24px;
 
-  font-weight: 700;
+  font-weight: 600;
 
   line-height: normal;
 
@@ -274,21 +286,43 @@ const advantages = ref([
 
 
 
+.item-title--first {
+
+  font-family: 'Montserrat-Medium', sans-serif;
+
+  font-weight: 500;
+
+}
+
+
+
+.item-chevron {
+
+  flex-shrink: 0;
+
+  width: 16px;
+
+  height: 39px;
+
+  display: block;
+
+}
+
+
+
 .item-text {
 
   margin: 0;
 
-  flex: 0 1 650px;
-
-  max-width: 650px;
+  flex: 1 1 0;
 
   min-width: 0;
 
-  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-family: 'Montserrat-Medium', sans-serif;
 
   font-size: 24px;
 
-  font-weight: 600;
+  font-weight: 500;
 
   line-height: normal;
 
@@ -358,11 +392,15 @@ const advantages = ref([
 
 
 
+  .item-chevron {
+
+    display: none;
+
+  }
+
+
+
   .item-text {
-
-    flex: 1 1 auto;
-
-    max-width: 100%;
 
     font-size: 24px;
 
@@ -371,4 +409,3 @@ const advantages = ref([
 }
 
 </style>
-
