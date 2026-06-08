@@ -78,27 +78,35 @@ const submit = () => {
 </script>
 
 <template>
-  <section class="section-basic">
+  <section class="section-basic calc-section">
     <div class="calc-wrap" :class="{ mobile: isMobile }">
       <div class="calc-left">
-        <h2 class="maas-title calc-title">Производство под вашу потребность</h2>
-        <p class="maas-text">
-          Проведем расчет стоимости детали по 3D-модели или чертежу в течение 5 рабочих дней, а
-          также вы получите анализ и рекомендации по оптимизации процесса изготовления
-        </p>
+        <h2 class="calc-title">Комплекс предприятий полного цикла</h2>
+        <div class="calc-description">
+          <p class="calc-text">
+            Мы — комплекс предприятий полного цикла. Производим детали любой сложности по вашим
+            чертежам: от единичного экземпляра до серии.
+          </p>
+          <p class="calc-text">
+            От чертежа до готового изделия - без посредников и лишних звонков.
+          </p>
+        </div>
       </div>
 
       <div class="calc-right">
         <el-form :model="formModel" class="calc-form" label-position="top">
-          <UploadFiles
-            v-model="document_ids"
-            color="#000"
-            v-model:stp_id="stp_id"
-            :service_id="uploadServiceId"
-            class="upload-files-bordered"
-          />
+          <div class="calc-upload-zone">
+            <h3 class="calc-upload-title">Расчет стоимости изготовления</h3>
+            <UploadFiles
+              v-model="document_ids"
+              color="#d4354f"
+              v-model:stp_id="stp_id"
+              :service_id="uploadServiceId"
+              class="calc-upload-files"
+            />
+          </div>
           <div class="action-row">
-            <el-form-item v-if="!hasExternalServiceId">
+            <el-form-item v-if="!hasExternalServiceId" class="calc-order-type-item">
               <Select
                 v-model="selectedOrderType"
                 placeholder="Тип обработки"
@@ -119,6 +127,7 @@ const submit = () => {
               </Select>
             </el-form-item>
             <Button
+              flat
               :loading="isSubmitting"
               @click="submit"
               class="calc-submit-button"
@@ -133,121 +142,191 @@ const submit = () => {
 </template>
 
 <style scoped>
+.calc-section.section-basic {
+  min-height: auto;
+  margin: 0 0 40px;
+  padding: 80px 40px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 11px 7.5px #cbd1d5;
+  box-sizing: border-box;
+}
+
 .calc-wrap {
   display: flex;
-  gap: 20px;
+  gap: 100px;
   align-items: flex-start;
-  /* height: 500px; */
+  width: 100%;
 }
 
 .calc-wrap.mobile {
   flex-direction: column;
+  gap: 40px;
 }
 
 .calc-left {
-  padding-right: 10px;
-  width: calc((100% - 20px) / 2);
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  flex: 0 0 600px;
+  max-width: 600px;
   box-sizing: border-box;
 }
 
 .calc-title {
   margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
-  font-weight: 600;
+  font-family: 'Montserrat-Black', sans-serif;
+  font-size: 64px;
+  font-weight: 900;
   line-height: normal;
-  color: #d4354f;
+  color: #000000;
+  text-decoration: underline;
+  text-decoration-color: #d4354f;
+  text-decoration-thickness: 9%;
+  text-underline-offset: 0;
+  word-break: break-word;
 }
-.calc-left .lead {
-  color: #4c4c4c;
-  font-size: 18px;
-  margin-bottom: 0;
-  padding-top: 10px;
+
+.calc-description {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 500px;
+}
+
+.calc-text {
+  margin: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: normal;
+  color: #000000;
+  word-break: break-word;
 }
 
 .calc-right {
-  background: #fff;
-  border-radius: 12px;
-  /* box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); */
-  width: calc((100% - 20px) / 2);
+  flex: 1 1 0;
+  min-width: 0;
   box-sizing: border-box;
-  /* padding: 20px; */
-  /* flex: 1 1 50%; */
+}
+
+.calc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 
 .calc-form :deep(.el-form-item) {
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
-.calc-form :deep(.el-form-item.asterisk-left.el-form-item--label-top) {
-  margin-bottom: 0;
+.calc-upload-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  width: 100%;
+  padding: 40px;
+  border: 4px dashed #d4354f;
+  border-radius: 20px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.calc-upload-title {
+  margin: 0;
+  width: 100%;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  line-height: normal;
+  color: #000000;
+}
+
+.calc-upload-files {
+  width: 100%;
+}
+
+.calc-upload-files :deep(.upload) {
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background-color: transparent !important;
+}
+
+.calc-upload-files :deep(.upload:not(.has-files):not(.is-uploading) .el-upload__text) {
+  display: none;
+}
+
+.calc-upload-files :deep(.custom) {
+  flex-direction: column;
+  gap: 0;
+  align-items: center;
+  width: 100%;
+}
+
+.calc-upload-files :deep(.upload-subtitle) {
+  margin: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: normal;
+  color: #d4354f;
+}
+
+.calc-upload-files :deep(.upload-subtitle + .upload-subtitle) {
+  margin-top: 1em;
+}
+
+.calc-upload-files :deep(.has-files .el-upload__text) {
+  color: #000000 !important;
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  line-height: normal !important;
 }
 
 .action-row {
   display: flex;
-  gap: 12px;
-  margin-top: 10px;
-  align-items: stretch;
-  justify-content: flex-end;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
 }
 
-.action-row > * {
-  flex: 1 1 50%;
+.calc-order-type-item {
+  width: 100%;
 }
 
-.upload-row {
-  margin-top: 8px;
-}
-
-.upload-btn {
-  display: block;
-  background: #ce132f;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  text-align: center;
-  cursor: pointer;
-}
-
-.file-input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.formats {
-  color: var(--gray-footer);
-  font-size: 20px;
-  font-weight: 500;
-  margin: 10px 0 14px 2px;
-}
-
-.files-list {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #666;
-}
-.upload-files-bordered :deep(.upload) {
-  border: 2px dashed #7d8083;
+.calc-order-type-item :deep(.el-select__wrapper) {
   border-radius: 10px;
-  /* background-color: transparent !important; */
-  /* background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-    url('/homePage/about.webp'); */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  min-height: 69px;
 }
+
 .calc-submit-button {
-  --bgcolor: #cbd1d5;
-  flex: 0 1 calc(50% - 90px);
+  width: 100%;
+  padding: 20px 30px;
+  background: #d4354f !important;
+  border-radius: 10px;
+  color: #ffffff !important;
   font-family: 'Montserrat-SemiBold', sans-serif !important;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
-  min-height: 56px;
-  border-radius: 24px;
+  line-height: normal;
+  text-transform: uppercase;
+  box-shadow: none !important;
+}
+
+.calc-submit-button:hover:not(.is-disabled) {
+  background: #d4354f !important;
+  box-shadow: none !important;
+  transform: none;
+}
+
+.calc-submit-button:active:not(.is-disabled) {
+  transform: none;
+  box-shadow: none !important;
 }
 
 .home-calc-order-option__label {
@@ -271,32 +350,52 @@ const submit = () => {
   left: 5px;
   width: 7px;
   height: 7px;
-  border-top: 1.5px solid #000;
-  border-right: 1.5px solid #000;
+  border-top: 1.5px solid #000000;
+  border-right: 1.5px solid #000000;
   transform: rotate(45deg);
 }
 
 @media (max-width: 768px) {
-  .calc-title {
-    font-size: 24px;
+  .calc-section.section-basic {
+    border-radius: 0;
+    padding: 20px;
+  }
+
+  .calc-wrap {
+    gap: 40px;
   }
 
   .calc-left {
-    padding-right: 0px;
+    flex: none;
+    max-width: none;
     width: 100%;
+    gap: 24px;
   }
 
-  .calc-right {
-    width: 100%;
-    padding: 16px;
+  .calc-title {
+    font-size: 32px;
   }
 
-  .action-row {
-    flex-direction: column;
+  .calc-text {
+    font-size: 18px;
+  }
+
+  .calc-upload-zone {
+    padding: 24px 20px;
+    gap: 24px;
+  }
+
+  .calc-upload-title {
+    font-size: 24px;
+  }
+
+  .calc-upload-files :deep(.upload-subtitle) {
+    font-size: 16px;
   }
 
   .calc-submit-button {
-    flex-basis: auto;
+    font-size: 20px;
+    padding: 16px 24px;
   }
 }
 </style>
