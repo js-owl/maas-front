@@ -69,6 +69,8 @@ type OperationAvailable = {
   label: string
   max_part_size_label: string
   max_weight_kg: number
+  requires_thickness_input?: boolean
+  requires_processing_depth_input?: boolean
 }
 
 type OperationsAvailableResponse = {
@@ -127,6 +129,14 @@ const coatingTypes = computed<SelectOption[]>(() =>
 const selectedOperation = computed(() =>
   operationsAvailable.value.find((operation) => operation.id === electroplating_process_id.value)
 )
+
+const requiresCoatingThicknessInput = computed(() => {
+  const operation = selectedOperation.value
+  if (!operation) return false
+  return Boolean(
+    operation.requires_thickness_input || operation.requires_processing_depth_input
+  )
+})
 
 const technicalRestrictions = computed(() => {
   if (!selectedOperation.value) return []
@@ -207,10 +217,28 @@ const calculationPayload = computed(() => {
     quantity: payload.quantity,
     electroplating_family: payload.electroplating_family,
     electroplating_process_id: payload.electroplating_process_id,
-    coating_thickness_microns: payload.coating_thickness_microns,
+    ...(requiresCoatingThicknessInput.value
+      ? { coating_thickness_microns: payload.coating_thickness_microns }
+      : {}),
     k_otk: String(payload.k_otk),
   }
 })
+
+const submitPayload = computed(() => ({
+  service_id: payload.service_id,
+  order_name: payload.order_name,
+  order_code: payload.order_code,
+  location: payload.location,
+  file_id: payload.file_id,
+  document_ids: payload.document_ids,
+  quantity: payload.quantity,
+  electroplating_family: payload.electroplating_family,
+  electroplating_process_id: payload.electroplating_process_id,
+  k_otk: payload.k_otk,
+  ...(requiresCoatingThicknessInput.value
+    ? { coating_thickness_microns: payload.coating_thickness_microns }
+    : {}),
+}))
 
 watch(
   electroplating_process_id,
@@ -427,7 +455,9 @@ async function getOrder(id: number) {
       quantity: quantity.value,
       electroplating_family: electroplating_family.value,
       electroplating_process_id: electroplating_process_id.value,
-      coating_thickness_microns: coating_thickness_microns.value,
+      ...(requiresCoatingThicknessInput.value
+        ? { coating_thickness_microns: coating_thickness_microns.value }
+        : {}),
       k_otk: k_otk.value,
     })
   } catch (error) {
@@ -488,7 +518,7 @@ watch(file_id, () => {
                 />
               </div>
 
-              <div class="milling-field-block">
+              <div v-if="requiresCoatingThicknessInput" class="milling-field-block">
                 <div class="calc-title">Толщина покрытия, мкм</div>
                 <Input
                   v-model="coatingThicknessInput"
@@ -527,7 +557,7 @@ watch(file_id, () => {
               <div class="milling-actions">
                 <CalculateSubmit2
                   :order-id="order_id"
-                  :payload="payload as unknown as IOrderPayload"
+                  :payload="submitPayload as unknown as IOrderPayload"
                   :special-instructions="special_instructions"
                   @updateResult="onUpdateResult"
                   @showInfo="isInfoVisible = true"
