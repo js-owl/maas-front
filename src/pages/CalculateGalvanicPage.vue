@@ -133,9 +133,7 @@ const selectedOperation = computed(() =>
 const requiresCoatingThicknessInput = computed(() => {
   const operation = selectedOperation.value
   if (!operation) return false
-  return Boolean(
-    operation.requires_thickness_input || operation.requires_processing_depth_input
-  )
+  return Boolean(operation.requires_thickness_input)
 })
 
 const technicalRestrictions = computed(() => {
