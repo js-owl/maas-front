@@ -2,7 +2,7 @@ import { createWebHistory, createRouter, type RouteRecordRaw } from 'vue-router'
 
 import HomePage from './pages/HomePage.vue'
 import NotFoundPage from './pages/NotFoundPage.vue'
-// import { useAuthStore } from "./stores/auth.store";
+import { useAuthStore } from './stores/auth.store'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: HomePage, name: 'home' },
@@ -151,6 +151,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/FooterPolicyPage.vue'),
     name: 'policy',
   },
+  {
+    path: '/confirm-email',
+    component: () => import('./pages/ConfirmEmailPage.vue'),
+    name: 'confirm-email',
+  },
 
   { path: '/:patchMatch(.*)*', name: 'not-found', component: NotFoundPage },
 ]
@@ -166,11 +171,14 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  // const authStore = useAuthStore();
   console.log('router', to.fullPath)
-  // if (!authStore.getToken && to.name != "home") {
-  //   return { name: "home" };
-  // }
+
+  if (!to.path.startsWith('/personal')) return
+
+  const authStore = useAuthStore()
+  if (!authStore.getToken) {
+    return { name: 'home', query: { login: '1' } }
+  }
 })
 
 export default router

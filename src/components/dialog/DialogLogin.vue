@@ -1,11 +1,19 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, onMounted, watch } from 'vue'
 import { useAuthStore } from '../../stores/auth.store'
+import { useEmailStore } from '../../stores/email.store'
 import DialogRegistration from './DialogRegistration.vue'
 import Button from '../ui/Button.vue'
 import Checkbox from '../ui/Checkbox.vue'
+import Input from '../ui/Input.vue'
 import { useWindowSize } from '@vueuse/core'
-// import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import {
+  EMAIL_JUST_CONFIRMED_KEY,
+  isEmailNotVerifiedError,
+  UI_MESSAGES,
+} from '../../helpers/email-verification'
 
 let dialogFormVisible = defineModel<boolean>()
 
@@ -17,6 +25,15 @@ const formData = reactive({
 })
 
 const isRememberMe = ref(false)
+const loginError = ref('')
+const showEmailVerification = ref(false)
+const resendEmail = ref('')
+const isResending = ref(false)
+const isRegistrationVisible = ref(false)
+
+const authStore = useAuthStore()
+const emailStore = useEmailStore()
+const route = useRoute()
 
 function loadSavedCredentials() {
   try {
@@ -64,22 +81,57 @@ watch(isRememberMe, (remember) => {
 })
 
 watch(dialogFormVisible, (visible) => {
-  if (visible) loadSavedCredentials()
+  if (visible) {
+    loadSavedCredentials()
+    if (route.query.verify === '1') {
+      showEmailVerification.value = true
+      loginError.value = UI_MESSAGES.loginEmailNotVerified
+    }
+    if (sessionStorage.getItem(EMAIL_JUST_CONFIRMED_KEY) === '1') {
+      sessionStorage.removeItem(EMAIL_JUST_CONFIRMED_KEY)
+      ElMessage.success('Email подтверждён. Войдите в аккаунт.')
+    }
+  } else {
+    showEmailVerification.value = false
+  }
 })
-const loginError = ref('')
 
-const isRegistrationVisible = ref(false)
-
-const authStore = useAuthStore()
-// const router = useRouter()
+watch(
+  () => route.query.verify,
+  (verify) => {
+    if (verify === '1' && dialogFormVisible.value) {
+      showEmailVerification.value = true
+      loginError.value = UI_MESSAGES.loginEmailNotVerified
+    }
+  },
+)
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
+
+const canResendEmail = computed(() => emailStore.canResend())
+
+const onResendConfirmation = async () => {
+  if (!resendEmail.value.trim()) {
+    ElMessage.warning('Введите email для повторной отправки письма')
+    return
+  }
+  isResending.value = true
+  try {
+    const result = await emailStore.sendConfirmation(resendEmail.value)
+    ElMessage.success(result.message)
+  } catch (e) {
+    ElMessage.error(e instanceof Error ? e.message : 'Не удалось отправить письмо')
+  } finally {
+    isResending.value = false
+  }
+}
 
 const onSubmit = async () => {
   console.log('onSubmit', { formData })
   if (!formData.username || !formData.password) return
   loginError.value = ''
+  showEmailVerification.value = false
   try {
     await authStore.login(formData, isRememberMe.value)
     console.log('Dialog-login: token', authStore.getToken)
@@ -90,8 +142,15 @@ const onSubmit = async () => {
       formData.password = ''
     }
     loginError.value = ''
+    showEmailVerification.value = false
     dialogFormVisible.value = false
   } catch (e) {
+    if (isEmailNotVerifiedError(e)) {
+      showEmailVerification.value = true
+      resendEmail.value = formData.username
+      loginError.value = UI_MESSAGES.loginEmailNotVerified
+      return
+    }
     const message = e instanceof Error ? e.message : 'Ошибка входа'
     console.log({ message })
     loginError.value = 'Неправильное имя пользователя или пароль'
@@ -107,6 +166,7 @@ const onRegistration = async () => {
 const onOpenLogin = () => {
   isRegistrationVisible.value = false
   loginError.value = ''
+  showEmailVerification.value = false
   dialogFormVisible.value = true
 }
 
@@ -147,7 +207,7 @@ const onOpenLogin = () => {
             v-model="formData.username"
             name="username"
             autocomplete="username"
-            placeholder="Логин"
+            placeholder="Email"
           />
         </el-form-item>
         <el-form-item>
@@ -165,6 +225,26 @@ const onOpenLogin = () => {
         <Checkbox v-model="isRememberMe" class="remember-checkbox">
           Запомнить данные
         </Checkbox>
+      </div>
+      <div v-if="showEmailVerification" class="email-verification-block">
+        <p class="email-verification-text">{{ UI_MESSAGES.loginEmailNotVerified }}</p>
+        <el-form-item>
+          <Input
+            v-model="resendEmail"
+            type="email"
+            placeholder="Email для повторной отправки"
+            autocomplete="email"
+          />
+        </el-form-item>
+        <Button
+          width="fit-content"
+          flat
+          :loading="isResending"
+          :disabled="!canResendEmail"
+          @click="onResendConfirmation"
+        >
+          Отправить письмо снова
+        </Button>
       </div>
     </div>
     <template #footer>
@@ -256,6 +336,22 @@ const onOpenLogin = () => {
   margin-top: 20px;
   display: flex;
   align-items: center;
+}
+
+.email-verification-block {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 397px;
+}
+
+.email-verification-text {
+  margin: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--gray-footer);
 }
 
 .remember-checkbox {

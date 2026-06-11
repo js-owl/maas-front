@@ -40,6 +40,7 @@ declare module 'vue' {
     Diameter: typeof import('./src/components/coefficients/Diameter.vue')['default']
     DocumentShowByIds: typeof import('./src/components/DocumentShowByIds.vue')['default']
     DocumentShowByIds2: typeof import('./src/components/DocumentShowByIds2.vue')['default']
+    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']

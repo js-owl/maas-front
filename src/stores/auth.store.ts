@@ -3,6 +3,11 @@ import { computed, ref } from "vue";
 import { API_BASE } from "../api";
 import { useProfileStore } from "../stores/profile.store";
 import { useMaterialStore } from "../stores/material.store";
+import {
+  EMAIL_NOT_VERIFIED_ERROR,
+  isEmailVerificationDetail,
+  normalizeEmail,
+} from "../helpers/email-verification";
 
 type AuthResponse = {
   access_token: string;
@@ -83,7 +88,8 @@ export const useAuthStore = defineStore("auth", () => {
       headers: headers,
       credentials: "include",
       body: JSON.stringify({
-        ...formData,
+        personal_email: normalizeEmail(formData.username || ""),
+        password: formData.password,
         remember_me: rememberMe,
       }),
     });
@@ -93,13 +99,17 @@ export const useAuthStore = defineStore("auth", () => {
         const errorData = await res.json();
         const detail = (errorData && (errorData.detail || errorData.message)) || "";
         const detailStr = typeof detail === "string" ? detail : JSON.stringify(detail);
-        // Наиболее частый кейс — неправильные логин/пароль
-        if (res.status === 401 || /invalid|unauthorized|неверн/i.test(detailStr)) {
+        if (res.status === 403 && isEmailVerificationDetail(detailStr)) {
+          throw new Error(EMAIL_NOT_VERIFIED_ERROR);
+        }
+        if (res.status === 401 || /invalid|unauthorized|incorrect|неверн/i.test(detailStr)) {
           throw new Error("Неверное имя пользователя или пароль");
         }
         if (detailStr) message = detailStr;
-      } catch (_) {
-        // ignore parse error and keep default message
+      } catch (e) {
+        if (e instanceof Error && e.message === EMAIL_NOT_VERIFIED_ERROR) {
+          throw e;
+        }
       }
       throw new Error(message);
     }

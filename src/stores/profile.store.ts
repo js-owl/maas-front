@@ -7,6 +7,10 @@ export type IProfile = {
   id?: number;
   username: string;
   email: string;
+  personal_email?: string;
+  email_verified?: boolean;
+  email_verified_at?: string | null;
+  is_admin?: boolean;
   phone_number?: string;
   full_name: string;
   last_name?: string;
@@ -197,9 +201,13 @@ export const useProfileStore = defineStore("user", () => {
     const { apartment: _omit, ...rest } = profileData;
     const addressFields = parseAddressString(rest.city);
     const nameFields = nameFieldsFromFullName(rest.full_name || "", rest.user_type);
+    const personalEmail = rest.personal_email ?? rest.email ?? "";
 
     return {
       ...rest,
+      personal_email: personalEmail,
+      email: personalEmail || rest.email || "",
+      username: personalEmail || rest.username || "",
       office: rest.office ?? profileData.apartment ?? "",
       ...addressFields,
       ...nameFields,

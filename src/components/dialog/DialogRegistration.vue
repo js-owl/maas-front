@@ -6,6 +6,8 @@ import {
   parsePhoneToDigits,
 } from '../../composables/usePhoneValidation'
 import { useRegStore } from '../../stores/reg.store'
+import { useEmailStore } from '../../stores/email.store'
+import { UI_MESSAGES } from '../../helpers/email-verification'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { useWindowSize } from '@vueuse/core'
@@ -44,6 +46,7 @@ const form = ref<FormData>({
 const usernameError = ref('')
 
 const regStore = useRegStore()
+const emailStore = useEmailStore()
 const loading = ref(false)
 const isAgreementAccepted = ref(false)
 const isPolicyAccepted = ref(false)
@@ -159,14 +162,22 @@ const submitForm = async () => {
     loading.value = true
 
     console.log('Form submitted:', form.value)
-    await regStore.register(form)
+    const { email } = await regStore.register(form)
+    const sendResult = await emailStore.sendConfirmation(email)
 
     ElMessage({
       type: 'success',
-      message: 'Регистрация успешно завершена!',
+      message: UI_MESSAGES.registrationCheckEmail(email),
+      duration: 8000,
     })
+    if (sendResult.message) {
+      ElMessage({
+        type: 'info',
+        message: sendResult.message,
+        duration: 6000,
+      })
+    }
 
-    // Close dialog and reset form
     closeDialog()
   } catch (error) {
     console.error('Form validation/submit failed:', { error })
