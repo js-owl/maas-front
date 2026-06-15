@@ -34,6 +34,7 @@ declare module 'vue' {
     DatePicker: typeof import('./src/components/ui/DatePicker.vue')['default']
     DialogCall: typeof import('./src/components/dialog/DialogCall.vue')['default']
     DialogEditUser: typeof import('./src/components/dialog/DialogEditUser.vue')['default']
+    DialogForgotPassword: typeof import('./src/components/dialog/DialogForgotPassword.vue')['default']
     DialogInfoPayment: typeof import('./src/components/dialog/DialogInfoPayment.vue')['default']
     DialogLogin: typeof import('./src/components/dialog/DialogLogin.vue')['default']
     DialogRegistration: typeof import('./src/components/dialog/DialogRegistration.vue')['default']

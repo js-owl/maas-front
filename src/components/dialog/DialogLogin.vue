@@ -3,6 +3,7 @@ import { reactive, ref, computed, onMounted, watch } from 'vue'
 import { useAuthStore } from '../../stores/auth.store'
 import { useEmailStore } from '../../stores/email.store'
 import DialogRegistration from './DialogRegistration.vue'
+import DialogForgotPassword from './DialogForgotPassword.vue'
 import Button from '../ui/Button.vue'
 import Checkbox from '../ui/Checkbox.vue'
 import Input from '../ui/Input.vue'
@@ -14,6 +15,7 @@ import {
   isEmailNotVerifiedError,
   UI_MESSAGES,
 } from '../../helpers/email-verification'
+import { PASSWORD_JUST_RESET_KEY } from '../../helpers/password-recovery'
 
 let dialogFormVisible = defineModel<boolean>()
 
@@ -30,6 +32,7 @@ const showEmailVerification = ref(false)
 const resendEmail = ref('')
 const isResending = ref(false)
 const isRegistrationVisible = ref(false)
+const isForgotPasswordVisible = ref(false)
 
 const authStore = useAuthStore()
 const emailStore = useEmailStore()
@@ -90,6 +93,10 @@ watch(dialogFormVisible, (visible) => {
     if (sessionStorage.getItem(EMAIL_JUST_CONFIRMED_KEY) === '1') {
       sessionStorage.removeItem(EMAIL_JUST_CONFIRMED_KEY)
       ElMessage.success('Email подтверждён. Войдите в аккаунт.')
+    }
+    if (sessionStorage.getItem(PASSWORD_JUST_RESET_KEY) === '1') {
+      sessionStorage.removeItem(PASSWORD_JUST_RESET_KEY)
+      ElMessage.success('Пароль изменён. Войдите с новым паролем.')
     }
   } else {
     showEmailVerification.value = false
@@ -165,15 +172,16 @@ const onRegistration = async () => {
 
 const onOpenLogin = () => {
   isRegistrationVisible.value = false
+  isForgotPasswordVisible.value = false
   loginError.value = ''
   showEmailVerification.value = false
   dialogFormVisible.value = true
 }
 
-// const onRestore = async () => {
-//   console.log('onRestore')
-//   dialogFormVisible.value = false
-// }
+const onRestore = () => {
+  dialogFormVisible.value = false
+  isForgotPasswordVisible.value = true
+}
 </script>
 
 <template>
@@ -253,11 +261,12 @@ const onOpenLogin = () => {
           <Button form="dialog-login-form" width="fit-content" flat @click="onSubmit">Войти</Button>
           <Button v-if="true" width="fit-content" flat @click="onRegistration"> Регистрация </Button>
         </div>
-        <!-- <div class="restore" @click="onRestore">Восстановить пароль</div> -->
+        <div class="restore" @click="onRestore">Восстановить пароль</div>
       </div>
     </template>
   </el-dialog>
   <DialogRegistration v-model="isRegistrationVisible" @open-login="onOpenLogin" />
+  <DialogForgotPassword v-model="isForgotPasswordVisible" @open-login="onOpenLogin" />
 </template>
 
 <style scoped>

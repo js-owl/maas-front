@@ -156,6 +156,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/ConfirmEmailPage.vue'),
     name: 'confirm-email',
   },
+  {
+    path: '/reset-password',
+    component: () => import('./pages/ResetPasswordPage.vue'),
+    name: 'reset-password',
+  },
 
   { path: '/:patchMatch(.*)*', name: 'not-found', component: NotFoundPage },
 ]
