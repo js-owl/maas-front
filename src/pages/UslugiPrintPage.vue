@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
-import HomeCalc from '@/components/sections/HomeCalc.vue'
+import UslugiCalc from '@/components/sections/uslugi/UslugiCalc.vue'
 import UslugiPrint from '@/components/sections/uslugi/UslugiPrint.vue'
 import UslugiPrintExample from '@/components/sections/uslugi/UslugiPrintExample.vue'
 
@@ -13,7 +13,7 @@ const isMobile = computed(() => width.value < 768)
   <div class="main-container">
     <el-row>
       <el-col v-if="!isMobile" :offset="3" :span="18">
-        <HomeCalc service_id="printing" />
+        <UslugiCalc service_id="printing" />
       </el-col>
       <UslugiPrint />
       <UslugiPrintExample />
