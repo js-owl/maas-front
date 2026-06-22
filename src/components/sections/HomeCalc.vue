@@ -6,6 +6,7 @@ import Select from '../ui/Select.vue'
 import Button from '../ui/Button.vue'
 import UploadFiles from '../UploadFiles.vue'
 import { orderTypeOptions } from '@/helpers/order-type-options'
+import { useAuthStore } from '@/stores/auth.store'
 // import { useAuthStore } from '../../stores/auth.store'
 
 const props = withDefaults(
@@ -18,7 +19,7 @@ const props = withDefaults(
 )
 
 const router = useRouter()
-// const authStore = useAuthStore()
+const authStore = useAuthStore()
 
 const formModel = ref({
   name: '',
@@ -32,6 +33,7 @@ const selectedOrderType = ref<string>('')
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
+const isAuthenticated = computed(() => Boolean(authStore.getToken))
 
 // const hasToken = computed(() => Boolean(authStore.getToken))
 const hasExternalServiceId = computed(() => Boolean(props.service_id))
@@ -101,7 +103,7 @@ const submit = () => {
         <el-form :model="formModel" class="calc-form" label-position="top">
           <div class="calc-upload-zone">
             <h3 class="calc-upload-title">Расчет стоимости изготовления</h3>
-            <div class="calc-formats">
+            <div v-if="!isMobile || isAuthenticated" class="calc-formats">
               <p class="calc-format-text">
                 Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY,
                 3DS, DAE, FBX, BLEND
@@ -495,14 +497,27 @@ const submit = () => {
     font-size: 16px;
   }
 
-  .calc-upload-files :deep(.upload:not(.has-files):not(.is-uploading)) {
+  .calc-upload-files :deep(.upload:not(.has-files):not(.is-uploading):not(.has-guest-message)) {
     height: 0;
     min-height: 0;
     overflow: hidden;
   }
 
+  .calc-upload-files :deep(.upload.has-guest-message) {
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
   .calc-upload-files :deep(.upload-subtitle) {
-    display: none;
+    margin: 0;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #e84261;
+    text-align: left;
   }
 
   .calc-upload-files :deep(.custom) {

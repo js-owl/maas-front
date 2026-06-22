@@ -256,6 +256,7 @@ const handleDragOver = (event: DragEvent) => {
         'is-disabled': isDisabled(),
         'is-uploading': isUploading,
         'has-files': hasUploadedFiles,
+        'has-guest-message': !isAuthenticated && !hasUploadedFiles,
       }"
       @click="handleUploadClick"
       @drop="handleDrop"
@@ -282,8 +283,7 @@ const handleDragOver = (event: DragEvent) => {
         >
           {{ uploadMainText }}
         </div>
-        <template v-if="!props.hideFormatsText">
-          <template v-if="isAuthenticated && !hasUploadedFiles">
+        <template v-if="isAuthenticated && !hasUploadedFiles && !props.hideFormatsText">
             <div class="upload-subtitle">
               Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
             </div>
@@ -291,10 +291,9 @@ const handleDragOver = (event: DragEvent) => {
               Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
             </div>
           </template>
-          <div v-else-if="!hasUploadedFiles" class="upload-subtitle">
+          <div v-else-if="!isAuthenticated && !hasUploadedFiles" class="upload-subtitle">
             Без авторизации можно загружать только STP-файлы.
           </div>
-        </template>
         <input
           type="file"
           @change="handleFileChange"
