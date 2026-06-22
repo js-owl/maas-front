@@ -7,7 +7,7 @@ import UslugiLathe from '../components/sections/uslugi/UslugiLathe.vue'
 import UslugiMilling from '../components/sections/uslugi/UslugiMilling.vue'
 import UslugiTooling from '../components/sections/uslugi/UslugiTooling.vue'
 import UslugiGrinding from '../components/sections/uslugi/UslugiGrinding.vue'
-import HomeCalc from '../components/sections/HomeCalc.vue'
+import UslugiCalc from '@/components/sections/uslugi/UslugiCalc.vue'
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
@@ -17,7 +17,7 @@ const isMobile = computed(() => width.value < 768)
   <div class="main-container">
     <el-row>
       <el-col v-if="!isMobile" :offset="3" :span="18">
-        <HomeCalc service_id="cnc-milling" />
+        <UslugiCalc service_id="cnc-milling" />
       </el-col>
       <!-- <template v-else>
         <el-col :offset="0" :span="24">

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
-import HomeCalc from '@/components/sections/HomeCalc.vue'
+import UslugiCalc from '@/components/sections/uslugi/UslugiCalc.vue'
 import UslugiPKM from '@/components/sections/uslugi/UslugiPKM.vue'
 import UslugiPKMAdvantages from '@/components/sections/uslugi/UslugiPKMAdvantages.vue'
 import UslugiPKMExample from '@/components/sections/uslugi/UslugiPKMExample.vue'
@@ -14,7 +14,7 @@ const isMobile = computed(() => width.value < 768)
   <div class="main-container">
     <el-row>
       <el-col v-if="!isMobile" :offset="3" :span="18">
-        <HomeCalc service_id="other" />
+        <UslugiCalc service_id="other" />
       </el-col>
 
       <UslugiPKM />
