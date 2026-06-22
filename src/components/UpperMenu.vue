@@ -6,11 +6,9 @@ import DialogLogin from './dialog/DialogLogin.vue'
 import DialogRegistration from './dialog/DialogRegistration.vue'
 import { useAuthStore } from '../stores/auth.store'
 import { useRouter, useRoute } from 'vue-router'
-import {
-  Menu
-} from '@element-plus/icons-vue'
 import IconLogoHeader2 from '../icons/IconLogoHeader2.vue'
 import IconLogoMark from '../icons/IconLogoMark.vue'
+import IconMobileMenu from '../icons/IconMobileMenu.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
 import IconReg from '../icons/IconReg.vue'
 // import IconCall from '@/icons/IconCall.vue'
@@ -167,23 +165,27 @@ function scrollToCalcSection() {
       <el-col :offset="isMobile ? 0 : 3" :span="isMobile ? 24 : 18">
         <el-header class="uppermenu-header" :class="{ 'uppermenu-header--mobile': isMobile }">
           <div v-if="isMobile" class="mobile-header">
-            <el-button
-              class="logo-btn mobile-logo-btn"
+            <button
+              type="button"
+              class="mobile-logo-btn"
               @click="router.push({ path: '/' })"
               aria-label="Перейти на главную"
             >
               <IconLogoMark class="mobile-logo-icon" />
-            </el-button>
+            </button>
 
             <button type="button" class="mobile-calc-btn montserrat-semibold" @click="scrollToCalcSection">
               Расчет стоимости
             </button>
 
-            <el-button class="mobile-menu-btn" text @click="isDrawerOpen = true" aria-label="Открыть меню">
-              <el-icon size="24" color="#333">
-                <Menu />
-              </el-icon>
-            </el-button>
+            <button
+              type="button"
+              class="mobile-menu-btn"
+              @click="isDrawerOpen = true"
+              aria-label="Открыть меню"
+            >
+              <IconMobileMenu class="mobile-menu-icon" />
+            </button>
           </div>
 
           <template v-else>
@@ -504,7 +506,6 @@ function scrollToCalcSection() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
   width: 100%;
   max-width: 340px;
   margin: 0 auto;
@@ -513,20 +514,25 @@ function scrollToCalcSection() {
 
 .mobile-logo-btn {
   flex-shrink: 0;
-  width: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58.068px;
   height: 36px;
   padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 .mobile-logo-icon {
   display: block;
-  width: 58px;
+  width: 58.068px;
   height: 36px;
 }
 
 .mobile-calc-btn {
-  flex: 1 1 0;
-  min-width: 0;
+  flex-shrink: 0;
   height: 36px;
   padding: 8px 24px;
   border: none;
@@ -542,21 +548,25 @@ function scrollToCalcSection() {
 }
 
 .mobile-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   width: 36px;
   height: 36px;
   padding: 8px;
+  border: none;
   border-radius: 8px;
-  background-color: #ffffff !important;
-  border: none !important;
-  box-shadow: none !important;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  cursor: pointer;
 }
 
-.mobile-menu-btn:hover,
-.mobile-menu-btn:focus,
-.mobile-menu-btn:active {
-  background-color: #ffffff !important;
-  border-color: transparent !important;
+.mobile-menu-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
 .fullscreen-bg .burger-btn {
