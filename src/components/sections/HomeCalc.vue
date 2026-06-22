@@ -88,7 +88,8 @@ const submit = () => {
             чертежам: от единичного экземпляра до серии.
           </p>
           <p class="calc-text">
-            От чертежа до готового изделия - без посредников и лишних звонков.
+            От чертежа до готового изделия -<br />
+            без посредников и лишних звонков.
           </p>
         </div>
       </div>
@@ -392,12 +393,14 @@ const submit = () => {
     max-width: none;
     font-family: 'Montserrat-SemiBold', sans-serif;
     font-size: 28px;
-    font-weight: 600;
+    font-weight: 700;
+    line-height: normal;
     color: #e84261;
   }
 
   .calc-text {
     font-size: 14px;
+    line-height: normal;
   }
 
   .calc-form {
@@ -417,6 +420,11 @@ const submit = () => {
 
   .calc-upload-files :deep(.upload-subtitle) {
     font-size: 12px;
+    line-height: normal;
+  }
+
+  .calc-upload-files :deep(.upload-subtitle + .upload-subtitle) {
+    margin-top: 8px;
   }
 
   .action-row {
@@ -424,13 +432,29 @@ const submit = () => {
   }
 
   .calc-order-type-item :deep(.el-select__wrapper) {
+    height: 40px;
     min-height: 40px;
+    padding: 0 8px;
     border-radius: 10px;
+  }
+
+  .calc-order-type-item :deep(.el-select__suffix) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .calc-order-type-item :deep(.el-select__suffix .el-icon) {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
   }
 
   .calc-order-type-item :deep(.el-select__placeholder),
   .calc-order-type-item :deep(.el-select__selected-item) {
     font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000000 !important;
   }
 
   .calc-submit-button {

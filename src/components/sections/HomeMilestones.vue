@@ -31,13 +31,13 @@ const steps: Step[] = [
     icon: markRaw(IconTwo),
     title: 'Загрузите файлы',
     description:
-      'Сервис работает с форматами 3D. Если у нас нет модели, но есть чертеж - наш специалист свяжется с вами',
+      'Сервис работает с форматами 3D. Если модели нет, но у вас есть чертеж - загрузите его, и специалист свяжется с вами',
   },
   {
     id: 3,
     icon: markRaw(IconThree),
     title: 'Разместите заявку на расчет',
-    description: 'Мы ценим ваше время и быстро рассчитываем стоимость изготовления детали',
+    description: 'Мы ценим ваше время и быстро расчитываем стоимость изготовления изделия',
   },
   {
     id: 4,
@@ -249,6 +249,12 @@ const steps: Step[] = [
 
   .step-description {
     font-size: 12px;
+    line-height: normal;
+  }
+
+  .step-description-link {
+    text-decoration: none;
+    text-underline-offset: unset;
   }
 }
 </style>

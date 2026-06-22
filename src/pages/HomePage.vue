@@ -25,7 +25,7 @@ onMounted(() => {
 <template>
   <!-- https://www.figma.com/design/HyoggbbVUgCqJp5UR7EU8T/MaaS-DEV--Copy-?node-id=3248-1490 -->
   <div class="home-page" :class="{ 'home-page--mobile': isMobile }">
-    <el-row>
+    <el-row :gutter="0">
       <el-col :offset="isMobile ? 0 : 3" :span="isMobile ? 24 : 18">
         <div class="home-page__sections">
           <HomeCalc v-if="showHomeCalc" />
@@ -41,6 +41,7 @@ onMounted(() => {
 <style scoped>
 .home-page {
   background-color: var(--bgcolor);
+  box-sizing: border-box;
 }
 
 .home-page__sections {

@@ -83,7 +83,12 @@ const advantages = ref([
               <div
                 class="maas-subtitle item-title"
                 :class="{ 'item-title--first': advantage.id === 1 }"
-              >{{ advantage.title }}</div>
+              >
+                <template v-if="advantage.id === 4">
+                  Проверенные материалы<br />и оборудование
+                </template>
+                <template v-else>{{ advantage.title }}</template>
+              </div>
 
               <img
                 src="@/assets/advantage-chevron.svg"
@@ -426,6 +431,8 @@ const advantages = ref([
 
     font-weight: 600;
 
+    line-height: normal;
+
     text-transform: none;
 
   }
@@ -445,6 +452,8 @@ const advantages = ref([
   .item-text {
 
     font-size: 12px;
+
+    line-height: normal;
 
   }
 

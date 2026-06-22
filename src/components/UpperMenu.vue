@@ -164,7 +164,7 @@ function scrollToCalcSection() {
 <template>
   <div class="uppermenu-wrapper" :class="{ 'uppermenu-wrapper--home': isHomePage }">
     <el-row :gutter="0" class="uppermenu-row">
-      <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
+      <el-col :offset="isMobile ? 0 : 3" :span="isMobile ? 24 : 18">
         <el-header class="uppermenu-header" :class="{ 'uppermenu-header--mobile': isMobile }">
           <div v-if="isMobile" class="mobile-header">
             <el-button
@@ -393,6 +393,7 @@ function scrollToCalcSection() {
   width: 100%;
   background-color: var(--bgcolor);
   padding: 10px 0;
+  box-sizing: border-box;
 }
 
 .uppermenu-wrapper--home {
