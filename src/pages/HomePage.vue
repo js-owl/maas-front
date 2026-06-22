@@ -64,8 +64,9 @@ onMounted(() => {
 @media (max-width: 767px) {
   .home-page--mobile .home-page__sections {
     gap: 12px;
-    max-width: 340px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: none;
+    margin: 0;
     padding: 32px 10px 40px;
     box-sizing: border-box;
   }
