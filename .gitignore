@@ -41,3 +41,9 @@ dist-ssr
 /_build-log.txt
 /.lighthouse-results/
 /.lighthouse-results-prod/
+
+# Playwright artifacts (snapshots are committed)
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
