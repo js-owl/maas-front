@@ -23,7 +23,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- https://www.figma.com/design/HyoggbbVUgCqJp5UR7EU8T/MaaS-DEV--Copy-?node-id=3356-572 -->
+  <!-- https://www.figma.com/design/HyoggbbVUgCqJp5UR7EU8T/MaaS-DEV--Copy-?node-id=3248-1490 -->
   <div class="home-page" :class="{ 'home-page--mobile': isMobile }">
     <el-row>
       <el-col :offset="isMobile ? 0 : 3" :span="isMobile ? 24 : 18">
@@ -49,18 +49,15 @@ onMounted(() => {
   gap: 40px;
   position: relative;
   z-index: 2;
+  padding-top: 40px;
   padding-bottom: 40px;
 }
 
-.home-page__sections :deep(.uslugi-section2.section-basic),
+.home-page__sections :deep(.calc-section),
+.home-page__sections :deep(.uslugi-section2),
 .home-page__sections :deep(.home-milestones),
 .home-page__sections :deep(.home-advantages) {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-.home-page__sections :deep(.calc-section) {
-  margin-bottom: 0 !important;
+  margin: 0 !important;
 }
 
 @media (max-width: 767px) {
