@@ -12,11 +12,9 @@ const isMobile = computed(() => width.value < 768)
 <template>
   <div class="main-container">
     <el-row>
-      <div v-if="!isMobile">
-        <el-col :offset="3" :span="18">
-          <HomeCalc service_id="printing" />
-        </el-col>
-      </div>
+      <el-col v-if="!isMobile" :offset="3" :span="18">
+        <HomeCalc service_id="printing" />
+      </el-col>
       <UslugiPrint />
       <UslugiPrintExample />
     </el-row>
