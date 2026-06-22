@@ -23,21 +23,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- https://www.figma.com/design/3aK9MoWiPd2N2GC4OVNFSR/MaaS-Frontend--Copy-?node-id=4469-14269 -->
-  <div class="home-page">
-    <el-row v-if="!isMobile">
-      <el-col :offset="3" :span="18">
+  <!-- https://www.figma.com/design/HyoggbbVUgCqJp5UR7EU8T/MaaS-DEV--Copy-?node-id=3356-572 -->
+  <div class="home-page" :class="{ 'home-page--mobile': isMobile }">
+    <el-row>
+      <el-col :offset="isMobile ? 0 : 3" :span="isMobile ? 24 : 18">
         <div class="home-page__sections">
-          <HomeCalc v-if="showHomeCalc" />
-          <HomeUslugi />
-          <HomeMilestones />
-          <HomeAdvantages />
-        </div>
-      </el-col>
-    </el-row>
-    <el-row v-else>
-      <el-col :offset="0" :span="24">
-        <div class="home-page__sections home-page__sections--mobile">
           <HomeCalc v-if="showHomeCalc" />
           <HomeUslugi />
           <HomeMilestones />
@@ -73,8 +63,13 @@ onMounted(() => {
   margin-bottom: 0 !important;
 }
 
-.home-page__sections--mobile {
-  margin-top: 0;
-  padding-bottom: 40px;
+@media (max-width: 767px) {
+  .home-page--mobile .home-page__sections {
+    gap: 12px;
+    max-width: 340px;
+    margin: 0 auto;
+    padding: 32px 10px 40px;
+    box-sizing: border-box;
+  }
 }
 </style>

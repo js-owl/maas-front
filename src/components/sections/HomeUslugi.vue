@@ -91,23 +91,39 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
           :is="isCardRouterLink(ability) ? 'RouterLink' : 'div'"
           v-bind="isCardRouterLink(ability) ? { to: ability.link } : {}"
           class="card-link"
+          :class="{ 'card-link--mobile': isMobileLayout }"
         >
-          <div class="card-left">
-            <div v-if="ability.icon" class="card-icon">
-              <el-icon :size="44">
-                <component :is="ability.icon" :color="'#7d8083'" :backgroundColor="'#cbd1d5'" />
+          <template v-if="isMobileLayout">
+            <div class="card-title card-title--mobile montserrat-semibold">{{ ability.title }}</div>
+            <div v-if="ability.icon" class="card-icon card-icon--mobile">
+              <el-icon :size="24">
+                <component
+                  :is="ability.icon"
+                  :color="'#e84261'"
+                  :backgroundColor="'transparent'"
+                  bgColor="transparent"
+                />
               </el-icon>
             </div>
-            <div class="card-title montserrat-medium">{{ ability.title }}</div>
-          </div>
-          <img
-            src="@/assets/service-chevron.svg"
-            alt=""
-            class="card-chevron"
-            aria-hidden="true"
-            width="36"
-            height="36"
-          />
+          </template>
+          <template v-else>
+            <div class="card-left">
+              <div v-if="ability.icon" class="card-icon">
+                <el-icon :size="44">
+                  <component :is="ability.icon" :color="'#7d8083'" :backgroundColor="'#cbd1d5'" />
+                </el-icon>
+              </div>
+              <div class="card-title montserrat-medium">{{ ability.title }}</div>
+            </div>
+            <img
+              src="@/assets/service-chevron.svg"
+              alt=""
+              class="card-chevron"
+              aria-hidden="true"
+              width="36"
+              height="36"
+            />
+          </template>
         </component>
       </div>
     </div>
@@ -208,53 +224,68 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
 }
 
 @media (max-width: 768px) {
-  .uslugi-section2 {
-    margin-top: 24px;
-    padding: 20px;
-    gap: 20px;
-    border-radius: 0;
-    box-shadow: none;
+  .uslugi-section2.section-basic {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 16px;
+    gap: 16px;
+    border-radius: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
   }
 
   .uslugi-title {
-    font-size: 24px;
+    font-size: 14px;
+    color: #000000;
   }
 
   .services-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 8px;
   }
 
   .service-card {
     height: auto;
-    min-height: 80px;
+    min-height: 0;
+    background-color: #f2f3f7;
+    border-radius: 8px;
   }
 
-  .card-link {
-    padding: 18px 20px;
+  .card-link--mobile {
+    padding: 16px;
+    gap: 8px;
   }
 
-  .card-left {
-    gap: 16px;
+  .card-title--mobile {
+    flex: 1 1 0;
+    min-width: 0;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
   }
 
-  .card-icon {
-    width: 40px;
-    height: 40px;
+  .card-icon--mobile {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
   }
 
-  .card-icon :deep(svg) {
-    width: 40px;
-    height: 40px;
+  .card-icon--mobile :deep(svg) {
+    width: 24px;
+    height: 24px;
   }
 
-  .card-title {
-    font-size: 16px;
+  .card-icon--mobile :deep(rect),
+  .card-icon--mobile :deep(path:first-of-type) {
+    fill: transparent;
   }
 
-  .card-chevron {
-    width: 28px;
-    height: 28px;
+  .card-icon--mobile :deep(.cls-1) {
+    fill: transparent;
+  }
+
+  .card-icon--mobile :deep(.cls-2) {
+    fill: #e84261;
   }
 }
 </style>

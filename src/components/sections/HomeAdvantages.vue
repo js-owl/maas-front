@@ -338,7 +338,7 @@ const advantages = ref([
 
   .home-advantages {
 
-    margin-bottom: 40px;
+    margin-bottom: 0;
 
   }
 
@@ -346,11 +346,13 @@ const advantages = ref([
 
   .advantages-wrap {
 
-    border-radius: 0;
+    border-radius: 16px;
 
-    padding: 20px;
+    padding: 16px;
 
-    gap: 20px;
+    gap: 16px;
+
+    box-shadow: 0 0 5px #c8cfe3;
 
   }
 
@@ -358,7 +360,17 @@ const advantages = ref([
 
   .advantages-title {
 
-    font-size: 24px;
+    font-size: 14px;
+
+    color: #000000;
+
+  }
+
+
+
+  .items {
+
+    gap: 8px;
 
   }
 
@@ -366,7 +378,11 @@ const advantages = ref([
 
   .item {
 
-    padding: 30px 20px;
+    padding: 16px;
+
+    border-radius: 8px;
+
+    background-color: #e84261;
 
   }
 
@@ -378,7 +394,7 @@ const advantages = ref([
 
     align-items: flex-start;
 
-    gap: 20px;
+    gap: 8px;
 
   }
 
@@ -392,6 +408,8 @@ const advantages = ref([
 
 
 
+  .item-number,
+
   .item-chevron {
 
     display: none;
@@ -400,9 +418,33 @@ const advantages = ref([
 
 
 
+  .item-title {
+
+    font-size: 14px;
+
+    font-family: 'Montserrat-SemiBold', sans-serif;
+
+    font-weight: 600;
+
+    text-transform: none;
+
+  }
+
+
+
+  .item-title--first {
+
+    font-family: 'Montserrat-SemiBold', sans-serif;
+
+    font-weight: 600;
+
+  }
+
+
+
   .item-text {
 
-    font-size: 24px;
+    font-size: 12px;
 
   }
 

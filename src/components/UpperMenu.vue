@@ -10,6 +10,7 @@ import {
   Menu
 } from '@element-plus/icons-vue'
 import IconLogoHeader2 from '../icons/IconLogoHeader2.vue'
+import IconLogoMark from '../icons/IconLogoMark.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
 import IconReg from '../icons/IconReg.vue'
 // import IconCall from '@/icons/IconCall.vue'
@@ -140,6 +141,14 @@ function openServicePage(path: string) {
   router.push({ path })
 }
 
+function scrollToCalcSection() {
+  if (isHomePage.value) {
+    document.querySelector('.calc-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    return
+  }
+  router.push({ path: '/' })
+}
+
 // function onCallRequest() {
 //   isCallVisible.value = true
 // }
@@ -156,15 +165,30 @@ function openServicePage(path: string) {
   <div class="uppermenu-wrapper" :class="{ 'uppermenu-wrapper--home': isHomePage }">
     <el-row :gutter="0" class="uppermenu-row">
       <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-        <el-header class="uppermenu-header">
-          <div class="left-wrap">
-            <el-button v-if="isMobile" class="burger-btn" text @click="isDrawerOpen = true">
-              <el-icon size="26" color="#333">
+        <el-header class="uppermenu-header" :class="{ 'uppermenu-header--mobile': isMobile }">
+          <div v-if="isMobile" class="mobile-header">
+            <el-button
+              class="logo-btn mobile-logo-btn"
+              @click="router.push({ path: '/' })"
+              aria-label="Перейти на главную"
+            >
+              <IconLogoMark class="mobile-logo-icon" />
+            </el-button>
+
+            <button type="button" class="mobile-calc-btn montserrat-semibold" @click="scrollToCalcSection">
+              Расчет стоимости
+            </button>
+
+            <el-button class="mobile-menu-btn" text @click="isDrawerOpen = true" aria-label="Открыть меню">
+              <el-icon size="24" color="#333">
                 <Menu />
               </el-icon>
             </el-button>
+          </div>
 
-            <div v-if="!isMobile" class="menu-container">
+          <template v-else>
+          <div class="left-wrap">
+            <div class="menu-container">
               <el-button class="logo-btn" @click="router.push({ path: '/' })" aria-label="Перейти на главную">
                 <IconLogoHeader2 class="logo-icon" />
               </el-button>
@@ -180,7 +204,7 @@ function openServicePage(path: string) {
               >
                 <template #reference>
                   <el-button class="cabinet-btn services-title montserrat-semibold">
-                    Быстрый расчет
+                    Расчет стоимости
                   </el-button>
                 </template>
                 <ServicesCabinetMenu @open-service="openServicePage" />
@@ -194,7 +218,6 @@ function openServicePage(path: string) {
             <!-- Незарегистрированный пользователь -->
             <template v-if="!authStore.getToken">
               <el-popover
-                v-if="!isMobile"
                 v-model:visible="isGuestCabinetMenuVisible"
                 trigger="click"
                 placement="bottom-end"
@@ -249,7 +272,6 @@ function openServicePage(path: string) {
             <!-- Зарегистрированный пользователь -->
             <template v-else>
               <el-popover
-                v-if="!isMobile"
                 v-model:visible="isCabinetMenuVisible"
                 trigger="click"
                 placement="bottom-end"
@@ -291,6 +313,7 @@ function openServicePage(path: string) {
               </el-button> -->
             </template>
           </div>
+          </template>
         </el-header>
       </el-col>
       <DialogLogin v-model="isLoginVisible" />
@@ -312,6 +335,23 @@ function openServicePage(path: string) {
         @select="() => (isDrawerOpen = false)"
       >
         <el-menu-item index="/" :route="{ path: '/' }">Главная</el-menu-item>
+        <template v-if="!authStore.getToken">
+          <el-menu-item index="login" @click="() => { isDrawerOpen = false; openGuestLogin() }">
+            Вход в аккаунт
+          </el-menu-item>
+          <el-menu-item index="register" @click="() => { isDrawerOpen = false; openGuestRegistration() }">
+            Регистрация
+          </el-menu-item>
+        </template>
+        <template v-else>
+          <el-menu-item index="/personal" :route="{ path: '/personal' }">Профиль</el-menu-item>
+          <el-menu-item index="/personal/orders" :route="{ path: '/personal/orders' }">
+            Расчеты и заказы
+          </el-menu-item>
+          <el-menu-item index="logout" @click="() => { isDrawerOpen = false; onLogout() }">
+            Выход из аккаунта
+          </el-menu-item>
+        </template>
         <el-sub-menu index="m1">
           <template #title>Услуги</template>
           <!-- <el-sub-menu index="m1-1">
@@ -457,6 +497,65 @@ function openServicePage(path: string) {
 
 .burger-btn {
   color: #333;
+}
+
+.mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.mobile-logo-btn {
+  flex-shrink: 0;
+  width: 58px;
+  height: 36px;
+  padding: 0;
+}
+
+.mobile-logo-icon {
+  display: block;
+  width: 58px;
+  height: 36px;
+}
+
+.mobile-calc-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 36px;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.mobile-menu-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.mobile-menu-btn:hover,
+.mobile-menu-btn:focus,
+.mobile-menu-btn:active {
+  background-color: #ffffff !important;
+  border-color: transparent !important;
 }
 
 .fullscreen-bg .burger-btn {
@@ -701,16 +800,18 @@ function openServicePage(path: string) {
 @media (max-width: 767px) {
   .uppermenu-wrapper {
     min-height: auto;
+    padding: 40px 10px 0;
   }
 
   .uppermenu-wrapper--home {
-    padding: 20px 0 0;
+    padding: 40px 10px 0;
   }
 
-  .uppermenu-header {
-    height: 56px;
+  .uppermenu-header,
+  .uppermenu-header--mobile {
+    height: 36px;
     margin-right: 0;
-    padding: 0 8px;
+    padding: 0;
   }
 
   .auth-btn {

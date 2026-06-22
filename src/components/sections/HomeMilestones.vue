@@ -57,7 +57,10 @@ const steps: Step[] = [
       <div class="steps">
         <div v-for="step in steps" :key="step.id" class="step-card">
           <div class="step-content">
-            <div class="maas-subtitle step-title">{{ step.title }}</div>
+            <div class="maas-subtitle step-title">
+              <span class="step-title-number">{{ step.id }}.</span>
+              {{ step.title }}
+            </div>
             <p class="maas-text step-description">
               <template v-if="step.highlightWord">
                 {{ step.description.split(step.highlightWord)[0] }}
@@ -190,37 +193,62 @@ const steps: Step[] = [
   }
 }
 
+.step-title-number {
+  display: none;
+  margin-right: 0.25em;
+}
+
 @media (max-width: 767px) {
   .home-milestones {
-    margin-bottom: 40px;
+    margin-bottom: 0;
   }
 
   .milestones-wrap {
-    border-radius: 0;
-    padding: 20px;
-    gap: 20px;
+    border-radius: 16px;
+    padding: 16px;
+    gap: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
   }
 
   .milestones-title {
-    font-size: 24px;
+    font-size: 14px;
+    color: #000000;
   }
 
   .steps {
     grid-template-columns: 1fr;
     height: auto;
+    gap: 16px;
   }
 
   .step-card {
     min-height: 0;
-    padding: 30px 20px;
+    padding: 4px 0 4px 16px;
+    background-color: transparent;
+    border-radius: 0;
+    border-left: 4px solid #e84261;
+  }
+
+  .step-content {
+    gap: 10px;
+    justify-content: flex-start;
   }
 
   .step-title {
-    font-size: 24px;
+    font-size: 14px;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-weight: 600;
+    text-transform: none;
+    color: #e84261;
+  }
+
+  .step-title-number {
+    display: inline;
+    margin-right: 0.25em;
   }
 
   .step-description {
-    font-size: 18px;
+    font-size: 12px;
   }
 }
 </style>
