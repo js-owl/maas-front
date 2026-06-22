@@ -87,7 +87,10 @@ const submit = () => {
             Мы — комплекс предприятий полного цикла. Производим детали любой сложности по вашим
             чертежам: от единичного экземпляра до серии.
           </p>
-          <p class="calc-text">
+          <p class="calc-text calc-text--gap" aria-hidden="true">&#8203;</p>
+          <p class="calc-text calc-text--mobile-line">От чертежа до готового изделия - </p>
+          <p class="calc-text calc-text--mobile-line">без посредников и лишних звонков.</p>
+          <p class="calc-text calc-text--desktop-second">
             От чертежа до готового изделия -<br />
             без посредников и лишних звонков.
           </p>
@@ -98,11 +101,22 @@ const submit = () => {
         <el-form :model="formModel" class="calc-form" label-position="top">
           <div class="calc-upload-zone">
             <h3 class="calc-upload-title">Расчет стоимости изготовления</h3>
+            <div class="calc-formats">
+              <p class="calc-format-text">
+                Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY,
+                3DS, DAE, FBX, BLEND
+              </p>
+              <div class="calc-format-docs">
+                <p class="calc-format-text"> Форматы тех. документации: </p>
+                <p class="calc-format-text">DWG, DXF, PDF, SVG, AI, EPS</p>
+              </div>
+            </div>
             <UploadFiles
               v-model="document_ids"
               color="#e84261"
               v-model:stp_id="stp_id"
               :service_id="uploadServiceId"
+              :hide-formats-text="isMobile"
               class="calc-upload-files"
             />
           </div>
@@ -162,7 +176,7 @@ const submit = () => {
 
 .calc-wrap.mobile {
   flex-direction: column;
-  gap: 40px;
+  gap: 24px;
 }
 
 .calc-left {
@@ -202,6 +216,15 @@ const submit = () => {
   word-break: break-word;
 }
 
+.calc-text--gap,
+.calc-text--mobile-line {
+  display: none;
+}
+
+.calc-text--desktop-second {
+  display: block;
+}
+
 .calc-right {
   flex: 1 1 0;
   min-width: 0;
@@ -239,6 +262,25 @@ const submit = () => {
   font-weight: 600;
   line-height: normal;
   color: #000000;
+}
+
+.calc-formats {
+  display: none;
+}
+
+.calc-format-text {
+  margin: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  color: #e84261;
+  word-break: break-word;
+  width: 100%;
+}
+
+.calc-format-docs {
+  width: 100%;
 }
 
 .calc-upload-files {
@@ -308,14 +350,21 @@ const submit = () => {
   background-color: #cbd1d5;
   border-color: #cbd1d5;
   box-shadow: none;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0;
 }
 
 .calc-order-type-item :deep(.el-select__placeholder),
-.calc-order-type-item :deep(.el-select__selected-item) {
+.calc-order-type-item :deep(.el-select__selected-item),
+.calc-order-type-item :deep(.el-select__selection-text) {
   font-family: 'Montserrat-SemiBold', sans-serif !important;
   font-size: 24px !important;
-  font-weight: 600 !important;
+  font-weight: normal !important;
   line-height: normal !important;
+  letter-spacing: 0 !important;
   color: #55585b !important;
 }
 
@@ -398,9 +447,37 @@ const submit = () => {
     color: #e84261;
   }
 
+  .calc-description {
+    gap: 0;
+  }
+
   .calc-text {
     font-size: 14px;
     line-height: normal;
+  }
+
+  .calc-text--gap,
+  .calc-text--mobile-line {
+    display: block;
+  }
+
+  .calc-text--desktop-second {
+    display: none;
+  }
+
+  .calc-text--gap {
+    height: 0;
+    overflow: hidden;
+    line-height: normal;
+  }
+
+  .calc-formats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    width: 100%;
+    text-align: left;
   }
 
   .calc-form {
@@ -418,13 +495,19 @@ const submit = () => {
     font-size: 16px;
   }
 
-  .calc-upload-files :deep(.upload-subtitle) {
-    font-size: 12px;
-    line-height: normal;
+  .calc-upload-files :deep(.upload:not(.has-files):not(.is-uploading)) {
+    height: 0;
+    min-height: 0;
+    overflow: hidden;
   }
 
-  .calc-upload-files :deep(.upload-subtitle + .upload-subtitle) {
-    margin-top: 8px;
+  .calc-upload-files :deep(.upload-subtitle) {
+    display: none;
+  }
+
+  .calc-upload-files :deep(.custom) {
+    align-items: flex-start;
+    text-align: left;
   }
 
   .action-row {
@@ -436,6 +519,7 @@ const submit = () => {
     min-height: 40px;
     padding: 0 8px;
     border-radius: 10px;
+    font-size: 14px;
   }
 
   .calc-order-type-item :deep(.el-select__suffix) {
@@ -450,10 +534,13 @@ const submit = () => {
   }
 
   .calc-order-type-item :deep(.el-select__placeholder),
-  .calc-order-type-item :deep(.el-select__selected-item) {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: normal;
+  .calc-order-type-item :deep(.el-select__selected-item),
+  .calc-order-type-item :deep(.el-select__selection-text) {
+    font-family: 'Montserrat-SemiBold', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    line-height: normal !important;
+    letter-spacing: 0 !important;
     color: #000000 !important;
   }
 
@@ -510,5 +597,47 @@ const submit = () => {
 
 .home-calc-order-select-dropdown .el-popper__arrow {
   display: none;
+}
+
+.calc-order-type-item .select-wrapper.full .el-select__wrapper {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0;
+}
+
+.calc-order-type-item .select-wrapper.full .el-select__placeholder,
+.calc-order-type-item .select-wrapper.full .el-select__selection-text,
+.calc-order-type-item .select-wrapper.full .el-select__selected-item {
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-weight: normal !important;
+  line-height: normal !important;
+  letter-spacing: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .calc-order-type-item .select-wrapper.full .el-select__wrapper {
+    font-size: 14px;
+  }
+
+  .calc-order-type-item .select-wrapper.full .el-select__placeholder,
+  .calc-order-type-item .select-wrapper.full .el-select__selection-text,
+  .calc-order-type-item .select-wrapper.full .el-select__selected-item {
+    font-size: 14px !important;
+    color: #000000 !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .calc-order-type-item .select-wrapper.full .el-select__wrapper {
+    font-size: 24px;
+  }
+
+  .calc-order-type-item .select-wrapper.full .el-select__placeholder,
+  .calc-order-type-item .select-wrapper.full .el-select__selection-text,
+  .calc-order-type-item .select-wrapper.full .el-select__selected-item {
+    font-size: 24px !important;
+    color: #55585b !important;
+  }
 }
 </style>
