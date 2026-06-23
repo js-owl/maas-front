@@ -31,7 +31,7 @@ import VersionInfo from "./VersionInfo.vue";
             </div>
           </div>
 
-          <div class="footer-columns">
+          <div class="footer-columns footer-columns--desktop">
             <div class="footer-column">
               <!-- <div class="footer-column-title">Контакты</div> -->
               <a href="mailto:info@aeromax-group.ru" class="footer-link">
@@ -50,12 +50,25 @@ import VersionInfo from "./VersionInfo.vue";
         <div class="footer-divider" role="presentation" />
 
         <div class="footer-bottom">
-          <div class="footer-brand">
-            <IconLogo class="footer-logo-icon footer-logo-icon--bottom" />
+          <div class="footer-bottom-row">
+            <div class="footer-brand">
+              <IconLogo class="footer-logo-icon footer-logo-icon--bottom" />
+            </div>
+
+            <div class="footer-columns footer-columns--mobile">
+              <div class="footer-column">
+                <a href="mailto:info@aeromax-group.ru" class="footer-link">
+                  info@aeromax-group.ru
+                </a>
+                <a href="tel:+74959214242" class="footer-link">
+                  +7 (495) 921-42-42
+                </a>
+              </div>
+            </div>
           </div>
 
           <div class="footer-legal">
-            Общество с ограниченной ответственностью «Аэромакс», 2026
+            Общество с ограниченной ответственностью «Аэромакс»<span class="footer-legal-year">, 2026</span>
           </div>
 
           <div class="footer-meta">
@@ -118,6 +131,14 @@ import VersionInfo from "./VersionInfo.vue";
   grid-template-columns: auto 1fr auto;
   align-items: start;
   gap: 24px;
+}
+
+.footer-bottom-row {
+  display: contents;
+}
+
+.footer-columns--mobile {
+  display: none;
 }
 
 .footer-brand {
@@ -185,7 +206,7 @@ import VersionInfo from "./VersionInfo.vue";
     gap: 32px;
   }
 
-  .footer-columns {
+  .footer-columns--desktop {
     width: 100%;
     justify-content: flex-start;
     gap: 40px;
@@ -206,29 +227,92 @@ import VersionInfo from "./VersionInfo.vue";
 @media (max-width: 767px) {
   .footer-row {
     min-height: auto;
-    padding: 12px 16px;
+    padding: 16px 26px;
   }
 
   .footer-container {
-    gap: 24px;
-  }
-
-  .footer-columns {
-    flex-direction: column;
     gap: 16px;
   }
 
+  .footer-columns--desktop {
+    display: none;
+  }
+
+  .footer-columns--mobile {
+    display: flex;
+    flex: 0 0 auto;
+    width: auto;
+    justify-content: flex-end;
+  }
+
+  .footer-columns--mobile .footer-column {
+    gap: 4px;
+    min-width: auto;
+    align-items: flex-start;
+  }
+
   .footer-link {
-    font-size: 14px;
+    font-size: 12px;
+    color: #aeb2b5;
+  }
+
+  .footer-columns--mobile .footer-link {
+    font-size: 10px;
+    line-height: normal;
+    white-space: nowrap;
   }
 
   .footer-top {
     flex-direction: column;
-    gap: 18px;
+    gap: 0;
+  }
+
+  .footer-links-list--top {
+    gap: 8px;
+  }
+
+  .footer-divider {
+    display: none;
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid #7d8083;
+    padding-top: 16px;
+  }
+
+  .footer-bottom-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .footer-brand {
+    flex-shrink: 0;
   }
 
   .footer-logo-icon--bottom {
-    width: 140px;
+    display: block;
+    width: 128px;
+    height: 24px;
+    opacity: 1;
+  }
+
+  .footer-legal {
+    font-size: 10px;
+    color: #aeb2b5;
+  }
+
+  .footer-legal-year {
+    display: none;
+  }
+
+  .footer-meta {
+    display: none;
   }
 }
 </style>
