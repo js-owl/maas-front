@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import DialogLogin from './dialog/DialogLogin.vue'
 // import DialogCall from './dialog/DialogCall.vue'
@@ -18,8 +18,6 @@ import IconProfile from '@/icons/IconProfile.vue'
 import IconExit from '@/icons/IconExit.vue'
 import ServicesCabinetMenu from './ServicesCabinetMenu.vue'
 
-const activeIndex = ref('1')
-
 const isLoginVisible = ref(false)
 // const isCallVisible = ref(false)
 const isRegistrationVisible = ref(false)
@@ -31,10 +29,10 @@ const route = useRoute()
 let color = ref('')
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
-const isDrawerOpen = ref(false)
 const isHomePage = computed(() => route.path === '/')
 const isCabinetMenuVisible = ref(false)
 const isGuestCabinetMenuVisible = ref(false)
+const isMobileMenuVisible = ref(false)
 const isServicesMenuVisible = ref(false)
 
 watch(
@@ -50,61 +48,24 @@ watch(
 onMounted(() => {
   const rootStyles = getComputedStyle(document.documentElement)
   color.value = rootStyles.getPropertyValue('--bgcolor').trim()
-
-  // Apply styles to printing and paint menu items if on home page
-  if (isHomePage.value) {
-    const applyPrintingStyles = () => {
-      const printingItem = document.querySelector('.printing-menu-item')
-      if (printingItem) {
-        const element = printingItem as HTMLElement
-        element.style.color = '#333'
-        const textSpan = element.querySelector('.printing-text')
-        if (textSpan) {
-          ;(textSpan as HTMLElement).style.color = '#333'
-        }
-      }
-
-      const mechItem = document.querySelector('.mech-menu-item')
-      if (mechItem) {
-        const element = mechItem as HTMLElement
-        element.style.color = '#333'
-      }
-
-      const otherItem = document.querySelector('.other-menu-item')
-      if (otherItem) {
-        const element = otherItem as HTMLElement
-        element.style.color = '#333'
-      }
-    }
-
-    // Apply immediately and after a short delay to ensure DOM is ready
-    applyPrintingStyles()
-    setTimeout(applyPrintingStyles, 100)
-
-    // Watch for route changes
-    const unwatch = router.afterEach(() => {
-      setTimeout(applyPrintingStyles, 100)
-    })
-
-    onUnmounted(() => {
-      unwatch()
-    })
-  }
 })
 
 async function onLogout() {
   await authStore.logout()
   isCabinetMenuVisible.value = false
+  isMobileMenuVisible.value = false
   router.push({ name: 'home' })
 }
 
 function openCabinetPage() {
   isCabinetMenuVisible.value = false
+  isMobileMenuVisible.value = false
   router.push({ path: '/personal' })
 }
 
 function openOrdersPage() {
   isCabinetMenuVisible.value = false
+  isMobileMenuVisible.value = false
   router.push({ path: '/personal/orders' })
 }
 
@@ -121,11 +82,13 @@ function openOrdersPage() {
 
 function openGuestRegistration() {
   isGuestCabinetMenuVisible.value = false
+  isMobileMenuVisible.value = false
   isRegistrationVisible.value = true
 }
 
 function openGuestLogin() {
   isGuestCabinetMenuVisible.value = false
+  isMobileMenuVisible.value = false
   isLoginVisible.value = true
 }
 
@@ -178,14 +141,57 @@ function scrollToCalcSection() {
               Расчет стоимости
             </button>
 
-            <button
-              type="button"
-              class="mobile-menu-btn"
-              @click="isDrawerOpen = true"
-              aria-label="Открыть меню"
+            <el-popover
+              v-model:visible="isMobileMenuVisible"
+              trigger="click"
+              placement="bottom-end"
+              width="265px"
+              :show-arrow="false"
+              popper-class="cabinet-menu-popper"
+              :offset="12"
             >
-              <IconMobileMenu class="mobile-menu-icon" />
-            </button>
+              <template #reference>
+                <button
+                  type="button"
+                  class="mobile-menu-btn"
+                  aria-label="Открыть меню"
+                >
+                  <IconMobileMenu class="mobile-menu-icon" />
+                </button>
+              </template>
+              <div v-if="!authStore.getToken" class="cabinet-menu">
+                <button
+                  type="button"
+                  class="cabinet-menu-item montserrat-medium"
+                  @click="openGuestRegistration"
+                >
+                  <el-icon :size="22" class="cabinet-menu-icon"><IconReg /></el-icon>
+                  <span>Регистрация</span>
+                </button>
+                <button
+                  type="button"
+                  class="cabinet-menu-item montserrat-medium"
+                  @click="openGuestLogin"
+                >
+                  <el-icon :size="22" class="cabinet-menu-icon"><IconEnter /></el-icon>
+                  <span>Вход в аккаунт</span>
+                </button>
+              </div>
+              <div v-else class="cabinet-menu">
+                <button type="button" class="cabinet-menu-item montserrat-medium" @click="openCabinetPage">
+                  <el-icon :size="22" class="cabinet-menu-icon"><IconProfile /></el-icon>
+                  <span>Профиль</span>
+                </button>
+                <button type="button" class="cabinet-menu-item montserrat-medium" @click="openOrdersPage">
+                  <el-icon :size="22" class="cabinet-menu-icon"><IconCalculate color="#7в8083" /></el-icon>
+                  <span>Расчеты и заказы</span>
+                </button>
+                <button type="button" class="cabinet-menu-item montserrat-medium" @click="onLogout">
+                  <el-icon :size="22" class="cabinet-menu-icon"><IconExit /></el-icon>
+                  <span>Выход из аккаунта</span>
+                </button>
+              </div>
+            </el-popover>
           </div>
 
           <template v-else>
@@ -324,69 +330,6 @@ function scrollToCalcSection() {
     </el-row>
 
   </div>
-
-  <el-drawer v-model="isDrawerOpen" direction="ltr" :with-header="false" size="80%">
-    <div class="drawer-content">
-      <el-menu
-        :default-active="activeIndex"
-        mode="vertical"
-        :background-color="'#fff'"
-        text-color="#283d5b"
-        active-text-color="#283d5b"
-        :router="true"
-        @select="() => (isDrawerOpen = false)"
-      >
-        <el-menu-item index="/" :route="{ path: '/' }">Главная</el-menu-item>
-        <template v-if="!authStore.getToken">
-          <el-menu-item index="login" @click="() => { isDrawerOpen = false; openGuestLogin() }">
-            Вход в аккаунт
-          </el-menu-item>
-          <el-menu-item index="register" @click="() => { isDrawerOpen = false; openGuestRegistration() }">
-            Регистрация
-          </el-menu-item>
-        </template>
-        <template v-else>
-          <el-menu-item index="/personal" :route="{ path: '/personal' }">Профиль</el-menu-item>
-          <el-menu-item index="/personal/orders" :route="{ path: '/personal/orders' }">
-            Расчеты и заказы
-          </el-menu-item>
-          <el-menu-item index="logout" @click="() => { isDrawerOpen = false; onLogout() }">
-            Выход из аккаунта
-          </el-menu-item>
-        </template>
-        <el-sub-menu index="m1">
-          <template #title>Услуги</template>
-          <!-- <el-sub-menu index="m1-1">
-            <template #title>Мех. производство ></template>
-            <el-menu-item index="/other" :route="{ path: '/other' }"
-              >Токарные работы</el-menu-item
-            >
-            <el-menu-item index="/milling" :route="{ path: '/milling' }"
-              >Фрезерные работы</el-menu-item
-            > -->
-            <!-- <el-menu-item index="m1-1-5" disabled>Раскрой металла / заготовительный участок</el-menu-item> -->
-            <!-- <el-menu-item index="m1-1-1" disabled>Сверлильные работы</el-menu-item> -->
-            <!-- <el-menu-item index="m1-1-2" disabled>Шлифовка</el-menu-item> -->
-          <!-- </el-sub-menu> -->
-          <!-- <el-menu-item index="/plastic" :route="{ path: '/plastic' }" disabled>Производство из композитных материалов</el-menu-item> -->
-          <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Нанесение лакокрасочных покрытий</el-menu-item> -->
-          <el-menu-item index="/milling" :route="{ path: '/milling' }" class="mech-menu-item"
-          >Механообработка</el-menu-item
-          >
-          <el-menu-item index="/printing" :route="{ path: '/printing' }">3D печать</el-menu-item>
-          <!-- <el-menu-item index="/other" :route="{ path: '/other' }">Прочее</el-menu-item> -->
-          <!-- <el-menu-item index="/paint" :route="{ path: '/paint' }" disabled>Лабораторные исследования</el-menu-item> -->
-          <!-- <el-sub-menu index="m1-2" disabled>
-            <template #title>Сварочное производство</template>
-            <el-menu-item index="m1-2-1">Аргонодуговая сварка</el-menu-item>
-            <el-menu-item index="m1-2-2">Сварка в углекислом газе</el-menu-item>
-            <el-menu-item index="m1-2-3">Контактная сварка</el-menu-item>
-          </el-sub-menu> -->
-        </el-sub-menu>
-        <!-- <el-menu-item index="/#about" @click="() => { scrollToAbout(); }">О нас</el-menu-item> -->
-      </el-menu>
-    </div>
-  </el-drawer>
 </template>
 
 <style scoped>
@@ -666,129 +609,9 @@ function scrollToCalcSection() {
   color: #fff !important;
 }
 
-.el-menu.el-menu--horizontal {
-  border-bottom: none;
-}
-
-.el-menu-item {
-  font-size: 18px;
-}
-
 :deep(.el-header) {
-  padding-left: 0px;
-  padding-right: 0px;
-}
-
-:deep(.el-sub-menu__title) {
-  font-size: 18px;
-  color: #333 !important;
-  padding: 0 20px;
-  height: 60px;
-  line-height: 60px;
-}
-
-.fullscreen-bg :deep(.el-sub-menu__title) {
-  color: #fff !important;
-}
-
-:deep(.el-sub-menu) {
-  font-size: 18px;
-}
-
-:deep(.el-sub-menu__title:hover) {
-  color: #333 !important;
-  background-color: transparent !important;
-}
-
-.fullscreen-bg :deep(.el-sub-menu__title:hover) {
-  color: #fff !important;
-}
-
-:deep(.el-menu--horizontal .el-sub-menu .el-sub-menu__title) {
-  border-bottom: none !important;
-}
-
-:deep(.el-menu--horizontal .el-sub-menu .el-sub-menu__title:hover) {
-  border-bottom: none !important;
-}
-
-:deep(.el-sub-menu__title .el-sub-menu__icon-arrow) {
-  display: none !important;
-}
-
-:deep(.el-menu-item) {
-  color: #333 !important;
-}
-
-.fullscreen-bg :deep(.el-sub-menu__title) {
-  color: #fff !important;
-}
-
-:deep(.el-menu-item:hover) {
-  color: #333 !important;
-  background-color: rgba(0, 0, 0, 0.05) !important;
-}
-
-.fullscreen-bg :deep(.el-sub-menu__title:hover) {
-  color: #fff !important;
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-:deep(.el-sub-menu .el-menu .el-menu-item) {
-  color: #333 !important;
-}
-
-:deep(.el-sub-menu .el-menu .el-menu-item:hover) {
-  color: #333 !important;
-  background-color: rgba(0, 0, 0, 0.05) !important;
-}
-
-:deep(.el-sub-menu .el-menu) {
-  background-color: #fff !important;
-}
-
-:deep(.el-sub-menu .el-menu .el-menu-item) {
-  color: #333 !important;
-}
-
-:deep(.el-sub-menu .el-menu .el-menu-item:hover) {
-  background-color: rgba(0, 0, 0, 0.05) !important;
-}
-
-:deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item) {
-  color: #333 !important;
-}
-
-:deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item:hover) {
-  color: #333 !important;
-  background-color: rgba(0, 0, 0, 0.05) !important;
-}
-
-.fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item) {
-  color: #333 !important;
-}
-
-.fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item .printing-text),
-.fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item *) {
-  color: #333 !important;
-}
-
-.fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item:hover) {
-  color: #333 !important;
-  background-color: rgba(0, 0, 0, 0.05) !important;
-}
-
-.fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.printing-menu-item:hover .printing-text) {
-  color: #333 !important;
-}
-
-.fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item) {
-  color: #333 !important;
-}
-
-.fullscreen-bg :deep(.el-sub-menu .el-menu .el-menu-item.mech-menu-item:hover) {
-  color: #333 !important;
-  background-color: rgba(0, 0, 0, 0.05) !important;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .hero-content {
@@ -865,10 +688,6 @@ function scrollToCalcSection() {
     text-align: center;
   }
 
-}
-
-.drawer-content {
-  padding: 12px;
 }
 </style>
 
