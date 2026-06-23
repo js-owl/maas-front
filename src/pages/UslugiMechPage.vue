@@ -15,15 +15,26 @@ const isMobile = computed(() => width.value < 768)
   <!-- https://www.figma.com/design/HyoggbbVUgCqJp5UR7EU8T/MaaS-DEV--Copy-?node-id=3379-1782 -->
   <div class="uslugi-mech-page" :class="{ 'uslugi-mech-page--mobile': isMobile }">
     <el-row :gutter="0">
-      <el-col :offset="isMobile ? 0 : 3" :span="isMobile ? 24 : 18">
-        <div class="uslugi-mech-page__sections">
-          <UslugiCalc v-if="!isMobile" service_id="cnc-milling" />
-          <UslugiLathe />
-          <UslugiMilling />
-          <UslugiGrinding />
-          <UslugiTooling />
-        </div>
-      </el-col>
+      <template v-if="isMobile">
+        <el-col :span="24">
+          <div class="uslugi-mech-page__sections">
+            <UslugiLathe />
+            <UslugiMilling />
+            <UslugiGrinding />
+            <UslugiTooling />
+          </div>
+        </el-col>
+      </template>
+
+      <template v-else>
+        <el-col :offset="3" :span="18">
+          <UslugiCalc service_id="cnc-milling" />
+        </el-col>
+        <UslugiLathe />
+        <UslugiMilling />
+        <UslugiGrinding />
+        <UslugiTooling />
+      </template>
     </el-row>
   </div>
 </template>
@@ -37,9 +48,6 @@ const isMobile = computed(() => width.value < 768)
 .uslugi-mech-page__sections {
   display: flex;
   flex-direction: column;
-}
-
-.uslugi-mech-page--mobile .uslugi-mech-page__sections {
   gap: 12px;
   padding: 32px 10px 40px;
   box-sizing: border-box;
@@ -63,25 +71,19 @@ const isMobile = computed(() => width.value < 768)
   box-sizing: border-box;
 }
 
-.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-card-content) {
+.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-section) {
   display: flex;
   flex-direction: column;
   gap: 20px;
   margin-bottom: 0;
 }
 
-.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-text-block) {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-text-block--lathe) {
-  gap: 16px;
+.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-wrapper--lathe .uslugi-title) {
+  margin-bottom: 16px;
 }
 
 .uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-title) {
-  margin: 0;
+  margin: 0 0 10px;
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 18px;
   font-weight: 600;

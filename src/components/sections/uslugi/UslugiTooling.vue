@@ -12,20 +12,19 @@ const isMobile = computed(() => width.value < 768)
   <!-- Цех модельной оснастки -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-card-content">
-        <div class="uslugi-text-block">
-          <div class="uslugi-title">Цех модельной оснастки</div>
-          <div class="uslugi-text">
-            Станки предназначены для обработки МДФ, дерева, фанеры, модельного пластика, композитных
-            материалов.
-            <br /><br />
-            Производство мастер моделей из МДФ (мелкодисперсная фракция древесной плиты) с высокой
-            точностью размеров особенно востребовано в авиационной и композитной промышленности.
-            <br /><br />
-            Производство уникальной технологической оснастки, необходимой для производства
-            специфических изделий из дерева для последующих технологических процессов, таких как
-            вакуумная формовка или формование композитных материалов.
-          </div>
+      <div class="uslugi-title">Цех модельной оснастки</div>
+
+      <div class="uslugi-section">
+        <div class="uslugi-text">
+          Станки предназначены для обработки МДФ, дерева, фанеры, модельного пластика, композитных
+          материалов.
+          <br /><br />
+          Производство мастер моделей из МДФ (мелкодисперсная фракция древесной плиты) с высокой
+          точностью размеров особенно востребовано в авиационной и композитной промышленности.
+          <br /><br />
+          Производство уникальной технологической оснастки, необходимой для производства
+          специфических изделий из дерева для последующих технологических процессов, таких как
+          вакуумная формовка или формование композитных материалов.
         </div>
 
         <div class="uslugi-image-wrapper">
@@ -53,7 +52,7 @@ const isMobile = computed(() => width.value < 768)
         <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
           <div class="uslugi-table-title">Технические требования</div>
           <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <IconArrowDown color="#000000" />
+            <IconArrowDown />
           </el-icon>
         </div>
 
@@ -90,20 +89,8 @@ const isMobile = computed(() => width.value < 768)
 </template>
 
 <style scoped>
-.uslugi-card-content {
-  display: flex;
-  gap: 80px;
-  margin-bottom: 60px;
-  align-items: flex-start;
-}
-
-.uslugi-text-block {
-  flex: 1;
-  min-width: 0;
-}
-
 .technical-requirements {
-  margin-top: 0;
+  margin-top: 40px;
 }
 
 .requirements-header {

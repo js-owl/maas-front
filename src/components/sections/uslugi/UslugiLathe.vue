@@ -35,18 +35,17 @@ const equipmentRows = [
 <template>
   <!-- Токарная обработка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper">
-      <div class="uslugi-card-content">
-        <div class="uslugi-text-block uslugi-text-block--lathe">
-          <div class="uslugi-title">Токарная обработка</div>
-          <div class="uslugi-text">
-            Токарная обработка представляет собой механическую операцию, при которой вращающаяся
-            деталь обрабатывается режущим инструментом, последовательно снимающим слои материала.
-            <br /><br />
-            Технология позволяет создавать цилиндрические, конические и сложные профилированные
-            поверхности с высокой степенью точности. Применяется в производстве металлических,
-            пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
-          </div>
+    <div class="uslugi-wrapper uslugi-wrapper--lathe">
+      <div class="uslugi-title">Токарная обработка</div>
+
+      <div class="uslugi-section">
+        <div class="uslugi-text">
+          Токарная обработка представляет собой механическую операцию, при которой вращающаяся
+          деталь обрабатывается режущим инструментом, последовательно снимающим слои материала.
+          <br /><br />
+          Технология позволяет создавать цилиндрические, конические и сложные профилированные
+          поверхности с высокой степенью точности. Применяется в производстве металлических,
+          пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
         </div>
 
         <div class="uslugi-image-wrapper">
@@ -59,9 +58,9 @@ const equipmentRows = [
         :class="{ 'technical-requirements--expanded': isRequirementsExpanded && isMobile }"
       >
         <button
+          v-if="isMobile"
           type="button"
-          class="requirements-header"
-          :class="{ 'requirements-header--mobile': isMobile }"
+          class="requirements-header requirements-header--mobile"
           @click="isRequirementsExpanded = !isRequirementsExpanded"
         >
           <div class="uslugi-table-title">Технические требования</div>
@@ -69,6 +68,17 @@ const equipmentRows = [
             <IconArrowDown color="#000000" />
           </el-icon>
         </button>
+
+        <div
+          v-else
+          class="requirements-header"
+          @click="isRequirementsExpanded = !isRequirementsExpanded"
+        >
+          <div class="uslugi-table-title">Технические требования</div>
+          <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
+            <IconArrowDown />
+          </el-icon>
+        </div>
 
         <div v-if="isRequirementsExpanded && isMobile" class="lathe-requirements-mobile">
           <div class="lathe-requirements-mobile__row lathe-requirements-mobile__row--head">
@@ -83,7 +93,11 @@ const equipmentRows = [
           >
             <div class="lathe-requirements-mobile__cell">{{ row.equipment }}</div>
             <div class="lathe-requirements-mobile__cell">
-              <p v-for="(line, index) in row.dimensions" :key="index" class="lathe-requirements-mobile__line">
+              <p
+                v-for="(line, index) in row.dimensions"
+                :key="index"
+                class="lathe-requirements-mobile__line"
+              >
                 {{ line }}
               </p>
             </div>
@@ -140,55 +154,41 @@ const equipmentRows = [
 </template>
 
 <style scoped>
-.uslugi-card-content {
-  display: flex;
-  gap: 80px;
-  margin-bottom: 60px;
-  align-items: flex-start;
-}
-
-.uslugi-text-block {
-  flex: 1;
-  min-width: 0;
-}
-
 .technical-requirements {
-  margin-top: 0;
+  margin-top: 40px;
 }
 
 .technical-requirements--expanded {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 0;
 }
 
 .requirements-header {
   height: 52px;
-  border: none;
-  background: transparent;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  padding: 0;
-  width: 100%;
-  text-align: left;
 }
 
 .requirements-header--mobile {
   height: 24px;
   min-height: 24px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
   border-radius: 0;
+  width: 100%;
+  text-align: left;
 }
 
 .requirements-arrow {
   transition: transform 0.2s ease;
   transform: rotate(0deg);
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
-  color: #000000;
 }
 
 .requirements-arrow.expanded {
@@ -281,10 +281,6 @@ const equipmentRows = [
   margin: 0;
 }
 
-.lathe-requirements-mobile__line + .lathe-requirements-mobile__line {
-  margin-top: 0;
-}
-
 .lathe-requirements-mobile__materials-title {
   margin: 0;
 }
@@ -300,12 +296,23 @@ const equipmentRows = [
 }
 
 @media (max-width: 767px) {
+  .technical-requirements {
+    margin-top: 0;
+  }
+
   .requirements-header :deep(.uslugi-table-title) {
     margin: 0;
     font-family: 'Montserrat-SemiBold', sans-serif;
     font-size: 14px;
     font-weight: 600;
     line-height: normal;
+    color: #000000;
+  }
+
+  .requirements-arrow {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
     color: #000000;
   }
 }

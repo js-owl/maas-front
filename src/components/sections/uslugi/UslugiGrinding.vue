@@ -9,18 +9,17 @@ const isRequirementsExpanded = ref(false)
   <!-- Шлифовка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-card-content">
-        <div class="uslugi-text-block">
-          <div class="uslugi-title">Шлифовка</div>
-          <div class="uslugi-text">
-            Шлифовка металла - это процесс механической обработки поверхности металлических изделий с
-            целью придания им нужной шероховатости, формы и точности размеров.
-            <br /><br />
-            Данный метод широко применяется в машиностроении, приборостроении, авиастроении и других
-            отраслях, где важна высокая точность обработки деталей. Основной рабочий инструмент при
-            шлифовке - абразивный круг, выполненный из твёрдых частиц, способных снимать тонкий слой
-            металла с обрабатываемой поверхности.
-          </div>
+      <div class="uslugi-title">Шлифовка</div>
+
+      <div class="uslugi-section">
+        <div class="uslugi-text">
+          Шлифовка металла - это процесс механической обработки поверхности металлических изделий с
+          целью придания им нужной шероховатости, формы и точности размеров.
+          <br /><br />
+          Данный метод широко применяется в машиностроении, приборостроении, авиастроении и других
+          отраслях, где важна высокая точность обработки деталей. Основной рабочий инструмент при
+          шлифовке - абразивный круг, выполненный из твёрдых частиц, способных снимать тонкий слой
+          металла с обрабатываемой поверхности.
         </div>
 
         <div class="uslugi-image-wrapper">
@@ -32,7 +31,7 @@ const isRequirementsExpanded = ref(false)
         <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
           <div class="uslugi-table-title">Технические требования</div>
           <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <IconArrowDown color="#000000" />
+            <IconArrowDown />
           </el-icon>
         </div>
 
@@ -93,20 +92,8 @@ const isRequirementsExpanded = ref(false)
 </template>
 
 <style scoped>
-.uslugi-card-content {
-  display: flex;
-  gap: 80px;
-  margin-bottom: 60px;
-  align-items: flex-start;
-}
-
-.uslugi-text-block {
-  flex: 1;
-  min-width: 0;
-}
-
 .technical-requirements {
-  margin-top: 0;
+  margin-top: 40px;
 }
 
 .requirements-header {

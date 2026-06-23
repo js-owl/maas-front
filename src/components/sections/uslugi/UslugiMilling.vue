@@ -9,18 +9,17 @@ const isRequirementsExpanded = ref(false)
   <!-- Фрезерная обработка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-card-content">
-        <div class="uslugi-text-block">
-          <div class="uslugi-title">Фрезерная обработка</div>
-          <div class="uslugi-text">
-            Фрезерная обработка представляет собой технологический процесс, при котором специальный
-            режущий инструмент (фреза) вращается и удаляет материал, создавая изделия заданной
-            конфигурации.
-            <br /><br />
-            Методика эффективна как для изготовления плоских элементов, так и для формирования
-            трёхмерных объектов. Она обеспечивает прецизионную точность и широко применяется при
-            работе с различными материалами: металлами, полимерами, древесиной.
-          </div>
+      <div class="uslugi-title">Фрезерная обработка</div>
+
+      <div class="uslugi-section">
+        <div class="uslugi-text">
+          Фрезерная обработка представляет собой технологический процесс, при котором специальный
+          режущий инструмент (фреза) вращается и удаляет материал, создавая изделия заданной
+          конфигурации.
+          <br /><br />
+          Методика эффективна как для изготовления плоских элементов, так и для формирования
+          трёхмерных объектов. Она обеспечивает прецизионную точность и широко применяется при
+          работе с различными материалами: металлами, полимерами, древесиной.
         </div>
 
         <div class="uslugi-image-wrapper">
@@ -32,7 +31,7 @@ const isRequirementsExpanded = ref(false)
         <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
           <div class="uslugi-table-title">Технические требования</div>
           <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <IconArrowDown color="#000000" />
+            <IconArrowDown />
           </el-icon>
         </div>
 
@@ -89,20 +88,8 @@ const isRequirementsExpanded = ref(false)
 </template>
 
 <style scoped>
-.uslugi-card-content {
-  display: flex;
-  gap: 80px;
-  margin-bottom: 60px;
-  align-items: flex-start;
-}
-
-.uslugi-text-block {
-  flex: 1;
-  min-width: 0;
-}
-
 .technical-requirements {
-  margin-top: 0;
+  margin-top: 40px;
 }
 
 .requirements-header {
