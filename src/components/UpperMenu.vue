@@ -32,7 +32,6 @@ const isMobile = computed(() => width.value < 768)
 const isHomePage = computed(() => route.path === '/')
 const isCabinetMenuVisible = ref(false)
 const isGuestCabinetMenuVisible = ref(false)
-const isMobileMenuVisible = ref(false)
 const isServicesMenuVisible = ref(false)
 
 watch(
@@ -53,19 +52,16 @@ onMounted(() => {
 async function onLogout() {
   await authStore.logout()
   isCabinetMenuVisible.value = false
-  isMobileMenuVisible.value = false
   router.push({ name: 'home' })
 }
 
 function openCabinetPage() {
   isCabinetMenuVisible.value = false
-  isMobileMenuVisible.value = false
   router.push({ path: '/personal' })
 }
 
 function openOrdersPage() {
   isCabinetMenuVisible.value = false
-  isMobileMenuVisible.value = false
   router.push({ path: '/personal/orders' })
 }
 
@@ -82,13 +78,11 @@ function openOrdersPage() {
 
 function openGuestRegistration() {
   isGuestCabinetMenuVisible.value = false
-  isMobileMenuVisible.value = false
   isRegistrationVisible.value = true
 }
 
 function openGuestLogin() {
   isGuestCabinetMenuVisible.value = false
-  isMobileMenuVisible.value = false
   isLoginVisible.value = true
 }
 
@@ -100,14 +94,6 @@ function openLoginFromRegistration() {
 function openServicePage(path: string) {
   isServicesMenuVisible.value = false
   router.push({ path })
-}
-
-function scrollToCalcSection() {
-  if (isHomePage.value) {
-    document.querySelector('.calc-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    return
-  }
-  router.push({ path: '/' })
 }
 
 const mobilePopperOptions = computed(() => ({
@@ -126,6 +112,22 @@ const mobilePopperOptions = computed(() => ({
       },
     },
   ],
+}))
+
+const mobileCabinetPopoverAttrs = computed(() => ({
+  placement: 'bottom' as const,
+  showArrow: false,
+  popperClass: 'cabinet-menu-popper cabinet-menu-popper--mobile',
+  popperOptions: mobilePopperOptions.value,
+  offset: 8,
+}))
+
+const desktopCabinetPopoverAttrs = computed(() => ({
+  placement: 'bottom-end' as const,
+  showArrow: false,
+  popperClass: 'cabinet-menu-popper',
+  offset: 12,
+  width: '265px',
 }))
 
 // function onCallRequest() {
@@ -155,61 +157,86 @@ const mobilePopperOptions = computed(() => ({
               <IconLogoMark class="mobile-logo-icon" />
             </button>
 
-            <button type="button" class="mobile-calc-btn montserrat-semibold" @click="scrollToCalcSection">
-              Расчет стоимости
-            </button>
-
             <el-popover
-              v-model:visible="isMobileMenuVisible"
+              v-model:visible="isServicesMenuVisible"
               trigger="click"
-              placement="bottom"
-              :show-arrow="false"
-              popper-class="cabinet-menu-popper cabinet-menu-popper--mobile"
-              :popper-options="mobilePopperOptions"
-              :offset="8"
+              v-bind="mobileCabinetPopoverAttrs"
             >
               <template #reference>
-                <button
-                  type="button"
-                  class="mobile-menu-btn"
-                  aria-label="Открыть меню"
-                >
-                  <IconMobileMenu class="mobile-menu-icon" />
+                <button type="button" class="mobile-calc-btn montserrat-semibold">
+                  Расчет стоимости
                 </button>
               </template>
-              <div v-if="!authStore.getToken" class="cabinet-menu">
-                <button
-                  type="button"
-                  class="cabinet-menu-item montserrat-medium"
-                  @click="openGuestRegistration"
-                >
-                  <el-icon :size="22" class="cabinet-menu-icon"><IconReg /></el-icon>
-                  <span>Регистрация</span>
-                </button>
-                <button
-                  type="button"
-                  class="cabinet-menu-item montserrat-medium"
-                  @click="openGuestLogin"
-                >
-                  <el-icon :size="22" class="cabinet-menu-icon"><IconEnter /></el-icon>
-                  <span>Вход в аккаунт</span>
-                </button>
-              </div>
-              <div v-else class="cabinet-menu">
-                <button type="button" class="cabinet-menu-item montserrat-medium" @click="openCabinetPage">
-                  <el-icon :size="22" class="cabinet-menu-icon"><IconProfile /></el-icon>
-                  <span>Профиль</span>
-                </button>
-                <button type="button" class="cabinet-menu-item montserrat-medium" @click="openOrdersPage">
-                  <el-icon :size="22" class="cabinet-menu-icon"><IconCalculate color="#7в8083" /></el-icon>
-                  <span>Расчеты и заказы</span>
-                </button>
-                <button type="button" class="cabinet-menu-item montserrat-medium" @click="onLogout">
-                  <el-icon :size="22" class="cabinet-menu-icon"><IconExit /></el-icon>
-                  <span>Выход из аккаунта</span>
-                </button>
-              </div>
+              <ServicesCabinetMenu @open-service="openServicePage" />
             </el-popover>
+
+            <template v-if="!authStore.getToken">
+              <el-popover
+                v-model:visible="isGuestCabinetMenuVisible"
+                trigger="click"
+                v-bind="mobileCabinetPopoverAttrs"
+              >
+                <template #reference>
+                  <button
+                    type="button"
+                    class="mobile-menu-btn"
+                    aria-label="Открыть меню"
+                  >
+                    <IconMobileMenu class="mobile-menu-icon" />
+                  </button>
+                </template>
+                <div class="cabinet-menu">
+                  <button
+                    type="button"
+                    class="cabinet-menu-item montserrat-medium"
+                    @click="openGuestRegistration"
+                  >
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconReg /></el-icon>
+                    <span>Регистрация</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="cabinet-menu-item montserrat-medium"
+                    @click="openGuestLogin"
+                  >
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconEnter /></el-icon>
+                    <span>Вход в аккаунт</span>
+                  </button>
+                </div>
+              </el-popover>
+            </template>
+
+            <template v-else>
+              <el-popover
+                v-model:visible="isCabinetMenuVisible"
+                trigger="click"
+                v-bind="mobileCabinetPopoverAttrs"
+              >
+                <template #reference>
+                  <button
+                    type="button"
+                    class="mobile-menu-btn"
+                    aria-label="Открыть меню"
+                  >
+                    <IconMobileMenu class="mobile-menu-icon" />
+                  </button>
+                </template>
+                <div class="cabinet-menu">
+                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="openCabinetPage">
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconProfile /></el-icon>
+                    <span>Профиль</span>
+                  </button>
+                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="openOrdersPage">
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconCalculate color="#7в8083" /></el-icon>
+                    <span>Расчеты и заказы</span>
+                  </button>
+                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="onLogout">
+                    <el-icon :size="22" class="cabinet-menu-icon"><IconExit /></el-icon>
+                    <span>Выход из аккаунта</span>
+                  </button>
+                </div>
+              </el-popover>
+            </template>
           </div>
 
           <template v-else>
@@ -246,11 +273,7 @@ const mobilePopperOptions = computed(() => ({
               <el-popover
                 v-model:visible="isGuestCabinetMenuVisible"
                 trigger="click"
-                placement="bottom-end"
-                width="265px"
-                :show-arrow="false"
-                popper-class="cabinet-menu-popper"
-                :offset="12"
+                v-bind="desktopCabinetPopoverAttrs"
               >
                 <template #reference>
                   <el-button class="cabinet-btn montserrat-semibold">Вход / Регистрация</el-button>
@@ -300,11 +323,7 @@ const mobilePopperOptions = computed(() => ({
               <el-popover
                 v-model:visible="isCabinetMenuVisible"
                 trigger="click"
-                placement="bottom-end"
-                width="265px"
-                :show-arrow="false"
-                popper-class="cabinet-menu-popper"
-                :offset="12"
+                v-bind="desktopCabinetPopoverAttrs"
               >
                 <template #reference>
                   <el-button class="cabinet-btn montserrat-semibold">Личный кабинет</el-button>
