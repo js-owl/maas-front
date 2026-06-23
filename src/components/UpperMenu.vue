@@ -110,6 +110,24 @@ function scrollToCalcSection() {
   router.push({ path: '/' })
 }
 
+const mobilePopperOptions = computed(() => ({
+  modifiers: [
+    {
+      name: 'fullWidth',
+      enabled: true,
+      phase: 'beforeWrite',
+      requires: ['computeStyles'],
+      fn({ state }: { state: { styles: { popper: Record<string, string> }; modifiersData: { popperOffsets?: { y: number } } } }) {
+        const offsetY = state.modifiersData.popperOffsets?.y ?? 0
+        state.styles.popper.width = `${width.value}px`
+        state.styles.popper.left = '0px'
+        state.styles.popper.right = 'auto'
+        state.styles.popper.transform = `translate3d(0px, ${offsetY}px, 0px)`
+      },
+    },
+  ],
+}))
+
 // function onCallRequest() {
 //   isCallVisible.value = true
 // }
@@ -144,11 +162,11 @@ function scrollToCalcSection() {
             <el-popover
               v-model:visible="isMobileMenuVisible"
               trigger="click"
-              placement="bottom-end"
-              width="265px"
+              placement="bottom"
               :show-arrow="false"
-              popper-class="cabinet-menu-popper"
-              :offset="12"
+              popper-class="cabinet-menu-popper cabinet-menu-popper--mobile"
+              :popper-options="mobilePopperOptions"
+              :offset="8"
             >
               <template #reference>
                 <button
@@ -698,5 +716,18 @@ function scrollToCalcSection() {
   --el-popover-border-radius: 20px;
   border-radius: 20px !important;
   overflow: hidden;
+}
+
+.cabinet-menu-popper--mobile.el-popper,
+.cabinet-menu-popper--mobile.el-popover {
+  --el-popover-border-radius: 0;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  border-radius: 0 !important;
+  box-shadow: 0 14px 34px rgba(30, 35, 44, 0.18);
+}
+
+.cabinet-menu-popper--mobile .cabinet-menu {
+  padding: 8px 10px;
 }
 </style>
