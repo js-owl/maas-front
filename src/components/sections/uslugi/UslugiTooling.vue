@@ -1,27 +1,31 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
 const isRequirementsExpanded = ref(false)
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
 </script>
 
 <template>
   <!-- Цех модельной оснастки -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">Цех модельной оснастки</div>
-
-      <div class="uslugi-section">
-        <div class="uslugi-text">
-          Станки предназначены для обработки МДФ, дерева, фанеры, модельного пластика, композитных
-          материалов.
-          <br /><br />
-          Производство мастер моделей из МДФ (мелкодисперсная фракция древесной плиты) с высокой
-          точностью размеров особенно востребовано в авиационной и композитной промышленности.
-          <br /><br />
-          Производство уникальной технологической оснастки, необходимой для производства
-          специфических изделий из дерева для последующих технологических процессов, таких как
-          вакуумная формовка или формование композитных материалов.
+      <div class="uslugi-card-content">
+        <div class="uslugi-text-block">
+          <div class="uslugi-title">Цех модельной оснастки</div>
+          <div class="uslugi-text">
+            Станки предназначены для обработки МДФ, дерева, фанеры, модельного пластика, композитных
+            материалов.
+            <br /><br />
+            Производство мастер моделей из МДФ (мелкодисперсная фракция древесной плиты) с высокой
+            точностью размеров особенно востребовано в авиационной и композитной промышленности.
+            <br /><br />
+            Производство уникальной технологической оснастки, необходимой для производства
+            специфических изделий из дерева для последующих технологических процессов, таких как
+            вакуумная формовка или формование композитных материалов.
+          </div>
         </div>
 
         <div class="uslugi-image-wrapper">
@@ -29,11 +33,27 @@ const isRequirementsExpanded = ref(false)
         </div>
       </div>
 
-      <div class="technical-requirements">
+      <div v-if="isMobile" class="tooling-equipment">
+        <p class="tooling-equipment__title">Наше оборудование</p>
+        <div class="tooling-equipment__box">
+          <ul class="tooling-equipment__list">
+            <li>Ленточнопильный станок по дереву</li>
+            <li>Фрезерный станок ЧПУ по дереву 2000 х 4000</li>
+            <li>Станок лазерной резки СО²</li>
+            <li>Форматно-раскроечный станок по дереву</li>
+            <li>Фрезерный станок ЧПУ по деревообработке 5-ти координатный</li>
+          </ul>
+          <p class="tooling-equipment__note">
+            Максимальные габариты обрабатываемых деталей составляет 2150 x 4075 x 275 мм.
+          </p>
+        </div>
+      </div>
+
+      <div v-else class="technical-requirements">
         <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
           <div class="uslugi-table-title">Технические требования</div>
           <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <IconArrowDown />
+            <IconArrowDown color="#000000" />
           </el-icon>
         </div>
 
@@ -70,8 +90,20 @@ const isRequirementsExpanded = ref(false)
 </template>
 
 <style scoped>
+.uslugi-card-content {
+  display: flex;
+  gap: 80px;
+  margin-bottom: 60px;
+  align-items: flex-start;
+}
+
+.uslugi-text-block {
+  flex: 1;
+  min-width: 0;
+}
+
 .technical-requirements {
-  margin-top: 40px;
+  margin-top: 0;
 }
 
 .requirements-header {
@@ -115,11 +147,4 @@ const isRequirementsExpanded = ref(false)
 .materials-list li + li {
   margin-top: 4px;
 }
-
-@media (max-width: 767px) {
-  .technical-requirements {
-    display: none;
-  }
-}
 </style>
-

@@ -9,16 +9,17 @@ const isRequirementsExpanded = ref(false)
   <!-- Токарная обработка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
     <div class="uslugi-wrapper">
-      <div class="uslugi-title">Токарная обработка</div>
-
-      <div class="uslugi-section">
-        <div class="uslugi-text">
-          Токарная обработка представляет собой механическую операцию, при которой вращающаяся
-          деталь обрабатывается режущим инструментом, последовательно снимающим слой материала.
-          <br /><br />
-          Технология позволяет создавать цилиндрические, конические и сложные профилированные
-          поверхности с высокой степенью точности. Применяется в производстве металлических,
-          пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
+      <div class="uslugi-card-content">
+        <div class="uslugi-text-block uslugi-text-block--lathe">
+          <div class="uslugi-title">Токарная обработка</div>
+          <div class="uslugi-text">
+            Токарная обработка представляет собой механическую операцию, при которой вращающаяся
+            деталь обрабатывается режущим инструментом, последовательно снимающим слои материала.
+            <br /><br />
+            Технология позволяет создавать цилиндрические, конические и сложные профилированные
+            поверхности с высокой степенью точности. Применяется в производстве металлических,
+            пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
+          </div>
         </div>
 
         <div class="uslugi-image-wrapper">
@@ -30,7 +31,7 @@ const isRequirementsExpanded = ref(false)
         <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
           <div class="uslugi-table-title">Технические требования</div>
           <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <IconArrowDown />
+            <IconArrowDown color="#000000" />
           </el-icon>
         </div>
 
@@ -80,8 +81,20 @@ const isRequirementsExpanded = ref(false)
 </template>
 
 <style scoped>
+.uslugi-card-content {
+  display: flex;
+  gap: 80px;
+  margin-bottom: 60px;
+  align-items: flex-start;
+}
+
+.uslugi-text-block {
+  flex: 1;
+  min-width: 0;
+}
+
 .technical-requirements {
-  margin-top: 40px;
+  margin-top: 0;
 }
 
 .requirements-header {
@@ -133,11 +146,5 @@ const isRequirementsExpanded = ref(false)
 
 .materials-list li + li {
   margin-top: 4px;
-}
-
-@media (max-width: 767px) {
-  .technical-requirements {
-    display: none;
-  }
 }
 </style>
