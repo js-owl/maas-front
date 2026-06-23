@@ -73,8 +73,7 @@ const abilities = ref([
 const { width } = useWindowSize()
 const isMobileLayout = computed(() => width.value <= 768)
 
-const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
-  Boolean(ability.link && !(ability.isDevelopment && isMobileLayout.value))
+const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(ability.link)
 </script>
 
 <template>
@@ -96,14 +95,13 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
           <template v-if="isMobileLayout">
             <div class="card-title card-title--mobile montserrat-semibold">{{ ability.title }}</div>
             <div v-if="ability.icon" class="card-icon card-icon--mobile">
-              <el-icon :size="24">
-                <component
-                  :is="ability.icon"
-                  :color="'#e84261'"
-                  :backgroundColor="'transparent'"
-                  bgColor="transparent"
-                />
-              </el-icon>
+              <component
+                :is="ability.icon"
+                class="card-icon-svg"
+                color="#e84261"
+                backgroundColor="transparent"
+                bgColor="transparent"
+              />
             </div>
           </template>
           <template v-else>
@@ -251,8 +249,11 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
   }
 
   .card-link--mobile {
+    align-items: center;
+    justify-content: flex-start;
     padding: 16px;
     gap: 8px;
+    cursor: pointer;
   }
 
   .card-title--mobile {
@@ -268,23 +269,31 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) =>
     flex-shrink: 0;
     width: 24px;
     height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
+  .card-icon--mobile :deep(.card-icon-svg),
   .card-icon--mobile :deep(svg) {
     width: 24px;
     height: 24px;
+    display: block;
   }
 
-  .card-icon--mobile :deep(rect),
-  .card-icon--mobile :deep(path:first-of-type) {
+  .card-icon--mobile :deep(.cls-1),
+  .card-icon--mobile :deep(#Layer_1 path),
+  .card-icon--mobile :deep(#Layer_1 rect),
+  .card-icon--mobile :deep(.st0),
+  .card-icon--mobile :deep(.icon-galv .st0),
+  .card-icon--mobile :deep(.icon-welding .st0) {
     fill: transparent;
   }
 
-  .card-icon--mobile :deep(.cls-1) {
-    fill: transparent;
-  }
-
-  .card-icon--mobile :deep(.cls-2) {
+  .card-icon--mobile :deep(.cls-2),
+  .card-icon--mobile :deep(.st1),
+  .card-icon--mobile :deep(.icon-galv .st1),
+  .card-icon--mobile :deep(.icon-welding .st1) {
     fill: #e84261;
   }
 }
