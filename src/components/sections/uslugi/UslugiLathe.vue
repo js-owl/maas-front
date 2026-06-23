@@ -1,8 +1,35 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
 const isRequirementsExpanded = ref(false)
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
+
+const materials = [
+  'Нержавеющие, легированные стали',
+  'Стали коррозионностойкие (жаропрочные)',
+  'Стали конструкционные легированные',
+  'Титановые сплавы',
+  'Полиамиды, фторопласт',
+  'Алюминиевые, бронзовые, медные сплавы',
+]
+
+const equipmentRows = [
+  {
+    equipment: 'Токарно-винторезные станки',
+    dimensions: ['диаметр: до 1600', 'длина: до 5000'],
+  },
+  {
+    equipment: 'Станок с ЧПУ',
+    dimensions: ['Диаметр до 600'],
+  },
+  {
+    equipment: 'Тяжёлый токарный станок с ЧПУ',
+    dimensions: ['диаметр: до 880', 'длина: до 1500'],
+  },
+]
 </script>
 
 <template>
@@ -27,15 +54,52 @@ const isRequirementsExpanded = ref(false)
         </div>
       </div>
 
-      <div class="technical-requirements">
-        <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
+      <div
+        class="technical-requirements"
+        :class="{ 'technical-requirements--expanded': isRequirementsExpanded && isMobile }"
+      >
+        <button
+          type="button"
+          class="requirements-header"
+          :class="{ 'requirements-header--mobile': isMobile }"
+          @click="isRequirementsExpanded = !isRequirementsExpanded"
+        >
           <div class="uslugi-table-title">Технические требования</div>
           <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
             <IconArrowDown color="#000000" />
           </el-icon>
+        </button>
+
+        <div v-if="isRequirementsExpanded && isMobile" class="lathe-requirements-mobile">
+          <div class="lathe-requirements-mobile__row lathe-requirements-mobile__row--head">
+            <div class="lathe-requirements-mobile__cell">Оборудование</div>
+            <div class="lathe-requirements-mobile__cell">Габариты</div>
+          </div>
+
+          <div
+            v-for="row in equipmentRows"
+            :key="row.equipment"
+            class="lathe-requirements-mobile__row"
+          >
+            <div class="lathe-requirements-mobile__cell">{{ row.equipment }}</div>
+            <div class="lathe-requirements-mobile__cell">
+              <p v-for="(line, index) in row.dimensions" :key="index" class="lathe-requirements-mobile__line">
+                {{ line }}
+              </p>
+            </div>
+          </div>
+
+          <div class="lathe-requirements-mobile__row lathe-requirements-mobile__row--materials">
+            <div class="lathe-requirements-mobile__cell lathe-requirements-mobile__cell--full">
+              <p class="lathe-requirements-mobile__materials-title">Материалы:</p>
+              <ul class="lathe-requirements-mobile__materials-list">
+                <li v-for="material in materials" :key="material">{{ material }}</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <div v-if="isRequirementsExpanded" class="requirements-table-wrapper">
+        <div v-else-if="isRequirementsExpanded" class="requirements-table-wrapper">
           <table class="requirements-table">
             <colgroup>
               <col />
@@ -55,12 +119,7 @@ const isRequirementsExpanded = ref(false)
                 <td>диаметр: до 1600<br />длина: до 5000</td>
                 <td rowspan="3">
                   <ul class="materials-list">
-                    <li>Нержавеющие, легированные стали</li>
-                    <li>Стали коррозионностойкие (жаропрочные)</li>
-                    <li>Стали конструкционные легированные</li>
-                    <li>Титановые сплавы</li>
-                    <li>Полиамиды, фторопласт</li>
-                    <li>Алюминиевые, бронзовые, медные сплавы</li>
+                    <li v-for="material in materials" :key="material">{{ material }}</li>
                   </ul>
                 </td>
               </tr>
@@ -97,18 +156,39 @@ const isRequirementsExpanded = ref(false)
   margin-top: 0;
 }
 
+.technical-requirements--expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .requirements-header {
   height: 52px;
+  border: none;
+  background: transparent;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+}
+
+.requirements-header--mobile {
+  height: 24px;
+  min-height: 24px;
+  border-radius: 0;
 }
 
 .requirements-arrow {
   transition: transform 0.2s ease;
   transform: rotate(0deg);
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: #000000;
 }
 
 .requirements-arrow.expanded {
@@ -146,5 +226,87 @@ const isRequirementsExpanded = ref(false)
 
 .materials-list li + li {
   margin-top: 4px;
+}
+
+.lathe-requirements-mobile {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.lathe-requirements-mobile__row {
+  display: flex;
+  width: 100%;
+}
+
+.lathe-requirements-mobile__row--head .lathe-requirements-mobile__cell {
+  background-color: var(--button-bg);
+}
+
+.lathe-requirements-mobile__row--head .lathe-requirements-mobile__cell:first-child {
+  border-top-left-radius: 8px;
+}
+
+.lathe-requirements-mobile__row--head .lathe-requirements-mobile__cell:last-child {
+  border-top-right-radius: 8px;
+}
+
+.lathe-requirements-mobile__row--materials .lathe-requirements-mobile__cell--full {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.lathe-requirements-mobile__cell {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid #aeb2b5;
+  background-color: #f2f3f7;
+  box-sizing: border-box;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: normal;
+  color: #000000;
+  text-align: left;
+  word-break: break-word;
+}
+
+.lathe-requirements-mobile__cell--full {
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+.lathe-requirements-mobile__line {
+  margin: 0;
+}
+
+.lathe-requirements-mobile__line + .lathe-requirements-mobile__line {
+  margin-top: 0;
+}
+
+.lathe-requirements-mobile__materials-title {
+  margin: 0;
+}
+
+.lathe-requirements-mobile__materials-list {
+  margin: 0;
+  padding-left: 15px;
+  list-style-type: disc;
+}
+
+.lathe-requirements-mobile__materials-list li {
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .requirements-header :deep(.uslugi-table-title) {
+    margin: 0;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000000;
+  }
 }
 </style>

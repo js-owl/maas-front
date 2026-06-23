@@ -143,20 +143,6 @@ const isMobile = computed(() => width.value < 768)
   color: #000000;
 }
 
-.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.requirements-table-wrapper) {
-  margin-top: 12px;
-  border-radius: 10px;
-  border: 1px solid var(--button-bg);
-  background-color: #f2f3f7;
-}
-
-.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.requirements-table th),
-.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.requirements-table td),
-.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-table-thead) {
-  font-size: 10px;
-  padding: 10px;
-}
-
 .uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.tooling-equipment) {
   display: flex;
   flex-direction: column;
