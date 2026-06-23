@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import { markRaw, ref } from 'vue'
+import { ref } from 'vue'
 import DialogLogin from '@/components/dialog/DialogLogin.vue'
-import IconOne from '@/icons/IconOne.vue'
-import IconTwo from '@/icons/IconTwo.vue'
-import IconThree from '@/icons/IconThree.vue'
-import IconFour from '@/icons/IconFour.vue'
 
 type Step = {
   id: number
-  icon: unknown
   title: string
   description: string
   highlightWord?: string
@@ -20,7 +15,6 @@ const isLoginVisible = ref(false)
 const steps: Step[] = [
   {
     id: 1,
-    icon: markRaw(IconOne),
     title: 'Регистрация',
     description: 'Быстрая регистрация позволит вам сохранять историю расчетов цены и оформлять заказы',
     highlightWord: 'регистрация',
@@ -28,40 +22,36 @@ const steps: Step[] = [
   },
   {
     id: 2,
-    icon: markRaw(IconTwo),
     title: 'Загрузите файлы',
     description:
       'Сервис работает с форматами 3D. Если модели нет, но у вас есть чертеж - загрузите его, и специалист свяжется с вами',
   },
   {
     id: 3,
-    icon: markRaw(IconThree),
     title: 'Разместите заявку на расчет',
     description: 'Мы ценим ваше время и быстро расчитываем стоимость изготовления изделия',
   },
   {
     id: 4,
-    icon: markRaw(IconFour),
     title: 'Обратная связь',
     description: 'Финальный этап - подтверждения стоимости выполнения заказа и доставки',
   },
 ]
-
 </script>
 
 <template>
   <section class="home-milestones">
     <div class="milestones-wrap">
-      <h2 class="maas-title milestones-title">Как создать заказ?</h2>
+      <h2 class="milestones-title">Как создать заказ?</h2>
 
       <div class="steps">
         <div v-for="step in steps" :key="step.id" class="step-card">
           <div class="step-content">
-            <div class="maas-subtitle step-title">
+            <div class="step-title">
               <span class="step-title-number">{{ step.id }}.</span>
               {{ step.title }}
             </div>
-            <p class="maas-text step-description">
+            <p class="step-description">
               <template v-if="step.highlightWord">
                 {{ step.description.split(step.highlightWord)[0] }}
                 <button
@@ -78,8 +68,6 @@ const steps: Step[] = [
               <template v-else>{{ step.description }}</template>
             </p>
           </div>
-
-          <component :is="step.icon" class="step-icon" aria-hidden="true" focusable="false" />
         </div>
       </div>
     </div>
@@ -101,6 +89,7 @@ const steps: Step[] = [
   flex-direction: column;
   gap: 20px;
   box-shadow: 0 11px 15px var(--button-bg);
+  box-sizing: border-box;
 }
 
 .milestones-title {
@@ -109,7 +98,7 @@ const steps: Step[] = [
   font-size: 24px;
   font-weight: 600;
   line-height: normal;
-  color: #d4354f;
+  color: #c84359;
 }
 
 .steps {
@@ -140,10 +129,17 @@ const steps: Step[] = [
 
 .step-title {
   margin: 0;
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
+  font-weight: 600;
   line-height: normal;
+  color: #000000;
   text-transform: uppercase;
   word-break: break-word;
+}
+
+.step-title-number {
+  margin-right: 0.25em;
 }
 
 .step-description {
@@ -178,10 +174,6 @@ const steps: Step[] = [
   text-decoration: none;
 }
 
-.step-icon {
-  display: none;
-}
-
 @media (max-width: 1199px) {
   .steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -193,12 +185,7 @@ const steps: Step[] = [
   }
 }
 
-.step-title-number {
-  display: none;
-  margin-right: 0.25em;
-}
-
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .home-milestones {
     margin-bottom: 0;
   }
@@ -236,15 +223,8 @@ const steps: Step[] = [
 
   .step-title {
     font-size: 14px;
-    font-family: 'Montserrat-SemiBold', sans-serif;
-    font-weight: 600;
     text-transform: none;
     color: #e84261;
-  }
-
-  .step-title-number {
-    display: inline;
-    margin-right: 0.25em;
   }
 
   .step-description {
@@ -254,8 +234,6 @@ const steps: Step[] = [
 
   .step-description-link {
     text-decoration: none;
-    text-underline-offset: unset;
   }
 }
 </style>
-
