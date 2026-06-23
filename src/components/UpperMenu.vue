@@ -118,7 +118,7 @@ const mobilePopperOptions = computed(() => ({
       phase: 'beforeWrite',
       requires: ['computeStyles'],
       fn({ state }: { state: { styles: { popper: Record<string, string> }; modifiersData: { popperOffsets?: { y: number } } } }) {
-        const offsetY = state.modifiersData.popperOffsets?.y ?? 0
+        const offsetY = (state.modifiersData.popperOffsets?.y ?? 0) - 80
         state.styles.popper.width = `${width.value}px`
         state.styles.popper.left = '0px'
         state.styles.popper.right = 'auto'
