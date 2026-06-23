@@ -101,25 +101,19 @@ const handleChange = (value: string | number | boolean | object) => {
 
 @media (max-width: 768px) {
   .full :deep(.el-select__suffix) {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
   }
 
   .full :deep(.el-select__caret),
   .full :deep(.el-select__icon) {
-    width: 20px;
-    height: 20px;
-    font-size: 20px;
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
   }
 
-  .full :deep(.el-select__suffix svg) {
-    width: 12px;
-    height: 6px;
-  }
-
-  .full :deep(.el-select__suffix svg path) {
+  .full :deep(.el-select__suffix .icon-arrow-down__mobile path) {
     stroke: #000;
-    stroke-width: 1;
   }
 }
 
