@@ -99,6 +99,30 @@ const handleChange = (value: string | number | boolean | object) => {
   color: black;
 }
 
+@media (max-width: 768px) {
+  .full :deep(.el-select__suffix) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .full :deep(.el-select__caret),
+  .full :deep(.el-select__icon) {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  .full :deep(.el-select__suffix svg) {
+    width: 12px;
+    height: 6px;
+  }
+
+  .full :deep(.el-select__suffix svg path) {
+    stroke: #000;
+    stroke-width: 1;
+  }
+}
+
 </style>
 
 <style>
