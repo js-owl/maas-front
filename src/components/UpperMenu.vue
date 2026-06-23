@@ -143,7 +143,10 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 </script>
 
 <template>
-  <div class="uppermenu-wrapper" :class="{ 'uppermenu-wrapper--home': isHomePage }">
+  <div
+    class="uppermenu-wrapper"
+    :class="{ 'uppermenu-wrapper--home': isHomePage, 'uppermenu-wrapper--mobile': isMobile }"
+  >
     <el-row :gutter="0" class="uppermenu-row">
       <el-col :offset="isMobile ? 0 : 3" :span="isMobile ? 24 : 18">
         <el-header class="uppermenu-header" :class="{ 'uppermenu-header--mobile': isMobile }">
@@ -374,17 +377,24 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   position: relative;
   width: 100%;
   background-color: var(--bgcolor);
-  padding: 10px 0;
+  padding: 10px 10px 0;
   box-sizing: border-box;
 }
 
 .uppermenu-wrapper--home {
-  padding: 60px 0 0;
+  padding: 60px 10px 0;
 }
 
 .uppermenu-wrapper--home .uppermenu-header {
   height: 53px;
-  /* padding: 0 20px; */
+}
+
+.uppermenu-wrapper--mobile {
+  padding: 40px 10px 0;
+}
+
+.uppermenu-wrapper--mobile.uppermenu-wrapper--home {
+  padding: 40px 10px 0;
 }
 
 .uppermenu-wrapper.fullscreen-bg {
@@ -433,7 +443,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   height: 100px;
   width: 100%;
   margin-right: 0;
-  padding: 0 20px;
+  padding: 0;
 }
 
 .left-wrap {
@@ -487,8 +497,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 340px;
-  margin: 0 auto;
+  height: 36px;
   box-sizing: border-box;
 }
 
@@ -513,8 +522,11 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 
 .mobile-calc-btn {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 36px;
-  padding: 8px 24px;
+  padding: 0 24px;
   border: none;
   border-radius: 8px;
   background-color: #ffffff;
@@ -523,6 +535,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   font-size: 14px;
   font-weight: 600;
   line-height: normal;
+  letter-spacing: 0;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -534,7 +547,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   flex-shrink: 0;
   width: 36px;
   height: 36px;
-  padding: 8px;
+  padding: 6px;
   border: none;
   border-radius: 8px;
   background-color: #ffffff;
@@ -669,15 +682,6 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 }
 
 @media (max-width: 767px) {
-  .uppermenu-wrapper {
-    min-height: auto;
-    padding: 40px 10px 0;
-  }
-
-  .uppermenu-wrapper--home {
-    padding: 40px 10px 0;
-  }
-
   .uppermenu-header,
   .uppermenu-header--mobile {
     height: 36px;
