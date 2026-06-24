@@ -1,318 +1,191 @@
 <script setup lang="ts">
-// import { defineAsyncComponent, ref } from "vue";
-import IconLogo from "../icons/IconLogo.vue";
-import VersionInfo from "./VersionInfo.vue";
+import { defineAsyncComponent, ref } from 'vue'
+import IconLogo from '../icons/IconLogo.vue'
 
-// const DialogCall = defineAsyncComponent(() => import('./dialog/DialogCall.vue'))
+const DialogCall = defineAsyncComponent(() => import('./dialog/DialogCall.vue'))
 
-// const isCallDialogVisible = ref(false);
+const isCallDialogVisible = ref(false)
 
-// const openCallDialog = () => {
-//   isCallDialogVisible.value = true;
-// };
+const openCallDialog = () => {
+  isCallDialogVisible.value = true
+}
 </script>
 
 <template>
-  <el-row :gutter="0" class="footer-row">
-    <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-      <div class="footer-container footer-container--layout">
-        <div class="footer-top">
-          <div class="footer-top-left">
-            <div class="footer-links-list footer-links-list--top">
-              <router-link to="/policy" class="footer-link">
-                Политика конфиденциальности
-              </router-link>
-              <router-link to="/license" class="footer-link">
-              Договор публичной оферты
-              </router-link>
-              <router-link to="/offer-client" class="footer-link">
-                Пользовательское соглашение
-              </router-link>
-            </div>
-          </div>
+  <footer class="footer">
+    <div class="footer__content">
+      <div class="footer__top">
+        <nav class="footer__col footer__col--links" aria-label="Юридические документы">
+          <router-link to="/policy" class="footer__link">
+            Политика конфиденциальности
+          </router-link>
+          <router-link to="/license" class="footer__link">
+            Договор публичной оферты
+          </router-link>
+          <router-link to="/offer-client" class="footer__link">
+            Пользовательское соглашение
+          </router-link>
+        </nav>
 
-          <div class="footer-columns footer-columns--desktop">
-            <div class="footer-column">
-              <!-- <div class="footer-column-title">Контакты</div> -->
-              <a href="mailto:info@aeromax-group.ru" class="footer-link">
-                info@aeromax-group.ru
-              </a>
-              <a href="tel:+74959214242" class="footer-link">
-                +7 (495) 921-42-42
-              </a>
-              <!-- <a href="#" class="footer-link" @click.prevent="openCallDialog">
-                Заказать звонок
-              </a> -->
-            </div>
-          </div>
-        </div>
-
-        <div class="footer-divider" role="presentation" />
-
-        <div class="footer-bottom">
-          <div class="footer-bottom-row">
-            <div class="footer-brand">
-              <IconLogo class="footer-logo-icon footer-logo-icon--bottom" />
-            </div>
-
-            <div class="footer-columns footer-columns--mobile">
-              <div class="footer-column">
-                <a href="mailto:info@aeromax-group.ru" class="footer-link">
-                  info@aeromax-group.ru
-                </a>
-                <a href="tel:+74959214242" class="footer-link">
-                  +7 (495) 921-42-42
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div class="footer-legal">
-            Общество с ограниченной ответственностью «Аэромакс»<span class="footer-legal-year">, 2026</span>
-          </div>
-
-          <div class="footer-meta">
-            <VersionInfo />
-          </div>
+        <div class="footer__col footer__col--contacts">
+          <a href="mailto:info@aeromax-group.ru" class="footer__link">
+            info@aeromax-group.ru
+          </a>
+          <a href="tel:+74959214242" class="footer__link">
+            +7 (495) 921-42-42
+          </a>
+          <button type="button" class="footer__link footer__link--button" @click="openCallDialog">
+            Заказать звонок
+          </button>
         </div>
       </div>
-    </el-col>
-  </el-row>
-  <!-- <DialogCall v-model="isCallDialogVisible" /> -->
+
+      <div class="footer__bottom">
+        <router-link to="/" class="footer__brand" aria-label="На главную">
+          <IconLogo class="footer__logo" color="#AEB2B5" />
+        </router-link>
+        <p class="footer__legal">
+          Общество с ограниченной ответственностью «Аэромакс», 2026
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <DialogCall v-model="isCallDialogVisible" />
 </template>
 
 <style scoped>
-.footer-row {
+.footer {
   display: flex;
-  align-items: center;
+  justify-content: center;
   background-color: var(--gray-footer);
-  min-height: 160px;
   padding: 20px 0;
 }
 
-.footer-container {
+.footer__content {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  gap: 18px;
-}
-
-.footer-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 150px;
-}
-
-.footer-logo-icon {
-  display: block;
-  width: 200px;
-  height: auto;
-}
-
-.footer-links-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.footer-links-list--top {
-  gap: 10px;
-}
-
-.footer-divider {
-  height: 2px;
-  background: rgba(255, 255, 255, 0.25);
+  gap: 20px;
   width: 100%;
+  max-width: 1280px;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
-.footer-bottom {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: start;
-  gap: 24px;
-}
-
-.footer-bottom-row {
-  display: contents;
-}
-
-.footer-columns--mobile {
-  display: none;
-}
-
-.footer-brand {
+.footer__top {
   display: flex;
-  align-items: center;
-}
-
-.footer-logo-icon--bottom {
-  width: 160px;
-  opacity: 0.9;
-}
-
-.footer-legal {
-  font-family: "Montserrat-Medium", sans-serif;
-  font-size: 16px;
-  color: #e2e6ea;
-  text-align: left;
-}
-
-.footer-meta {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.footer-columns {
-  flex: 1;
-  display: flex;
-  justify-content: space-between;
   gap: 40px;
+  align-items: flex-start;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #7d8083;
 }
 
-.footer-column {
+.footer__col {
   display: flex;
+  flex: 1 1 0;
   flex-direction: column;
-  gap: 8px;
-  min-width: 160px;
+  gap: 20px;
+  min-width: 0;
 }
 
-.footer-column-title {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: #fff;
+.footer__col--links {
+  align-items: flex-start;
 }
 
-.footer-link {
+.footer__col--contacts {
+  align-items: flex-start;
+}
+
+.footer__link {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  color: #aeb2b5;
+  text-align: left;
   text-decoration: none;
-  line-height: 1.5;
+  cursor: pointer;
   transition: color 0.2s ease, text-decoration-color 0.2s ease;
-  color: #fff;
 }
 
-.footer-link:hover {
+.footer__link:hover {
   text-decoration: underline;
 }
 
-@media (max-width: 1200px) {
-  .footer-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 32px;
-  }
+.footer__link--button {
+  font: inherit;
+}
 
-  .footer-columns--desktop {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 40px;
-    flex-wrap: wrap;
-  }
+.footer__bottom {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
 
-  .footer-bottom {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    align-items: flex-start;
-  }
+.footer__brand {
+  display: block;
+  flex-shrink: 0;
+  line-height: 0;
+  text-decoration: none;
+}
 
-  .footer-meta {
-    justify-content: flex-start;
-  }
+.footer__logo {
+  display: block;
+  width: 245px;
+  height: 46px;
+}
+
+.footer__legal {
+  margin: 0;
+  max-width: 537px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  color: #aeb2b5;
 }
 
 @media (max-width: 767px) {
-  .footer-row {
-    min-height: auto;
-    padding: 16px 26px;
+  .footer {
+    padding: 16px 0;
   }
 
-  .footer-container {
+  .footer__content {
     gap: 16px;
+    padding: 0 26px;
   }
 
-  .footer-columns--desktop {
-    display: none;
-  }
-
-  .footer-columns--mobile {
-    display: flex;
-    flex: 0 0 auto;
-    width: auto;
-    justify-content: flex-end;
-  }
-
-  .footer-columns--mobile .footer-column {
-    gap: 4px;
-    min-width: auto;
-    align-items: flex-start;
-  }
-
-  .footer-link {
-    font-size: 12px;
-    color: #aeb2b5;
-  }
-
-  .footer-columns--mobile .footer-link {
-    font-size: 10px;
-    line-height: normal;
-    white-space: nowrap;
-  }
-
-  .footer-top {
+  .footer__top {
     flex-direction: column;
-    gap: 0;
+    gap: 16px;
+    padding-bottom: 16px;
   }
 
-  .footer-links-list--top {
+  .footer__col {
     gap: 8px;
   }
 
-  .footer-divider {
-    display: none;
+  .footer__link {
+    font-size: 12px;
   }
 
-  .footer-bottom {
-    display: flex;
+  .footer__bottom {
     flex-direction: column;
     gap: 10px;
-    border-top: 1px solid #7d8083;
-    padding-top: 16px;
   }
 
-  .footer-bottom-row {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    width: 100%;
-    gap: 12px;
-  }
-
-  .footer-brand {
-    flex-shrink: 0;
-  }
-
-  .footer-logo-icon--bottom {
-    display: block;
+  .footer__logo {
     width: 128px;
     height: 24px;
-    opacity: 1;
   }
 
-  .footer-legal {
+  .footer__legal {
+    max-width: none;
     font-size: 10px;
-    color: #aeb2b5;
-  }
-
-  .footer-legal-year {
-    display: none;
-  }
-
-  .footer-meta {
-    display: none;
   }
 }
 </style>
