@@ -171,7 +171,7 @@ const equipmentRows = [
 .technical-requirements--expanded {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 13px;
   margin-top: 0;
 }
 
@@ -302,6 +302,10 @@ const equipmentRows = [
 @media (max-width: 767px) {
   .technical-requirements {
     margin-top: 0;
+  }
+
+  .milling-requirements-mobile {
+    margin-top: 13px;
   }
 
   .requirements-header :deep(.uslugi-table-title) {
