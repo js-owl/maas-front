@@ -1,14 +1,149 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
+
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
 
 const isRubberTypesExpanded = ref(false)
 const isProductsExpanded = ref(false)
+
+const rubberProducts = [
+  {
+    name: 'Защитные чехлы гофрированные',
+    environment: 'Литол, смазки, тормозная жидкость.',
+    temperature: 'от -40°C до 100°C',
+  },
+  {
+    name:
+      'Уплотнительные кольца различных сечений для создания герметичности в уплотнениях тормозных систем звуке и электроизоляции, в том числе сальники и манжеты резиновые и резинометаллические.',
+    environment: 'Тормозная жидкость, амортизационная жидкость, воздух, вода, масло, топливо, газ.',
+    temperature: 'от -50°C до 100°C',
+  },
+  {
+    name:
+      'Резиновые и резинометаллические амортизаторы для смягчения ударов, поглощения шума при движении узлов машины',
+    environment: 'Воздух, вода с попаданием масла.',
+    temperature: 'от -40°C до 80°C.',
+  },
+  {
+    name:
+      'Уплотнительные прокладки, клапаны и диафрагмы для регулирования и дозирования подаваемой жидкости и газа.',
+    environment: 'Воздух, масло, пары.',
+    temperature: 'от -40°C до 130°C',
+  },
+]
+
+const rubberTypes = [
+  {
+    name: 'Резиновая смесь 3311',
+    type: 'На основе натурального каучука',
+    properties: 'Кислотостойкие, теплостойкие морозостойкие',
+  },
+  {
+    name: 'Резиновая смесь 1847',
+    type: 'На основе натурального каучука',
+    properties: 'Кислотостойкие, морозостойкие',
+  },
+  {
+    name: 'Резиновая смесь 2959',
+    type: 'На основе натурального каучука',
+    properties: 'Кислотостойкие',
+  },
+  {
+    name: 'Резиновая смесь НО-68-1',
+    type: 'Хлоропреновый каучук\nБутадиен-нитрильный каучук',
+    properties: 'Маслостойкие, бензостойкие, морозостойкие',
+  },
+  {
+    name: 'Каландрованная резиновая смесь ИРП-3012',
+    type: 'Бутадиен-нитрильный каучук',
+    properties: 'Маслостойкие, бензостойкие',
+  },
+  {
+    name: 'Резиновая смесь В-14',
+    type: 'Бутадиен-нитрильный каучук',
+    properties: 'Маслостойкие, бензостойкие, морозостойкие',
+  },
+  {
+    name: 'Резиновая смесь 1338',
+    type: 'Силиконовый каучук',
+    properties: 'Пищевые, теплостойкие, морозостойкие',
+  },
+]
 </script>
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper">
+    <template v-if="isMobile">
+      <div class="uslugi-rubber-cards">
+        <div class="uslugi-wrapper uslugi-wrapper--rubber-intro">
+          <div class="uslugi-rubber-intro">
+            <div class="uslugi-title">Производство из резины</div>
+            <div class="uslugi-text">
+              <p>
+                Изготовление формовых резинотехнических изделий методами прямого прессования и
+                литья под давлением: комплектующие, использующиеся в машиностроении, авиастроении,
+                сантехническом оборудовании, бытовые изделия.
+              </p>
+              <p>&nbsp;</p>
+              <p>Проектирование и изготовление оснастки по техническим заданиям заказчика.</p>
+              <p>&nbsp;</p>
+              <p>
+                Изготовление резинотехнических изделий на пресс-формах заказчика (максимальные
+                размеры пресс-формы 600x600x500 мм).
+              </p>
+            </div>
+          </div>
+
+          <div class="uslugi-image-wrapper">
+            <img src="/uslugiPages/rubber.png" alt="Производство из резины" class="uslugi-image" />
+          </div>
+        </div>
+
+        <div class="uslugi-wrapper uslugi-wrapper--rubber-products">
+          <div class="rubber-mobile-card__title">Примеры изделий</div>
+
+          <div class="rubber-mobile-list">
+            <div v-for="product in rubberProducts" :key="product.name" class="rubber-mobile-list__item">
+              <p class="rubber-mobile-list__name">{{ product.name }}</p>
+              <div class="rubber-mobile-list__row">
+                <p class="rubber-mobile-list__label">Рабочая среда:</p>
+                <p class="rubber-mobile-list__value">{{ product.environment }}</p>
+              </div>
+              <div class="rubber-mobile-list__row">
+                <p class="rubber-mobile-list__label">Темп. интервал работоспособности:</p>
+                <p class="rubber-mobile-list__value">{{ product.temperature }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="uslugi-wrapper uslugi-wrapper--rubber-types">
+          <div class="rubber-mobile-card__header">
+            <div class="rubber-mobile-card__title rubber-mobile-card__title--types">Виды резины*</div>
+            <p class="rubber-mobile-card__note">*Указаны не все доступные материалы</p>
+          </div>
+
+          <div class="rubber-mobile-list">
+            <div v-for="rubber in rubberTypes" :key="rubber.name" class="rubber-mobile-list__item">
+              <p class="rubber-mobile-list__name">{{ rubber.name }}</p>
+              <div class="rubber-mobile-list__row">
+                <p class="rubber-mobile-list__label">Тип резины</p>
+                <p class="rubber-mobile-list__value">{{ rubber.type }}</p>
+              </div>
+              <div class="rubber-mobile-list__row">
+                <p class="rubber-mobile-list__label">Особые свойства</p>
+                <p class="rubber-mobile-list__value">{{ rubber.properties }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <div v-else class="uslugi-wrapper">
       <div class="uslugi-title">Производство из резины</div>
 
       <div class="uslugi-section">
@@ -74,7 +209,7 @@ const isProductsExpanded = ref(false)
                 <td>Маслостойкие, бензостойкие, морозостойкие</td>
               </tr>
               <tr>
-                <td>Каландрированная резиновая смесь ИРП-3012</td>
+                <td>Каландрованная резиновая смесь ИРП-3012</td>
                 <td>Бутадиен-нитрильный каучук</td>
                 <td>Маслостойкие, бензостойкие</td>
               </tr>
@@ -231,11 +366,4 @@ const isProductsExpanded = ref(false)
     font-size: 16px;
   }
 }
-
-@media (max-width: 767px) {
-  .technical-requirements {
-    display: none;
-  }
-}
 </style>
-
