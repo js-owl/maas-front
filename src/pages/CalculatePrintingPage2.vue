@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { req_json, req_json_auth } from '../api'
-import { getLocalStpFileById } from '../helpers/local-stp-files'
+import { getLocalStpFileById, localStpCacheVersion } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
 import { formatDeadline, parseDeadline } from '../helpers/deadline'
 import { toMaterialOptionGroupsByFamily } from '../helpers/material-family'
@@ -102,7 +102,10 @@ const stopLoading = async () => {
   isLoading.value = false
 }
 
-const localStpFile = computed(() => getLocalStpFileById(file_id.value))
+const localStpFile = computed(() => {
+  localStpCacheVersion.value
+  return getLocalStpFileById(file_id.value)
+})
 
 const calculationPayload = computed(() => {
   const fileFields = localStpFile.value

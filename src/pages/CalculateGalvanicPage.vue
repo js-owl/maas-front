@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { req_json, req_json_auth } from '../api'
-import { getLocalStpFileById } from '../helpers/local-stp-files'
+import { getLocalStpFileById, localStpCacheVersion } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
 import { locations } from '../helpers/get-location'
 import Input from '../components/ui/Input.vue'
@@ -194,7 +194,10 @@ const stopLoading = async () => {
   isLoading.value = false
 }
 
-const localStpFile = computed(() => getLocalStpFileById(file_id.value))
+const localStpFile = computed(() => {
+  localStpCacheVersion.value
+  return getLocalStpFileById(file_id.value)
+})
 
 const calculationPayload = computed(() => {
   const fileFields = localStpFile.value

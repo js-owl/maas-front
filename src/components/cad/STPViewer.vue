@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { fetchWithAuth } from '../../api'
-import { getLocalStpFileById } from '../../helpers/local-stp-files'
+import { ensureLocalStpCacheReady, getLocalStpFileById } from '../../helpers/local-stp-files'
 
 const file_id = defineModel()
 
@@ -366,10 +366,11 @@ async function loadFileFromServer(id) {
   if (!id) return
 
   try {
+    await ensureLocalStpCacheReady()
     const localFile = getLocalStpFileById(id)
     if (localFile) {
       loading.value = true
-      loadingStatus.value = 'Загрузка файла из localStorage...'
+      loadingStatus.value = 'Загрузка локального файла...'
       loadingProgress.value = 30
 
       const file = base64ToFile(localFile.file_data, localFile.file_name, localFile.file_type)

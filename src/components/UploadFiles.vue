@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { uploadDocument, fileToBase64, req_json_auth } from '../api'
-import { getLocalStpFileById, saveFile3D } from '../helpers/local-stp-files'
+import { getLocalStpFileById, localStpCacheVersion, saveFile3D } from '../helpers/local-stp-files'
 // import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from '../stores/auth.store'
 // import DialogLogin from './dialog/DialogLogin.vue'
@@ -47,10 +47,12 @@ const loadedDocuments = ref<DocumentInfo[]>([])
 const isUploading = computed(() => uploadingCount.value > 0)
 const isAuthenticated = computed(() => Boolean(authStore.getToken))
 const uploadedStpFileName = computed(() => {
+  localStpCacheVersion.value
   if (props.stp_id == null) return null
   return getLocalStpFileById(props.stp_id)?.file_name ?? null
 })
 const uploadedFilesList = computed<UploadedFileItem[]>(() => {
+  localStpCacheVersion.value
   if (!isAuthenticated.value) return []
 
   const items: UploadedFileItem[] = []
@@ -142,7 +144,7 @@ const processUploadedFile = async (file: File): Promise<boolean> => {
     if (rejectGuestFile(file)) return false
 
     const base64Data = await fileToBase64(file)
-    const id = saveFile3D(file.name, base64Data, 'stp')
+    const id = await saveFile3D(file.name, base64Data, 'stp')
     emit('update:stp_id', id)
     return true
   }
@@ -154,7 +156,7 @@ const processUploadedFile = async (file: File): Promise<boolean> => {
 
   // Первый STP-файл сохраняем локально и используем его id как основной stp_id
   if (isStp && !hasMainStp) {
-    const id = saveFile3D(file.name, base64Data, extension || 'stp')
+    const id = await saveFile3D(file.name, base64Data, extension || 'stp')
 
     emit('update:stp_id', id)
     return true

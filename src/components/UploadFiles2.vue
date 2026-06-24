@@ -47,7 +47,7 @@ const processUploadedFile = async (file: File) => {
 
   // Модель сохраняем локально, чтобы /calculate-price получил file_type/file_name/file_data
   if (isModel) {
-    const id = saveFile3D(file.name, base64Data, extension)
+    const id = await saveFile3D(file.name, base64Data, extension)
 
     emit('update:stp_id', id)
     return
