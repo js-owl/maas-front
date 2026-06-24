@@ -134,29 +134,6 @@ const isMobile = computed(() => width.value < 768)
   margin: 0;
 }
 
-.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.requirements-header) {
-  height: 24px;
-  min-height: 24px;
-  padding: 0;
-  border-radius: 0;
-}
-
-.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-table-title) {
-  margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: normal;
-  color: #000000;
-}
-
-.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.requirements-arrow) {
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
-  color: #000000;
-}
-
 .uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.tooling-equipment) {
   display: flex;
   flex-direction: column;

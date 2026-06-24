@@ -199,6 +199,142 @@ html {
   vertical-align: middle;
 }
 
+/* Uslugi — technical requirements */
+.technical-requirements {
+  margin-top: 40px;
+}
+
+.technical-requirements--expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-top: 0;
+}
+
+.requirements-header {
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.requirements-header--mobile {
+  height: 24px;
+  min-height: 24px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  width: 100%;
+  text-align: left;
+}
+
+.requirements-arrow {
+  transition: transform 0.2s ease;
+  transform: rotate(0deg);
+}
+
+.requirements-arrow.expanded {
+  transform: rotate(-180deg);
+}
+
+.requirements-table-wrapper {
+  margin-top: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.requirements-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.materials-list {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.materials-list li + li {
+  margin-top: 4px;
+}
+
+.requirements-mobile {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid #aeb2b5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.requirements-mobile__row {
+  display: flex;
+  width: 100%;
+}
+
+.requirements-mobile__row:not(:last-child) {
+  border-bottom: 1px solid #aeb2b5;
+}
+
+.requirements-mobile__row--head .requirements-mobile__cell {
+  background-color: var(--button-bg);
+}
+
+.requirements-mobile__row:not(.requirements-mobile__row--materials)
+  .requirements-mobile__cell:first-child {
+  border-right: 1px solid #aeb2b5;
+}
+
+.requirements-mobile__cell {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px;
+  background-color: #f2f3f7;
+  box-sizing: border-box;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: normal;
+  color: #000000;
+  text-align: left;
+  word-break: break-word;
+}
+
+.requirements-mobile__cell--full {
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+.requirements-mobile__cell--narrow {
+  flex: 0 0 120px;
+  width: 120px;
+}
+
+.requirements-mobile__line {
+  margin: 0;
+}
+
+.requirements-mobile__materials-title {
+  margin: 0;
+}
+
+.requirements-mobile__materials-list {
+  margin: 0;
+  padding-left: 15px;
+  list-style-type: disc;
+}
+
+.requirements-mobile__materials-list li {
+  margin: 0;
+}
+
   /* Calculate pages desktop */
 .calc-title {
   font-family: 'Montserrat-SemiBold', sans-serif;
@@ -318,6 +454,26 @@ html {
   .requirements-table--compact td {
     font-size: 14px;
     padding: 10px 12px;
+  }
+
+  .technical-requirements {
+    margin-top: 0;
+  }
+
+  .requirements-header .uslugi-table-title {
+    margin: 0;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000000;
+  }
+
+  .requirements-arrow {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #000000;
   }
 
   /* Calculate pages mobile */

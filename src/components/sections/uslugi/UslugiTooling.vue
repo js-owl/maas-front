@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { useWindowSize } from '@vueuse/core'
-import IconArrowDown from '@/icons/IconArrowDown.vue'
+import UslugiRequirementsAccordion from '@/components/sections/uslugi/UslugiRequirementsAccordion.vue'
 
 const isRequirementsExpanded = ref(false)
 const { width } = useWindowSize()
@@ -48,90 +48,41 @@ const isMobile = computed(() => width.value < 768)
         </div>
       </div>
 
-      <div v-else class="technical-requirements">
-        <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
-          <div class="uslugi-table-title">Технические требования</div>
-          <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <IconArrowDown />
-          </el-icon>
-        </div>
-
-        <div v-if="isRequirementsExpanded" class="requirements-table-wrapper">
-          <table class="requirements-table">
-            <thead>
-              <tr>
-                <th class="uslugi-table-thead">Оборудование и габариты</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <p>
-                    Максимальные габариты обрабатываемых деталей составляет 2150 x 4075 x 275 мм.
-                  </p>
-                  <ul class="materials-list">
-                    <li>Ленточнопильный станок по дереву</li>
-                    <li>Фрезерный станок ЧПУ E 40 HTM по дереву 2000 x 4000</li>
-                    <li>Фрезерный станок ЧПУ по дереву 2000 x 4000</li>
-                    <li>Фрезерный станок ЧПУ E 40 HTM по дереву 1300 x 1500</li>
-                    <li>Станок лазерной резки CO²</li>
-                    <li>Форматно раскроечный станок по дереву</li>
-                    <li>Фрезерный станок ЧПУ по деревообработке 5-ти координатный</li>
-                  </ul>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <UslugiRequirementsAccordion
+        v-else
+        v-model:expanded="isRequirementsExpanded"
+        :is-mobile="false"
+      >
+        <template #desktop>
+          <div class="requirements-table-wrapper">
+            <table class="requirements-table">
+              <thead>
+                <tr>
+                  <th class="uslugi-table-thead">Оборудование и габариты</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <p>
+                      Максимальные габариты обрабатываемых деталей составляет 2150 x 4075 x 275 мм.
+                    </p>
+                    <ul class="materials-list">
+                      <li>Ленточнопильный станок по дереву</li>
+                      <li>Фрезерный станок ЧПУ E 40 HTM по дереву 2000 x 4000</li>
+                      <li>Фрезерный станок ЧПУ по дереву 2000 x 4000</li>
+                      <li>Фрезерный станок ЧПУ E 40 HTM по дереву 1300 x 1500</li>
+                      <li>Станок лазерной резки CO²</li>
+                      <li>Форматно раскроечный станок по дереву</li>
+                      <li>Фрезерный станок ЧПУ по деревообработке 5-ти координатный</li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
+      </UslugiRequirementsAccordion>
     </div>
   </el-col>
 </template>
-
-<style scoped>
-.technical-requirements {
-  margin-top: 40px;
-}
-
-.requirements-header {
-  height: 52px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-}
-
-.requirements-arrow {
-  transition: transform 0.2s ease;
-  transform: rotate(0deg);
-}
-
-.requirements-arrow.expanded {
-  transform: rotate(-180deg);
-}
-
-.requirements-table-wrapper {
-  margin-top: 12px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
-}
-
-.requirements-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.materials-list {
-  margin: 0;
-  padding-left: 20px;
-  list-style-type: disc;
-}
-
-.materials-list li + li {
-  margin-top: 4px;
-}
-</style>
