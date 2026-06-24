@@ -232,6 +232,9 @@ const equipmentRows = [
   display: flex;
   flex-direction: column;
   width: 100%;
+  border: 1px solid #aeb2b5;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .lathe-requirements-mobile__row {
@@ -239,28 +242,23 @@ const equipmentRows = [
   width: 100%;
 }
 
+.lathe-requirements-mobile__row:not(:last-child) {
+  border-bottom: 1px solid #aeb2b5;
+}
+
 .lathe-requirements-mobile__row--head .lathe-requirements-mobile__cell {
   background-color: var(--button-bg);
 }
 
-.lathe-requirements-mobile__row--head .lathe-requirements-mobile__cell:first-child {
-  border-top-left-radius: 8px;
-}
-
-.lathe-requirements-mobile__row--head .lathe-requirements-mobile__cell:last-child {
-  border-top-right-radius: 8px;
-}
-
-.lathe-requirements-mobile__row--materials .lathe-requirements-mobile__cell--full {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+.lathe-requirements-mobile__row:not(.lathe-requirements-mobile__row--materials)
+  .lathe-requirements-mobile__cell:first-child {
+  border-right: 1px solid #aeb2b5;
 }
 
 .lathe-requirements-mobile__cell {
   flex: 1 1 0;
   min-width: 0;
   padding: 8px;
-  border: 1px solid #aeb2b5;
   background-color: #f2f3f7;
   box-sizing: border-box;
   font-family: 'Montserrat-Medium', sans-serif;
