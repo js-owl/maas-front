@@ -34,7 +34,7 @@ const equipmentRows = [
 <template>
   <!-- Шлифовка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper">
+    <div class="uslugi-wrapper uslugi-wrapper--grinding">
       <div class="uslugi-title">Шлифовка</div>
 
       <div class="uslugi-section">
