@@ -2,12 +2,12 @@
   "version": "3.0.0",
   "name": "m-front",
   "description": "Manufacturing Frontend - API v3.0.0 Compatible",
-  "buildDate": "2026-06-23T07:38:07.421Z",
-  "buildDateFormatted": "2026-06-23",
-  "gitHash": "efa5a46",
-  "gitBranch": "main",
+  "buildDate": "2026-06-24T03:12:46.478Z",
+  "buildDateFormatted": "2026-06-24",
+  "gitHash": "unknown",
+  "gitBranch": "unknown",
   "gitTag": "unknown",
   "apiVersion": "3.0.0",
-  "nodeVersion": "v22.17.0",
+  "nodeVersion": "v22.15.1",
   "buildEnvironment": "development"
 }
