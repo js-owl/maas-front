@@ -1,13 +1,159 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
+
 const isRequirementsExpanded = ref(false)
+
+type GalvanicService = {
+  name: string
+  thickness?: string
+  maxSize: string
+}
+
+const galvanicServices: GalvanicService[] = [
+  {
+    name: 'Оксидирование анодное алюминиевых сплавов',
+    thickness: '5 … 8',
+    maxSize: '5800 х 600 х 1350',
+  },
+  {
+    name: 'Оксидирование химическое алюминиевых сплавов',
+    thickness: '5 … 8',
+    maxSize: '5800 х 700 х 1450',
+  },
+  {
+    name: 'Оксидирование твердое анодное алюминиевых сплавов',
+    thickness: '10 … 40',
+    maxSize: '5800 х 600 х 1350',
+  },
+  {
+    name: 'Фосфатирование сталей',
+    thickness: '10 … 40',
+    maxSize: '1800 х 600 х 750',
+  },
+  {
+    name: 'Цинкование',
+    thickness: '1 … 12',
+    maxSize: '2800 х 300 х 850',
+  },
+  {
+    name: 'Кадмирование хлористоаммонийное',
+    thickness: '1 … 15',
+    maxSize: '2800 х 300 х 850',
+  },
+  {
+    name: 'Оксидирование магниевых сплавов',
+    maxSize: '1700 х 600 х 900',
+  },
+  {
+    name: 'Химическая обработка нержавеющих сталей',
+    maxSize: '2800 х 850 х 950',
+  },
+  {
+    name: 'Фосфатирование сталей',
+    maxSize: '1800 х 600 х 750',
+  },
+  {
+    name: 'Кадмирование сернокислое',
+    thickness: '1 … 15',
+    maxSize: '1000 х 190 х 350',
+  },
+  {
+    name: 'Никелирование сернокислое',
+    thickness: '2 … 3',
+    maxSize: '1000 х 190 х 350',
+  },
+  {
+    name: 'Никелирование хлористое',
+    thickness: '5 … 15',
+    maxSize: '1000 х 190 х 350',
+  },
+  {
+    name: 'Покрытие гальвано термический никель-кадмий',
+    thickness: '1 … 18',
+    maxSize: '1000 х 190 х 350',
+  },
+  {
+    name: 'Олово-висмут',
+    thickness: '1 … 20',
+    maxSize: '1000 х 190 х 350',
+  },
+  {
+    name: 'Химическая обработка титановых сплавов',
+    maxSize: '2800 х 800 х 850',
+  },
+  {
+    name: 'Химическая обработка нержавеющих сталей (трубы)',
+    maxSize: 'тр.8х1 х 3900',
+  },
+  {
+    name: 'Хромирование',
+    thickness: '10 … 60',
+    maxSize: '1400 х 200 х 550',
+  },
+  {
+    name: 'Серебрение',
+    thickness: '0,5 … 15',
+    maxSize: '1500 х 150 х 30',
+  },
+]
 </script>
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper">
+    <template v-if="isMobile">
+      <div class="uslugi-galv-cards">
+        <div class="uslugi-wrapper uslugi-wrapper--galv-intro">
+          <div class="uslugi-galv-intro">
+            <div class="uslugi-image-wrapper">
+              <img src="/uslugiPages/galv.png" alt="Гальваническая обработка" class="uslugi-image" />
+            </div>
+
+            <div class="uslugi-galv-content">
+              <div class="uslugi-title">Гальваническая обработка</div>
+              <p class="uslugi-text">
+                Гальваническое покрытие металла — это один из самых эффективных способов повысить
+                эксплуатационные характеристики металлических изделий. Метод основан на
+                электролитическом нанесении тонкого слоя металла, который не только защищает изделие
+                от коррозии, но и улучшает его внешний вид, повышает прочность, устойчивость к
+                износу и придаёт дополнительные функциональные свойства. Благодаря сочетанию
+                доступности и высокой эффективности гальваника активно применяется в промышленности,
+                строительстве, электронике, автомобилестроении и в производстве декоративных
+                элементов.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="uslugi-wrapper uslugi-wrapper--galv-services">
+          <div class="galv-mobile-card__title">Услуги</div>
+
+          <div class="galv-mobile-list">
+            <div
+              v-for="service in galvanicServices"
+              :key="service.name"
+              class="galv-mobile-list__item"
+            >
+              <p class="galv-mobile-list__name">{{ service.name }}</p>
+              <div v-if="service.thickness" class="galv-mobile-list__row">
+                <p class="galv-mobile-list__label">Толщина покрытия, мкм:</p>
+                <p class="galv-mobile-list__value">{{ service.thickness }}</p>
+              </div>
+              <div class="galv-mobile-list__row">
+                <p class="galv-mobile-list__label">Макс. габ. деталей, мм:</p>
+                <p class="galv-mobile-list__value">{{ service.maxSize }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <div v-else class="uslugi-wrapper">
       <div class="uslugi-title">Гальваническая обработка</div>
 
       <div class="uslugi-section">
@@ -270,34 +416,4 @@ const isRequirementsExpanded = ref(false)
   line-height: 1;
   margin-bottom: 0;
 }
-
-@media (max-width: 767px) {
-  .uslugi-wrapper {
-    border-radius: 0;
-    margin-bottom: 20px;
-    padding: 20px;
-  }
-
-  .uslugi-title {
-    font-size: 28px;
-  }
-
-  .uslugi-section {
-    gap: 30px;
-    margin-bottom: 40px;
-  }
-
-  .uslugi-image-wrapper {
-    flex: 1 1 auto;
-  }
-
-  .uslugi-table-title {
-    font-size: 20px;
-  }
-
-  .technical-requirements {
-    display: none;
-  }
-}
-
 </style>
