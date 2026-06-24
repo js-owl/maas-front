@@ -130,8 +130,13 @@ const isMobile = computed(() => width.value < 768)
 }
 
 .uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.technical-requirements) {
-  display: block;
   margin: 0;
+}
+
+.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.technical-requirements--expanded) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.tooling-equipment) {

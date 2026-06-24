@@ -207,7 +207,7 @@ html {
 .technical-requirements--expanded {
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 8px;
   margin-top: 0;
 }
 
