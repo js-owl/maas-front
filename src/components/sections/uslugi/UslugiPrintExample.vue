@@ -1,39 +1,57 @@
 <script lang="ts" setup>
+import { useUslugiRequirementsExpand } from '@/composables/useUslugiRequirementsExpand'
+
+const { isMobile } = useUslugiRequirementsExpand()
+
 const examples = [
   '/uslugiPages/print-example-1.png',
   '/uslugiPages/print-example-2.png',
   '/uslugiPages/print-example-3.png',
   '/uslugiPages/print-example-4.png',
 ]
+
+const applications = [
+  {
+    title: 'Автомобилестроение',
+    text: 'корпусные детали, воздуховоды, ложементы и зажимы, вспомогательные инструменты, аксессуары',
+  },
+  {
+    title: 'Машиностроение',
+    text: 'оснастка, формы для литья, крыльчатки, корпуса, шестерни, рамы, рукоятки\n\nМакеты и модели.',
+  },
+  {
+    title: 'Электроника',
+    text: 'корпуса приборов, коннекторы, изделия для робототехники и пр',
+  },
+]
 </script>
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper print-examples">
-      <div class="uslugi-table-title">Примеры работ</div>
-      <div class="examples-grid">
-        <img v-for="(example, index) in examples" :key="index" :src="example" alt="Пример работ" />
-      </div>
+    <div
+      class="uslugi-wrapper print-examples"
+      :class="{ 'uslugi-wrapper--application': isMobile }"
+    >
+      <template v-if="!isMobile">
+        <div class="uslugi-table-title">Примеры работ</div>
+        <div class="examples-grid">
+          <img v-for="(example, index) in examples" :key="index" :src="example" alt="Пример работ" />
+        </div>
+      </template>
 
       <div class="uslugi-table-title">Применение</div>
       <div class="application-grid">
-        <div class="application-card">
-          <div class="application-title">Автомобилестроение</div>
+        <div v-for="application in applications" :key="application.title" class="application-card">
+          <div class="application-title">{{ application.title }}</div>
           <div class="application-text">
-            корпусные детали, воздуховоды, ложементы и зажимы, вспомогательные инструменты, аксессуары
+            <p
+              v-for="(paragraph, index) in application.text.split('\n\n')"
+              :key="index"
+              class="application-text__paragraph"
+            >
+              {{ paragraph }}
+            </p>
           </div>
-        </div>
-        <div class="application-card">
-          <div class="application-title">Машиностроение</div>
-          <div class="application-text">
-            оснастка, формы для литья, крыльчатки, корпуса, шестерни, рамы, рукоятки
-            <br /><br />
-            Макеты и модели.
-          </div>
-        </div>
-        <div class="application-card">
-          <div class="application-title">Электроника</div>
-          <div class="application-text">корпуса приборов, коннекторы, изделия для робототехники и пр</div>
         </div>
       </div>
     </div>
@@ -82,6 +100,14 @@ const examples = [
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 18px;
   line-height: 1.3;
+}
+
+.application-text__paragraph {
+  margin: 0;
+}
+
+.application-text__paragraph + .application-text__paragraph {
+  margin-top: 0;
 }
 
 @media (max-width: 1200px) {
