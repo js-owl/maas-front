@@ -298,10 +298,6 @@ const equipmentRows = [
     margin-top: 0;
   }
 
-  .lathe-requirements-mobile {
-    margin-top: 13px;
-  }
-
   .requirements-header :deep(.uslugi-table-title) {
     margin: 0;
     font-family: 'Montserrat-SemiBold', sans-serif;

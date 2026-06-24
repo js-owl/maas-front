@@ -79,7 +79,7 @@ const isMobile = computed(() => width.value < 768)
 }
 
 .uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-wrapper--lathe .uslugi-title) {
-  margin-bottom: 16px;
+  margin-bottom: -8px;
 }
 
 .uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-title) {
