@@ -11,7 +11,7 @@ const isMobile = computed(() => width.value < 768)
 <template>
   <!-- Цех модельной оснастки -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper">
+    <div class="uslugi-wrapper uslugi-wrapper--tooling">
       <div class="uslugi-title">Цех модельной оснастки</div>
 
       <div class="uslugi-section">
