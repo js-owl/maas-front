@@ -15,7 +15,7 @@ const openCallDialog = () => {
   <footer class="footer">
     <div class="footer__content">
       <div class="footer__top">
-        <nav class="footer__col footer__col--links" aria-label="Юридические документы">
+        <nav class="footer__links" aria-label="Юридические документы">
           <router-link to="/policy" class="footer__link">
             Политика конфиденциальности
           </router-link>
@@ -27,7 +27,7 @@ const openCallDialog = () => {
           </router-link>
         </nav>
 
-        <div class="footer__col footer__col--contacts">
+        <div class="footer__contacts footer__contacts--desktop">
           <a href="mailto:info@aeromax-group.ru" class="footer__link">
             info@aeromax-group.ru
           </a>
@@ -41,11 +41,23 @@ const openCallDialog = () => {
       </div>
 
       <div class="footer__bottom">
-        <router-link to="/" class="footer__brand" aria-label="На главную">
-          <IconLogo class="footer__logo" color="#AEB2B5" />
-        </router-link>
+        <div class="footer__bottom-row">
+          <router-link to="/" class="footer__brand" aria-label="На главную">
+            <IconLogo class="footer__logo" color="currentColor" />
+          </router-link>
+
+          <div class="footer__contacts footer__contacts--mobile">
+            <a href="mailto:info@aeromax-group.ru" class="footer__link">
+              info@aeromax-group.ru
+            </a>
+            <a href="tel:+74959214242" class="footer__link">
+              +7 (495) 921-42-42
+            </a>
+          </div>
+        </div>
+
         <p class="footer__legal">
-          Общество с ограниченной ответственностью «Аэромакс», 2026
+          Общество с ограниченной ответственностью «Аэромакс»<span class="footer__legal-year">, 2026</span>
         </p>
       </div>
     </div>
@@ -80,7 +92,8 @@ const openCallDialog = () => {
   border-bottom: 2px solid #7d8083;
 }
 
-.footer__col {
+.footer__links,
+.footer__contacts {
   display: flex;
   flex: 1 1 0;
   flex-direction: column;
@@ -88,12 +101,8 @@ const openCallDialog = () => {
   min-width: 0;
 }
 
-.footer__col--links {
-  align-items: flex-start;
-}
-
-.footer__col--contacts {
-  align-items: flex-start;
+.footer__contacts--mobile {
+  display: none;
 }
 
 .footer__link {
@@ -126,9 +135,14 @@ const openCallDialog = () => {
   align-items: flex-start;
 }
 
+.footer__bottom-row {
+  display: contents;
+}
+
 .footer__brand {
   display: block;
   flex-shrink: 0;
+  color: #aeb2b5;
   line-height: 0;
   text-decoration: none;
 }
@@ -151,31 +165,69 @@ const openCallDialog = () => {
 
 @media (max-width: 767px) {
   .footer {
-    padding: 16px 0;
+    padding: 16px 26px;
   }
 
   .footer__content {
     gap: 16px;
-    padding: 0 26px;
+    max-width: none;
+    padding: 0;
   }
 
   .footer__top {
     flex-direction: column;
-    gap: 16px;
-    padding-bottom: 16px;
+    gap: 0;
+    padding-bottom: 0;
+    border-bottom: none;
   }
 
-  .footer__col {
+  .footer__links {
+    flex: none;
     gap: 8px;
+    width: 100%;
+  }
+
+  .footer__contacts--desktop {
+    display: none;
   }
 
   .footer__link {
     font-size: 12px;
+    color: var(--button-bg);
   }
 
   .footer__bottom {
     flex-direction: column;
     gap: 10px;
+    align-items: stretch;
+    padding-top: 16px;
+    border-top: 1px solid #7d8083;
+  }
+
+  .footer__bottom-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .footer__contacts--mobile {
+    display: flex;
+    flex: none;
+    gap: 4px;
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  .footer__contacts--mobile .footer__link {
+    font-size: 10px;
+    line-height: normal;
+    white-space: nowrap;
+  }
+
+  .footer__brand {
+    color: var(--button-bg);
   }
 
   .footer__logo {
@@ -186,6 +238,11 @@ const openCallDialog = () => {
   .footer__legal {
     max-width: none;
     font-size: 10px;
+    color: var(--button-bg);
+  }
+
+  .footer__legal-year {
+    display: none;
   }
 }
 </style>
