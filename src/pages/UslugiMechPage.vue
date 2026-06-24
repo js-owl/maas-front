@@ -82,6 +82,10 @@ const isMobile = computed(() => width.value < 768)
   margin-bottom: -8px;
 }
 
+.uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-wrapper--milling .uslugi-title) {
+  margin-bottom: -14px;
+}
+
 .uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.uslugi-title) {
   margin: 0 0 10px;
   font-family: 'Montserrat-SemiBold', sans-serif;

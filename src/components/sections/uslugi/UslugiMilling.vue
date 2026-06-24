@@ -35,7 +35,7 @@ const equipmentRows = [
 <template>
   <!-- Фрезерная обработка -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper">
+    <div class="uslugi-wrapper uslugi-wrapper--milling">
       <div class="uslugi-title">Фрезерная обработка</div>
 
       <div class="uslugi-section">
@@ -302,10 +302,6 @@ const equipmentRows = [
 @media (max-width: 767px) {
   .technical-requirements {
     margin-top: 0;
-  }
-
-  .milling-requirements-mobile {
-    margin-top: 13px;
   }
 
   .requirements-header :deep(.uslugi-table-title) {
