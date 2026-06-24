@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
+import { useUslugiRequirementsExpand } from '@/composables/useUslugiRequirementsExpand'
 
+const { isMobile } = useUslugiRequirementsExpand()
 const isRequirementsExpanded = ref(false)
 
 const examples = [
@@ -57,7 +59,60 @@ const getRalStyle = (code: string) => {
 <template>
   <!-- Лакокрасочные материалы -->
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper">
+    <template v-if="isMobile">
+      <div class="uslugi-paint-cards">
+        <div class="uslugi-wrapper uslugi-wrapper--paint">
+          <div class="uslugi-image-wrapper">
+            <img src="/uslugiPages/paint-main.png" alt="Порошковая покраска" class="uslugi-image" />
+          </div>
+
+          <div class="uslugi-paint-info">
+            <div class="uslugi-title">Лакокрасочные материалы</div>
+
+            <div class="uslugi-text">
+              <p>
+                Материалы: акриловые и уретановые краски, порошковые краски, эпоксидные краски,
+                защитные лаки
+              </p>
+              <p>
+                Мы предлагаем покраску профессиональным оборудованием, которое позволяет создать
+                равномерное покрытие высокого качества.
+              </p>
+              <p>
+                Различные типы покрытий подойдут для широкого спектра задач, позволяя не только
+                улучшать эстетику, но и защитные свойства изделий (в том числе - химические и
+                температурные).
+              </p>
+              <p>
+                Материалы: металл (черные и цветные сплавы), композитные изделия, углепластики и
+                стеклопластики на эпоксидном связующем.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="uslugi-wrapper uslugi-wrapper--ral">
+          <div class="ral-library-title">Библиотека цветов RAL</div>
+
+          <div class="ral-groups">
+            <div v-for="(group, groupIndex) in ralPaletteGroups" :key="groupIndex" class="ral-group">
+              <div class="ral-grid ral-grid--mobile">
+                <div
+                  v-for="color in group"
+                  :key="color"
+                  class="ral-tag ral-tag--mobile"
+                  :style="getRalStyle(color)"
+                >
+                  {{ color }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <div v-else class="uslugi-wrapper">
       <div class="uslugi-title">Лакокрасочные материалы</div>
 
       <div class="uslugi-section">
@@ -250,38 +305,5 @@ const getRalStyle = (code: string) => {
   box-shadow: none;
   height: 100%;
   width: 100%;
-}
-
-@media (max-width: 767px) {
-  .uslugi-wrapper {
-    padding: 20px;
-  }
-
-  .uslugi-section {
-    margin-bottom: 40px;
-  }
-
-  .paint-lead span {
-    font-size: 20px;
-  }
-
-  .examples-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .examples-grid img {
-    height: 200px;
-  }
-
-  .requirements-header {
-    height: 56px;
-    padding: 0 16px;
-  }
-
-  .ral-tag {
-    font-size: 16px;
-    min-height: 44px;
-    min-width: 90px;
-  }
 }
 </style>
