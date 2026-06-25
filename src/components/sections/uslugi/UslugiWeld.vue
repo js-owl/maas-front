@@ -1,15 +1,109 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
+
 const isRequirementsExpanded = ref(false)
+
+type WeldType = {
+  name: string
+  thickness: string
+  thicknessHtml?: boolean
+}
+
+const weldTypes: WeldType[] = [
+  { name: 'Сварка кольцевых швов', thickness: 'до 10 … 15 мм' },
+  { name: 'Сварка продольные швов', thickness: 'до 10 … 15 мм' },
+  { name: 'Сварка сильфона', thickness: 'до 10 … 15 мм' },
+  {
+    name: 'Сварка плавящимся электродом в углекислом газе углеродистых сталей',
+    thickness: 'до 10 … 15 мм',
+  },
+  {
+    name: 'Аргонодуговая сварка легированных сталей, титановых сплавов и алюминиевых сплавов',
+    thickness: 'до 10 … 15 мм',
+  },
+  {
+    name: 'Контактная точечная сварка легированных сталей, титановых и алюминиевых сплавов',
+    thickness: 'до 3 мм',
+  },
+  {
+    name: 'Контактная шовная сварка легированных сталей, титановых сплавов',
+    thickness: 'до 3 мм',
+  },
+  {
+    name: 'Контактная шовная сварка сильфонов и мембранных узлов',
+    thickness: 'до 3 мм',
+  },
+  { name: 'Автоматическая сварка (кольцевых швов)', thickness: 'диаметр 80 … 1200 мм' },
+  {
+    name: 'Передвижная установка для аргонно-дуговой сварки (стали коррозионно-стойкие (жаропрочные), титановые сплавы)',
+    thickness: 'толщиной до 2,5 мм.',
+  },
+  {
+    name: 'Сварка продольных швов (стали коррозионно-стойкие, титановые сплавы, алюминиевые сплавы)',
+    thickness: 'диаметр – 350 … 1200 мм<br />длина – 50 … 2300 мм<br />толщина стенки – 0,5 … 10 мм',
+    thicknessHtml: true,
+  },
+]
 </script>
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper">
-      
+    <template v-if="isMobile">
+      <div class="uslugi-weld-cards">
+        <div class="uslugi-wrapper uslugi-wrapper--weld-intro">
+          <div class="uslugi-weld-intro">
+            <div class="uslugi-weld-content">
+              <div class="uslugi-title">Сварка металла</div>
+              <div class="uslugi-text">
+                <p>
+                  Сварка отличается от склеивания тем, что зазор между соединяемыми деталями заполняется
+                  материалом свариваемых деталей (в том числе с участием присадочного материала), в
+                  результате чего первоначальная граница раздела исчезает, превращаясь в переходный слой.
+                </p>
+                <p>&nbsp;</p>
+                <p>
+                  Взаимное растворение и диффузия материала детали и припоя происходят в том числе и при
+                  пайке. Но граница между соединяемыми деталями заполняется припоем.
+                </p>
+              </div>
+            </div>
 
+            <div class="uslugi-image-wrapper">
+              <img src="/uslugiPages/weld.png" alt="Сварка металла" class="uslugi-image" />
+            </div>
+          </div>
+        </div>
+
+        <div class="uslugi-wrapper uslugi-wrapper--weld-table">
+          <table class="weld-mobile-table">
+            <colgroup>
+              <col />
+              <col class="col-thickness" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Тип сварки</th>
+                <th>Свариваемые толщины</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="weldType in weldTypes" :key="weldType.name">
+                <td>{{ weldType.name }}</td>
+                <td v-if="weldType.thicknessHtml" v-html="weldType.thickness" />
+                <td v-else>{{ weldType.thickness }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </template>
+
+    <div v-else class="uslugi-wrapper">
       <div class="uslugi-section">
         <div class="uslugi-text-wrapper">
           <div class="uslugi-title">Сварка металла</div>
@@ -271,12 +365,6 @@ const isRequirementsExpanded = ref(false)
 
   .requirements-table th {
     font-size: 16px;
-  }
-}
-
-@media (max-width: 767px) {
-  .technical-requirements {
-    display: none;
   }
 }
 </style>
