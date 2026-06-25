@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useWindowSize } from '@vueuse/core'
+
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
 
 const openedNormativeItems = ref<string[]>([])
 
@@ -40,7 +44,17 @@ const normativeDocuments = [
 <template>
   <section class="section-basic vibration-section">
     <div class="technical-requirements">
-      <div class="uslugi-table-title">
+      <div v-if="isMobile" class="uslugi-table-title uslugi-table-title--mobile-list">
+        <ol class="uslugi-table-title__list">
+          <li>
+            Испытание на воздействие синусоидальной вибрации одной частоты / с изменяемой частотой.
+          </li>
+          <li value="3">
+            Испытание на воздействие широкополосной случайной вибрации
+          </li>
+        </ol>
+      </div>
+      <div v-else class="uslugi-table-title">
         <div>1. Испытание на воздействие синусоидальной вибрации одной частоты</div>
         <div>2. Испытание на воздействие синусоидальной вибрации с изменяемой частотой</div>
         <div>3. Испытание на воздействие широкополосной случайной вибрации</div>

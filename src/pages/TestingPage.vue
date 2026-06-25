@@ -12,7 +12,7 @@ const isMobile = computed(() => width.value < 768)
 </script>
 
 <template>
-  <!-- https://www.figma.com/design/0JRYgu37H4xKjqliiJLvI1/MaaS-Frontend--Copy-?node-id=4510-3712 -->
+  <!-- https://www.figma.com/design/0JRYgu37H4xKjqliiJLvI1/MaaS-Frontend--Copy-?node-id=4510-4008 -->
   <div class="testing-page" :class="{ 'testing-page--mobile': isMobile }">
     <el-row :gutter="0">
       <template v-if="isMobile">
@@ -94,6 +94,7 @@ const isMobile = computed(() => width.value < 768)
   display: flex;
   flex-direction: column;
   margin: 0;
+  gap: 8px;
 }
 
 .testing-page--mobile .testing-page__sections :deep(.uslugi-table-title) {
@@ -103,12 +104,6 @@ const isMobile = computed(() => width.value < 768)
   font-weight: 600;
   line-height: normal;
   color: #000000;
-}
-
-.testing-page--mobile .testing-page__sections :deep(.vibration-section .technical-requirements > .uslugi-table-title) {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .testing-page--mobile .testing-page__sections :deep(.uslugi-title-table2) {
@@ -132,15 +127,42 @@ const isMobile = computed(() => width.value < 768)
   margin: 0;
 }
 
+.testing-page--mobile .testing-page__sections :deep(.vibration-section .uslugi-table-title--mobile-list) {
+  display: block;
+  margin: 0;
+}
+
+.testing-page--mobile .testing-page__sections :deep(.vibration-section .uslugi-table-title__list) {
+  margin: 0;
+  padding-left: 21px;
+  list-style: decimal;
+}
+
+.testing-page--mobile .testing-page__sections :deep(.vibration-section .uslugi-table-title__list li) {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+  color: #000000;
+}
+
+.testing-page--mobile .testing-page__sections :deep(.vibration-section .uslugi-table-title__list li + li) {
+  margin-top: 8px;
+}
+
 .testing-page--mobile .testing-page__sections :deep(.vibration-section .technical-requirements) {
-  gap: 8px;
+  gap: 24px;
+}
+
+.testing-page--mobile .testing-page__sections :deep(.vibration-section .technical-requirements > .requirements-table-wrapper) {
+  margin-top: -8px;
 }
 
 .testing-page--mobile .testing-page__sections :deep(.vibration-section .subsection) {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin: 8px 0 0;
+  margin: 0;
 }
 
 .testing-page--mobile .testing-page__sections :deep(.dust-section .technical-requirements) {
@@ -220,6 +242,9 @@ const isMobile = computed(() => width.value < 768)
 }
 
 .testing-page--mobile .testing-page__sections :deep(.normative-collapse .el-collapse-item__header) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   min-height: auto;
   height: auto;
   padding: 8px;
@@ -236,6 +261,11 @@ const isMobile = computed(() => width.value < 768)
 .testing-page--mobile .testing-page__sections :deep(.normative-collapse .el-collapse-item__arrow) {
   margin: 0 0 0 8px;
   font-size: 24px;
+  transform: rotate(90deg);
+}
+
+.testing-page--mobile .testing-page__sections :deep(.normative-collapse .el-collapse-item.is-active .el-collapse-item__arrow) {
+  transform: rotate(-90deg);
 }
 
 .testing-page--mobile .testing-page__sections :deep(.normative-collapse .el-collapse-item__wrap) {
@@ -249,27 +279,37 @@ const isMobile = computed(() => width.value < 768)
 }
 
 .testing-page--mobile .testing-page__sections :deep(.normative-title) {
+  flex: 1 1 0;
+  min-width: 0;
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 12px;
   font-weight: 500;
   line-height: normal;
   color: #000000;
+  word-break: break-word;
 }
 
 .testing-page--mobile .testing-page__sections :deep(.normative-content) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  column-gap: 0;
+  row-gap: 4px;
 }
 
 .testing-page--mobile .testing-page__sections :deep(.normative-chip) {
-  padding: 4px 8px;
-  border-radius: 4px;
-  background-color: #b9c0c5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #cbd1d5;
+  border-radius: 0;
+  background-color: transparent;
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 10px;
   font-weight: 500;
   line-height: normal;
   color: #000000;
+  word-break: break-word;
+  white-space: nowrap;
 }
 </style>
