@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useWindowSize } from '@vueuse/core'
+
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
 
 const openedNormativeItems = ref<string[]>([])
 
@@ -15,10 +19,25 @@ const normativeDocuments = [
   'IEC60945',
   'ГОСТ РВ 30630.2.5-2013',
 ]
+
+const mobileNormativeDocuments = [
+  'ГОСТ РВ 20.57.306-98',
+  'ГОСТ РВ 0020-57.306-2019',
+  'ГОСТ РВ 20.57.406-81',
+  'ГОСТ РВ 30630.2.5-2013',
+  'ГОСТ 28234-89',
+  'ГОСТ 28207-89',
+  'КТ-160',
+  'ГОСТ Р 53616-2009',
+  'ГОСТ Р 53618-2009',
+  'RTCA DO-160',
+  'IEC60945',
+]
 </script>
 
 <template>
-  <section class="section-basic humidity-section">
+  <!-- https://www.figma.com/design/0JRYgu37H4xKjqliiJLvI1/MaaS-Frontend--Copy-?node-id=4510-3884 -->
+  <section class="section-basic humidity-section" :class="{ 'humidity-section--mobile': isMobile }">
     <div class="technical-requirements">
       <div class="uslugi-table-title">Испытание на воздействие соляного тумана и влаги</div>
 
@@ -58,7 +77,8 @@ const normativeDocuments = [
               <td>
                 80 кг
                 <br />
-                800 x 800 x 800 мм
+                <template v-if="isMobile">800 х 800 х 800 мм</template>
+                <template v-else>800 x 800 x 800 мм</template>
               </td>
             </tr>
           </tbody>
@@ -73,9 +93,9 @@ const normativeDocuments = [
             Обозначение НД, устанавливающих нормы испытаний и измерений
           </span>
         </template>
-        <div class="normative-content">
+        <div class="normative-content" :class="{ 'normative-content--mobile': isMobile }">
           <span
-            v-for="item in normativeDocuments"
+            v-for="item in isMobile ? mobileNormativeDocuments : normativeDocuments"
             :key="item"
             class="normative-chip"
           >
@@ -209,35 +229,147 @@ const normativeDocuments = [
   line-height: 1.2;
 }
 
-@media (max-width: 768px) {
-  .tests-list {
-    font-size: 22px;
-  }
+.humidity-section--mobile .technical-requirements {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
 
-  .requirements-table th {
-    font-size: 16px;
-  }
+.humidity-section--mobile .uslugi-table-title {
+  margin: 0;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+  color: #000000;
+}
 
-  .normative-collapse :deep(.el-collapse-item__header) {
-    padding: 10px 12px;
-  }
+.humidity-section--mobile .requirements-table-wrapper {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  background-color: transparent;
+}
 
-  .normative-collapse :deep(.el-collapse-item__content) {
-    padding: 0 12px 12px;
-  }
+.humidity-section--mobile .requirements-table colgroup {
+  display: none;
+}
 
-  .normative-title {
-    font-size: 20px;
-  }
+.humidity-section--mobile .requirements-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
 
-  .normative-content {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
+.humidity-section--mobile .requirements-table td {
+  padding: 8px;
+  border: 1px solid var(--button-bg);
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: normal;
+  color: #000000;
+  vertical-align: middle;
+  word-break: break-word;
+  background-color: #f2f3f7;
+}
 
-  .normative-chip {
-    font-size: 14px;
-    padding: 5px 10px;
-  }
+.humidity-section--mobile .requirements-table tbody tr:first-child td:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+.humidity-section--mobile .requirements-table tbody tr:first-child td:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+.humidity-section--mobile .requirements-table tbody tr:last-child td:first-child {
+  border-radius: 0 0 0 8px;
+}
+
+.humidity-section--mobile .requirements-table tbody tr:last-child td:last-child {
+  border-radius: 0 0 8px 0;
+}
+
+.humidity-section--mobile .normative-collapse {
+  margin: 0;
+  width: 100%;
+}
+
+.humidity-section--mobile .normative-collapse :deep(.el-collapse) {
+  border: none;
+}
+
+.humidity-section--mobile .normative-collapse :deep(.el-collapse-item__header) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: auto;
+  height: auto;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background-color: #cbd1d5;
+  line-height: normal;
+}
+
+.humidity-section--mobile .normative-collapse :deep(.el-collapse-item.is-active .el-collapse-item__header) {
+  border-radius: 8px 8px 0 0;
+}
+
+.humidity-section--mobile .normative-collapse :deep(.el-collapse-item__arrow) {
+  margin: 0 0 0 8px;
+  font-size: 24px;
+  transform: rotate(90deg);
+}
+
+.humidity-section--mobile .normative-collapse :deep(.el-collapse-item.is-active .el-collapse-item__arrow) {
+  transform: rotate(-90deg);
+}
+
+.humidity-section--mobile .normative-collapse :deep(.el-collapse-item__wrap) {
+  border: none;
+  border-radius: 0 0 8px 8px;
+  background-color: #cbd1d5;
+}
+
+.humidity-section--mobile .normative-collapse :deep(.el-collapse-item__content) {
+  padding: 0 8px 8px;
+}
+
+.humidity-section--mobile .normative-title {
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  color: #000000;
+  word-break: break-word;
+}
+
+.humidity-section--mobile .normative-content--mobile {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 0;
+  row-gap: 4px;
+}
+
+.humidity-section--mobile .normative-content--mobile .normative-chip {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #cbd1d5;
+  border-radius: 0;
+  background-color: transparent;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: normal;
+  color: #000000;
+  word-break: break-word;
+  white-space: nowrap;
 }
 </style>
