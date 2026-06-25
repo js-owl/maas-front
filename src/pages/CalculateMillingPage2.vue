@@ -404,28 +404,30 @@ watch(
                 </div>
 
                 <div class="milling-actions">
-                  <CalculateSubmit2
-                    class="milling-submit milling-submit--desktop"
-                    :order-id="order_id"
-                    :payload="{
-                      ...payload,
-                    } as unknown as IOrderPayload"
-                    :special-instructions="special_instructions"
-                    @updateResult="onUpdateResult"
-                    @showInfo="isInfoVisible = true"
-                  />
-                  <CalculateSubmit2
-                    class="milling-submit milling-submit--mobile"
-                    :order-id="order_id"
-                    :payload="{
-                      ...payload,
-                    } as unknown as IOrderPayload"
-                    :special-instructions="special_instructions"
-                    save-label="Сохранить"
-                    hide-back-button
-                    @updateResult="onUpdateResult"
-                    @showInfo="isInfoVisible = true"
-                  />
+                  <div class="milling-submit milling-submit--desktop">
+                    <CalculateSubmit2
+                      :order-id="order_id"
+                      :payload="{
+                        ...payload,
+                      } as unknown as IOrderPayload"
+                      :special-instructions="special_instructions"
+                      @updateResult="onUpdateResult"
+                      @showInfo="isInfoVisible = true"
+                    />
+                  </div>
+                  <div class="milling-submit milling-submit--mobile">
+                    <CalculateSubmit2
+                      :order-id="order_id"
+                      :payload="{
+                        ...payload,
+                      } as unknown as IOrderPayload"
+                      :special-instructions="special_instructions"
+                      save-label="Сохранить"
+                      hide-back-button
+                      @updateResult="onUpdateResult"
+                      @showInfo="isInfoVisible = true"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
