@@ -165,21 +165,6 @@ const isMobile = computed(() => width.value < 768)
   margin: 0;
 }
 
-.testing-page--mobile .testing-page__sections :deep(.dust-section .technical-requirements) {
-  gap: 16px;
-}
-
-.testing-page--mobile .testing-page__sections :deep(.dust-section .subsection) {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 0;
-}
-
-.testing-page--mobile .testing-page__sections :deep(.dust-section .subsection + .subsection) {
-  margin-top: 8px;
-}
-
 .testing-page--mobile .testing-page__sections :deep(.electric-section .technical-requirements),
 .testing-page--mobile .testing-page__sections :deep(section.humidity-section .technical-requirements) {
   gap: 8px;
