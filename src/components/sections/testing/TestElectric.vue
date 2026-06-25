@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useWindowSize } from '@vueuse/core'
+
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
 
 const openedNormativeItems = ref<string[]>([])
 
@@ -12,10 +16,21 @@ const normativeDocuments = [
   'ГОСТ Р 54073-2010',
   'IEC60945',
 ]
+
+const mobileNormativeDocuments = [
+  'ГОСТ РВ 20.57.310-98',
+  'КТ-160',
+  'ГОСТ Р 54073-2010',
+  'DO-160',
+  'MIL-STD-810',
+  'IEC60945',
+  'IEC60068',
+]
 </script>
 
 <template>
-  <section class="section-basic electric-section">
+  <!-- https://www.figma.com/design/0JRYgu37H4xKjqliiJLvI1/MaaS-Frontend--Copy-?node-id=4510-3848 -->
+  <section class="section-basic electric-section" :class="{ 'electric-section--mobile': isMobile }">
     <div class="technical-requirements">
       <div class="uslugi-table-title">Испытание приемников электрической энергии</div>
 
@@ -62,9 +77,9 @@ const normativeDocuments = [
             Обозначение НД, устанавливающих нормы испытаний и измерений
           </span>
         </template>
-        <div class="normative-content">
+        <div class="normative-content" :class="{ 'normative-content--mobile': isMobile }">
           <span
-            v-for="item in normativeDocuments"
+            v-for="item in isMobile ? mobileNormativeDocuments : normativeDocuments"
             :key="item"
             class="normative-chip"
           >
@@ -198,35 +213,147 @@ const normativeDocuments = [
   line-height: 1.2;
 }
 
-@media (max-width: 768px) {
-  .tests-list {
-    font-size: 22px;
-  }
+.electric-section--mobile .technical-requirements {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
 
-  .requirements-table th {
-    font-size: 16px;
-  }
+.electric-section--mobile .uslugi-table-title {
+  margin: 0;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+  color: #000000;
+}
 
-  .normative-collapse :deep(.el-collapse-item__header) {
-    padding: 10px 12px;
-  }
+.electric-section--mobile .requirements-table-wrapper {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  background-color: transparent;
+}
 
-  .normative-collapse :deep(.el-collapse-item__content) {
-    padding: 0 12px 12px;
-  }
+.electric-section--mobile .requirements-table colgroup {
+  display: none;
+}
 
-  .normative-title {
-    font-size: 20px;
-  }
+.electric-section--mobile .requirements-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
 
-  .normative-content {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
+.electric-section--mobile .requirements-table td {
+  padding: 8px;
+  border: 1px solid var(--button-bg);
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: normal;
+  color: #000000;
+  vertical-align: middle;
+  word-break: break-word;
+  background-color: #f2f3f7;
+}
 
-  .normative-chip {
-    font-size: 14px;
-    padding: 5px 10px;
-  }
+.electric-section--mobile .requirements-table tbody tr:first-child td:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+.electric-section--mobile .requirements-table tbody tr:first-child td:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+.electric-section--mobile .requirements-table tbody tr:last-child td:first-child {
+  border-radius: 0 0 0 8px;
+}
+
+.electric-section--mobile .requirements-table tbody tr:last-child td:last-child {
+  border-radius: 0 0 8px 0;
+}
+
+.electric-section--mobile .normative-collapse {
+  margin: 0;
+  width: 100%;
+}
+
+.electric-section--mobile .normative-collapse :deep(.el-collapse) {
+  border: none;
+}
+
+.electric-section--mobile .normative-collapse :deep(.el-collapse-item__header) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: auto;
+  height: auto;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background-color: #cbd1d5;
+  line-height: normal;
+}
+
+.electric-section--mobile .normative-collapse :deep(.el-collapse-item.is-active .el-collapse-item__header) {
+  border-radius: 8px 8px 0 0;
+}
+
+.electric-section--mobile .normative-collapse :deep(.el-collapse-item__arrow) {
+  margin: 0 0 0 8px;
+  font-size: 24px;
+  transform: rotate(90deg);
+}
+
+.electric-section--mobile .normative-collapse :deep(.el-collapse-item.is-active .el-collapse-item__arrow) {
+  transform: rotate(-90deg);
+}
+
+.electric-section--mobile .normative-collapse :deep(.el-collapse-item__wrap) {
+  border: none;
+  border-radius: 0 0 8px 8px;
+  background-color: #cbd1d5;
+}
+
+.electric-section--mobile .normative-collapse :deep(.el-collapse-item__content) {
+  padding: 0 8px 8px;
+}
+
+.electric-section--mobile .normative-title {
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  color: #000000;
+  word-break: break-word;
+}
+
+.electric-section--mobile .normative-content--mobile {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 0;
+  row-gap: 4px;
+}
+
+.electric-section--mobile .normative-content--mobile .normative-chip {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #cbd1d5;
+  border-radius: 0;
+  background-color: transparent;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: normal;
+  color: #000000;
+  word-break: break-word;
+  white-space: nowrap;
 }
 </style>
