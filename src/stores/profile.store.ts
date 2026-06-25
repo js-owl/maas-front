@@ -37,6 +37,31 @@ export type IProfile = {
 
 const PROFILE_STORE_KEY = "profile-store";
 
+/** Поля, разрешённые схемой UserUpdate на бэкенде (extra=forbid — лишние ключи дают 422). */
+type ProfileUpdatePayload = {
+  user_type?: string;
+  email?: string;
+  full_name?: string;
+  city?: string;
+  company?: string;
+  phone_number?: string;
+  personal_phone_number?: string;
+  payment_card_number?: string;
+  building?: string;
+  office?: string;
+  region?: string;
+  street?: string;
+  postal?: string;
+  payment_company_name?: string;
+  payment_inn?: string;
+  payment_kpp?: string;
+  payment_bik?: string;
+  payment_bank_name?: string;
+  payment_account?: string;
+  payment_cor_account?: string;
+  location?: string;
+};
+
 export const useProfileStore = defineStore("user", () => {
   const profile = ref<IProfile>();
 
@@ -197,17 +222,55 @@ export const useProfileStore = defineStore("user", () => {
     return parts.join(" ");
   }
 
+  /**
+   * Собирает тело PUT /profile только из полей UserUpdate.
+   * API v3 отклоняет read-only и UI-only ключи (id, username, city_name и т.д.).
+   */
+  function buildProfileUpdatePayload(updated: IProfile): ProfileUpdatePayload {
+    const fullName = buildFullName(updated);
+    const email =
+      updated.user_type === "legal"
+        ? (updated.company_email ?? "").trim()
+        : (updated.email ?? "").trim();
+
+    return {
+      user_type: updated.user_type,
+      full_name: fullName,
+      city: updated.city,
+      phone_number: updated.phone_number,
+      personal_phone_number: updated.personal_phone_number,
+      building: updated.building,
+      office: updated.office,
+      region: updated.region,
+      street: updated.street,
+      postal: updated.postal,
+      payment_company_name: updated.payment_company_name,
+      payment_inn: updated.payment_inn,
+      payment_kpp: updated.payment_kpp,
+      payment_bik: updated.payment_bik,
+      payment_bank_name: updated.payment_bank_name,
+      payment_account: updated.payment_account,
+      payment_cor_account: updated.payment_cor_account,
+      ...(email ? { email } : {}),
+    };
+  }
+
   function enrichProfile(profileData: IProfile & { apartment?: string }): IProfile {
     const { apartment: _omit, ...rest } = profileData;
     const addressFields = parseAddressString(rest.city);
     const nameFields = nameFieldsFromFullName(rest.full_name || "", rest.user_type);
     const personalEmail = rest.personal_email ?? rest.email ?? "";
+    const companyEmail =
+      rest.user_type === "legal"
+        ? (rest.company_email ?? rest.email ?? "").trim()
+        : rest.company_email;
 
     return {
       ...rest,
       personal_email: personalEmail,
       email: personalEmail || rest.email || "",
       username: personalEmail || rest.username || "",
+      company_email: companyEmail,
       office: rest.office ?? profileData.apartment ?? "",
       ...addressFields,
       ...nameFields,
@@ -226,16 +289,8 @@ export const useProfileStore = defineStore("user", () => {
   }
 
   async function updateProfile(updated: IProfile) {
-    // Объединяем отдельные поля имени обратно в full_name для API
     const fullName = buildFullName(updated);
-    const { apartment: _omitApartment, ...rest } = updated as IProfile & {
-      apartment?: string;
-    };
-    const profileForApi = {
-      ...rest,
-      // Не использовать fullName || updated.full_name: пустая строка должна очищать full_name в API
-      full_name: fullName,
-    };
+    const profileForApi = buildProfileUpdatePayload(updated);
 
     const r = await req_json_auth(`/profile`, "PUT", profileForApi, [422]);
     if (!r) return false;
@@ -247,7 +302,7 @@ export const useProfileStore = defineStore("user", () => {
       return false;
     }
 
-    let profileData = profileForApi as IProfile;
+    let profileData = updated as IProfile;
 
     if (r.status !== 204) {
       const responseText = await r.text();
@@ -265,6 +320,7 @@ export const useProfileStore = defineStore("user", () => {
       first_name: updated.first_name ?? "",
       patronymic: updated.patronymic ?? "",
       user_type: updated.user_type,
+      company_email: updated.company_email,
     };
 
     const enrichedProfileData = enrichProfile(mergedAfterPut);
