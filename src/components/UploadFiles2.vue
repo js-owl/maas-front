@@ -13,9 +13,11 @@ const props = withDefaults(
     color?: string
     stp_id?: number | null
     hideFormatsText?: boolean
+    uploadText?: string
   }>(),
   {
     hideFormatsText: false,
+    uploadText: 'Перетащите или выберите файл',
   }
 )
 
@@ -148,7 +150,7 @@ const handleDragOver = (event: DragEvent) => {
             class="el-upload__text montserrat-semibold"
             :style="{ color }"
           >
-            {{ isUploading ? 'Загрузка...' : 'Перетащите или выберите файл' }}
+            {{ isUploading ? 'Загрузка...' : props.uploadText }}
           </div>
           <template v-if="!props.hideFormatsText">
             <div class="upload-subtitle">

@@ -16,11 +16,19 @@ import DialogLogin from '../dialog/DialogLogin.vue'
 import ButtonRound from '../ui/ButtonRound.vue'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
 
-const props = defineProps<{
-  orderId: number
-  payload: IOrderPayload
-  specialInstructions: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    orderId: number
+    payload: IOrderPayload
+    specialInstructions: string
+    saveLabel?: string
+    hideBackButton?: boolean
+  }>(),
+  {
+    saveLabel: 'Сохранить изменения',
+    hideBackButton: false,
+  }
+)
 
 const emit = defineEmits<{
   (e: 'updateResult', value: IOrderResponse): void
@@ -284,8 +292,8 @@ const cancel = () => {
 </script>
 
 <template>
-  <div class="calculate-submit2">
-    <ButtonRound width="250px" :disabled="isDisabled" @click="cancel">
+  <div class="calculate-submit2" :class="{ 'calculate-submit2--no-back': hideBackButton }">
+    <ButtonRound v-if="!hideBackButton" width="250px" :disabled="isDisabled" @click="cancel">
       <template #icon-left>
         <IconArrowLeft color="#333" />
       </template>
@@ -304,7 +312,7 @@ const cancel = () => {
           :loading="isSubmitting"
           @click="submitOrder"
         >
-          {{ isNewOrder ? 'Сохранить изменения' : 'Сохранить изменения' }}
+          {{ saveLabel }}
         </ButtonRound>
       </span>
     </el-tooltip>

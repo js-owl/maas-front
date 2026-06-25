@@ -338,100 +338,141 @@ watch(
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
           <div class="milling-page__card">
             <div class="milling-page__main">
-            <div class="calc-quantity-material">
-              <div class="calc-quantity">
-                <div class="calc-title">Количество, шт</div>
-                <Input
-                  v-model="quantityInput"
-                  type="number"
-                  placeholder="Введите количество"
-                />
+              <div class="milling-block milling-block--form">
+                <h2 class="milling-page__mobile-title">Механическая обработка</h2>
+
+                <div class="calc-quantity-material">
+                  <div class="calc-quantity">
+                    <div class="calc-title">Количество, шт</div>
+                    <Input
+                      v-model="quantityInput"
+                      type="number"
+                      placeholder="Введите количество"
+                    />
+                  </div>
+                  <div class="milling-field-group">
+                    <div class="calc-title">Материал</div>
+                    <SelectGroup
+                      v-model="material_id"
+                      :options="materials"
+                      placeholder="Выберите материал"
+                    />
+                  </div>
+                </div>
+
+                <div class="calc-two-columns">
+                  <div class="milling-field-group">
+                    <div class="calc-title">Шероховатость, Ra</div>
+                    <SelectCalc v-model="finish_id" :input-data="finishes" />
+                  </div>
+                  <div class="milling-field-group">
+                    <div class="calc-title">Квалитет точности</div>
+                    <SelectCalc v-model="tolerance_id" :input-data="tolerances" />
+                  </div>
+                </div>
+
+                <div class="milling-field-block">
+                  <div class="calc-title">Финишная обработка изделия</div>
+                  <CoefficientCover2 v-model="cover_id" />
+                </div>
+
+                <div class="milling-field-block milling-field-block--otk">
+                  <div class="calc-title">Вид контроля</div>
+                  <CoefficientOtk2 v-model="k_otk" />
+                </div>
+
+                <div
+                  class="milling-field-block"
+                  v-if="profileStore.profile?.username === 'admin'"
+                >
+                  <SuitableMachines :machines="result?.suitable_machines || []" />
+                </div>
               </div>
-              <div class="milling-field-group">
-                <div class="calc-title">Материал</div>
-                <SelectGroup
-                  v-model="material_id"
-                  :options="materials"
-                  placeholder="Выберите материал"
-                />
+
+              <div class="milling-block milling-block--comment">
+                <div class="milling-field-block">
+                  <div class="calc-title">
+                    <span class="calc-title__desktop">Описание заказа</span>
+                    <span class="calc-title__mobile">Комментарий</span>
+                  </div>
+                  <el-input
+                    v-model="special_instructions"
+                    type="textarea"
+                    :rows="5"
+                    placeholder=""
+                  />
+                </div>
+
+                <div class="milling-actions">
+                  <CalculateSubmit2
+                    class="milling-submit milling-submit--desktop"
+                    :order-id="order_id"
+                    :payload="{
+                      ...payload,
+                    } as unknown as IOrderPayload"
+                    :special-instructions="special_instructions"
+                    @updateResult="onUpdateResult"
+                    @showInfo="isInfoVisible = true"
+                  />
+                  <CalculateSubmit2
+                    class="milling-submit milling-submit--mobile"
+                    :order-id="order_id"
+                    :payload="{
+                      ...payload,
+                    } as unknown as IOrderPayload"
+                    :special-instructions="special_instructions"
+                    save-label="Сохранить"
+                    hide-back-button
+                    @updateResult="onUpdateResult"
+                    @showInfo="isInfoVisible = true"
+                  />
+                </div>
               </div>
             </div>
-
-            <div class="calc-two-columns">
-              <div class="milling-field-group">
-                <div class="calc-title">Шероховатость, Ra</div>
-                <SelectCalc v-model="finish_id" :input-data="finishes" />
-              </div>
-              <div class="milling-field-group">
-                <div class="calc-title">Квалитет точности</div>
-                <SelectCalc v-model="tolerance_id" :input-data="tolerances" />
-              </div>
-            </div>
-
-            <div class="milling-field-block">
-              <div class="calc-title">Финишная обработка изделия</div>
-              <CoefficientCover2 v-model="cover_id" />
-            </div>
-
-            <div class="milling-field-block milling-field-block--otk">
-              <div class="calc-title">Вид контроля</div>
-              <CoefficientOtk2 v-model="k_otk" />
-            </div>
-
-            <!-- <div class="milling-field-block">
-              <CoefficientCertificate v-model="k_cert" />
-            </div> -->
-
-            <div
-              class="milling-field-block"
-              v-if="profileStore.profile?.username === 'admin'"
-            >
-              <SuitableMachines :machines="result?.suitable_machines || []" />
-            </div>
-
-            <div class="milling-field-block">
-              <div class="calc-title">Описание заказа</div>
-              <el-input
-                v-model="special_instructions"
-                type="textarea"
-                :rows="5"
-                placeholder=""
-              />
-            </div>
-
-            <div class="milling-actions">
-              <CalculateSubmit2
-                :order-id="order_id"
-                :payload="{
-                  ...payload,
-                  // deadline: formatDeadline(deadline),
-                } as unknown as IOrderPayload"
-                :special-instructions="special_instructions"
-                @updateResult="onUpdateResult"
-                @showInfo="isInfoVisible = true"
-              />
-            </div>
-          </div>
 
             <aside class="milling-page__aside">
-              <CalculateResults :result="result" />
+              <div class="milling-block milling-block--results">
+                <CalculateResults :result="result" />
 
-              <div v-if="file_id" class="milling-cad">
-                <CadShowById :key="cadViewerKey" v-model="file_id" />
+                <div class="milling-docs milling-docs--mobile">
+                  <div class="milling-docs__title">Загруженные файлы</div>
+                  <DocumentShowByIds2
+                    v-model="document_ids"
+                    class="milling-docs-list milling-docs-list--mobile"
+                  />
+                </div>
               </div>
 
-              <div class="milling-upload">
-                <div class="milling-upload__title">Загрузите файлы</div>
-                <UploadFiles2
-                  v-model="document_ids"
-                  color="#000"
-                  :hide-formats-text="true"
-                  v-model:stp_id="file_id"
-                  class="upload-files-bordered"
-                />
-                <!-- <UploadModel v-model="file_id" color="#000" />
-              <UploadDrawings v-model="document_ids" color="#000" /> -->
-                <DocumentShowByIds2 v-model="document_ids" />
+              <div v-if="file_id" class="milling-block milling-block--cad">
+                <div class="milling-cad">
+                  <CadShowById :key="cadViewerKey" v-model="file_id" />
+                </div>
+              </div>
+
+              <div class="milling-block milling-block--upload">
+                <div class="milling-upload">
+                  <div class="milling-upload__title milling-upload__title--desktop">Загрузите файлы</div>
+                  <UploadFiles2
+                    v-model="document_ids"
+                    color="#000"
+                    :hide-formats-text="true"
+                    upload-text="Загрузите файлы"
+                    v-model:stp_id="file_id"
+                    class="upload-files-bordered upload-files--desktop"
+                  />
+                  <UploadFiles2
+                    v-model="document_ids"
+                    color="#000"
+                    :hide-formats-text="true"
+                    upload-text="Загрузите файлы"
+                    v-model:stp_id="file_id"
+                    class="upload-files-bordered upload-files--mobile"
+                  />
+                  <DocumentShowByIds2
+                    v-model="document_ids"
+                    class="milling-docs-list milling-docs-list--desktop"
+                  />
+                </div>
               </div>
             </aside>
           </div>
@@ -470,6 +511,56 @@ watch(
   flex-direction: column;
   gap: 40px;
   min-width: 0;
+}
+
+.milling-block--form {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.milling-block--comment {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.milling-page__mobile-title {
+  display: none;
+}
+
+.calc-title__mobile {
+  display: none;
+}
+
+.milling-docs--mobile {
+  display: none;
+}
+
+.upload-files--mobile {
+  display: none;
+}
+
+.milling-page__aside {
+  background: var(--bgcolor);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.milling-block--results,
+.milling-block--cad,
+.milling-block--upload {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.milling-block--upload {
+  gap: 12px;
 }
 
 .calc-quantity-material {
@@ -511,14 +602,8 @@ watch(
   padding-top: 6px;
 }
 
-.milling-page__aside {
-  background: var(--bgcolor);
-  border-radius: 20px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  min-width: 0;
+.milling-submit--mobile {
+  display: none;
 }
 
 .milling-cad {
@@ -558,7 +643,8 @@ watch(
 
 @media (max-width: 767px) {
   .milling-page {
-    padding: 16px 0 20px;
+    padding: 32px 10px 40px;
+    background-color: var(--bgcolor);
   }
 
   .milling-page__row {
@@ -566,60 +652,347 @@ watch(
   }
 
   .milling-page__card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
     max-width: 100%;
-    padding: 14px;
-    border-radius: 0px;
-    gap: 16px;
-    box-shadow: 0 6px 10px 0 var(--button);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
     overflow-x: hidden;
   }
 
-  .milling-page__main {
+  .milling-page__main,
+  .milling-page__aside {
+    display: contents;
+  }
+
+  .milling-block {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .milling-block--upload {
+    order: 1;
+    gap: 0;
+  }
+
+  .milling-block--form {
+    order: 2;
+    gap: 32px;
+  }
+
+  .milling-block--results {
+    order: 3;
     gap: 16px;
+  }
+
+  .milling-block--comment {
+    order: 4;
+    gap: 16px;
+  }
+
+  .milling-block--cad {
+    display: none;
+  }
+
+  .milling-page__mobile-title {
+    display: block;
+    margin: 0;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 22px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .calc-title__desktop {
+    display: none;
+  }
+
+  .calc-title__mobile {
+    display: inline;
+  }
+
+  .milling-docs--mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .milling-docs__title {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .milling-docs-list--desktop {
+    display: none;
+  }
+
+  .upload-files--desktop {
+    display: none;
+  }
+
+  .upload-files--mobile {
+    display: block;
+  }
+
+  .milling-upload__title--desktop {
+    display: none;
+  }
+
+  .milling-upload {
+    gap: 0;
+  }
+
+  .upload-files--mobile :deep(.upload) {
+    min-height: 0;
+    padding: 16px 32px;
+    border-radius: 8px;
+    border: 2px dashed var(--button-bg);
+    background-color: transparent;
+  }
+
+  .upload-files--mobile :deep(.custom .el-upload__text) {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    max-width: none;
+  }
+
+  .milling-block--form .calc-title {
+    font-size: 14px;
+    line-height: normal;
+    padding-bottom: 5px;
+  }
+
+  .milling-block--comment .calc-title {
+    font-size: 14px;
+    line-height: normal;
   }
 
   .calc-quantity-material {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .calc-two-columns {
+    gap: 20px;
   }
 
   .milling-field-group,
   .milling-field-block {
     gap: 8px;
-    padding: 2px 0;
+    padding: 0;
   }
 
   .milling-field-block--otk {
-    gap: 12px;
+    gap: 10px;
     max-width: 100%;
   }
 
-  .milling-upload__title {
-    font-size: 18px;
-    line-height: 1.2;
+  .milling-block--form :deep(.input .el-input__wrapper),
+  .milling-block--form :deep(.el-select__wrapper) {
+    min-height: 40px;
+    height: 40px;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #f2f3f7;
+    box-shadow: none;
+    border: none;
+    box-sizing: border-box;
   }
 
-  .milling-page__aside {
-    padding: 12px;
-    border-radius: 14px;
-    gap: 14px;
+  .milling-block--form :deep(.input .el-input__inner),
+  .milling-block--form :deep(.el-select__placeholder),
+  .milling-block--form :deep(.el-select__selected-item) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    height: auto;
   }
 
-  .milling-upload {
+  .milling-block--form :deep(.el-select .el-select__suffix) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .milling-block--form :deep(.coefficient-value) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .milling-block--form :deep(.checkbox-item) {
+    width: 100%;
+    padding-bottom: 0;
+    --checkbox-size: 20px;
+    --checkbox-radius: 4px;
+    --checkbox-border-color: #7d8083;
+    --checkbox-bg-color: #f2f3f7;
+    --checkbox-checked-bg-color: #f2f3f7;
+    --checkbox-label-padding-left: 8px;
+    --checkbox-label-size: 12px;
+    --checkbox-line-height: normal;
+  }
+
+  .milling-block--form :deep(.el-checkbox-group) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .milling-block--form :deep(.otk-radio-group) {
+    row-gap: 8px;
+  }
+
+  .milling-block--form :deep(.otk-radio) {
+    --radio-size: 20px;
+    --radio-border-color: #7d8083;
+    --radio-bg-color: #f2f3f7;
+    --radio-label-size: 12px;
+    --radio-label-padding-left: 8px;
+    --radio-white-space: normal;
+  }
+
+  .milling-block--results :deep(.price-section) {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .milling-block--results :deep(.card) {
+    margin-bottom: 0;
+    padding: 8px;
+    border-radius: 10px;
+    background-color: #f2f3f7;
+  }
+
+  .milling-block--results :deep(.calc-res) {
+    font-size: 16px;
+    line-height: normal;
+  }
+
+  .milling-block--results :deep(.price) {
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  .milling-block--results :deep(.per-item) {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .milling-block--results :deep(.price-line) {
     gap: 10px;
+    align-items: flex-end;
+  }
+
+  .milling-block--results :deep(.price-disclaimer) {
+    margin-top: 10px;
+    gap: 0;
+    font-size: 10px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .milling-block--results :deep(.price-disclaimer p) {
+    margin: 0;
+  }
+
+  .milling-docs-list--mobile :deep(.doc-list) {
+    gap: 4px;
+  }
+
+  .milling-docs-list--mobile :deep(.doc-row) {
+    min-height: 0;
+    height: auto;
+    padding: 8px;
+    border-radius: 5px;
+    background: #f2f3f7;
+    gap: 8px;
+  }
+
+  .milling-docs-list--mobile :deep(.doc-content) {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .milling-docs-list--mobile :deep(.doc-name) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .milling-docs-list--mobile :deep(.doc-date) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+  }
+
+  .milling-block--comment :deep(.el-textarea__inner) {
+    min-height: 80px !important;
+    padding: 8px;
+    border-radius: 10px;
+    background: #f2f3f7;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    line-height: normal;
   }
 
   .milling-actions {
     padding-top: 0;
   }
 
-  .milling-cad {
-    border-radius: 8px;
+  .milling-submit--desktop {
+    display: none;
   }
 
-  :deep(.el-textarea__inner) {
-    min-height: 120px !important;
+  .milling-submit--mobile {
+    display: block;
+  }
+
+  .milling-submit--mobile :deep(.calculate-submit2) {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .milling-submit--mobile :deep(.auth-tooltip-trigger) {
+    width: 100%;
+  }
+
+  .milling-submit--mobile :deep(.calculate-submit2 .btn) {
+    width: 100% !important;
+    min-height: 40px;
+    height: 40px;
+    padding: 8px 24px;
+    border-radius: 8px;
+    background-color: var(--button-bg) !important;
+    border: none;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    box-shadow: none;
   }
 }
 </style>
