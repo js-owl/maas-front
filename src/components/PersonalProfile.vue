@@ -546,7 +546,7 @@ const contactFio = computed({
           </div>
         </div>
 
-        <div class="profile-footer">
+        <div class="profile-footer profile-footer--desktop">
           <div class="profile-footer-left">
             <ButtonRound width="280px" class="profile-back-button" @click="goToMain">
               <template #icon-left>
@@ -560,10 +560,24 @@ const contactFio = computed({
           </div>
           <div class="profile-footer-right">
             <ButtonRound width="300px" class="profile-update-button" :loading="isSaving" @click="onUpdate">
-              <span class="profile-save-text profile-save-text--desktop">Сохранить изменения</span>
-              <span class="profile-save-text profile-save-text--mobile">Сохранить</span>
+              Сохранить изменения
             </ButtonRound>
           </div>
+        </div>
+
+        <div class="profile-footer-mobile">
+          <button type="button" class="profile-footer-mobile__orders" @click="goToOrders">
+            Заказы и расчеты
+          </button>
+          <button
+            type="button"
+            class="profile-footer-mobile__save"
+            :disabled="isSaving"
+            @click="onUpdate"
+          >
+            <span v-if="isSaving" class="profile-footer-mobile__spinner" aria-hidden="true" />
+            Сохранить
+          </button>
         </div>
       </el-col>
     </el-form>
@@ -655,7 +669,7 @@ const contactFio = computed({
   flex-wrap: wrap;
 }
 
-.profile-save-text--mobile {
+.profile-footer-mobile {
   display: none;
 }
 
@@ -767,8 +781,36 @@ const contactFio = computed({
     --input-bg: #f2f3f7;
     --input-radius: 8px;
     --input-padding: 12px 16px;
-    --input-font-size: 12px;
     --input-text-color: #55585b;
+  }
+
+  .profile-fields :deep(.input .el-input__wrapper) {
+    min-height: auto;
+    height: auto;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background-color: #f2f3f7;
+    box-shadow: none;
+    border: none;
+    box-sizing: border-box;
+  }
+
+  .profile-fields :deep(.input .el-input__inner) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px !important;
+    font-weight: 500;
+    line-height: normal;
+    color: #55585b;
+    height: auto;
+  }
+
+  .profile-fields :deep(.input .el-input__inner::placeholder) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #55585b;
+    opacity: 1;
   }
 
   .profile-fields--bank {
@@ -805,95 +847,81 @@ const contactFio = computed({
     border-radius: 16px;
   }
 
-  .profile-footer {
-    margin-top: 0;
-    padding-bottom: 0;
+  .profile-footer--desktop {
+    display: none;
+  }
+
+  .profile-footer-mobile {
+    display: flex;
     gap: 8px;
-    flex-wrap: nowrap;
+    align-items: stretch;
     justify-content: center;
+    width: 100%;
   }
 
-  .profile-footer-left {
-    flex: 1;
+  .profile-footer-mobile__orders {
+    flex: 1 1 0;
     min-width: 0;
-    gap: 0;
+    height: 40px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 0 5px #c8cfe3;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    white-space: nowrap;
   }
 
-  .profile-footer-right {
+  .profile-footer-mobile__save {
+    flex-shrink: 0;
+    height: 40px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    background: #e84261;
+    box-shadow: 0 0 5px #c8cfe3;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    white-space: nowrap;
+  }
+
+  .profile-footer-mobile__save:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .profile-footer-mobile__spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: profile-save-spin 0.8s linear infinite;
     flex-shrink: 0;
   }
 
-  .profile-back-button {
-    display: none;
-  }
-
-  .profile-orders-button {
-    flex: 1;
-    min-width: 0;
-    width: auto !important;
-  }
-
-  .profile-update-button {
-    width: auto !important;
-  }
-
-  .profile-orders-button :deep(.btn) {
-    width: 100% !important;
-    height: 40px;
-    border-radius: 8px;
-    font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: normal;
-    box-shadow: 0 0 5px #c8cfe3;
-    transform: none;
-    animation: none;
-    --bgcolor: #fff;
-    --button-bg: #fff;
-    background: #fff !important;
-    color: #000;
-    padding: 12px 16px;
-    white-space: nowrap;
-  }
-
-  .profile-update-button :deep(.btn) {
-    width: auto !important;
-    height: 40px;
-    border-radius: 8px;
-    font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: normal;
-    box-shadow: 0 0 5px #c8cfe3;
-    transform: none;
-    animation: none;
-    --bgcolor: #e84261;
-    --button-bg: #e84261;
-    background: #e84261 !important;
-    color: #fff;
-    padding: 12px 16px;
-    white-space: nowrap;
-  }
-
-  .profile-orders-button :deep(.btn::before),
-  .profile-update-button :deep(.btn::before) {
-    display: none;
-  }
-
-  .profile-orders-button :deep(.btn:hover:not(.is-disabled)),
-  .profile-update-button :deep(.btn:hover:not(.is-disabled)),
-  .profile-orders-button :deep(.btn:active:not(.is-disabled)),
-  .profile-update-button :deep(.btn:active:not(.is-disabled)) {
-    transform: none;
-    animation: none;
-  }
-
-  .profile-save-text--desktop {
-    display: none;
-  }
-
-  .profile-save-text--mobile {
-    display: inline;
+  @keyframes profile-save-spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 }
 </style>
