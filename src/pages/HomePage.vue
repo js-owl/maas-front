@@ -13,6 +13,7 @@ const HomeMilestones = defineAsyncComponent(
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
+const isTablet = computed(() => width.value >= 768 && width.value <= 1620)
 const showHomeCalc = ref(true)
 
 const coefficientsStore = useCoefficientsStore()
@@ -24,7 +25,10 @@ onMounted(() => {
 
 <template>
   <!-- https://www.figma.com/design/HyoggbbVUgCqJp5UR7EU8T/MaaS-DEV--Copy-?node-id=3248-1490 -->
-  <div class="home-page" :class="{ 'home-page--mobile': isMobile }">
+  <div
+    class="home-page"
+    :class="{ 'home-page--mobile': isMobile, 'home-page--tablet': isTablet }"
+  >
     <el-row :gutter="0">
       <el-col :offset="isMobile ? 0 : 3" :span="isMobile ? 24 : 18">
         <div class="home-page__sections">
@@ -42,6 +46,8 @@ onMounted(() => {
 .home-page {
   background-color: var(--bgcolor);
   box-sizing: border-box;
+  min-width: 0;
+  overflow-x: clip;
 }
 
 .home-page__sections {
@@ -52,6 +58,11 @@ onMounted(() => {
   z-index: 2;
   padding-top: 40px;
   padding-bottom: 40px;
+  min-width: 0;
+}
+
+.home-page--tablet .home-page__sections {
+  gap: 24px;
 }
 
 .home-page__sections :deep(.calc-section),

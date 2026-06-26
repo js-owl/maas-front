@@ -221,6 +221,22 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   display: block;
 }
 
+@media (max-width: 1620px) and (min-width: 769px) {
+  .uslugi-section2.section-basic {
+    margin-top: 0;
+    margin-bottom: 40px;
+    padding: 32px;
+  }
+
+  .card-link {
+    padding: 0 20px;
+  }
+
+  .card-title {
+    font-size: 20px;
+  }
+}
+
 @media (max-width: 768px) {
   .uslugi-section2.section-basic {
     margin-top: 0;

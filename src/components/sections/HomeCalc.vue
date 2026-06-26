@@ -421,6 +421,45 @@ const submit = () => {
   transform: rotate(45deg);
 }
 
+@media (max-width: 1620px) and (min-width: 769px) {
+  .calc-section.section-basic {
+    padding: 60px 32px;
+  }
+
+  .calc-wrap {
+    gap: 40px;
+  }
+
+  .calc-left {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    gap: 40px;
+  }
+
+  .calc-title {
+    max-width: none;
+    font-size: 48px;
+  }
+
+  .calc-description {
+    max-width: none;
+  }
+
+  .calc-formats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    width: 100%;
+    text-align: left;
+  }
+
+  .calc-upload-zone {
+    padding: 32px 24px;
+  }
+}
+
 @media (max-width: 768px) {
   .calc-section.section-basic {
     margin-bottom: 0;

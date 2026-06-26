@@ -339,6 +339,26 @@ const advantages = ref([
 
 
 
+@media (max-width: 1620px) and (min-width: 769px) {
+
+  .item-row {
+
+    gap: 24px;
+
+  }
+
+
+
+  .item {
+
+    padding: 24px;
+
+  }
+
+}
+
+
+
 @media (max-width: 767px) {
 
   .home-advantages {
