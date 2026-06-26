@@ -291,7 +291,7 @@ const contactFio = computed({
 
 <template>
   <el-row
-    :gutter="20"
+    :gutter="0"
     class="profile-header"
   >
     <el-form
@@ -300,10 +300,10 @@ const contactFio = computed({
       :rules="rules"
       label-width="0"
       label-position="top"
-      style="width: 100%"
+      class="profile-form"
       @submit.prevent
     >
-      <el-col :span="24">
+      <el-col :span="24" class="profile-content">
         <el-alert
           v-if="showEmailVerificationBanner"
           type="warning"
@@ -626,6 +626,12 @@ const contactFio = computed({
   min-height: 100px;
   border-radius: 20px;
   width: 100%;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.profile-form {
+  width: 100%;
 }
 
 .profile-footer {
@@ -688,18 +694,28 @@ const contactFio = computed({
 
   .profile-header {
     background-color: transparent;
-    padding: 0 10px;
+    padding: 0;
     min-height: auto;
     border-radius: 0;
-    width: 100vw;
-    max-width: 100vw;
-    margin-left: calc(50% - 50vw);
-    box-sizing: border-box;
+    width: 100%;
   }
 
-  .profile-legal,
-  .profile-card--individual {
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .profile-legal {
+    display: flex;
+    flex-direction: column;
     gap: 12px;
+  }
+
+  .profile-card--individual {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 
   .profile-card {
@@ -785,12 +801,12 @@ const contactFio = computed({
   }
 
   .email-verification-alert {
-    margin-bottom: 12px;
+    margin-bottom: 0;
     border-radius: 16px;
   }
 
   .profile-footer {
-    margin-top: 24px;
+    margin-top: 0;
     padding-bottom: 0;
     gap: 8px;
     flex-wrap: nowrap;

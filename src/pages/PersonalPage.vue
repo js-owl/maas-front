@@ -24,9 +24,15 @@ onMounted(async () => {
 <template>
   <el-row
     :gutter="0"
-    style="padding: 30px 0 40px; min-height: 60vh; background-color: var(--bgcolor)"
+    class="personal-page"
   >
-    <el-col :offset="3" :span="18">
+    <el-col
+      class="personal-page__col"
+      :offset="3"
+      :span="18"
+      :xs="{ span: 24, offset: 0 }"
+      :sm="{ span: 24, offset: 0 }"
+    >
       <div>
         <!-- <aside class="sidebar">
           <el-menu :default-active="activeKey" class="menu" router>
@@ -41,7 +47,7 @@ onMounted(async () => {
             </el-menu-item>
           </el-menu>
         </aside> -->
-        <main>
+        <main class="personal-page__main">
           <RouterView />
         </main>
       </div>
@@ -50,6 +56,17 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.personal-page {
+  padding: 30px 0 40px;
+  min-height: 60vh;
+  background-color: var(--bgcolor);
+  box-sizing: border-box;
+}
+
+.personal-page__main {
+  min-width: 0;
+}
+
 .personal-layout {
   /* display: grid;
   grid-template-columns: 180px 1fr;
@@ -84,6 +101,12 @@ onMounted(async () => {
   min-width: 0;
   overflow: auto;
   box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12);
+}
+
+@media (max-width: 767px) {
+  .personal-page {
+    padding: 32px 10px 40px;
+  }
 }
 
 @media (max-width: 1024px) {
