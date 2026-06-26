@@ -292,7 +292,7 @@ const contactFio = computed({
 <template>
   <el-row
     :gutter="0"
-    class="profile-header"
+    class="profile-header personal-profile-page"
   >
     <el-form
       ref="formRef"
