@@ -17,7 +17,6 @@ const error = ref(null)
 const modelInfo = ref(null)
 const selectedMesh = ref('')
 const fileType = ref('')
-const isDragOver = ref(false)
 
 // Non-reactive instance fields
 let scene = null
@@ -35,7 +34,6 @@ let occtLoadingPromise = null
 
 // Refs
 const canvasContainer = ref(null)
-const fileInput = ref(null)
 
 const hasModel = computed(() => meshes.value.length > 0)
 
@@ -132,27 +130,6 @@ function initThreeJS() {
   scene.add(hemisphereLight)
 
   window.addEventListener('resize', onWindowResize)
-}
-
-function handleFileUpload(event) {
-  const file = event.target.files[0]
-  if (file) {
-    loadFile(file)
-  }
-}
-
-function handleFileDrop(event) {
-  event.preventDefault()
-  isDragOver.value = false
-  const file = event.dataTransfer.files[0]
-  if (file) {
-    const fileName = file.name.toLowerCase()
-    if (fileName.endsWith('.stp') || fileName.endsWith('.step')) {
-      loadFile(file)
-    } else {
-      error.value = 'Unsupported file format. Please use STP or STEP files.'
-    }
-  }
 }
 
 async function loadFile(file) {
@@ -477,22 +454,10 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="stp-viewer">
-    <input
-      type="file"
-      @change="handleFileUpload"
-      accept=".stp,.step"
-      ref="fileInput"
-      class="file-input"
-    />
-
     <!-- 3D Canvas Container -->
     <div
       ref="canvasContainer"
       class="canvas-container"
-      @dragover.prevent
-      @dragenter.prevent
-      @drop="handleFileDrop"
-      :class="{ 'drag-over': isDragOver }"
     >
       <!-- Loading Overlay -->
       <div v-if="loading" class="overlay loading-overlay">
@@ -528,10 +493,6 @@ onBeforeUnmount(() => {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.file-input {
-  display: none;
-}
-
 .canvas-container {
   width: 100%;
   height: 100%;
@@ -542,11 +503,6 @@ onBeforeUnmount(() => {
   overflow: hidden;
   transition: border-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.canvas-container.drag-over {
-  /* border-color: #007bff; */
-  background: #f8f9ff;
 }
 
 .overlay {

@@ -323,222 +323,226 @@ const contactFio = computed({
           </Button>
         </el-alert>
         <div v-if="activeTab === 'individual'">
-          <div v-if="profileForm" class="profile-section">
-            <el-row :gutter="20">
-              <div class="maas-title" style="margin: 0 0 30px 5px;">Профиль</div>
-            </el-row>
-            <el-row :gutter="20">
-              <el-col :span="8">
-                <el-form-item prop="last_name">
-                  <Input v-model="profileForm.last_name" placeholder="Фамилия" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="first_name">
-                  <Input v-model="profileForm.first_name" placeholder="Имя" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="patronymic">
-                  <Input v-model="profileForm.patronymic" placeholder="Отчество" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20">
-              <el-col :span="8">
-                <el-form-item prop="username">
-                  <Input v-model="profileForm.username" placeholder="Логин" disabled fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="email">
-                  <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="phone_number">
-                  <Input
-                    v-model="profileForm.phone_number"
-                    placeholder="+7 (___) ___-__-__" fontSize="20px"
-                    type="tel"
-                    :formatter="formatPhoneDisplay"
-                    :parser="parsePhoneToDigits"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </div>
+          <div v-if="profileForm" class="profile-card profile-card--individual">
+            <div class="profile-section profile-section--profile">
+              <el-row :gutter="20">
+                <div class="maas-title profile-page-title">Профиль</div>
+              </el-row>
+              <el-row :gutter="20" class="profile-fields">
+                <el-col :span="8">
+                  <el-form-item prop="last_name">
+                    <Input v-model="profileForm.last_name" placeholder="Фамилия" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="first_name">
+                    <Input v-model="profileForm.first_name" placeholder="Имя" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="patronymic">
+                    <Input v-model="profileForm.patronymic" placeholder="Отчество" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="username">
+                    <Input v-model="profileForm.username" placeholder="Логин" disabled fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="email">
+                    <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="phone_number">
+                    <Input
+                      v-model="profileForm.phone_number"
+                      placeholder="+7 (___) ___-__-__" fontSize="20px"
+                      type="tel"
+                      :formatter="formatPhoneDisplay"
+                      :parser="parsePhoneToDigits"
+                    />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
 
-          <div v-if="profileForm" class="profile-section">
-            <div class="maas-subtitle" style="margin-bottom: 20px;">Адрес доставки</div>
-            <el-row :gutter="20">
-              <el-col :span="8">
-                <el-form-item prop="postal">
-                  <Input v-model="profileForm.postal" placeholder="Индекс" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="region">
-                  <Input v-model="profileForm.region" placeholder="Регион/Область" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="city_name">
-                  <Input v-model="profileForm.city_name" placeholder="Город" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="street">
-                  <Input v-model="profileForm.street" placeholder="Улица" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="building">
-                  <Input v-model="profileForm.building" placeholder="Строение" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="office">
-                  <Input v-model="profileForm.office" placeholder="Офис/Помещение" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-            </el-row>
+            <div class="profile-section profile-section--address">
+              <div class="maas-subtitle profile-section-title">Адрес доставки</div>
+              <el-row :gutter="20" class="profile-fields">
+                <el-col :span="8">
+                  <el-form-item prop="postal">
+                    <Input v-model="profileForm.postal" placeholder="Индекс" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="region">
+                    <Input v-model="profileForm.region" placeholder="Регион/Область" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="city_name">
+                    <Input v-model="profileForm.city_name" placeholder="Город" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="street">
+                    <Input v-model="profileForm.street" placeholder="Улица" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="building">
+                    <Input v-model="profileForm.building" placeholder="Строение" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="office">
+                    <Input v-model="profileForm.office" placeholder="Офис/Помещение" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
           </div>
         </div>
         <!-- Юридическое лицо -->
-        <div v-if="activeTab === 'legal'">
-          <div v-if="profileForm" class="profile-section">
+        <div v-if="activeTab === 'legal'" class="profile-legal">
+          <div v-if="profileForm" class="profile-section profile-section--title">
             <el-row :gutter="20">
               <el-col :span="24">
-                <div class="maas-title" style="margin: 0 0 30px;">Профиль</div>
+                <div class="maas-title profile-page-title">Профиль</div>
               </el-col>
             </el-row>
           </div>
 
-          <div v-if="profileForm" class="profile-section">
-            <div class="maas-subtitle" style="margin-bottom: 20px;">Данные организации</div>
-            <el-row :gutter="20">
-              <el-col :span="24">
-                <el-form-item prop="payment_company_name">
-                  <Input v-model="profileForm.payment_company_name" placeholder="Наименование организации / ИП" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="phone_number">
-                  <Input
-                    v-model="profileForm.phone_number"
-                    placeholder="Телефон" fontSize="20px"
-                    type="tel"
-                    :formatter="formatPhoneDisplay"
-                    :parser="parsePhoneToDigits"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="company_email">
-                  <Input v-model="profileForm.company_email" placeholder="E-mail" type="email" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="payment_inn">
-                  <Input v-model="profileForm.payment_inn" placeholder="ИНН" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="payment_kpp">
-                  <Input v-model="profileForm.payment_kpp" placeholder="ОГРН / ОГРНИП" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-            </el-row>
+          <div v-if="profileForm" class="profile-card profile-card--primary">
+            <div class="profile-section profile-section--contact">
+              <div class="maas-subtitle profile-section-title">Контактное лицо</div>
+              <el-row :gutter="20" class="profile-fields">
+                <el-col :span="24">
+                  <el-form-item prop="last_name">
+                    <Input v-model="contactFio" placeholder="ФИО" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="personal_phone_number">
+                    <Input
+                      v-model="profileForm.personal_phone_number"
+                      placeholder="Телефон" fontSize="20px"
+                      type="tel"
+                      :formatter="formatPhoneDisplay"
+                      :parser="parsePhoneToDigits"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item>
+                    <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+
+            <div class="profile-section profile-section--org">
+              <div class="maas-subtitle profile-section-title">Данные организации</div>
+              <el-row :gutter="20" class="profile-fields">
+                <el-col :span="24">
+                  <el-form-item prop="payment_company_name">
+                    <Input v-model="profileForm.payment_company_name" placeholder="Наименование организации / ИП" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="phone_number">
+                    <Input
+                      v-model="profileForm.phone_number"
+                      placeholder="Телефон" fontSize="20px"
+                      type="tel"
+                      :formatter="formatPhoneDisplay"
+                      :parser="parsePhoneToDigits"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="company_email">
+                    <Input v-model="profileForm.company_email" placeholder="E-mail" type="email" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="payment_inn">
+                    <Input v-model="profileForm.payment_inn" placeholder="ИНН" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="payment_kpp">
+                    <Input v-model="profileForm.payment_kpp" placeholder="ОГРН / ОГРНИП" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
           </div>
 
-          <div v-if="profileForm" class="profile-section">
-            <div class="maas-subtitle" style="margin-bottom: 20px;">Контактное лицо</div>
-            <el-row :gutter="20">
-              <el-col :span="24">
-                <el-form-item prop="last_name">
-                  <Input v-model="contactFio" placeholder="ФИО" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="personal_phone_number">
-                  <Input
-                    v-model="profileForm.personal_phone_number"
-                    placeholder="Телефон" fontSize="20px"
-                    type="tel"
-                    :formatter="formatPhoneDisplay"
-                    :parser="parsePhoneToDigits"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item>
-                  <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </div>
+          <div v-if="profileForm" class="profile-card profile-card--secondary">
+            <div class="profile-section profile-section--bank">
+              <div class="maas-subtitle profile-section-title">Банковские реквизиты</div>
+              <el-row :gutter="20" class="profile-fields profile-fields--bank">
+                <el-col :span="12" class="profile-field profile-field--cor-account">
+                  <el-form-item prop="payment_cor_account">
+                    <Input v-model="profileForm.payment_cor_account" placeholder="Корреспондентский счет" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12" class="profile-field profile-field--account">
+                  <el-form-item prop="payment_account">
+                    <Input v-model="profileForm.payment_account" placeholder="Расчетный счет" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12" class="profile-field profile-field--bank-name">
+                  <el-form-item prop="payment_bank_name">
+                    <Input v-model="profileForm.payment_bank_name" placeholder="Наименование банка" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12" class="profile-field profile-field--bik">
+                  <el-form-item prop="payment_bik">
+                    <Input v-model="profileForm.payment_bik" placeholder="БИК" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
 
-          <div v-if="profileForm" class="profile-section">
-            <div class="maas-subtitle" style="margin-bottom: 20px;">Банковские реквизиты</div>
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item prop="payment_cor_account">
-                  <Input v-model="profileForm.payment_cor_account" placeholder="Корреспондентский счет" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="payment_account">
-                  <Input v-model="profileForm.payment_account" placeholder="Расчетный счет" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="payment_bank_name">
-                  <Input v-model="profileForm.payment_bank_name" placeholder="Наименование банка" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="payment_bik">
-                  <Input v-model="profileForm.payment_bik" placeholder="БИК" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </div>
-
-          <div v-if="profileForm" class="profile-section">
-            <div class="maas-subtitle" style="margin-bottom: 20px;">Адрес доставки</div>
-            <el-row :gutter="20">
-              <el-col :span="8">
-                <el-form-item prop="postal">
-                  <Input v-model="profileForm.postal" placeholder="Индекс" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="region">
-                  <Input v-model="profileForm.region" placeholder="Регион/Область" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="city_name">
-                  <Input v-model="profileForm.city_name" placeholder="Город" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="street">
-                  <Input v-model="profileForm.street" placeholder="Улица" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="building">
-                  <Input v-model="profileForm.building" placeholder="Строение" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item prop="office">
-                  <Input v-model="profileForm.office" placeholder="Офис/Помещение" fontSize="20px" />
-                </el-form-item>
-              </el-col>
-            </el-row>
+            <div class="profile-section profile-section--address">
+              <div class="maas-subtitle profile-section-title">Адрес доставки</div>
+              <el-row :gutter="20" class="profile-fields">
+                <el-col :span="8">
+                  <el-form-item prop="postal">
+                    <Input v-model="profileForm.postal" placeholder="Индекс" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="region">
+                    <Input v-model="profileForm.region" placeholder="Регион/Область" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="city_name">
+                    <Input v-model="profileForm.city_name" placeholder="Город" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="street">
+                    <Input v-model="profileForm.street" placeholder="Улица" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="building">
+                    <Input v-model="profileForm.building" placeholder="Строение" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="office">
+                    <Input v-model="profileForm.office" placeholder="Офис/Помещение" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
           </div>
         </div>
 
@@ -556,7 +560,8 @@ const contactFio = computed({
           </div>
           <div class="profile-footer-right">
             <ButtonRound width="300px" class="profile-update-button" :loading="isSaving" @click="onUpdate">
-              Сохранить изменения
+              <span class="profile-save-text profile-save-text--desktop">Сохранить изменения</span>
+              <span class="profile-save-text profile-save-text--mobile">Сохранить</span>
             </ButtonRound>
           </div>
         </div>
@@ -566,6 +571,43 @@ const contactFio = computed({
 </template>
 
 <style scoped>
+.profile-page-title {
+  margin: 0 0 30px 5px;
+}
+
+.profile-section-title {
+  margin-bottom: 20px;
+}
+
+.profile-legal {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-section--title {
+  order: 0;
+}
+
+.profile-section--org {
+  order: 1;
+}
+
+.profile-section--contact {
+  order: 2;
+}
+
+.profile-section--bank {
+  order: 3;
+}
+
+.profile-section--address {
+  order: 4;
+}
+
+.profile-card {
+  display: contents;
+}
+
 .profile-section {
   margin-bottom: 32px;
 }
@@ -607,6 +649,10 @@ const contactFio = computed({
   flex-wrap: wrap;
 }
 
+.profile-save-text--mobile {
+  display: none;
+}
+
 .profile-back-button :deep(.btn),
 .profile-orders-button :deep(.btn) {
   --bgcolor: #e0e0e0;
@@ -629,6 +675,210 @@ const contactFio = computed({
   flex-direction: column;
   gap: 12px;
   align-items: flex-start;
+}
+
+@media (max-width: 767px) {
+  .profile-page-title {
+    display: none;
+  }
+
+  .profile-section--title {
+    display: none;
+  }
+
+  .profile-header {
+    background-color: transparent;
+    padding: 0 10px;
+    min-height: auto;
+    border-radius: 0;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    box-sizing: border-box;
+  }
+
+  .profile-legal,
+  .profile-card--individual {
+    gap: 12px;
+  }
+
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .profile-section {
+    margin-bottom: 0;
+  }
+
+  .profile-section-title {
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: normal;
+  }
+
+  .profile-fields :deep(.el-col) {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .profile-fields {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .profile-fields :deep(.el-col) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .profile-fields :deep(.el-form-item) {
+    margin-bottom: 4px;
+  }
+
+  .profile-fields :deep(.el-form-item:last-child) {
+    margin-bottom: 0;
+  }
+
+  .profile-fields :deep(.input-wrapper) {
+    --input-bg: #f2f3f7;
+    --input-radius: 8px;
+    --input-padding: 12px 16px;
+    --input-font-size: 12px;
+    --input-text-color: #55585b;
+  }
+
+  .profile-fields--bank {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .profile-field--cor-account {
+    order: 1;
+  }
+
+  .profile-field--bank-name {
+    order: 2;
+  }
+
+  .profile-field--account {
+    order: 3;
+  }
+
+  .profile-field--bik {
+    order: 4;
+  }
+
+  .profile-section--contact {
+    order: 1;
+  }
+
+  .profile-section--org {
+    order: 2;
+  }
+
+  .email-verification-alert {
+    margin-bottom: 12px;
+    border-radius: 16px;
+  }
+
+  .profile-footer {
+    margin-top: 24px;
+    padding-bottom: 0;
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  .profile-footer-left {
+    flex: 1;
+    min-width: 0;
+    gap: 0;
+  }
+
+  .profile-footer-right {
+    flex-shrink: 0;
+  }
+
+  .profile-back-button {
+    display: none;
+  }
+
+  .profile-orders-button {
+    flex: 1;
+    min-width: 0;
+    width: auto !important;
+  }
+
+  .profile-update-button {
+    width: auto !important;
+  }
+
+  .profile-orders-button :deep(.btn) {
+    width: 100% !important;
+    height: 40px;
+    border-radius: 8px;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    box-shadow: 0 0 5px #c8cfe3;
+    transform: none;
+    animation: none;
+    --bgcolor: #fff;
+    --button-bg: #fff;
+    background: #fff !important;
+    color: #000;
+    padding: 12px 16px;
+    white-space: nowrap;
+  }
+
+  .profile-update-button :deep(.btn) {
+    width: auto !important;
+    height: 40px;
+    border-radius: 8px;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    box-shadow: 0 0 5px #c8cfe3;
+    transform: none;
+    animation: none;
+    --bgcolor: #e84261;
+    --button-bg: #e84261;
+    background: #e84261 !important;
+    color: #fff;
+    padding: 12px 16px;
+    white-space: nowrap;
+  }
+
+  .profile-orders-button :deep(.btn::before),
+  .profile-update-button :deep(.btn::before) {
+    display: none;
+  }
+
+  .profile-orders-button :deep(.btn:hover:not(.is-disabled)),
+  .profile-update-button :deep(.btn:hover:not(.is-disabled)),
+  .profile-orders-button :deep(.btn:active:not(.is-disabled)),
+  .profile-update-button :deep(.btn:active:not(.is-disabled)) {
+    transform: none;
+    animation: none;
+  }
+
+  .profile-save-text--desktop {
+    display: none;
+  }
+
+  .profile-save-text--mobile {
+    display: inline;
+  }
 }
 </style>
 
