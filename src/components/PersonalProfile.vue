@@ -291,7 +291,7 @@ const contactFio = computed({
 
 <template>
   <el-row
-    :gutter="0"
+    :gutter="20"
     class="profile-header personal-profile-page"
   >
     <el-form
@@ -300,7 +300,7 @@ const contactFio = computed({
       :rules="rules"
       label-width="0"
       label-position="top"
-      class="profile-form"
+      style="width: 100%"
       @submit.prevent
     >
       <el-col :span="24" class="profile-content">
@@ -326,7 +326,7 @@ const contactFio = computed({
           <div v-if="profileForm" class="profile-card profile-card--individual">
             <div class="profile-section profile-section--profile">
               <el-row :gutter="20">
-                <div class="maas-title profile-page-title">Профиль</div>
+                <div class="maas-title profile-page-title profile-page-title--individual">Профиль</div>
               </el-row>
               <el-row :gutter="20" class="profile-fields">
                 <el-col :span="8">
@@ -410,39 +410,12 @@ const contactFio = computed({
           <div v-if="profileForm" class="profile-section profile-section--title">
             <el-row :gutter="20">
               <el-col :span="24">
-                <div class="maas-title profile-page-title">Профиль</div>
+                <div class="maas-title profile-page-title profile-page-title--legal">Профиль</div>
               </el-col>
             </el-row>
           </div>
 
           <div v-if="profileForm" class="profile-card profile-card--primary">
-            <div class="profile-section profile-section--contact">
-              <div class="maas-subtitle profile-section-title">Контактное лицо</div>
-              <el-row :gutter="20" class="profile-fields">
-                <el-col :span="24">
-                  <el-form-item prop="last_name">
-                    <Input v-model="contactFio" placeholder="ФИО" fontSize="20px" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item prop="personal_phone_number">
-                    <Input
-                      v-model="profileForm.personal_phone_number"
-                      placeholder="Телефон" fontSize="20px"
-                      type="tel"
-                      :formatter="formatPhoneDisplay"
-                      :parser="parsePhoneToDigits"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item>
-                    <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </div>
-
             <div class="profile-section profile-section--org">
               <div class="maas-subtitle profile-section-title">Данные организации</div>
               <el-row :gutter="20" class="profile-fields">
@@ -475,6 +448,33 @@ const contactFio = computed({
                 <el-col :span="12">
                   <el-form-item prop="payment_kpp">
                     <Input v-model="profileForm.payment_kpp" placeholder="ОГРН / ОГРНИП" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+
+            <div class="profile-section profile-section--contact">
+              <div class="maas-subtitle profile-section-title">Контактное лицо</div>
+              <el-row :gutter="20" class="profile-fields">
+                <el-col :span="24">
+                  <el-form-item prop="last_name">
+                    <Input v-model="contactFio" placeholder="ФИО" fontSize="20px" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="personal_phone_number">
+                    <Input
+                      v-model="profileForm.personal_phone_number"
+                      placeholder="Телефон" fontSize="20px"
+                      type="tel"
+                      :formatter="formatPhoneDisplay"
+                      :parser="parsePhoneToDigits"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item>
+                    <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -585,37 +585,16 @@ const contactFio = computed({
 </template>
 
 <style scoped>
-.profile-page-title {
+.profile-page-title--individual {
   margin: 0 0 30px 5px;
+}
+
+.profile-page-title--legal {
+  margin: 0 0 30px;
 }
 
 .profile-section-title {
   margin-bottom: 20px;
-}
-
-.profile-legal {
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-section--title {
-  order: 0;
-}
-
-.profile-section--org {
-  order: 1;
-}
-
-.profile-section--contact {
-  order: 2;
-}
-
-.profile-section--bank {
-  order: 3;
-}
-
-.profile-section--address {
-  order: 4;
 }
 
 .profile-card {
@@ -639,12 +618,6 @@ const contactFio = computed({
   padding: 40px;
   min-height: 100px;
   border-radius: 20px;
-  width: 100%;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-.profile-form {
   width: 100%;
 }
 

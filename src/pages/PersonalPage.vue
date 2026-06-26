@@ -27,11 +27,9 @@ onMounted(async () => {
     class="personal-page"
   >
     <el-col
-      class="personal-page__col"
       :offset="3"
       :span="18"
       :xs="{ span: 24, offset: 0 }"
-      :sm="{ span: 24, offset: 0 }"
     >
       <div>
         <!-- <aside class="sidebar">
@@ -47,7 +45,7 @@ onMounted(async () => {
             </el-menu-item>
           </el-menu>
         </aside> -->
-        <main class="personal-page__main">
+        <main>
           <RouterView />
         </main>
       </div>
@@ -61,10 +59,6 @@ onMounted(async () => {
   min-height: 60vh;
   background-color: var(--bgcolor);
   box-sizing: border-box;
-}
-
-.personal-page__main {
-  min-width: 0;
 }
 
 .personal-layout {
