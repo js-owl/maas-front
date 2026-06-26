@@ -377,12 +377,12 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   position: relative;
   width: 100%;
   background-color: var(--bgcolor);
-  padding: 10px 10px 0;
+  padding: 10px 0 0;
   box-sizing: border-box;
 }
 
 .uppermenu-wrapper--home {
-  padding: 60px 10px 0;
+  padding: 60px 0 0;
 }
 
 .uppermenu-wrapper--home .uppermenu-header {

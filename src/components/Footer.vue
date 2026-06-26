@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from 'vue'
+import { computed, defineAsyncComponent, ref } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 import IconLogo from '../icons/IconLogo.vue'
 
 const DialogCall = defineAsyncComponent(() => import('./dialog/DialogCall.vue'))
+
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value < 768)
 
 const isCallDialogVisible = ref(false)
 
@@ -12,8 +16,10 @@ const openCallDialog = () => {
 </script>
 
 <template>
-  <footer class="footer">
-    <div class="footer__content">
+  <footer class="footer" :class="{ 'footer--mobile': isMobile }">
+    <el-row :gutter="0">
+      <el-col :offset="isMobile ? 0 : 3" :span="isMobile ? 24 : 18">
+        <div class="footer__content">
       <div class="footer__top">
         <nav class="footer__links" aria-label="Юридические документы">
           <router-link to="/policy" class="footer__link">
@@ -60,7 +66,9 @@ const openCallDialog = () => {
           Общество с ограниченной ответственностью «Аэромакс»<span class="footer__legal-year">, 2026</span>
         </p>
       </div>
-    </div>
+        </div>
+      </el-col>
+    </el-row>
   </footer>
 
   <DialogCall v-model="isCallDialogVisible" />
@@ -68,8 +76,6 @@ const openCallDialog = () => {
 
 <style scoped>
 .footer {
-  display: flex;
-  justify-content: center;
   background-color: var(--gray-footer);
   padding: 20px 0;
 }
@@ -79,8 +85,6 @@ const openCallDialog = () => {
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  max-width: 1280px;
-  padding: 0 20px;
   box-sizing: border-box;
 }
 
@@ -164,14 +168,12 @@ const openCallDialog = () => {
 }
 
 @media (max-width: 767px) {
-  .footer {
-    padding: 16px 26px;
+  .footer--mobile {
+    padding: 16px 10px;
   }
 
-  .footer__content {
+  .footer--mobile .footer__content {
     gap: 16px;
-    max-width: none;
-    padding: 0;
   }
 
   .footer__top {
