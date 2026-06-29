@@ -2,7 +2,7 @@
 import { onMounted, ref, computed, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { /* Edit, */ Delete /*, Notebook, Plus, Minus */ } from '@element-plus/icons-vue'
+import { /* Edit, */ Delete, Plus /*, Notebook, Minus */ } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import { statusTexts } from '../helpers/status-text'
@@ -481,37 +481,103 @@ onMounted(() => {
   <section class="personal-order">
     <div class="order-layout">
       <div class="order-main">
-        <!-- <el-card shadow="never" class="order-card"> -->
-        <div class="order-header">
-          <div class="order-title">
-            <div class="maas-subtitle">Заказ №{{ kitId }}</div>
-            <div class="order-name-wrapper">
-              <InputEdit
-                v-model="filename"
-                :font-size="'24px'"
-                @update:model-value="handleFilenameUpdate"
-              />
+        <div class="order-toolbar-mobile">
+          <button type="button" class="order-mobile-btn order-mobile-btn--back" @click="goBack">
+            <IconArrowLeft color="#000" />
+            Расчеты и заказы
+          </button>
+          <button
+            type="button"
+            class="order-mobile-btn order-mobile-btn--calc"
+            aria-label="Калькуляция"
+            @click="handleOpenCalcs"
+          >
+            <IconCalculate color="#000" :width="16" :height="16" />
+          </button>
+        </div>
+
+        <div class="order-content-block">
+          <div class="order-header">
+            <div class="order-title">
+              <div class="maas-subtitle order-number">Заказ №{{ kitId }}</div>
+              <div class="order-name-wrapper">
+                <InputEdit
+                  v-model="filename"
+                  :font-size="'24px'"
+                  class="order-name-input"
+                  @update:model-value="handleFilenameUpdate"
+                />
+              </div>
+            </div>
+            <div class="order-quantity order-quantity--desktop">
+              <ButtonRound width="214px" @click="handleOpenCalcs">
+                <template #icon-left>
+                  <IconCalculate color="#7d8083" />
+                </template>
+                Калькуляция
+              </ButtonRound>
             </div>
           </div>
-          <div class="order-quantity">
-            <!-- <ButtonRound width="164px" @click="handleOpenChat">
-              <template #icon-left>
-                <IconChat color="#7d8083" />
-              </template>
-              Чат
-            </ButtonRound> -->
-            <ButtonRound width="214px" @click="handleOpenCalcs">
-              <template #icon-left>
-                <IconCalculate color="#7d8083" />
-              </template>
-              Калькуляция
-            </ButtonRound>
-            <!-- <Button class="calc-button" @click="handleOpenCalcs">Калькуляция стоимости</Button> -->
+
+          <div
+            v-if="calcRows.length"
+            v-loading="isLoading"
+            class="order-details-mobile"
+          >
+            <div class="order-details-mobile__header">
+              <span class="order-details-mobile__col-preview">Превью</span>
+              <span class="order-details-mobile__col-designation">Обозначение</span>
+              <span class="order-details-mobile__col-price">Цена</span>
+            </div>
+            <button
+              v-for="row in calcRows"
+              :key="row.order_id"
+              type="button"
+              class="order-details-mobile__row"
+              @click="handleOpenCalculation(row)"
+            >
+              <span class="order-details-mobile__preview">
+                <span v-if="row.file_id" class="model-preview model-preview--mobile">
+                  <CadPreview :file-id="row.file_id" />
+                </span>
+                <span v-else class="preview-placeholder preview-placeholder--mobile" />
+              </span>
+              <span class="order-details-mobile__designation">
+                <span class="order-details-mobile__code">{{ row.order_code }}</span>
+                <span class="order-details-mobile__name">{{ row.order_name }}</span>
+              </span>
+              <span class="order-details-mobile__price">{{ formatPrice(row.total_price) }}</span>
+            </button>
+          </div>
+          <p v-else-if="!isLoading" class="order-details-mobile__empty">Нет данных по деталям</p>
+
+          <div class="order-add-detail-mobile">
+            <el-icon class="order-add-detail-mobile__icon" :size="16">
+              <Plus />
+            </el-icon>
+            <Select
+              v-model="selectedOrderType"
+              placeholder="Добавить деталь"
+              width="100%"
+              class="order-type-select order-type-select--mobile"
+              dropdown-class="order-type-select-dropdown"
+              @change="handleOrderTypeChange"
+            >
+              <el-option
+                v-for="option in orderTypeOptions"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"
+              >
+                <span class="order-type-option__label">{{ option.label }}</span>
+                <span class="order-type-option__chevron" aria-hidden="true" />
+              </el-option>
+            </Select>
           </div>
         </div>
 
         <el-table
-          class="order-table"
+          class="order-table order-table--desktop"
           :data="calcRows"
           style="margin-top: 10px; width: 100%"
           v-loading="isLoading"
@@ -604,7 +670,7 @@ onMounted(() => {
           </el-table-column>
         </el-table>
 
-        <div class="order-footer">
+        <div class="order-footer order-footer--desktop">
           <ButtonRound width="274px" @click="goBack">
             <template #icon-left>
               <IconArrowLeft color="#333" />
@@ -649,7 +715,7 @@ onMounted(() => {
                   <span class="maas-text">Дата создания</span>
                   <span class="status-value">{{ createdDate }}</span>
                 </div>
-                <div class="date-row">
+                <div class="date-row date-row--completion">
                   <span class="maas-text">Дата завершения</span>
                   <span class="status-value">-</span>
                   <!-- <span class="status-value">{{ completionDate }}</span> -->
@@ -699,9 +765,24 @@ onMounted(() => {
             </div>
           </div>
 
-          <!-- Кнопка подтверждения -->
-          <div v-if="canConfirmOrder" class="summary-actions">
-            <Button @click="confirmOrder" class="pay-order-button">Подтвердить заказ</Button>
+          <div class="summary-actions summary-actions--desktop">
+            <Button v-if="canConfirmOrder" @click="confirmOrder" class="pay-order-button">
+              Подтвердить заказ
+            </Button>
+          </div>
+
+          <div class="summary-actions-mobile">
+            <button type="button" class="summary-save-mobile" @click="saveOrder">
+              Сохранить заказ
+            </button>
+            <button
+              v-if="canConfirmOrder"
+              type="button"
+              class="summary-confirm-mobile"
+              @click="confirmOrder"
+            >
+              Подтвердить заказ
+            </button>
           </div>
         </div>
       </div>
@@ -843,6 +924,10 @@ onMounted(() => {
 
 .order-type-select {
   margin-left: auto;
+}
+
+.order-number {
+  line-height: 1;
 }
 
 .order-type-option__label {
@@ -1140,41 +1225,455 @@ onMounted(() => {
   padding-bottom: 12px !important;
 }
 
+.order-toolbar-mobile,
+.order-details-mobile,
+.order-details-mobile__empty,
+.order-add-detail-mobile,
+.summary-actions-mobile {
+  display: none;
+}
+
 @media (max-width: 992px) {
   .order-layout {
     padding: 20px;
-    border-radius: 0;
     grid-template-columns: 1fr;
     gap: 20px;
-  }
-
-  .order-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
   }
 
   .order-side {
     max-width: 100%;
     justify-self: stretch;
   }
+}
 
-  .order-quantity {
+@media (max-width: 767px) {
+  .personal-order {
+    border-radius: 0;
+  }
+
+  .order-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 0;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .order-main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .order-content-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .order-toolbar-mobile {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .order-mobile-btn {
+    border: none;
+    border-radius: 8px;
+    background: var(--button-bg);
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .order-mobile-btn--back {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 40px;
+    gap: 10px;
+    padding: 12px 16px;
+    white-space: nowrap;
+  }
+
+  .order-mobile-btn--calc {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    padding: 12px 10px;
+  }
+
+  .order-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 0;
+    margin-bottom: 0;
   }
 
-  .order-footer {
+  .order-title {
+    gap: 8px;
+    width: 100%;
+  }
+
+  .order-number {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+  }
+
+  .order-name-wrapper {
+    width: 100%;
+  }
+
+  .order-name-input :deep(.input-edit-value) {
+    font-size: 16px !important;
+    line-height: normal;
+  }
+
+  .order-name-input :deep(.input-edit-btn) {
+    padding: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  .order-name-input :deep(.input-edit-btn .el-icon) {
+    font-size: 24px;
+  }
+
+  .order-quantity--desktop,
+  .order-table--desktop,
+  .order-footer--desktop,
+  .summary-actions--desktop {
+    display: none;
+  }
+
+  .order-details-mobile {
+    display: flex;
     flex-direction: column;
+    width: 100%;
   }
 
-  .order-type-select {
-    margin-left: 0;
+  .order-details-mobile__header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .order-details-mobile__col-preview,
+  .order-details-mobile__col-designation,
+  .order-details-mobile__col-price {
+    font-family: 'Montserrat-Regular', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 14px;
+    color: #7d8083;
+    box-sizing: border-box;
+  }
+
+  .order-details-mobile__col-preview {
+    flex: 0 0 38px;
+    width: 38px;
+    padding: 8px 4px;
+    text-align: center;
+  }
+
+  .order-details-mobile__col-designation {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 8px;
+  }
+
+  .order-details-mobile__col-price {
+    flex: 0 0 auto;
+    padding: 8px 20px;
+    text-align: center;
+  }
+
+  .order-details-mobile__row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 48px;
+    padding: 0;
+    border: none;
+    border-bottom: 1px solid var(--bgcolor);
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+  }
+
+  .order-details-mobile__preview {
+    flex: 0 0 38px;
+    width: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+    box-sizing: border-box;
+  }
+
+  .model-preview--mobile {
+    width: 30px;
+    height: 30px;
+    margin: 0;
+  }
+
+  .preview-placeholder--mobile {
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    border-width: 1px;
+  }
+
+  .order-details-mobile__designation {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+
+  .order-details-mobile__code {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .order-details-mobile__name {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: normal;
+    color: #7d8083;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .order-details-mobile__price {
+    flex: 0 0 auto;
+    padding: 16px 20px;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    text-align: right;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  .order-details-mobile__empty {
+    display: block;
+    margin: 0;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #7d8083;
+    text-align: center;
+  }
+
+  .order-add-detail-mobile {
+    display: block;
+    position: relative;
+    width: 100%;
+  }
+
+  .order-add-detail-mobile__icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    color: #000;
+    pointer-events: none;
+  }
+
+  .order-type-select--mobile :deep(.el-select__wrapper) {
+    min-height: 40px !important;
+    height: 40px;
+    padding: 8px 16px 8px 36px !important;
+    border-radius: 8px !important;
+    background: var(--button-bg) !important;
+    border: none !important;
+    box-shadow: none !important;
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .order-type-select--mobile :deep(.el-select__selection),
+  .order-type-select--mobile :deep(.el-select__selected-item),
+  .order-type-select--mobile :deep(.el-select__placeholder) {
+    font-family: 'Montserrat-SemiBold', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: normal !important;
+    color: #000 !important;
+  }
+
+  .order-type-select--mobile :deep(.el-select__suffix) {
+    display: none;
+  }
+
+  .order-type-select--mobile :deep(.el-select__selection) {
+    flex: 0 0 auto;
+  }
+
+  .order-side {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .summary-card {
+    gap: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    min-height: auto;
+  }
+
+  .summary-card .maas-text {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .summary-card .maas-subtitle {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .status-section {
+    gap: 8px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+  }
+
+  .status-row {
+    gap: 4px;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .status-row::before,
+  .date-row::before {
+    border-bottom-color: #55585b;
+    transform: translateY(5px);
+  }
+
+  .date-group {
+    gap: 0;
+  }
+
+  .date-row--completion {
+    display: none;
+  }
+
+  .status-value {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .manufacturer-section {
+    padding: 0;
+    border-bottom: none;
+  }
+
+  .manufacturer-section .maas-subtitle {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .manufacturer-radio-group {
+    gap: 0;
+  }
+
+  .summary-content {
+    gap: 16px;
+  }
+
+  .manufacturer-radio-group :deep(.radio) {
+    --radio-size: 18px;
+    --radio-dot-size: 8px;
+    --radio-label-size: 12px;
+    --radio-min-height: 18px;
+  }
+
+  .cost-section {
+    gap: 4px;
+    padding-top: 0;
+  }
+
+  .cost-item .maas-text {
+    font-size: 12px;
+  }
+
+  .cost-item .maas-subtitle {
+    font-size: 20px;
   }
 
   .price-disclaimer {
     font-size: 12px;
+    margin-top: 4px;
+  }
+
+  .summary-actions-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .summary-save-mobile,
+  .summary-confirm-mobile {
+    width: 100%;
+    height: 40px;
+    padding: 4px 24px;
+    border: none;
+    border-radius: 8px;
+    background: var(--button-bg);
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .summary-confirm-mobile {
+    background: #aeb2b5;
   }
 }
 </style>
