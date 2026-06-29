@@ -25,6 +25,7 @@ const searchQuery = ref('')
 const deleteLoading = ref<number | null>(null)
 const repeatLoading = ref(false)
 const ordersTableRef = ref<TableInstance>()
+const isMobileSearchOpen = ref(false)
 
 const excludedStatuses = ['cancelled', 'C3:LOSE']
 
@@ -146,6 +147,22 @@ const handleOpen = (row: IKit): void => {
 
 const handleView = (row: IKit): void => {
   handleOpen(row)
+}
+
+const getOrderDisplayName = (order: KitOrder): string => {
+  if (order.kit_name) return order.kit_name
+  const filename = getFilename(order.file_id)
+  if (filename) return filename
+  return 'Нет названия'
+}
+
+const openMobileSearch = () => {
+  isMobileSearchOpen.value = true
+}
+
+const closeMobileSearch = () => {
+  isMobileSearchOpen.value = false
+  searchQuery.value = ''
 }
 
 const isProfileComplete = (profile?: IProfile): boolean => {
@@ -421,7 +438,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
 <template>
   <section class="personal-orders">
     <div class="orders-card">
-      <div class="orders-toolbar">
+      <div class="orders-toolbar orders-toolbar--desktop">
         <el-tabs v-model="activeTab" class="filter-tabs">
           <el-tab-pane label="Все" name="all"></el-tab-pane>
           <el-tab-pane label="Оплаченные" name="paid"></el-tab-pane>
@@ -451,9 +468,64 @@ const handleDelete = async (row: IKit): Promise<void> => {
         </div>
       </div>
 
+      <div class="orders-toolbar-mobile">
+        <template v-if="isMobileSearchOpen">
+          <el-input
+            v-model="searchQuery"
+            placeholder="Поиск"
+            class="orders-mobile-search"
+            :prefix-icon="Search"
+            clearable
+            autofocus
+          />
+          <button type="button" class="orders-mobile-search-close" @click="closeMobileSearch">
+            Отмена
+          </button>
+        </template>
+        <template v-else>
+          <button type="button" class="orders-mobile-btn orders-mobile-btn--search" @click="openMobileSearch">
+            <el-icon :size="20"><Search /></el-icon>
+            Поиск
+          </button>
+          <button type="button" class="orders-mobile-btn orders-mobile-btn--create" @click="createOrder">
+            <el-icon :size="16"><Plus /></el-icon>
+            Создать заказ
+          </button>
+        </template>
+      </div>
+
+      <div v-if="filteredOrders.length" class="orders-mobile-list">
+        <div class="orders-mobile-list__header">
+          <span class="orders-mobile-list__col-name">Наименование</span>
+          <span class="orders-mobile-list__col-status">Статус</span>
+        </div>
+        <button
+          v-for="order in filteredOrders"
+          :key="order.kit_id"
+          type="button"
+          class="orders-mobile-list__row"
+          @click="handleView(order)"
+        >
+          <span
+            class="orders-mobile-list__name"
+            :class="{ 'orders-mobile-list__name--empty': !order.kit_name && !getFilename(order.file_id) }"
+          >
+            {{ getOrderDisplayName(order) }}
+          </span>
+          <span
+            class="status-chip status-chip--mobile"
+            :class="getStatusClass(order.status_name)"
+            :style="getStatusStyle(order.status_color)"
+          >
+            {{ getStatusText(order.status_name) }}
+          </span>
+        </button>
+      </div>
+      <p v-else class="orders-mobile-empty">Нет данных</p>
+
       <el-table
         ref="ordersTableRef"
-        class="orders-table"
+        class="orders-table orders-table--desktop"
         :data="filteredOrders"
         :default-sort="{ prop: 'kit_id', order: 'descending' }"
         empty-text="Нет данных"
@@ -799,6 +871,12 @@ const handleDelete = async (row: IKit): Promise<void> => {
   color: #55585b !important;
 }
 
+.orders-toolbar-mobile,
+.orders-mobile-list,
+.orders-mobile-empty {
+  display: none;
+}
+
 @media (max-width: 1200px) {
   .orders-card {
     padding: 24px;
@@ -815,23 +893,220 @@ const handleDelete = async (row: IKit): Promise<void> => {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .personal-orders {
     min-height: auto;
   }
 
   .orders-card {
-    border-radius: 0;
-    padding: 20px;
-  }
-
-  .toolbar-actions {
-    gap: 12px;
-  }
-
-  .search-input,
-  .toolbar-actions :deep(.btn) {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
+    box-sizing: border-box;
     width: 100%;
+  }
+
+  .orders-toolbar--desktop,
+  .orders-table--desktop {
+    display: none;
+  }
+
+  .orders-toolbar-mobile {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .orders-mobile-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 40px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    white-space: nowrap;
+  }
+
+  .orders-mobile-btn--search {
+    background: #f2f3f7;
+    border: 1px solid var(--button-bg);
+  }
+
+  .orders-mobile-btn--create {
+    background: var(--button-bg);
+    gap: 4px;
+  }
+
+  .orders-mobile-search {
+    flex: 1 1 0;
+    min-width: 0;
+    --el-input-height: 40px;
+  }
+
+  .orders-mobile-search :deep(.el-input__wrapper) {
+    box-sizing: border-box;
+    height: 40px;
+    background-color: #f2f3f7;
+    border: 1px solid var(--button-bg);
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 0 16px;
+  }
+
+  .orders-mobile-search :deep(.el-input__wrapper.is-focus) {
+    border-color: var(--button-bg);
+    box-shadow: none;
+  }
+
+  .orders-mobile-search :deep(.el-input__inner) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #55585b;
+  }
+
+  .orders-mobile-search :deep(.el-input__inner::placeholder) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #55585b;
+    opacity: 1;
+  }
+
+  .orders-mobile-search :deep(.el-input__prefix .el-icon) {
+    color: #000;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  .orders-mobile-search-close {
+    flex-shrink: 0;
+    height: 40px;
+    padding: 0 8px;
+    border: none;
+    background: transparent;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .orders-mobile-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .orders-mobile-list__header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .orders-mobile-list__col-name,
+  .orders-mobile-list__col-status {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #7d8083;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+
+  .orders-mobile-list__col-name {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .orders-mobile-list__col-status {
+    flex: 0 0 125px;
+    width: 125px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .orders-mobile-list__row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 0;
+    border: none;
+    border-bottom: 1px solid var(--bgcolor);
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+  }
+
+  .orders-mobile-list__name {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 8px;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .orders-mobile-list__name--empty {
+    color: #7d8083;
+    font-style: italic;
+  }
+
+  .orders-mobile-list__row .status-chip--mobile {
+    flex: 0 0 125px;
+    width: 125px;
+    max-width: 125px;
+    margin-right: 0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    justify-content: flex-start;
+    box-sizing: border-box;
+  }
+
+  .orders-mobile-empty {
+    display: block;
+    margin: 0;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #7d8083;
+    text-align: center;
   }
 }
 </style>
