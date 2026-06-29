@@ -552,27 +552,31 @@ onMounted(() => {
           <p v-else-if="!isLoading" class="order-details-mobile__empty">Нет данных по деталям</p>
 
           <div class="order-add-detail-mobile">
-            <el-icon class="order-add-detail-mobile__icon" :size="16">
-              <Plus />
-            </el-icon>
-            <Select
-              v-model="selectedOrderType"
-              placeholder="Добавить деталь"
-              width="100%"
-              class="order-type-select order-type-select--mobile"
-              dropdown-class="order-type-select-dropdown"
-              @change="handleOrderTypeChange"
+            <el-dropdown
+              trigger="click"
+              placement="bottom"
+              popper-class="order-add-detail-dropdown"
+              class="order-add-detail-mobile__dropdown"
+              @command="handleOrderTypeChange"
             >
-              <el-option
-                v-for="option in orderTypeOptions"
-                :key="option.value"
-                :label="option.label"
-                :value="option.value"
-              >
-                <span class="order-type-option__label">{{ option.label }}</span>
-                <span class="order-type-option__chevron" aria-hidden="true" />
-              </el-option>
-            </Select>
+              <button type="button" class="order-add-detail-mobile__btn">
+                <el-icon :size="16">
+                  <Plus />
+                </el-icon>
+                Добавить деталь
+              </button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item
+                    v-for="option in orderTypeOptions"
+                    :key="option.value"
+                    :command="option.value"
+                  >
+                    {{ option.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </div>
         </div>
 
@@ -1499,48 +1503,33 @@ onMounted(() => {
 
   .order-add-detail-mobile {
     display: block;
-    position: relative;
     width: 100%;
   }
 
-  .order-add-detail-mobile__icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-    color: #000;
-    pointer-events: none;
+  .order-add-detail-mobile__dropdown {
+    display: block;
+    width: 100%;
   }
 
-  .order-type-select--mobile :deep(.el-select__wrapper) {
-    min-height: 40px !important;
+  .order-add-detail-mobile__btn {
+    width: 100%;
     height: 40px;
-    padding: 8px 16px 8px 36px !important;
-    border-radius: 8px !important;
-    background: var(--button-bg) !important;
-    border: none !important;
-    box-shadow: none !important;
-    gap: 4px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--button-bg);
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-  }
-
-  .order-type-select--mobile :deep(.el-select__selection),
-  .order-type-select--mobile :deep(.el-select__selected-item),
-  .order-type-select--mobile :deep(.el-select__placeholder) {
-    font-family: 'Montserrat-SemiBold', sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    line-height: normal !important;
-    color: #000 !important;
-  }
-
-  .order-type-select--mobile :deep(.el-select__suffix) {
-    display: none;
-  }
-
-  .order-type-select--mobile :deep(.el-select__selection) {
-    flex: 0 0 auto;
+    gap: 4px;
+    box-sizing: border-box;
+    white-space: nowrap;
   }
 
   .order-side {
@@ -1601,23 +1590,30 @@ onMounted(() => {
   }
 
   .manufacturer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     padding: 0;
     border-bottom: none;
   }
 
   .manufacturer-section .maas-subtitle {
-    margin-bottom: 8px;
+    margin-bottom: 0;
     font-size: 14px;
     font-weight: 600;
     line-height: normal;
   }
 
   .manufacturer-radio-group {
-    gap: 0;
+    gap: 8px;
+    width: 100%;
   }
 
-  .summary-content {
-    gap: 16px;
+  .manufacturer-radio-group :deep(.el-radio) {
+    margin-right: 0;
+    height: auto;
+    padding: 0;
+    align-items: center;
   }
 
   .manufacturer-radio-group :deep(.radio) {
@@ -1625,6 +1621,12 @@ onMounted(() => {
     --radio-dot-size: 8px;
     --radio-label-size: 12px;
     --radio-min-height: 18px;
+    --radio-label-padding-left: 10px;
+    width: 100%;
+  }
+
+  .summary-content {
+    gap: 16px;
   }
 
   .cost-section {
@@ -1722,6 +1724,45 @@ onMounted(() => {
 }
 
 .order-type-select-dropdown .el-popper__arrow {
+  display: none;
+}
+
+.order-add-detail-dropdown.el-popper {
+  box-sizing: border-box;
+  padding: 20px !important;
+  background: #fff !important;
+  border: none !important;
+  border-radius: 20px !important;
+  box-shadow: none !important;
+}
+
+.order-add-detail-dropdown .el-dropdown-menu {
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.order-add-detail-dropdown .el-dropdown-menu__item {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding: 10px 0 !important;
+  color: #000 !important;
+  background: #fff !important;
+  font-family: 'Montserrat-Medium', sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+}
+
+.order-add-detail-dropdown .el-dropdown-menu__item:not(.is-disabled):hover,
+.order-add-detail-dropdown .el-dropdown-menu__item:not(.is-disabled):focus {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+.order-add-detail-dropdown .el-popper__arrow {
   display: none;
 }
 </style>
