@@ -33,10 +33,7 @@ const showEmailVerificationBanner = computed(() => {
 const canResendConfirmation = computed(() => emailStore.canResend())
 
 const onResendConfirmation = async () => {
-  const email =
-    profileForm.value?.personal_email?.trim() ||
-    profileForm.value?.email?.trim() ||
-    ''
+  const email = profileForm.value?.personal_email?.trim() || ''
   if (!email) {
     ElMessage.warning('Укажите email в профиле')
     return
@@ -205,6 +202,10 @@ const rules = ref<FormRules<IProfile>>({
     { required: true, message: 'Введите email', trigger: 'blur' },
     { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
   ],
+  personal_email: [
+    { required: true, message: 'Введите email', trigger: 'blur' },
+    { type: 'email', message: 'Введите корректный email', trigger: ['blur', 'change'] },
+  ],
   company_email: [{ validator: validateCompanyEmail, trigger: ['blur', 'change'] }],
   phone_number: [
     { required: true, message: 'Введите телефон', trigger: 'blur' },
@@ -350,8 +351,14 @@ const contactFio = computed({
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item prop="email">
-                    <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
+                  <el-form-item prop="personal_email">
+                    <Input
+                      v-model="profileForm.personal_email"
+                      placeholder="E-mail"
+                      type="email"
+                      disabled
+                      fontSize="20px"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -474,7 +481,13 @@ const contactFio = computed({
                 </el-col>
                 <el-col :span="12">
                   <el-form-item>
-                    <Input v-model="profileForm.email" placeholder="E-mail" type="email" fontSize="20px" />
+                    <Input
+                      v-model="profileForm.personal_email"
+                      placeholder="E-mail"
+                      type="email"
+                      disabled
+                      fontSize="20px"
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
