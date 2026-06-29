@@ -19,7 +19,6 @@ const router = useRouter()
 const authStore = useAuthStore()
 const allOrders = ref<KitOrder[]>([])
 const profileStore = useProfileStore()
-const filenames = ref<Map<number, string>>(new Map())
 const activeTab = ref('all')
 const searchQuery = ref('')
 const deleteLoading = ref<number | null>(null)
@@ -135,11 +134,6 @@ const getStatusStyle = (statusColor?: string | null): Record<string, string> => 
   }
 }
 
-const getFilename = (fileId: number | null | undefined): string | null => {
-  if (!fileId) return null
-  return filenames.value.get(fileId) || null
-}
-
 const handleOpen = (row: IKit): void => {
   if (!row.kit_id) return
   router.push({ path: '/personal/order', query: { kitId: row.kit_id.toString() } })
@@ -150,10 +144,7 @@ const handleView = (row: IKit): void => {
 }
 
 const getOrderDisplayName = (order: KitOrder): string => {
-  if (order.kit_name) return order.kit_name
-  const filename = getFilename(order.file_id)
-  if (filename) return filename
-  return 'Нет названия'
+  return order.kit_name || 'Нет названия'
 }
 
 const openMobileSearch = () => {
@@ -508,7 +499,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
         >
           <span
             class="orders-mobile-list__name"
-            :class="{ 'orders-mobile-list__name--empty': !order.kit_name && !getFilename(order.file_id) }"
+            :class="{ 'orders-mobile-list__name--empty': !order.kit_name }"
           >
             {{ getOrderDisplayName(order) }}
           </span>
@@ -538,13 +529,6 @@ const handleDelete = async (row: IKit): Promise<void> => {
             <span v-if="row.kit_name" class="filename-text filename-text--link" @click="handleView(row)">{{
               row.kit_name
             }}</span>
-            <span
-              v-else-if="getFilename(row.file_id)"
-              class="filename-text"
-              @click="handleView(row)"
-            >
-              {{ getFilename(row.file_id) }}
-            </span>
             <span v-else class="no-filename">Нет названия</span>
           </template>
         </el-table-column>
