@@ -339,12 +339,14 @@ async function getOrder(id: number) {
 
 <template>
   <Loader :loading="isLoading" text="Расчет цены...">
-    <section class="milling-page">
-      <el-row :gutter="0" class="milling-page__row">
+    <section class="other-page">
+      <el-row :gutter="0" class="other-page__row">
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-          <div class="milling-page__card">
-            <div class="milling-page__main other-page__main">
-              <div class="other-page__fields">
+          <div class="other-page__card">
+            <div class="other-page__main">
+              <div class="other-block other-block--form">
+                <h2 class="other-page__mobile-title">Прочее</h2>
+
                 <div class="calc-quantity">
                   <div class="calc-title">Количество, ед.</div>
                   <Input
@@ -354,37 +356,40 @@ async function getOrder(id: number) {
                   />
                 </div>
 
-                <div class="milling-field-group">
+                <div class="other-field-group">
                   <div class="calc-title">Материал</div>
                   <SelectCalc v-model="material_id" :input-data="materials" />
                 </div>
 
-                <div class="milling-field-group">
+                <div class="other-field-group">
                   <div class="calc-title">Технология</div>
                   <SelectCalc v-model="service_id" :input-data="processes" />
                 </div>
 
-                <div class="milling-field-block">
+                <div class="other-field-block">
                   <div class="calc-title">Финишная обработка изделия</div>
                   <CoefficientCover2 v-model="cover_id" />
                 </div>
 
-                <div class="milling-field-block milling-field-block--otk">
+                <div class="other-field-block other-field-block--otk">
                   <div class="calc-title">Вид контроля</div>
                   <CoefficientOtk2 v-model="k_otk" />
                 </div>
 
                 <div
-                  class="milling-field-block"
+                  class="other-field-block"
                   v-if="profileStore.profile?.username === 'admin'"
                 >
                   <SuitableMachines :machines="result?.suitable_machines || []" />
                 </div>
               </div>
 
-              <div class="other-page__bottom">
-                <div class="milling-field-block other-description">
-                  <div class="calc-title">Описание заказа</div>
+              <div class="other-block other-block--comment">
+                <div class="other-field-block">
+                  <div class="calc-title">
+                    <span class="calc-title__desktop">Описание заказа</span>
+                    <span class="calc-title__mobile">Комментарий</span>
+                  </div>
                   <el-input
                     v-model="special_instructions"
                     type="textarea"
@@ -393,31 +398,68 @@ async function getOrder(id: number) {
                   />
                 </div>
 
-                <div class="milling-actions">
-                  <CalculateSubmit2
-                    :order-id="order_id"
-                    :payload="payload as unknown as IOrderPayload"
-                    :special-instructions="special_instructions"
-                    @updateResult="onUpdateResult"
-                    @showInfo="isInfoVisible = true"
-                  />
+                <div class="other-actions">
+                  <div class="other-submit other-submit--desktop">
+                    <CalculateSubmit2
+                      :order-id="order_id"
+                      :payload="payload as unknown as IOrderPayload"
+                      :special-instructions="special_instructions"
+                      @updateResult="onUpdateResult"
+                      @showInfo="isInfoVisible = true"
+                    />
+                  </div>
+                  <div class="other-submit other-submit--mobile">
+                    <CalculateSubmit2
+                      :order-id="order_id"
+                      :payload="payload as unknown as IOrderPayload"
+                      :special-instructions="special_instructions"
+                      save-label="Сохранить"
+                      hide-back-button
+                      @updateResult="onUpdateResult"
+                      @showInfo="isInfoVisible = true"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <aside class="milling-page__aside">
-              <CalculateResultSpecialist />
+            <aside class="other-page__aside">
+              <div class="other-block other-block--results">
+                <CalculateResultSpecialist />
 
-              <div class="milling-upload">
-                <div class="milling-upload__title">Загрузите файлы</div>
-                <UploadFiles2
-                  v-model="document_ids"
-                  color="#000"
-                  :hide-formats-text="true"
-                  v-model:stp_id="file_id"
-                  class="upload-files-bordered"
-                />
-                <DocumentShowByIds2 v-model="document_ids" />
+                <div class="other-docs other-docs--mobile">
+                  <div class="other-docs__title">Загруженные файлы</div>
+                  <DocumentShowByIds2
+                    v-model="document_ids"
+                    class="other-docs-list other-docs-list--mobile"
+                  />
+                </div>
+              </div>
+
+              <div class="other-block other-block--upload">
+                <div class="other-upload">
+                  <div class="other-upload__title other-upload__title--desktop">Загрузите файлы</div>
+                  <UploadFiles2
+                    v-model="document_ids"
+                    color="#000"
+                    :hide-formats-text="true"
+                    upload-text="Загрузите файлы"
+                    v-model:stp_id="file_id"
+                    class="upload-files-bordered upload-files--desktop"
+                  />
+                  <UploadFiles2
+                    v-model="document_ids"
+                    color="#000"
+                    :hide-formats-text="true"
+                    upload-text="Загрузите файлы"
+                    v-model:stp_id="file_id"
+                    class="upload-files-bordered upload-files--mobile"
+                  />
+                  <DocumentShowByIds2
+                    v-model="document_ids"
+                    class="other-docs-list other-docs-list--desktop"
+                  />
+                </div>
               </div>
             </aside>
           </div>
@@ -428,17 +470,17 @@ async function getOrder(id: number) {
 </template>
 
 <style scoped>
-.milling-page {
+.other-page {
   padding: 0px 0 40px;
   min-height: 300px;
   background-color: var(--bgcolor);
 }
 
-.milling-page__row {
+.other-page__row {
   width: 100%;
 }
 
-.milling-page__card {
+.other-page__card {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -451,54 +493,76 @@ async function getOrder(id: number) {
   gap: 40px;
 }
 
-.milling-page__main {
+.other-page__main {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 80px;
   min-width: 0;
 }
 
-.other-page__main {
-  gap: 80px;
-}
-
-.other-page__fields {
+.other-block--form {
   display: flex;
   flex-direction: column;
   gap: 40px;
-  width: 100%;
 }
 
-.other-page__bottom {
+.other-block--comment {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 100%;
   margin-top: auto;
 }
 
-.other-description {
-  padding: 0;
+.other-page__mobile-title {
+  display: none;
 }
 
-.milling-field-group,
-.milling-field-block {
+.calc-title__mobile {
+  display: none;
+}
+
+.other-docs--mobile {
+  display: none;
+}
+
+.upload-files--mobile {
+  display: none;
+}
+
+.other-field-group,
+.other-field-block {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 5px 0;
 }
 
-.milling-field-block--otk {
+.other-field-group :deep(.el-select__wrapper),
+.other-field-block :deep(.el-select__wrapper) {
+  min-height: 48px;
+  height: 48px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background-color: var(--whity);
+  box-shadow: none;
+  border: none;
+  box-sizing: border-box;
+}
+
+.other-field-block--otk {
   max-width: 822px;
   gap: 20px;
 }
 
-.milling-actions {
+.other-actions {
   padding-top: 6px;
 }
 
-.milling-page__aside {
+.other-submit--mobile {
+  display: none;
+}
+
+.other-page__aside {
   background: var(--bgcolor);
   border-radius: 20px;
   padding: 20px;
@@ -508,13 +572,24 @@ async function getOrder(id: number) {
   min-width: 0;
 }
 
-.milling-upload {
+.other-block--results,
+.other-block--upload {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.other-block--upload {
+  gap: 12px;
+}
+
+.other-upload {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.milling-upload__title {
+.other-upload__title {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
   color: #000;
@@ -529,7 +604,7 @@ async function getOrder(id: number) {
 }
 
 @media (max-width: 1199px) {
-  .milling-page__card {
+  .other-page__card {
     width: 100%;
     padding: 20px;
     grid-template-columns: 1fr;
@@ -538,69 +613,315 @@ async function getOrder(id: number) {
 }
 
 @media (max-width: 767px) {
-  .milling-page {
-    padding: 16px 0 20px;
+  .other-page {
+    padding: 32px 10px 40px;
+    background-color: var(--bgcolor);
   }
 
-  .milling-page__row {
+  .other-page__row {
     box-sizing: border-box;
   }
 
-  .milling-page__card {
+  .other-page__card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
     max-width: 100%;
-    padding: 14px;
-    border-radius: 0px;
-    gap: 16px;
-    box-shadow: 0 6px 10px 0 var(--button);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
     overflow-x: hidden;
   }
 
-  .milling-page__main,
-  .other-page__main {
+  .other-page__main,
+  .other-page__aside {
+    display: contents;
+  }
+
+  .other-block {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .other-block--upload {
+    order: 1;
+    gap: 0;
+  }
+
+  .other-block--form {
+    order: 2;
+    gap: 32px;
+  }
+
+  .other-block--results {
+    order: 3;
     gap: 16px;
   }
 
-  .other-page__fields {
+  .other-block--comment {
+    order: 4;
     gap: 16px;
+    margin-top: 0;
   }
 
-  .other-page__bottom {
-    gap: 14px;
+  .other-page__mobile-title {
+    display: block;
+    margin: 0;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 22px;
+    line-height: normal;
+    color: #000;
   }
 
-  .milling-field-group,
-  .milling-field-block {
+  .calc-title__desktop {
+    display: none;
+  }
+
+  .calc-title__mobile {
+    display: inline;
+  }
+
+  .other-docs--mobile {
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-    padding: 2px 0;
   }
 
-  .milling-field-block--otk {
-    gap: 12px;
+  .other-docs__title {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .other-docs-list--desktop {
+    display: none;
+  }
+
+  .upload-files--desktop {
+    display: none;
+  }
+
+  .upload-files--mobile {
+    display: block;
+  }
+
+  .other-upload__title--desktop {
+    display: none;
+  }
+
+  .other-upload {
+    gap: 0;
+  }
+
+  .upload-files--mobile :deep(.upload) {
+    min-height: 0;
+    padding: 16px 32px;
+    border-radius: 8px;
+    border: 2px dashed var(--button-bg);
+    background-color: transparent;
+  }
+
+  .upload-files--mobile :deep(.custom .el-upload__text) {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    max-width: none;
+  }
+
+  .other-block--form .calc-title {
+    font-size: 14px;
+    line-height: normal;
+    padding-bottom: 5px;
+  }
+
+  .other-block--comment .calc-title {
+    font-size: 14px;
+    line-height: normal;
+  }
+
+  .other-field-group,
+  .other-field-block {
+    gap: 8px;
+    padding: 0;
+  }
+
+  .other-field-block--otk {
+    gap: 10px;
     max-width: 100%;
   }
 
-  .milling-upload__title {
-    font-size: 18px;
-    line-height: 1.2;
+  .other-block--form :deep(.input .el-input__wrapper),
+  .other-block--form :deep(.el-select__wrapper) {
+    min-height: 40px;
+    height: 40px;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #f2f3f7;
+    box-shadow: none;
+    border: none;
+    box-sizing: border-box;
   }
 
-  .milling-page__aside {
-    padding: 12px;
-    border-radius: 14px;
-    gap: 14px;
+  .other-block--form :deep(.input .el-input__inner),
+  .other-block--form :deep(.el-select__placeholder),
+  .other-block--form :deep(.el-select__selected-item) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    height: auto;
   }
 
-  .milling-upload {
-    gap: 10px;
+  .other-block--form :deep(.el-select .el-select__suffix) {
+    width: 20px;
+    height: 20px;
   }
 
-  .milling-actions {
+  .other-block--form :deep(.coefficient-value) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .other-block--form :deep(.checkbox-item) {
+    width: 100%;
+    padding-bottom: 0;
+    --checkbox-size: 20px;
+    --checkbox-radius: 4px;
+    --checkbox-border-color: #7d8083;
+    --checkbox-bg-color: #f2f3f7;
+    --checkbox-checked-bg-color: #f2f3f7;
+    --checkbox-label-padding-left: 8px;
+    --checkbox-label-size: 12px;
+    --checkbox-line-height: normal;
+  }
+
+  .other-block--form :deep(.el-checkbox-group) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .other-block--form :deep(.otk-radio-group) {
+    row-gap: 8px;
+  }
+
+  .other-block--form :deep(.otk-radio) {
+    --radio-size: 20px;
+    --radio-border-color: #7d8083;
+    --radio-bg-color: #f2f3f7;
+    --radio-label-size: 12px;
+    --radio-label-padding-left: 8px;
+    --radio-white-space: normal;
+  }
+
+  .other-block--results :deep(.result-specialist) {
+    gap: 8px;
+    padding: 8px;
+    border-radius: 10px;
+    background-color: #f2f3f7;
+  }
+
+  .other-block--results :deep(.result-specialist__title) {
+    font-size: 16px;
+    line-height: normal;
+  }
+
+  .other-block--results :deep(.result-specialist__message) {
+    font-size: 12px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .other-docs-list--mobile :deep(.doc-list) {
+    gap: 4px;
+  }
+
+  .other-docs-list--mobile :deep(.doc-row) {
+    min-height: 0;
+    height: auto;
+    padding: 8px;
+    border-radius: 5px;
+    background: #f2f3f7;
+    gap: 8px;
+  }
+
+  .other-docs-list--mobile :deep(.doc-content) {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .other-docs-list--mobile :deep(.doc-name) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .other-docs-list--mobile :deep(.doc-date) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+  }
+
+  .other-block--comment :deep(.el-textarea__inner) {
+    min-height: 80px !important;
+    padding: 8px;
+    border-radius: 10px;
+    background: #f2f3f7;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    line-height: normal;
+  }
+
+  .other-actions {
     padding-top: 0;
   }
 
-  :deep(.el-textarea__inner) {
-    min-height: 120px !important;
+  .other-submit--desktop {
+    display: none;
+  }
+
+  .other-submit--mobile {
+    display: block;
+  }
+
+  .other-submit--mobile :deep(.calculate-submit2) {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .other-submit--mobile :deep(.auth-tooltip-trigger) {
+    width: 100%;
+  }
+
+  .other-submit--mobile :deep(.calculate-submit2 .btn) {
+    width: 100% !important;
+    min-height: 40px;
+    height: 40px;
+    padding: 8px 24px;
+    border-radius: 8px;
+    background-color: var(--button-bg) !important;
+    border: none;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    box-shadow: none;
   }
 }
 </style>
