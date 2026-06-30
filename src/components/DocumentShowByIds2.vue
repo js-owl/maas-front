@@ -203,6 +203,7 @@ watch(
             <el-dropdown
               trigger="click"
               placement="bottom-end"
+              popper-class="calc-doc-dropdown"
               @command="(command: string) => handleMenuCommand(command, doc.id)"
             >
               <button class="file-menu" type="button" aria-label="Действия с документом">

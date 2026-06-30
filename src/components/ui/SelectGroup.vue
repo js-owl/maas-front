@@ -12,11 +12,13 @@ const props = withDefaults(
     placeholder?: string
     filterable?: boolean
     width?: string
+    dropdownClass?: string
   }>(),
   {
     placeholder: '',
     filterable: true,
     width: '100%',
+    dropdownClass: 'calc-page-select-dropdown',
   }
 )
 
@@ -38,6 +40,7 @@ const model = computed({
       :options="options"
       :placeholder="placeholder"
       :suffix-icon="IconArrowDown"
+      :popper-class="dropdownClass"
       size="large"
       class="full"
       :style="{ width }"

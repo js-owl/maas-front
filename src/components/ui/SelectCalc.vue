@@ -10,9 +10,11 @@ withDefaults(
   defineProps<{
     inputData: SelectCalcOption[]
     placeholder?: string
+    dropdownClass?: string
   }>(),
   {
     placeholder: 'Выбрать',
+    dropdownClass: 'calc-page-select-dropdown',
   }
 )
 
@@ -26,6 +28,7 @@ const selectedValue = defineModel<string>()
       value-key="label"
       :placeholder="placeholder"
       :suffix-icon="IconArrowDown"
+      :popper-class="dropdownClass"
       size="large"
       class="full"
     >
