@@ -16,6 +16,7 @@ import UploadFiles2 from '@/components/UploadFiles2.vue'
 import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
 import Loader from '../components/ui/Loader.vue'
+import { toElectroplatingFamilyOptions } from '../helpers/material-family'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
 
@@ -309,18 +310,37 @@ async function loadMaterialFamilies() {
 
   isMaterialsLoading.value = true
   try {
+    const processQuery = encodeURIComponent(electroplating_process_id.value)
+    // New endpoint may be absent on older backends — fall back to /materials.
     const response = await req_json_auth(
-      `/electroplating_material_families?electroplating_process_id=${encodeURIComponent(electroplating_process_id.value)}`,
+      `/electroplating_material_families?electroplating_process_id=${processQuery}`,
       'GET',
+      undefined,
+      [404],
     )
-    if (!response?.ok) return
 
-    const body = (await response.json()) as ElectroplatingMaterialFamiliesResponse
-    const values = body.data?.values ?? body.values ?? []
-    materialFamilies.value = values.map((item) => ({
-      value: item.id,
-      label: item.label,
-    }))
+    if (response?.status === 404) {
+      const legacyResponse = await req_json_auth(
+        `/materials?process=electroplating_auto&electroplating_process_id=${processQuery}`,
+        'GET',
+      )
+      if (!legacyResponse?.ok) return
+
+      const legacyBody = (await legacyResponse.json()) as {
+        materials?: Array<{ electroplating_family?: string | null }>
+      }
+      materialFamilies.value = toElectroplatingFamilyOptions(legacyBody.materials ?? [])
+    } else {
+      if (!response?.ok) return
+
+      const body = (await response.json()) as ElectroplatingMaterialFamiliesResponse
+      const values = body.data?.values ?? body.values ?? []
+      materialFamilies.value = values.map((item) => ({
+        value: item.id,
+        label: item.label,
+      }))
+    }
+
     if (!materialFamilies.value.length) return
 
     if (
@@ -489,100 +509,148 @@ watch(file_id, () => {
 
 <template>
   <Loader :loading="isLoading" text="Расчет цены...">
-    <section class="milling-page">
-      <el-row :gutter="0" class="milling-page__row">
+    <section class="galvanic-page">
+      <el-row :gutter="0" class="galvanic-page__row">
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-          <div class="milling-page__card">
-            <div class="milling-page__main galvanic-page__main">
-              <div class="calc-quantity">
-                <div class="calc-title">Количество, шт</div>
-                <Input v-model="quantityInput" type="number" placeholder="Введите количество" />
+          <div class="galvanic-page__card">
+            <div class="galvanic-page__main">
+              <div class="galvanic-block galvanic-block--form">
+                <h2 class="galvanic-page__mobile-title">Гальваника</h2>
+
+                <div class="calc-quantity">
+                  <div class="calc-title">Количество, шт</div>
+                  <Input v-model="quantityInput" type="number" placeholder="Введите количество" />
+                </div>
+
+                <div class="galvanic-field-block">
+                  <div class="calc-title">Вид покрытия</div>
+                  <div class="galvanic-cover-fields">
+                    <SelectCalc v-model="process_id" :input-data="coatingProcesses" />
+                    <SelectCalc
+                      v-if="coatingTypes.length"
+                      v-model="electroplating_process_id"
+                      :input-data="coatingTypes"
+                    />
+                  </div>
+                </div>
+
+                <div class="galvanic-field-group">
+                  <div class="calc-title">Материал детали</div>
+                  <SelectCalc
+                    v-model="electroplating_family"
+                    :input-data="materialFamilies"
+                  />
+                </div>
+
+                <div v-if="requiresCoatingThicknessInput" class="galvanic-field-block">
+                  <div class="calc-title">Толщина покрытия, мкм</div>
+                  <Input
+                    v-model="coatingThicknessInput"
+                    type="number"
+                    placeholder="Введите толщину"
+                  />
+                </div>
+
+                <div v-if="technicalRestrictions.length" class="galvanic-field-block">
+                  <div class="calc-title">Технические ограничения</div>
+                  <div class="galvanic-restrictions">
+                    <div
+                      v-for="restriction in technicalRestrictions"
+                      :key="restriction"
+                      class="galvanic-restriction"
+                    >
+                      {{ restriction }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="galvanic-field-block galvanic-field-block--otk">
+                  <div class="calc-title">Вид контроля</div>
+                  <CoefficientOtk2 v-model="k_otk" />
+                </div>
+
+                <div class="galvanic-field-block" v-if="profileStore.profile?.username === 'admin'">
+                  <SuitableMachines :machines="result?.suitable_machines || []" />
+                </div>
               </div>
 
-              <div class="milling-field-block">
-                <div class="calc-title">Вид покрытия</div>
-                <div class="galvanic-cover-fields">
-                  <SelectCalc v-model="process_id" :input-data="coatingProcesses" />
-                  <SelectCalc
-                    v-if="coatingTypes.length"
-                    v-model="electroplating_process_id"
-                    :input-data="coatingTypes"
+              <div class="galvanic-block galvanic-block--comment">
+                <div class="galvanic-field-block">
+                  <div class="calc-title">
+                    <span class="calc-title__desktop">Описание заказа</span>
+                    <span class="calc-title__mobile">Комментарий</span>
+                  </div>
+                  <el-input v-model="special_instructions" type="textarea" :rows="5" placeholder="" />
+                </div>
+
+                <div class="galvanic-actions">
+                  <div class="galvanic-submit galvanic-submit--desktop">
+                    <CalculateSubmit2
+                      :order-id="order_id"
+                      :payload="submitPayload as unknown as IOrderPayload"
+                      :special-instructions="special_instructions"
+                      @updateResult="onUpdateResult"
+                      @showInfo="isInfoVisible = true"
+                    />
+                  </div>
+                  <div class="galvanic-submit galvanic-submit--mobile">
+                    <CalculateSubmit2
+                      :order-id="order_id"
+                      :payload="submitPayload as unknown as IOrderPayload"
+                      :special-instructions="special_instructions"
+                      save-label="Сохранить"
+                      hide-back-button
+                      @updateResult="onUpdateResult"
+                      @showInfo="isInfoVisible = true"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="galvanic-page__aside">
+              <div class="galvanic-block galvanic-block--results">
+                <CalculateResults :result="result" />
+
+                <div class="galvanic-docs galvanic-docs--mobile">
+                  <div class="galvanic-docs__title">Загруженные файлы</div>
+                  <DocumentShowByIds2
+                    v-model="document_ids"
+                    class="galvanic-docs-list galvanic-docs-list--mobile"
                   />
                 </div>
               </div>
 
-              <div class="milling-field-group">
-                <div class="calc-title">Материал детали</div>
-                <SelectCalc
-                  v-model="electroplating_family"
-                  :input-data="materialFamilies"
-                />
-              </div>
-
-              <div v-if="requiresCoatingThicknessInput" class="milling-field-block">
-                <div class="calc-title">Толщина покрытия, мкм</div>
-                <Input
-                  v-model="coatingThicknessInput"
-                  type="number"
-                  placeholder="Введите толщину"
-                />
-              </div>
-
-              <div v-if="technicalRestrictions.length" class="milling-field-block">
-                <div class="calc-title">Технические ограничения</div>
-                <div class="galvanic-restrictions">
-                  <div
-                    v-for="restriction in technicalRestrictions"
-                    :key="restriction"
-                    class="galvanic-restriction"
-                  >
-                    {{ restriction }}
-                  </div>
+              <div v-if="file_id" class="galvanic-block galvanic-block--cad">
+                <div class="galvanic-cad">
+                  <CadShowById :key="cadViewerKey" v-model="file_id" />
                 </div>
               </div>
 
-              <div class="milling-field-block milling-field-block--otk">
-                <div class="calc-title">Вид контроля</div>
-                <CoefficientOtk2 v-model="k_otk" />
-              </div>
-
-              <div class="milling-field-block" v-if="profileStore.profile?.username === 'admin'">
-                <SuitableMachines :machines="result?.suitable_machines || []" />
-              </div>
-
-              <div class="milling-field-block">
-                <div class="calc-title">Описание заказа</div>
-                <el-input v-model="special_instructions" type="textarea" :rows="5" placeholder="" />
-              </div>
-
-              <div class="milling-actions">
-                <CalculateSubmit2
-                  :order-id="order_id"
-                  :payload="submitPayload as unknown as IOrderPayload"
-                  :special-instructions="special_instructions"
-                  @updateResult="onUpdateResult"
-                  @showInfo="isInfoVisible = true"
-                />
-              </div>
-            </div>
-
-            <aside class="milling-page__aside">
-              <CalculateResults :result="result" />
-
-              <div v-if="file_id" class="milling-cad">
-                <CadShowById :key="cadViewerKey" v-model="file_id" />
-              </div>
-
-              <div class="milling-upload">
-                <div class="milling-upload__title">Загрузите файлы</div>
-                <UploadFiles2
-                  v-model="document_ids"
-                  color="#000"
-                  :hide-formats-text="true"
-                  v-model:stp_id="file_id"
-                  class="upload-files-bordered"
-                />
-                <DocumentShowByIds2 v-model="document_ids" />
+              <div class="galvanic-block galvanic-block--upload">
+                <div class="galvanic-upload">
+                  <div class="galvanic-upload__title galvanic-upload__title--desktop">Загрузите файлы</div>
+                  <UploadFiles2
+                    v-model="document_ids"
+                    color="#000"
+                    :hide-formats-text="true"
+                    upload-text="Загрузите файлы"
+                    v-model:stp_id="file_id"
+                    class="upload-files-bordered upload-files--desktop"
+                  />
+                  <UploadFiles2
+                    v-model="document_ids"
+                    color="#000"
+                    :hide-formats-text="true"
+                    upload-text="Загрузите файлы"
+                    v-model:stp_id="file_id"
+                    class="upload-files-bordered upload-files--mobile"
+                  />
+                  <DocumentShowByIds2
+                    v-model="document_ids"
+                    class="galvanic-docs-list galvanic-docs-list--desktop"
+                  />
+                </div>
               </div>
             </aside>
           </div>
@@ -593,17 +661,17 @@ watch(file_id, () => {
 </template>
 
 <style scoped>
-.milling-page {
+.galvanic-page {
   padding: 0px 0 40px;
   min-height: 300px;
   background-color: var(--bgcolor);
 }
 
-.milling-page__row {
+.galvanic-page__row {
   width: 100%;
 }
 
-.milling-page__card {
+.galvanic-page__card {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -616,26 +684,51 @@ watch(file_id, () => {
   gap: 40px;
 }
 
-.milling-page__main {
+.galvanic-page__main {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 40px;
   min-width: 0;
 }
 
-.galvanic-page__main {
+.galvanic-block--form {
+  display: flex;
+  flex-direction: column;
   gap: 40px;
 }
 
-.milling-field-group,
-.milling-field-block {
+.galvanic-block--comment {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.galvanic-page__mobile-title {
+  display: none;
+}
+
+.calc-title__mobile {
+  display: none;
+}
+
+.galvanic-docs--mobile {
+  display: none;
+}
+
+.upload-files--mobile {
+  display: none;
+}
+
+.galvanic-field-group,
+.galvanic-field-block {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 5px 0;
 }
 
-:deep(.el-select__wrapper) {
+.galvanic-field-group :deep(.el-select__wrapper),
+.galvanic-field-block :deep(.el-select__wrapper) {
   min-height: 48px;
   height: 48px;
   padding: 12px 24px;
@@ -646,7 +739,7 @@ watch(file_id, () => {
   box-sizing: border-box;
 }
 
-.milling-field-block--otk {
+.galvanic-field-block--otk {
   max-width: 822px;
   gap: 20px;
 }
@@ -674,11 +767,15 @@ watch(file_id, () => {
   color: #000;
 }
 
-.milling-actions {
+.galvanic-actions {
   padding-top: 6px;
 }
 
-.milling-page__aside {
+.galvanic-submit--mobile {
+  display: none;
+}
+
+.galvanic-page__aside {
   background: var(--bgcolor);
   border-radius: 20px;
   padding: 20px;
@@ -688,19 +785,31 @@ watch(file_id, () => {
   min-width: 0;
 }
 
-.milling-cad {
+.galvanic-block--results,
+.galvanic-block--cad,
+.galvanic-block--upload {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.galvanic-block--upload {
+  gap: 12px;
+}
+
+.galvanic-cad {
   border-radius: 10px;
   overflow: hidden;
   background: #fff;
 }
 
-.milling-upload {
+.galvanic-upload {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.milling-upload__title {
+.galvanic-upload__title {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
   color: #000;
@@ -715,7 +824,7 @@ watch(file_id, () => {
 }
 
 @media (max-width: 1199px) {
-  .milling-page__card {
+  .galvanic-page__card {
     width: 100%;
     padding: 20px;
     grid-template-columns: 1fr;
@@ -724,72 +833,340 @@ watch(file_id, () => {
 }
 
 @media (max-width: 767px) {
-  .milling-page {
-    padding: 16px 0 20px;
+  .galvanic-page {
+    padding: 32px 10px 40px;
+    background-color: var(--bgcolor);
   }
 
-  .milling-page__row {
+  .galvanic-page__row {
     box-sizing: border-box;
   }
 
-  .milling-page__card {
+  .galvanic-page__card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
     max-width: 100%;
-    padding: 14px;
-    border-radius: 0px;
-    gap: 16px;
-    box-shadow: 0 6px 10px 0 var(--button);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
     overflow-x: hidden;
   }
 
-  .milling-page__main,
-  .galvanic-page__main {
+  .galvanic-page__main,
+  .galvanic-page__aside {
+    display: contents;
+  }
+
+  .galvanic-block {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .galvanic-block--upload {
+    order: 1;
+    gap: 0;
+  }
+
+  .galvanic-block--form {
+    order: 2;
+    gap: 32px;
+  }
+
+  .galvanic-block--results {
+    order: 3;
     gap: 16px;
   }
 
-  .milling-field-group,
-  .milling-field-block {
-    gap: 8px;
-    padding: 2px 0;
+  .galvanic-block--comment {
+    order: 4;
+    gap: 16px;
   }
 
-  .milling-field-block--otk {
-    gap: 12px;
+  .galvanic-block--cad {
+    display: none;
+  }
+
+  .galvanic-page__mobile-title {
+    display: block;
+    margin: 0;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 22px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .calc-title__desktop {
+    display: none;
+  }
+
+  .calc-title__mobile {
+    display: inline;
+  }
+
+  .galvanic-docs--mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .galvanic-docs__title {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .galvanic-docs-list--desktop {
+    display: none;
+  }
+
+  .upload-files--desktop {
+    display: none;
+  }
+
+  .upload-files--mobile {
+    display: block;
+  }
+
+  .galvanic-upload__title--desktop {
+    display: none;
+  }
+
+  .galvanic-upload {
+    gap: 0;
+  }
+
+  .upload-files--mobile :deep(.upload) {
+    min-height: 0;
+    padding: 16px 32px;
+    border-radius: 8px;
+    border: 2px dashed var(--button-bg);
+    background-color: transparent;
+  }
+
+  .upload-files--mobile :deep(.custom .el-upload__text) {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    max-width: none;
+  }
+
+  .galvanic-block--form .calc-title {
+    font-size: 14px;
+    line-height: normal;
+    padding-bottom: 5px;
+  }
+
+  .galvanic-block--comment .calc-title {
+    font-size: 14px;
+    line-height: normal;
+  }
+
+  .galvanic-field-group,
+  .galvanic-field-block {
+    gap: 8px;
+    padding: 0;
+  }
+
+  .galvanic-field-block--otk {
+    gap: 10px;
     max-width: 100%;
+  }
+
+  .galvanic-cover-fields {
+    gap: 8px;
+  }
+
+  .galvanic-restrictions {
+    gap: 8px;
+    width: 100%;
   }
 
   .galvanic-restriction {
     width: 100%;
     box-sizing: border-box;
-    padding: 10px 14px;
-    font-size: 14px;
+    padding: 8px;
+    border-radius: 8px;
+    background: #f2f3f7;
+    font-size: 12px;
+    line-height: normal;
   }
 
-  .milling-upload__title {
-    font-size: 18px;
-    line-height: 1.2;
+  .galvanic-block--form :deep(.input .el-input__wrapper),
+  .galvanic-block--form :deep(.el-select__wrapper) {
+    min-height: 40px;
+    height: 40px;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #f2f3f7;
+    box-shadow: none;
+    border: none;
+    box-sizing: border-box;
   }
 
-  .milling-page__aside {
-    padding: 12px;
-    border-radius: 14px;
-    gap: 14px;
+  .galvanic-block--form :deep(.input .el-input__inner),
+  .galvanic-block--form :deep(.el-select__placeholder),
+  .galvanic-block--form :deep(.el-select__selected-item) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    height: auto;
   }
 
-  .milling-upload {
+  .galvanic-block--form :deep(.el-select .el-select__suffix) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .galvanic-block--form :deep(.otk-radio-group) {
+    row-gap: 8px;
+  }
+
+  .galvanic-block--form :deep(.otk-radio) {
+    --radio-size: 20px;
+    --radio-border-color: #7d8083;
+    --radio-bg-color: #f2f3f7;
+    --radio-label-size: 12px;
+    --radio-label-padding-left: 8px;
+    --radio-white-space: normal;
+  }
+
+  .galvanic-block--results :deep(.price-section) {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .galvanic-block--results :deep(.card) {
+    margin-bottom: 0;
+    padding: 8px;
+    border-radius: 10px;
+    background-color: #f2f3f7;
+  }
+
+  .galvanic-block--results :deep(.calc-res) {
+    font-size: 16px;
+    line-height: normal;
+  }
+
+  .galvanic-block--results :deep(.price) {
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  .galvanic-block--results :deep(.per-item) {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .galvanic-block--results :deep(.price-line) {
     gap: 10px;
+    align-items: flex-end;
   }
 
-  .milling-actions {
+  .galvanic-block--results :deep(.price-disclaimer) {
+    margin-top: 10px;
+    gap: 0;
+    font-size: 10px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .galvanic-block--results :deep(.price-disclaimer p) {
+    margin: 0;
+  }
+
+  .galvanic-docs-list--mobile :deep(.doc-list) {
+    gap: 4px;
+  }
+
+  .galvanic-docs-list--mobile :deep(.doc-row) {
+    min-height: 0;
+    height: auto;
+    padding: 8px;
+    border-radius: 5px;
+    background: #f2f3f7;
+    gap: 8px;
+  }
+
+  .galvanic-docs-list--mobile :deep(.doc-content) {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .galvanic-docs-list--mobile :deep(.doc-name) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .galvanic-docs-list--mobile :deep(.doc-date) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+  }
+
+  .galvanic-block--comment :deep(.el-textarea__inner) {
+    min-height: 80px !important;
+    padding: 8px;
+    border-radius: 10px;
+    background: #f2f3f7;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    line-height: normal;
+  }
+
+  .galvanic-actions {
     padding-top: 0;
   }
 
-  .milling-cad {
-    border-radius: 8px;
+  .galvanic-submit--desktop {
+    display: none;
   }
 
-  :deep(.el-textarea__inner) {
-    min-height: 120px !important;
+  .galvanic-submit--mobile {
+    display: block;
+  }
+
+  .galvanic-submit--mobile :deep(.calculate-submit2) {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .galvanic-submit--mobile :deep(.auth-tooltip-trigger) {
+    width: 100%;
+  }
+
+  .galvanic-submit--mobile :deep(.calculate-submit2 .btn) {
+    width: 100% !important;
+    min-height: 40px;
+    height: 40px;
+    padding: 8px 24px;
+    border-radius: 8px;
+    background-color: var(--button-bg) !important;
+    border: none;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    box-shadow: none;
   }
 }
 </style>

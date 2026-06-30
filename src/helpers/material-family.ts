@@ -31,6 +31,49 @@ export const getMaterialFamilyRuLabel = (rawFamily: string) => {
   return dictionary[key] ?? rawFamily
 }
 
+// Electroplating families use backend ids like "stainless_steel"; map them to UI labels.
+export const getElectroplatingFamilyRuLabel = (rawFamily: string) => {
+  const key = rawFamily.trim().toLowerCase()
+
+  const dictionary: Record<string, string> = {
+    aluminum: 'Алюминий',
+    copper: 'Медь',
+    stainless_steel: 'Нержавеющая сталь',
+    carbon_steel: 'Углеродистая сталь',
+    brass: 'Латунь',
+    bronze: 'Бронза',
+    titanium: 'Титан',
+    zinc: 'Цинк',
+  }
+
+  return dictionary[key] ?? getMaterialFamilyRuLabel(key.replace(/_/g, ' '))
+}
+
+type BackendElectroplatingMaterial = {
+  electroplating_family?: string | null
+}
+
+// Derive unique electroplating family options from legacy /materials response.
+export const toElectroplatingFamilyOptions = (
+  materials: BackendElectroplatingMaterial[],
+  locale = 'ru'
+): MaterialOption[] => {
+  const seen = new Set<string>()
+
+  return materials
+    .map((item) => (item.electroplating_family ?? '').trim())
+    .filter((family) => {
+      if (!family || seen.has(family)) return false
+      seen.add(family)
+      return true
+    })
+    .map((family) => ({
+      value: family,
+      label: getElectroplatingFamilyRuLabel(family),
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label, locale))
+}
+
 export const toMaterialOptionGroupsByFamily = (
   materials: BackendMaterialWithFamily[],
   opts?: { emptyFamilyLabel?: string; locale?: string }
