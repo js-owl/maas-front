@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { ArrowLeft } from '@element-plus/icons-vue'
+import { ArrowLeft, Download } from '@element-plus/icons-vue'
 
 type UploadedDocument = {
   id: number
@@ -39,6 +39,25 @@ const formatDocumentDate = (value?: string): string => {
     minute: '2-digit',
   })
 }
+
+const formatDocumentDatePart = (value?: string): string => {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
+  return `${day}.${month}.${year}`
+}
+
+const formatDocumentTimePart = (value?: string): string => {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${hours}:${minutes}`
+}
 </script>
 
 <template>
@@ -50,21 +69,35 @@ const formatDocumentDate = (value?: string): string => {
     <div v-if="isFilesExpanded" class="files-list">
       <div v-if="!props.uploadedDocuments.length" class="file-row file-row-empty">Файлы отсутствуют</div>
       <div v-for="item in props.uploadedDocuments" :key="item.id" class="file-row">
-        <span class="file-name">{{ item.original_filename }}</span>
-        <span class="file-date">{{ formatDocumentDate(item.uploaded_at) }}</span>
-        <el-dropdown
-          trigger="click"
-          placement="bottom-end"
-          @command="(command: string) => handleMenuCommand(command, item)"
-        >
-          <span class="file-menu">⋮</span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item command="download">Скачать</el-dropdown-item>
-              <el-dropdown-item command="remove">Удалить</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
+        <div class="file-row-left">
+          <span class="file-name">{{ item.original_filename }}</span>
+          <button
+            type="button"
+            class="file-download"
+            aria-label="Скачать"
+            @click="emit('view-document', item)"
+          >
+            <el-icon :size="20"><Download /></el-icon>
+          </button>
+        </div>
+        <div class="file-row-right">
+          <span class="file-date file-date--desktop">{{ formatDocumentDate(item.uploaded_at) }}</span>
+          <span class="file-date file-date--mobile">{{ formatDocumentDatePart(item.uploaded_at) }}</span>
+          <span class="file-time file-time--mobile">{{ formatDocumentTimePart(item.uploaded_at) }}</span>
+          <el-dropdown
+            trigger="click"
+            placement="bottom-end"
+            @command="(command: string) => handleMenuCommand(command, item)"
+          >
+            <span class="file-menu">⋮</span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="download">Скачать</el-dropdown-item>
+                <el-dropdown-item command="remove">Удалить</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
       </div>
     </div>
   </div>
@@ -136,10 +169,132 @@ const formatDocumentDate = (value?: string): string => {
   color: #7d8083;
 }
 
+.file-row-left {
+  display: contents;
+}
+
+.file-row-right {
+  display: contents;
+}
+
+.file-download,
+.file-date--mobile,
+.file-time--mobile {
+  display: none;
+}
+
 .file-menu {
   font-size: 28px;
   color: #667085;
   cursor: pointer;
   user-select: none;
+}
+
+@media (max-width: 767px) {
+  .files-section {
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .files-header {
+    height: auto;
+    border-radius: 0;
+    background-color: transparent;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .files-arrow {
+    display: none;
+  }
+
+  .files-list {
+    margin-top: 0;
+    gap: 4px;
+  }
+
+  .file-row {
+    min-height: auto;
+    background: #f2f3f7;
+    border-radius: 5px;
+    padding: 8px;
+    gap: 8px;
+    justify-content: space-between;
+  }
+
+  .file-row-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .file-row-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .file-name {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .file-download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #000;
+    cursor: pointer;
+  }
+
+  .file-date--desktop {
+    display: none;
+  }
+
+  .file-date--mobile,
+  .file-time--mobile {
+    display: inline;
+    margin-left: 0;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    white-space: nowrap;
+  }
+
+  .file-menu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: var(--button-bg);
+    font-size: 12px;
+    line-height: 1;
+    color: #000;
+  }
 }
 </style>

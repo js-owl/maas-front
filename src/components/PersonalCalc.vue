@@ -557,7 +557,22 @@ watch(
     <section class="personal-order">
       <div class="calc-layout">
         <div class="calc-main">
-          <div class="toolbar-row">
+          <div class="calc-toolbar-mobile">
+            <button type="button" class="calc-mobile-btn calc-mobile-btn--back" @click="handleBack">
+              <IconArrowLeft color="#000" />
+              Расчеты и заказы
+            </button>
+            <button
+              type="button"
+              class="calc-mobile-btn calc-mobile-btn--calc"
+              aria-label="Калькуляция"
+              @click="handleCalcInfo"
+            >
+              <IconCalculate color="#000" :width="16" :height="16" />
+            </button>
+          </div>
+
+          <div class="toolbar-row toolbar-row--desktop">
             <ButtonRound width="280px" @click="handleBack">
               <template #icon-left>
                 <IconArrowLeft color="#333" />
@@ -574,8 +589,8 @@ watch(
 
           <div class="product-info">
             <div class="order-number">Заказ №{{ kitId }}</div>
-            <InputEdit v-model="order_code" />
-            <InputEdit v-model="order_name" />
+            <InputEdit v-model="order_code" class="calc-code-input" />
+            <InputEdit v-model="order_name" class="calc-name-input" />
           </div>
 
           <div class="properties-section">
@@ -599,7 +614,7 @@ watch(
 
         <div class="calc-side">
           <div class="summary-card">
-            <div class="image-container">
+            <div class="image-container image-container--desktop">
               <div class="personal-wrapper">
                 <div v-if="fileId" class="preview-wrapper">
                   <CadShowById v-model="fileId" />
@@ -610,18 +625,21 @@ watch(
               </div>
             </div>
 
-            <div class="cost-value quantity-value">{{ quantity }} шт.</div>
+            <div class="cost-value quantity-value quantity-value--desktop">{{ quantity }} шт.</div>
 
-            <div class="cost-item">
-              <div class="cost-label">Стоимость 1 изд.</div>
-              <div class="cost-value">{{ formatPrice(costPerItem) }}</div>
+            <div class="summary-costs">
+              <div class="cost-item">
+                <div class="cost-label">Стоимость 1 изд.</div>
+                <div class="cost-value">{{ formatPrice(costPerItem) }}</div>
+              </div>
+
+              <div class="cost-item">
+                <div class="cost-label">Общая стоимость</div>
+                <div class="cost-value">{{ formatPrice(totalCostFormatted) }}</div>
+              </div>
             </div>
 
-            <div class="cost-item">
-              <div class="cost-label">Общая стоимость</div>
-              <div class="cost-value">{{ formatPrice(totalCostFormatted) }}</div>
-            </div>
-            <div class="summary-actions">
+            <div class="summary-actions summary-actions--desktop">
               <Button
                 width="100%"
                 type="secondary"
@@ -633,6 +651,25 @@ watch(
               <Button width="100%" :loading="isSaving" @click="saveOrder">
                 Сохранить
               </Button>
+            </div>
+
+            <div class="summary-actions-mobile">
+              <button
+                type="button"
+                class="summary-action-mobile"
+                :disabled="isCalculationDisabled"
+                @click="handleEdit"
+              >
+                Расчет
+              </button>
+              <button
+                type="button"
+                class="summary-action-mobile"
+                :disabled="isSaving"
+                @click="saveOrder"
+              >
+                Сохранить
+              </button>
             </div>
           </div>
         </div>
@@ -850,8 +887,12 @@ watch(
   gap: 10px;
 }
 
+.summary-costs {
+  display: contents;
+}
+
 /* Use same button appearance pattern as PersonalOrder/PersonalCalcs. */
-.toolbar-row :deep(.btn) {
+.toolbar-row--desktop :deep(.btn) {
   background: var(--button-bg) !important;
   box-shadow: none !important;
   transform: none !important;
@@ -864,7 +905,7 @@ watch(
   border-radius: 320px !important;
 }
 
-.toolbar-row :deep(.btn::before) {
+.toolbar-row--desktop :deep(.btn::before) {
   display: none !important;
 }
 
@@ -899,6 +940,11 @@ watch(
   display: none !important;
 }
 
+.calc-toolbar-mobile,
+.summary-actions-mobile {
+  display: none;
+}
+
 @media (max-width: 992px) {
   .calc-layout {
     padding: 20px;
@@ -907,7 +953,7 @@ watch(
     gap: 20px;
   }
 
-  .toolbar-row {
+  .toolbar-row--desktop {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -919,6 +965,215 @@ watch(
 
   .summary-card {
     min-height: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .personal-order {
+    border-radius: 0;
+  }
+
+  .calc-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 0;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .calc-main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .calc-toolbar-mobile {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .calc-mobile-btn {
+    border: none;
+    border-radius: 8px;
+    background: var(--button-bg);
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .calc-mobile-btn--back {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 40px;
+    gap: 10px;
+    padding: 12px 16px;
+    white-space: nowrap;
+  }
+
+  .calc-mobile-btn--calc {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    padding: 12px 10px;
+  }
+
+  .toolbar-row--desktop {
+    display: none;
+  }
+
+  .product-info {
+    gap: 8px;
+    margin-bottom: 0;
+  }
+
+  .order-number {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+  }
+
+  .calc-code-input :deep(.input-edit-value) {
+    font-size: 16px !important;
+    line-height: normal;
+  }
+
+  .calc-code-input :deep(.input-edit-btn),
+  .calc-name-input :deep(.input-edit-btn) {
+    padding: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  .calc-code-input :deep(.input-edit-btn .el-icon),
+  .calc-name-input :deep(.input-edit-btn .el-icon) {
+    font-size: 24px;
+  }
+
+  .calc-name-input :deep(.input-edit-value) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px !important;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .properties-section {
+    gap: 12px;
+    margin-bottom: 0;
+  }
+
+  .property-item {
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  .property-label,
+  .property-value {
+    font-size: 12px;
+    line-height: normal;
+  }
+
+  .property-value--compact {
+    font-size: 12px;
+    max-width: 50%;
+    white-space: normal;
+  }
+
+  .property-divider {
+    border-bottom-width: 1px;
+    border-bottom-color: #55585b;
+    transform: translateY(5px);
+  }
+
+  .calc-side {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .summary-card {
+    gap: 24px;
+    padding: 16px;
+    border-radius: 10px;
+    min-height: auto;
+    align-items: stretch;
+  }
+
+  .image-container--desktop,
+  .quantity-value--desktop {
+    display: none;
+  }
+
+  .summary-costs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .cost-item {
+    gap: 4px;
+  }
+
+  .cost-label {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    padding-top: 0;
+  }
+
+  .cost-value {
+    font-size: 16px;
+    line-height: normal;
+  }
+
+  .summary-actions--desktop {
+    display: none;
+  }
+
+  .summary-actions-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+  }
+
+  .summary-action-mobile {
+    width: 100%;
+    height: 40px;
+    padding: 8px 24px;
+    border: none;
+    border-radius: 8px;
+    background: var(--button-bg);
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .summary-action-mobile:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 }
 </style>
