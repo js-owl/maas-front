@@ -286,7 +286,7 @@ watch(
           <div class="calc-page__card">
             <div class="calc-page__main">
               <div class="calc-block calc-block--form">
-                <h2 class="calc-page__mobile-title">3D Печать</h2>
+                <h2 class="calc-page__mobile-title">3D-печать</h2>
 
                 <div class="calc-quantity-material">
                   <div class="calc-quantity">
@@ -375,7 +375,7 @@ watch(
 
             <aside class="calc-page__aside">
               <div class="calc-block calc-block--results">
-                <CalculateResults :result="result" />
+                <CalculateResults :result="result" price-label-format="asterisk" />
 
                 <div class="calc-docs calc-docs--mobile">
                   <div class="calc-docs__title">Загруженные файлы</div>

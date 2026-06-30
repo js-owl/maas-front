@@ -2,6 +2,7 @@
 import { onMounted, ref, watch, computed } from "vue";
 import { req_json_auth } from "../api";
 import { ElMessage } from "element-plus";
+import { Download } from "@element-plus/icons-vue";
 
 type DocumentInfo = {
   id: number;
@@ -30,7 +31,6 @@ async function loadUserDocuments() {
       return;
     }
 
-    // Загружаем каждый документ отдельно по его ID
     const documentPromises: Array<Promise<DocumentInfo | null>> = ids.map(async (documentId) => {
       try {
         const r = await req_json_auth(`/documents/${documentId}`, "GET");
@@ -56,31 +56,9 @@ async function loadUserDocuments() {
     allDocuments.value = documents.filter((d): d is DocumentInfo => d !== null);
   } catch (e) {
     console.error('Error loading user documents:', e);
-    // If API fails, try to load from localStorage as fallback
-    // loadDocumentsFromStorage();
   }
   isLoading.value = false;
 }
-
-// function loadDocumentsFromStorage() {
-//   try {
-//     const stored = localStorage.getItem('uploaded_documents');
-//     if (stored) {
-//       const documents = JSON.parse(stored);
-//       allDocuments.value = documents;
-//     }
-//   } catch (e) {
-//     console.error('Error loading documents from storage:', e);
-//   }
-// }
-
-// function saveDocumentsToStorage() {
-//   try {
-//     localStorage.setItem('uploaded_documents', JSON.stringify(allDocuments.value));
-//   } catch (e) {
-//     console.error('Error saving documents to storage:', e);
-//   }
-// }
 
 async function downloadDoc(id: number) {
   try {
@@ -90,7 +68,6 @@ async function downloadDoc(id: number) {
       return;
     }
 
-    // Загружаем PDF файл через API
     const response = await req_json_auth(`/documents/${id}/download`, "GET");
 
     if (!response) {
@@ -98,11 +75,9 @@ async function downloadDoc(id: number) {
       return;
     }
 
-    // Создаем blob URL для PDF
     const blob = await response.blob();
     const pdfUrl = URL.createObjectURL(blob);
 
-    // Создаем ссылку для скачивания
     const link = document.createElement("a");
     link.href = pdfUrl;
     link.download = doc.original_filename;
@@ -111,7 +86,6 @@ async function downloadDoc(id: number) {
     link.click();
     document.body.removeChild(link);
 
-    // Очищаем blob URL через некоторое время
     setTimeout(() => {
       URL.revokeObjectURL(pdfUrl);
     }, 1000);
@@ -126,12 +100,10 @@ function removeDocument(id: number) {
   const idx = document_ids.value.indexOf(id);
   if (idx >= 0) {
     document_ids.value.splice(idx, 1);
-    
-    // Also remove from allDocuments and save to localStorage
+
     const docIdx = allDocuments.value.findIndex(d => d.id === id);
     if (docIdx >= 0) {
       allDocuments.value.splice(docIdx, 1);
-      // saveDocumentsToStorage();
     }
   }
 }
@@ -144,8 +116,11 @@ function handleMenuCommand(command: string, id: number) {
   removeDocument(id);
 }
 
+const getDocumentDateSource = (doc: DocumentInfo): string | null | undefined =>
+  doc.created_at ?? doc.uploaded_at;
+
 const formatDocumentDate = (doc: DocumentInfo): string => {
-  const sourceDate = doc.created_at ?? doc.uploaded_at;
+  const sourceDate = getDocumentDateSource(doc);
   if (!sourceDate) return "";
 
   const date = new Date(sourceDate);
@@ -166,12 +141,34 @@ const formatDocumentDate = (doc: DocumentInfo): string => {
   return `${datePart}   ${timePart}`;
 };
 
+const formatDocumentDatePart = (doc: DocumentInfo): string => {
+  const sourceDate = getDocumentDateSource(doc);
+  if (!sourceDate) return "";
+
+  const date = new Date(sourceDate);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}.${month}.${year}`;
+};
+
+const formatDocumentTimePart = (doc: DocumentInfo): string => {
+  const sourceDate = getDocumentDateSource(doc);
+  if (!sourceDate) return "";
+
+  const date = new Date(sourceDate);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+};
+
 onMounted(() => {
   if (Array.isArray(document_ids.value) && document_ids.value.length > 0) {
     loadUserDocuments();
-  } else {
-    // Try to load from localStorage as fallback
-    // loadDocumentsFromStorage();
   }
 });
 watch(
@@ -196,26 +193,38 @@ watch(
         </div>
         <div v-else class="doc-list">
           <div v-for="doc in filteredDocuments" :key="doc.id" class="doc-row">
-            <div class="doc-content">
+            <div class="doc-row-left">
               <span class="doc-name">{{ doc.original_filename }}</span>
-              <span class="doc-date">{{ formatDocumentDate(doc) }}</span>
-            </div>
-            <el-dropdown
-              trigger="click"
-              placement="bottom-end"
-              popper-class="calc-doc-dropdown"
-              @command="(command: string) => handleMenuCommand(command, doc.id)"
-            >
-              <button class="file-menu" type="button" aria-label="Действия с документом">
-                <span class="menu-dots" />
+              <span class="doc-date doc-date--desktop">{{ formatDocumentDate(doc) }}</span>
+              <button
+                type="button"
+                class="doc-download"
+                aria-label="Скачать"
+                @click="downloadDoc(doc.id)"
+              >
+                <el-icon :size="20"><Download /></el-icon>
               </button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item command="download">Скачать</el-dropdown-item>
-                  <el-dropdown-item command="remove">Удалить</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+            </div>
+            <div class="doc-row-right">
+              <span class="doc-date doc-date--mobile">{{ formatDocumentDatePart(doc) }}</span>
+              <span class="doc-time doc-time--mobile">{{ formatDocumentTimePart(doc) }}</span>
+              <el-dropdown
+                trigger="click"
+                placement="bottom-end"
+                popper-class="calc-doc-dropdown"
+                @command="(command: string) => handleMenuCommand(command, doc.id)"
+              >
+                <button class="file-menu" type="button" aria-label="Действия с документом">
+                  <span class="menu-dots" />
+                </button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item command="download">Скачать</el-dropdown-item>
+                    <el-dropdown-item command="remove">Удалить</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </div>
           </div>
         </div>
       </template>
@@ -242,12 +251,18 @@ watch(
   gap: 12px;
 }
 
-.doc-content {
+.doc-row-left {
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-width: 0;
   flex: 1;
+}
+
+.doc-row-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .doc-name {
@@ -270,6 +285,12 @@ watch(
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.doc-download,
+.doc-date--mobile,
+.doc-time--mobile {
+  display: none;
 }
 
 .file-menu {

@@ -5,8 +5,8 @@ const selected = defineModel({ type: String, required: true })
 
 const otks = [
   { value: '1.0', label: 'Изготовитель' },
-  { value: '1.2', label: 'Заказчика на площадке изготовителя' },
   { value: '1.15', label: 'Независимой приемкой' },
+  { value: '1.2', label: 'Заказчика на площадке изготовителя' },
   { value: '1.3', label: 'Фиксация первой инспекции изделия' },
 ]
 </script>
@@ -46,7 +46,7 @@ const otks = [
 @media (max-width: 767px) {
   .otk-radio-group {
     grid-template-columns: 1fr;
-    row-gap: 12px;
+    row-gap: 8px;
   }
 
   .otk-radio {

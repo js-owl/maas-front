@@ -610,7 +610,7 @@ watch(file_id, () => {
 
             <aside class="calc-page__aside">
               <div class="calc-block calc-block--results">
-                <CalculateResults :result="result" />
+                <CalculateResults :result="result" price-label-format="asterisk" />
 
                 <div class="calc-docs calc-docs--mobile">
                   <div class="calc-docs__title">Загруженные файлы</div>
