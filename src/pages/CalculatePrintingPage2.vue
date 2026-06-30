@@ -10,6 +10,7 @@ import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 // import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 import Input from '../components/ui/Input.vue'
+import SelectCalc from '../components/ui/SelectCalc.vue'
 import SelectGroup from '../components/ui/SelectGroup.vue'
 
 import { useRoute } from 'vue-router'
@@ -284,112 +285,138 @@ watch(
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
           <div class="printing-page__card">
             <div class="printing-page__main">
-              <!-- <div class="printing-title">
-                <div v-if="order_id != 0" class="printing-title__inputs">
-                  <el-input
-                    v-model="order_code"
-                    placeholder="Код заказа"
-                    class="printing-title__input"
-                    style="margin-top: 8px"
-                  />
-                  <el-input
-                    v-model="order_name"
-                    placeholder="Название заказа"
-                    class="printing-title__input"
-                  />
-                  {{ order_id != 0 ? `(заказ ${order_id})` : '' }}
-                </div>
-                <div v-else class="printing-title__text">3D ПЕЧАТЬ</div>
-              </div> -->
+              <div class="printing-block printing-block--form">
+                <h2 class="printing-page__mobile-title">3D Печать</h2>
 
-              <div class="calc-quantity-material">
-                <div class="calc-quantity">
-                  <div class="calc-title">Количество, шт</div>
-                  <Input
-                    v-model="quantityInput"
-                    type="number"
-                    placeholder="Введите количество"
-                  />
+                <div class="calc-quantity-material">
+                  <div class="calc-quantity">
+                    <div class="calc-title">Количество, шт</div>
+                    <Input
+                      v-model="quantityInput"
+                      type="number"
+                      placeholder="Введите количество"
+                    />
+                  </div>
+                  <div class="printing-field-group">
+                    <div class="calc-title">Технология печати</div>
+                    <SelectCalc v-model="printing_technology" :input-data="printingTechnologies" />
+                  </div>
                 </div>
+
                 <div class="printing-field-group">
-                  <div class="calc-title">Технология печати</div>
-                  <SelectCalc v-model="printing_technology" :input-data="printingTechnologies" />
+                  <div class="calc-title">Материал</div>
+                  <SelectGroup
+                    class="printing-select"
+                    v-model="material_id"
+                    :options="materials"
+                    placeholder="Выберите материал"
+                  />
+                </div>
+
+                <div class="printing-field-block">
+                  <div class="calc-title">Финишная обработка изделия</div>
+                  <CoefficientCover2 v-model="cover_id" :exclude-labels="['Гальваника']" />
+                </div>
+
+                <div class="printing-field-block printing-field-block--otk">
+                  <div class="calc-title">Вид контроля</div>
+                  <CoefficientOtk2 v-model="k_otk" />
+                </div>
+
+                <div
+                  class="printing-field-block"
+                  v-if="profileStore.profile?.username === 'admin'"
+                >
+                  <SuitableMachines :machines="result?.suitable_machines || []" />
                 </div>
               </div>
 
-              <div class="printing-field-group">
-                <div class="calc-title">Материал</div>
-                <SelectGroup
-                  class="printing-select"
-                  v-model="material_id"
-                  :options="materials"
-                  placeholder="Выберите материал"
-                />
-              </div>
+              <div class="printing-block printing-block--comment">
+                <div class="printing-field-block">
+                  <div class="calc-title">
+                    <span class="calc-title__desktop">Описание заказа</span>
+                    <span class="calc-title__mobile">Комментарий</span>
+                  </div>
+                  <el-input
+                    v-model="special_instructions"
+                    type="textarea"
+                    :rows="5"
+                    placeholder=""
+                  />
+                </div>
 
-              <div class="printing-field-block">
-                <div class="calc-title">Финишная обработка изделия</div>
-                <CoefficientCover2 v-model="cover_id" :exclude-labels="['Гальваника']" />
-              </div>
-
-              <div class="printing-field-block printing-field-block--otk">
-                <div class="calc-title">Вид контроля</div>
-                <CoefficientOtk2 v-model="k_otk" />
-              </div>
-
-              <!-- <div class="printing-field-block">
-                <CoefficientCertificate v-model="k_cert" />
-              </div> -->
-
-              <div class="printing-field-block">
-                <div class="calc-title">Описание заказа</div>
-                <el-input
-                  v-model="special_instructions"
-                  type="textarea"
-                  :rows="5"
-                  placeholder=""
-                />
-              </div>
-
-              
-              <div
-                class="printing-field-block"
-                v-if="profileStore.profile?.username === 'admin'"
-              >
-                <SuitableMachines :machines="result?.suitable_machines || []" />
-              </div>
-
-              <div class="printing-actions">
-                <CalculateSubmit2
-                  :order-id="order_id"
-                  :payload="{
-                    ...payload,
-                    // deadline: formatDeadline(deadline),
-                  } as unknown as IOrderPayload"
-                  :special-instructions="special_instructions"
-                  @updateResult="onUpdateResult"
-                  @showInfo="isInfoVisible = true"
-                />
+                <div class="printing-actions">
+                  <div class="printing-submit printing-submit--desktop">
+                    <CalculateSubmit2
+                      :order-id="order_id"
+                      :payload="{
+                        ...payload,
+                      } as unknown as IOrderPayload"
+                      :special-instructions="special_instructions"
+                      @updateResult="onUpdateResult"
+                      @showInfo="isInfoVisible = true"
+                    />
+                  </div>
+                  <div class="printing-submit printing-submit--mobile">
+                    <CalculateSubmit2
+                      :order-id="order_id"
+                      :payload="{
+                        ...payload,
+                      } as unknown as IOrderPayload"
+                      :special-instructions="special_instructions"
+                      save-label="Сохранить"
+                      hide-back-button
+                      @updateResult="onUpdateResult"
+                      @showInfo="isInfoVisible = true"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
             <aside class="printing-page__aside">
-              <CalculateResults :result="result" />
+              <div class="printing-block printing-block--results">
+                <CalculateResults :result="result" />
 
-              <div v-if="file_id" class="printing-cad">
-                <CadShowById :key="cadViewerKey" v-model="file_id" />
+                <div class="printing-docs printing-docs--mobile">
+                  <div class="printing-docs__title">Загруженные файлы</div>
+                  <DocumentShowByIds2
+                    v-model="document_ids"
+                    class="printing-docs-list printing-docs-list--mobile"
+                  />
+                </div>
               </div>
 
-              <div class="printing-upload">
-                <div class="calc-title">Загрузите файлы</div>
-                <UploadFiles2
-                  v-model="document_ids"
-                  color="#000"
-                  :hide-formats-text="true"
-                  v-model:stp_id="file_id"
-                  class="upload-files-bordered"
-                />
-                <DocumentShowByIds2 v-model="document_ids" />
+              <div v-if="file_id" class="printing-block printing-block--cad">
+                <div class="printing-cad">
+                  <CadShowById :key="cadViewerKey" v-model="file_id" />
+                </div>
+              </div>
+
+              <div class="printing-block printing-block--upload">
+                <div class="printing-upload">
+                  <div class="printing-upload__title printing-upload__title--desktop">Загрузите файлы</div>
+                  <UploadFiles2
+                    v-model="document_ids"
+                    color="#000"
+                    :hide-formats-text="true"
+                    upload-text="Загрузите файлы"
+                    v-model:stp_id="file_id"
+                    class="upload-files-bordered upload-files--desktop"
+                  />
+                  <UploadFiles2
+                    v-model="document_ids"
+                    color="#000"
+                    :hide-formats-text="true"
+                    upload-text="Загрузите файлы"
+                    v-model:stp_id="file_id"
+                    class="upload-files-bordered upload-files--mobile"
+                  />
+                  <DocumentShowByIds2
+                    v-model="document_ids"
+                    class="printing-docs-list printing-docs-list--desktop"
+                  />
+                </div>
               </div>
             </aside>
           </div>
@@ -429,6 +456,34 @@ watch(
   flex-direction: column;
   gap: 40px;
   min-width: 0;
+}
+
+.printing-block--form {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.printing-block--comment {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.printing-page__mobile-title {
+  display: none;
+}
+
+.calc-title__mobile {
+  display: none;
+}
+
+.printing-docs--mobile {
+  display: none;
+}
+
+.upload-files--mobile {
+  display: none;
 }
 
 .calc-quantity-material {
@@ -522,6 +577,10 @@ watch(
   padding-top: 6px;
 }
 
+.printing-submit--mobile {
+  display: none;
+}
+
 .printing-page__aside {
   background: var(--bgcolor);
   border-radius: 20px;
@@ -530,6 +589,18 @@ watch(
   flex-direction: column;
   gap: 20px;
   min-width: 0;
+}
+
+.printing-block--results,
+.printing-block--cad,
+.printing-block--upload {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.printing-block--upload {
+  gap: 12px;
 }
 
 .printing-cad {
@@ -542,6 +613,12 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.printing-upload__title {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 24px;
+  color: #000;
 }
 
 .upload-files-bordered :deep(.upload) {
@@ -571,7 +648,8 @@ watch(
 
 @media (max-width: 767px) {
   .printing-page {
-    padding: 16px 0 20px;
+    padding: 32px 10px 40px;
+    background-color: var(--bgcolor);
   }
 
   .printing-page__row {
@@ -579,68 +657,343 @@ watch(
   }
 
   .printing-page__card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
     max-width: 100%;
-    padding: 14px;
-    border-radius: 0px;
-    gap: 16px;
-    box-shadow: 0 6px 10px 0 var(--button);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
     overflow-x: hidden;
   }
 
-  .printing-page__main {
+  .printing-page__main,
+  .printing-page__aside {
+    display: contents;
+  }
+
+  .printing-block {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .printing-block--upload {
+    order: 1;
+    gap: 0;
+  }
+
+  .printing-block--form {
+    order: 2;
+    gap: 32px;
+  }
+
+  .printing-block--results {
+    order: 3;
     gap: 16px;
+  }
+
+  .printing-block--comment {
+    order: 4;
+    gap: 16px;
+  }
+
+  .printing-block--cad {
+    display: none;
+  }
+
+  .printing-page__mobile-title {
+    display: block;
+    margin: 0;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 22px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .calc-title__desktop {
+    display: none;
+  }
+
+  .calc-title__mobile {
+    display: inline;
+  }
+
+  .printing-docs--mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .printing-docs__title {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .printing-docs-list--desktop {
+    display: none;
+  }
+
+  .upload-files--desktop {
+    display: none;
+  }
+
+  .upload-files--mobile {
+    display: block;
+  }
+
+  .printing-upload__title--desktop {
+    display: none;
+  }
+
+  .printing-upload {
+    gap: 0;
+  }
+
+  .upload-files--mobile :deep(.upload) {
+    min-height: 0;
+    padding: 16px 32px;
+    border-radius: 8px;
+    border: 2px dashed var(--button-bg);
+    background-color: transparent;
+  }
+
+  .upload-files--mobile :deep(.custom .el-upload__text) {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    max-width: none;
+  }
+
+  .printing-block--form .calc-title {
+    font-size: 14px;
+    line-height: normal;
+    padding-bottom: 5px;
+  }
+
+  .printing-block--comment .calc-title {
+    font-size: 14px;
+    line-height: normal;
   }
 
   .calc-quantity-material {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 20px;
+    align-items: stretch;
   }
 
   .printing-field-group,
   .printing-field-block {
     gap: 8px;
-    padding: 2px 0;
+    padding: 0;
   }
 
   .printing-field-block--otk {
-    gap: 12px;
+    gap: 10px;
     max-width: 100%;
   }
 
-  .printing-title {
+  .printing-block--form :deep(.input .el-input__wrapper),
+  .printing-block--form :deep(.el-select__wrapper) {
+    min-height: 40px;
+    height: 40px;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #f2f3f7;
+    box-shadow: none;
+    border: none;
+    box-sizing: border-box;
+  }
+
+  .printing-block--form :deep(.input .el-input__inner),
+  .printing-block--form :deep(.el-select__placeholder),
+  .printing-block--form :deep(.el-select__selected-item) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    height: auto;
+  }
+
+  .printing-block--form :deep(.el-select .el-select__suffix) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .printing-block--form :deep(.coefficient-value) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .printing-block--form :deep(.checkbox-item) {
+    width: 100%;
+    padding-bottom: 0;
+    --checkbox-size: 20px;
+    --checkbox-radius: 4px;
+    --checkbox-border-color: #7d8083;
+    --checkbox-bg-color: #f2f3f7;
+    --checkbox-checked-bg-color: #f2f3f7;
+    --checkbox-label-padding-left: 8px;
+    --checkbox-label-size: 12px;
+    --checkbox-line-height: normal;
+  }
+
+  .printing-block--form :deep(.el-checkbox-group) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .printing-block--form :deep(.otk-radio-group) {
+    row-gap: 8px;
+  }
+
+  .printing-block--form :deep(.otk-radio) {
+    --radio-size: 20px;
+    --radio-border-color: #7d8083;
+    --radio-bg-color: #f2f3f7;
+    --radio-label-size: 12px;
+    --radio-label-padding-left: 8px;
+    --radio-white-space: normal;
+  }
+
+  .printing-block--results :deep(.price-section) {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .printing-block--results :deep(.card) {
+    margin-bottom: 0;
+    padding: 8px;
+    border-radius: 10px;
+    background-color: #f2f3f7;
+  }
+
+  .printing-block--results :deep(.calc-res) {
+    font-size: 16px;
+    line-height: normal;
+  }
+
+  .printing-block--results :deep(.price) {
     font-size: 24px;
+    line-height: 1;
+    font-weight: 600;
   }
 
-  .printing-title__input :deep(.el-input__inner) {
-    font-size: 24px;
+  .printing-block--results :deep(.per-item) {
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: normal;
   }
 
-  .printing-title__text {
-    font-size: 24px;
-    text-align: center;
-  }
-
-  .printing-page__aside {
-    padding: 12px;
-    border-radius: 14px;
-    gap: 14px;
-  }
-
-  .printing-upload {
+  .printing-block--results :deep(.price-line) {
     gap: 10px;
+    align-items: flex-end;
+  }
+
+  .printing-block--results :deep(.price-disclaimer) {
+    margin-top: 10px;
+    gap: 0;
+    font-size: 10px;
+    line-height: normal;
+    color: #000;
+  }
+
+  .printing-block--results :deep(.price-disclaimer p) {
+    margin: 0;
+  }
+
+  .printing-docs-list--mobile :deep(.doc-list) {
+    gap: 4px;
+  }
+
+  .printing-docs-list--mobile :deep(.doc-row) {
+    min-height: 0;
+    height: auto;
+    padding: 8px;
+    border-radius: 5px;
+    background: #f2f3f7;
+    gap: 8px;
+  }
+
+  .printing-docs-list--mobile :deep(.doc-content) {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .printing-docs-list--mobile :deep(.doc-name) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .printing-docs-list--mobile :deep(.doc-date) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+  }
+
+  .printing-block--comment :deep(.el-textarea__inner) {
+    min-height: 80px !important;
+    padding: 8px;
+    border-radius: 10px;
+    background: #f2f3f7;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    line-height: normal;
   }
 
   .printing-actions {
     padding-top: 0;
   }
 
-  .printing-cad {
-    border-radius: 8px;
+  .printing-submit--desktop {
+    display: none;
   }
 
-  :deep(.el-textarea__inner) {
-    min-height: 120px !important;
+  .printing-submit--mobile {
+    display: block;
+  }
+
+  .printing-submit--mobile :deep(.calculate-submit2) {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .printing-submit--mobile :deep(.auth-tooltip-trigger) {
+    width: 100%;
+  }
+
+  .printing-submit--mobile :deep(.calculate-submit2 .btn) {
+    width: 100% !important;
+    min-height: 40px;
+    height: 40px;
+    padding: 8px 24px;
+    border-radius: 8px;
+    background-color: var(--button-bg) !important;
+    border: none;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: normal;
+    color: #000;
+    box-shadow: none;
   }
 }
 </style>
