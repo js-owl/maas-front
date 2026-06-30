@@ -1095,9 +1095,11 @@ watch(
   }
 
   .property-divider {
+    align-self: stretch;
     border-bottom-width: 1px;
     border-bottom-color: #55585b;
-    transform: translateY(5px);
+    transform: none;
+    min-height: 1em;
   }
 
   .calc-side {
