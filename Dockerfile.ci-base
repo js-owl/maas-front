@@ -1,0 +1,61 @@
+# Pre-baked builder base: node + apt chromium (~3 min saved per CI build).
+# Publish once via build:ci-base job, then set CI_BASE_IMAGE in CI.
+ARG NODE_IMAGE="vortex.kronshtadt.ru:8443/maas-proxy/node:20.19.5-slim"
+ARG APT_PROXY=""
+
+FROM ${NODE_IMAGE}
+
+ARG APT_PROXY
+
+RUN if [ -n "$APT_PROXY" ]; then \
+        echo "Acquire::http::Proxy \"$APT_PROXY\";" > /etc/apt/apt.conf.d/99proxy && \
+        echo "Acquire::https::Proxy \"$APT_PROXY\";" >> /etc/apt/apt.conf.d/99proxy; \
+    fi
+
+RUN apt-get update && apt-get install -y \
+    git \
+    ca-certificates \
+    fonts-liberation \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libfontconfig1 \
+    libgbm1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxtst6 \
+    chromium \
+  && rm -rf /var/lib/apt/lists/* \
+  && CHROMIUM_BIN="$(readlink -f "$(command -v chromium)")" \
+  && echo "Resolved chromium binary: ${CHROMIUM_BIN}" \
+  && "${CHROMIUM_BIN}" --version \
+  && "${CHROMIUM_BIN}" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --dump-dom about:blank >/dev/null
+
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV PUPPETEER_SKIP_CHROME_DOWNLOAD=true
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
+ENV HOME=/tmp
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/lib/chromium/chromium
+
+WORKDIR /app

@@ -1,3 +1,5 @@
+# Server deploy (dev + prod): Traefik + image from Nexus; PUBLIC_HOST from CI .env.
+# Environment: DEV and PROD SERVERS — not for local machine.
 version: '3.8'
 
 services:

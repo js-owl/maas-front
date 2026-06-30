@@ -11,8 +11,50 @@ RUN if [ -n "${APT_PROXY}" ]; then \
         echo "Acquire::https::Proxy \"${APT_PROXY}\";" >> /etc/apt/apt.conf.d/99proxy; \
     fi
 
-# Install git for build info (optional)
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+# Install git for build info and Chromium deps for build-time prerender (Puppeteer)
+RUN apt-get update && apt-get install -y \
+    git \
+    ca-certificates \
+    fonts-liberation \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libfontconfig1 \
+    libgbm1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxtst6 \
+    chromium \
+  && rm -rf /var/lib/apt/lists/* \
+  && CHROMIUM_BIN="$(readlink -f "$(command -v chromium)")" \
+  && "${CHROMIUM_BIN}" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --dump-dom about:blank >/dev/null
+
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV PUPPETEER_SKIP_CHROME_DOWNLOAD=true
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
+ENV HOME=/tmp
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/lib/chromium/chromium
 
 # Copy package files and install dependencies
 COPY package*.json ./

@@ -18,10 +18,33 @@ variables:
 # Optional dedicated cache image in BUILD registry (no final artifacts here)
   NEXUS_BUILD_CACHE_IMAGE: ${NEXUS_BUILD_REGISTRY}/maas-hosted/${IMAGE_NAME}
   NEXUS_BUILD_IMAGE: ${NEXUS_BUILD_REGISTRY}/maas-hosted/${IMAGE_NAME}
+  CI_BASE_IMAGE_NAME: maas-front-ci-base
+  CI_BASE_IMAGE_TAG: bookworm-chromium
 
 stages:
   - build
   - deploy
+
+# Publish pre-baked node+chromium base (run manually when Debian/Chromium updates)
+build:ci-base:
+  stage: build
+  image: ${NEXUS_BUILD_REGISTRY}/maas-proxy/${DOCKER_IMAGE}
+  services:
+    - name: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:28.4.0-dind
+      command: ["--insecure-registry=$NEXUS_BUILD_REGISTRY"]
+  timeout: 30m
+  when: manual
+  before_script:
+    - echo $NEXUS_BUILD_PASSWORD | docker login -u $NEXUS_BUILD_USER --password-stdin $NEXUS_BUILD_REGISTRY
+  script:
+    - |
+      docker build -f Dockerfile.ci-base \
+        --build-arg NODE_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NODE_IMAGE} \
+        --build-arg APT_PROXY=$APT_PROXY \
+        -t ${NEXUS_BUILD_REGISTRY}/maas-hosted/${CI_BASE_IMAGE_NAME}:${CI_BASE_IMAGE_TAG} .
+    - docker push ${NEXUS_BUILD_REGISTRY}/maas-hosted/${CI_BASE_IMAGE_NAME}:${CI_BASE_IMAGE_TAG}
+  tags:
+    - maas
 
 # Build Docker image for production (vX.Y.Z) and push to PUSH registry
 build:production:
@@ -30,39 +53,24 @@ build:production:
   services:
     - name: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:28.4.0-dind
       command: ["--insecure-registry=$NEXUS_BUILD_REGISTRY"]
-  cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules/
-      - .npm/
-    policy: pull-push
+  timeout: 30m
   before_script:
     - echo $NEXUS_BUILD_PASSWORD | docker login -u $NEXUS_BUILD_USER --password-stdin $NEXUS_BUILD_REGISTRY
     - echo $NEXUS_PUSH_PASSWORD | docker login -u $NEXUS_PUSH_USER --password-stdin $NEXUS_PUSH_REGISTRY
-    # Pull build cache layers from BUILD cache repo if present
-    - docker pull $NEXUS_BUILD_CACHE_IMAGE:builder-latest || true
-    - docker pull $NEXUS_BUILD_CACHE_IMAGE:buildcache || true
+    - docker pull $NEXUS_PUSH_IMAGE:latest || true
+    - |
+      if docker pull ${NEXUS_BUILD_REGISTRY}/maas-hosted/${CI_BASE_IMAGE_NAME}:${CI_BASE_IMAGE_TAG}; then
+        export CI_BASE_IMAGE_ARG="${NEXUS_BUILD_REGISTRY}/maas-hosted/${CI_BASE_IMAGE_NAME}:${CI_BASE_IMAGE_TAG}"
+      else
+        export CI_BASE_IMAGE_ARG=""
+        echo "CI base image not found; Dockerfile will install chromium in builder-chromium stage"
+      fi
   script:
     - |
-      # Build and push builder cache image into BUILD registry (for caching only)
-      docker build -f Dockerfile.prod \
-        --target builder \
-        --build-arg NODE_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NODE_IMAGE} \
-        --build-arg NGINX_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NGINX_IMAGE} \
-        --build-arg NPM_REGISTRY=$NPM_REGISTRY \
-        --build-arg NPM_AUTH=$NPM_AUTH \
-        --build-arg APT_PROXY=$APT_PROXY \
-        --build-arg BUILDKIT_INLINE_CACHE=1 \
-        --cache-from $NEXUS_BUILD_CACHE_IMAGE:builder-latest \
-        -t $NEXUS_BUILD_CACHE_IMAGE:builder-latest .
-    - docker push $NEXUS_BUILD_CACHE_IMAGE:builder-latest || true
-    - |
-      # Build final app image using BUILD registry for bases and caches, tag with commit tag and latest
       docker build -f Dockerfile.prod \
         --build-arg NODE_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NODE_IMAGE} \
         --build-arg NGINX_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NGINX_IMAGE} \
+        --build-arg CI_BASE_IMAGE=${CI_BASE_IMAGE_ARG} \
         --build-arg NPM_REGISTRY=$NPM_REGISTRY \
         --build-arg NPM_AUTH=$NPM_AUTH \
         --build-arg APT_PROXY=$APT_PROXY \
@@ -70,13 +78,13 @@ build:production:
         --build-arg GIT_HASH=$CI_COMMIT_SHA \
         --build-arg GIT_BRANCH=$CI_COMMIT_REF_NAME \
         --build-arg BUILDKIT_INLINE_CACHE=1 \
-        --cache-from $NEXUS_BUILD_CACHE_IMAGE:builder-latest \
-        --cache-from $NEXUS_BUILD_CACHE_IMAGE:buildcache \
+        --cache-from $NEXUS_PUSH_IMAGE:latest \
         -t $NEXUS_PUSH_IMAGE:$IMAGE_TAG \
         -t $NEXUS_PUSH_IMAGE:latest .
     - docker push $NEXUS_PUSH_IMAGE:$IMAGE_TAG
     - docker push $NEXUS_PUSH_IMAGE:latest
     - docker rmi $NEXUS_PUSH_IMAGE:$IMAGE_TAG $NEXUS_PUSH_IMAGE:latest || true
+    - docker image prune -f || true
   only:
     - /^v[0-9]+\.[0-9]+\.[0-9]+$/
   tags:
@@ -89,36 +97,24 @@ build:development:
   services:
     - name: ${NEXUS_BUILD_REGISTRY}/maas-proxy/docker:28.4.0-dind
       command: ["--insecure-registry=$NEXUS_BUILD_REGISTRY"]
-  cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules/
-      - .npm/
-    policy: pull-push
+  timeout: 30m
   before_script:
     - echo $NEXUS_BUILD_PASSWORD | docker login -u $NEXUS_BUILD_USER --password-stdin $NEXUS_BUILD_REGISTRY
     - echo $NEXUS_PUSH_PASSWORD | docker login -u $NEXUS_PUSH_USER --password-stdin $NEXUS_PUSH_REGISTRY
-    - docker pull $NEXUS_BUILD_CACHE_IMAGE:dev-builder-latest || true
-    - docker pull $NEXUS_BUILD_CACHE_IMAGE:dev-buildcache || true
+    - docker pull $NEXUS_BUILD_IMAGE:dev-latest || true
+    - |
+      if docker pull ${NEXUS_BUILD_REGISTRY}/maas-hosted/${CI_BASE_IMAGE_NAME}:${CI_BASE_IMAGE_TAG}; then
+        export CI_BASE_IMAGE_ARG="${NEXUS_BUILD_REGISTRY}/maas-hosted/${CI_BASE_IMAGE_NAME}:${CI_BASE_IMAGE_TAG}"
+      else
+        export CI_BASE_IMAGE_ARG=""
+        echo "CI base image not found; Dockerfile will install chromium in builder-chromium stage"
+      fi
   script:
     - |
       docker build -f Dockerfile.prod \
-        --target builder \
         --build-arg NODE_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NODE_IMAGE} \
         --build-arg NGINX_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NGINX_IMAGE} \
-        --build-arg NPM_REGISTRY=$NPM_REGISTRY \
-        --build-arg NPM_AUTH=$NPM_AUTH \
-        --build-arg APT_PROXY=$APT_PROXY \
-        --build-arg BUILDKIT_INLINE_CACHE=1 \
-        --cache-from $NEXUS_BUILD_CACHE_IMAGE:dev-builder-latest \
-        -t $NEXUS_BUILD_CACHE_IMAGE:dev-builder-latest .
-    - docker push $NEXUS_BUILD_CACHE_IMAGE:dev-builder-latest || true
-    - |
-      docker build -f Dockerfile.prod \
-        --build-arg NODE_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NODE_IMAGE} \
-        --build-arg NGINX_IMAGE=${NEXUS_BUILD_REGISTRY}/maas-proxy/${NGINX_IMAGE} \
+        --build-arg CI_BASE_IMAGE=${CI_BASE_IMAGE_ARG} \
         --build-arg NPM_REGISTRY=$NPM_REGISTRY \
         --build-arg NPM_AUTH=$NPM_AUTH \
         --build-arg APT_PROXY=$APT_PROXY \
@@ -126,13 +122,13 @@ build:development:
         --build-arg GIT_HASH=$CI_COMMIT_SHA \
         --build-arg GIT_BRANCH=$CI_COMMIT_REF_NAME \
         --build-arg BUILDKIT_INLINE_CACHE=1 \
-        --cache-from $NEXUS_BUILD_CACHE_IMAGE:dev-builder-latest \
-        --cache-from $NEXUS_BUILD_CACHE_IMAGE:dev-buildcache \
+        --cache-from $NEXUS_BUILD_IMAGE:dev-latest \
         -t $NEXUS_BUILD_IMAGE:$IMAGE_TAG \
         -t $NEXUS_BUILD_IMAGE:dev-latest .
     - docker push $NEXUS_BUILD_IMAGE:$IMAGE_TAG
     - docker push $NEXUS_BUILD_IMAGE:dev-latest
     - docker rmi $NEXUS_BUILD_IMAGE:$IMAGE_TAG $NEXUS_BUILD_IMAGE:dev-latest || true
+    - docker image prune -f || true
   only:
     - /^dev-v[0-9]+\.[0-9]+\.[0-9]+$/
   tags:
@@ -153,6 +149,8 @@ deploy:production:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - scp -P $SSH_PORT docker-compose.yml $SSH_USER@$SSH_HOST:$REMOTE_PROJECT_PATH/
+    - ssh -p $SSH_PORT $SSH_USER@$SSH_HOST "mkdir -p $REMOTE_PROJECT_PATH/scripts/ci"
+    - scp -P $SSH_PORT scripts/ci/deploy-cleanup.sh $SSH_USER@$SSH_HOST:$REMOTE_PROJECT_PATH/scripts/ci/deploy-cleanup.sh
     - |
       ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << EOF
         set -e
@@ -256,6 +254,10 @@ deploy:production:
         echo "Image: ${NEXUS_PUSH_IMAGE}:${IMAGE_TAG}" >> deployment.log
         echo "Git tag: ${IMAGE_TAG}" >> deployment.log
         echo "Git commit: ${CI_COMMIT_SHA}" >> deployment.log
+
+        mkdir -p scripts/ci
+        . scripts/ci/deploy-cleanup.sh
+        cleanup_app_images "${NEXUS_PUSH_IMAGE}" "${IMAGE_TAG}"
       EOF
   only:
     - /^v[0-9]+\.[0-9]+\.[0-9]+$/
@@ -280,6 +282,8 @@ deploy:development:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - scp -P $DEV_SSH_PORT docker-compose.yml $DEV_SSH_USER@$DEV_SSH_HOST:$DEV_REMOTE_PROJECT_PATH/
+    - ssh -p $DEV_SSH_PORT $DEV_SSH_USER@$DEV_SSH_HOST "mkdir -p $DEV_REMOTE_PROJECT_PATH/scripts/ci"
+    - scp -P $DEV_SSH_PORT scripts/ci/deploy-cleanup.sh $DEV_SSH_USER@$DEV_SSH_HOST:$DEV_REMOTE_PROJECT_PATH/scripts/ci/deploy-cleanup.sh
     - |
       ssh -p $DEV_SSH_PORT $DEV_SSH_USER@$DEV_SSH_HOST << EOF
         set -e
@@ -303,6 +307,10 @@ deploy:development:
         sudo docker compose up -d
         sleep 10
         if docker compose ps | grep -q "Up"; then echo "✅ DEV: Container is running"; else sudo docker compose logs; exit 1; fi
+
+        mkdir -p scripts/ci
+        . scripts/ci/deploy-cleanup.sh
+        cleanup_app_images "${NEXUS_BUILD_IMAGE}" "${IMAGE_TAG}"
       EOF
   only:
     - /^dev-v[0-9]+\.[0-9]+\.[0-9]+$/

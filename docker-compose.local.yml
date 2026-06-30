@@ -1,7 +1,8 @@
+# Local dev: build with Dockerfile.local, port 80, maas-shared network.
+# Environment: LOCAL MACHINE ONLY — do not use docker-compose.yml locally.
 version: '3.8'
 
 services:
-  # Frontend service - build with local Dockerfile
   maas-front:
     build:
       context: .

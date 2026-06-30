@@ -2,4 +2,20 @@ User-agent: *
 Allow: /
 Disallow: /personal
 
+User-agent: GPTBot
+Allow: /
+Disallow: /personal
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /personal
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /personal
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /personal
+
 Sitemap: https://maas.aeromax-group.ru/sitemap.xml

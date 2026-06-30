@@ -110,6 +110,7 @@ declare module 'vue' {
     SelectCalc: typeof import('./src/components/ui/SelectCalc.vue')['default']
     SelectFiles: typeof import('./src/components/ui/SelectFiles.vue')['default']
     SelectGroup: typeof import('./src/components/ui/SelectGroup.vue')['default']
+    SeoMainHeading: typeof import('./src/components/SeoMainHeading.vue')['default']
     ServicesCabinetMenu: typeof import('./src/components/ServicesCabinetMenu.vue')['default']
     STLViewer: typeof import('./src/components/cad/STLViewer.vue')['default']
     STPViewer: typeof import('./src/components/cad/STPViewer.vue')['default']

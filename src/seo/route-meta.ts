@@ -1,125 +1,12 @@
-/** Публичный origin для canonical и Open Graph (prod). */
-export const SITE_ORIGIN = 'https://maas.aeromax-group.ru'
+import {
+  SITE_ORIGIN,
+  getRouteSeoForPath,
+  isNoindexPath,
+  normalizePath,
+  type RouteSeo,
+} from './public-routes'
 
-export type RouteSeo = {
-  title: string
-  description: string
-  /** Например noindex, nofollow для ЛК и 404 */
-  robots?: string
-}
-
-const byPath: Record<string, RouteSeo> = {
-  '/': {
-    title: 'Производство на заказ — Аэромакс',
-    description:
-      'Manufacturing as a Service: механическая обработка, 3D-печать, покраска, гальваника, сварка, резина и испытания. Онлайн-расчёт и изготовление деталей на заказ.',
-  },
-  '/mechanical': {
-    title: 'Механическая обработка на заказ — Аэромакс',
-    description:
-      'Токарная и фрезерная обработка, шлифовка, оснастка и другое ЧПУ-производство. Расчёт сроков и стоимости, серийность и единичные детали.',
-  },
-  '/print': {
-    title: '3D-печать на заказ — Аэромакс',
-    description:
-      'Аддитивное производство и 3D-печать деталей по моделям. Подбор технологии, материалов и постобработка под задачу.',
-  },
-  '/pkm': {
-    title: 'ПКМ и композитные детали на заказ — Аэромакс',
-    description:
-      'Изготовление из полимерных композиционных материалов: прототипы, малые серии, сопровождение от модели до партии.',
-  },
-  '/painting': {
-    title: 'Покраска и ЛКМ — Аэромакс',
-    description:
-      'Лакокрасочные покрытия для промышленных деталей и изделий. Подготовка поверхности, нанесение покрытий, контроль качества.',
-  },
-  '/test': {
-    title: 'Испытания и лаборатория — Аэромакс',
-    description:
-      'Испытания продукции и материалов: климатические, механические, электрические и специальные методы по запросу.',
-  },
-  '/testing': {
-    title: 'Стенды и виды испытаний — Аэромакс',
-    description:
-      'Оборудование и возможности испытательной базы: вибрация, пыль, влажность, электрика и другие факторы.',
-  },
-  '/galv': {
-    title: 'Гальваника и покрытия на заказ — Аэромакс',
-    description:
-      'Гальванические и защитные покрытия металла: цинк, никель, анодирование и др. Партии от единичных деталей.',
-  },
-  '/weld': {
-    title: 'Сварка на заказ — Аэромакс',
-    description:
-      'Сварочные работы для узлов и конструкций: подбор режимов, контроль швов, сопровождение производства.',
-  },
-  '/rubber': {
-    title: 'Резинотехнические изделия на заказ — Аэромакс',
-    description:
-      'РТИ и детали из эластомеров по чертежам и образцам: пресс-формы, серии, согласование материалов.',
-  },
-  '/other': {
-    title: 'Расчёт прочих работ — Аэромакс',
-    description:
-      'Онлайн-расчёт и заказ производственных операций вне стандартных калькуляторов: оставьте параметры и получите ориентир по срокам и цене.',
-  },
-  '/other2': {
-    title: 'Расчёт механообработки (альт.) — Аэромакс',
-    description:
-      'Калькулятор механообработки и сопутствующих операций. Загрузка данных и быстрый предварительный расчёт.',
-  },
-  '/machining2': {
-    title: 'Расчёт обработки деталей — Аэромакс',
-    description:
-      'Предварительный расчёт стоимости обработки по параметрам заказа. Удобный вход для инженеров и снабжения.',
-  },
-  '/milling': {
-    title: 'Расчёт фрезеровки — Аэромакс',
-    description:
-      'Калькулятор фрезерной обработки: материал, габариты, тираж. Оценка стоимости и сроков изготовления.',
-  },
-  '/milling2': {
-    title: 'Расчёт фрезеровки (расширенный) — Аэромакс',
-    description:
-      'Расширенный расчёт фрезерных работ для сложных деталей и уточнённых требований к допускам и обработке.',
-  },
-  '/composite': {
-    title: 'Расчёт композитных деталей — Аэромакс',
-    description:
-      'Калькулятор композитных деталей: материал, габариты, тираж и операции обработки. Оценка стоимости и сроков изготовления.',
-  },
-  '/galvanic': {
-    title: 'Расчёт гальваники — Аэромакс',
-    description:
-      'Калькулятор гальванических покрытий: вид покрытия, количество и требования к контролю. Оценка стоимости и сроков выполнения.',
-  },
-  '/printing': {
-    title: 'Расчёт 3D-печати — Аэромакс',
-    description:
-      'Калькулятор 3D-печати по модели и параметрам: технология, материал, количество. Быстрая оценка перед заказом.',
-  },
-  '/license': {
-    title: 'Договор публичной оферты — Аэромакс',
-    description:
-      'Текст публичной оферты на выполнение работ по изготовлению продукции в сервисе MaaS.',
-  },
-  '/offer-client': {
-    title: 'Оферта для клиента — Аэромакс',
-    description:
-      'Условия оказания услуг и взаимодействия с клиентом на платформе производства на заказ.',
-  },
-  '/policy': {
-    title: 'Политика обработки персональных данных — Аэромакс',
-    description:
-      'Политика ООО «Аэромакс» в отношении обработки персональных данных при использовании сайта и сервиса.',
-  },
-  '/confirm-email': {
-    title: 'Подтверждение email — Аэромакс',
-    description: 'Подтверждение адреса электронной почты в сервисе MaaS.',
-    robots: 'noindex, nofollow',
-  },
-}
+export { SITE_ORIGIN, normalizePath, type RouteSeo }
 
 const personalSeo: RouteSeo = {
   title: 'Личный кабинет — Аэромакс',
@@ -133,32 +20,56 @@ const notFoundSeo: RouteSeo = {
   robots: 'noindex, nofollow',
 }
 
+const defaultPublicSeo: RouteSeo = {
+  title: 'Производство на заказ — Аэромакс',
+  description:
+    'Manufacturing as a Service: услуги производства на заказ, онлайн-расчёт и сопровождение заказов.',
+}
+
+const pagesWithOwnH1 = new Set(['/', '/license', '/offer-client', '/policy'])
+
+export function pageHasOwnH1(path: string): boolean {
+  return pagesWithOwnH1.has(normalizePath(path))
+}
+
 export function resolveRouteSeo(path: string, routeName: string | symbol | undefined | null): RouteSeo {
+  const normalized = normalizePath(path)
+
   if (routeName === 'not-found') {
     return notFoundSeo
   }
-  if (path.startsWith('/personal')) {
+  if (normalized.startsWith('/personal')) {
     return personalSeo
   }
-  if (routeName === 'confirm-email' || path === '/confirm-email') {
-    return byPath['/confirm-email'] ?? notFoundSeo
+
+  const configured = getRouteSeoForPath(normalized)
+  if (configured) {
+    return configured
   }
-  return byPath[path] ?? notFoundSeo
+
+  if (import.meta.env.DEV) {
+    console.warn(`[seo] No metadata for path: ${normalized}`)
+  }
+
+  if (isNoindexPath(normalized)) {
+    return notFoundSeo
+  }
+
+  return defaultPublicSeo
 }
 
 /** Абсолютный canonical для текущего маршрута (учёт BASE_URL в dev/subpath). */
 export function canonicalForPath(path: string): string {
+  const normalized = normalizePath(path)
   const origin =
-    import.meta.env.PROD || typeof window === 'undefined'
-      ? SITE_ORIGIN
-      : window.location.origin
+    import.meta.env.PROD || typeof window === 'undefined' ? SITE_ORIGIN : window.location.origin
 
   const rawBase = import.meta.env.BASE_URL || '/'
   const base =
     rawBase === '/' ? '' : rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase
 
   if (!base) {
-    return path === '/' ? `${origin}/` : `${origin}${path}`
+    return normalized === '/' ? `${origin}/` : `${origin}${normalized}`
   }
-  return path === '/' ? `${origin}${base}/` : `${origin}${base}${path}`
+  return normalized === '/' ? `${origin}${base}/` : `${origin}${base}${normalized}`
 }
