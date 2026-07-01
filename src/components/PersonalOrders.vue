@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox, type TableInstance } from 'element-plus'
 import { req_json_auth } from '../api'
@@ -25,33 +26,48 @@ const deleteLoading = ref<number | null>(null)
 const repeatLoading = ref(false)
 const ordersTableRef = ref<TableInstance>()
 const isMobileSearchOpen = ref(false)
+const { width } = useWindowSize()
+const isMobileView = computed(() => width.value <= 767)
 
 const excludedStatuses = ['cancelled', 'C3:LOSE']
+const paidStatuses = new Set(['completed', 'C3:WIN'])
+const unpaidStatuses = new Set(['pending', 'processing', 'in-progress'])
+
+const getOrderStatus = (order: KitOrder): string => {
+  return (order.status_name || order.status || '').trim()
+}
+
+const getOrderDisplayName = (order: KitOrder): string => {
+  return order.kit_name || 'Нет названия'
+}
 
 const isExcludedOrder = (order: KitOrder): boolean => {
   return [order.status, order.status_name].some((status) => excludedStatuses.includes(status ?? ''))
 }
 
-const filteredOrders = computed(() => {
-  let result = allOrders.value.filter((order) => !isExcludedOrder(order))
+const matchesActiveTab = (order: KitOrder): boolean => {
+  const status = getOrderStatus(order)
 
-  if (activeTab.value === 'paid') {
-    result = result.filter((order) => order.status_name === 'completed' || order.status_name === 'C3:WIN')
-  } else if (activeTab.value === 'unpaid') {
-    result = result.filter((order) => order.status_name === 'pending' || order.status_name === 'processing')
-  } else if (activeTab.value === 'completed') {
-    result = result.filter((order) => order.status_name === 'completed' || order.status_name === 'C3:WIN')
+  if (activeTab.value === 'paid' || activeTab.value === 'completed') {
+    return paidStatuses.has(status)
   }
+
+  if (activeTab.value === 'unpaid') {
+    return unpaidStatuses.has(status)
+  }
+
+  return true
+}
+
+const filteredOrders = computed(() => {
+  let result = allOrders.value.filter((order) => !isExcludedOrder(order) && matchesActiveTab(order))
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter((order) => {
-      const orderName = order.kit_name?.toLowerCase() || ''
-      return orderName.includes(query)
-    })
+    result = result.filter((order) => getOrderDisplayName(order).toLowerCase().includes(query))
   }
 
-  return result
+  return [...result].sort((a, b) => (b.kit_id ?? 0) - (a.kit_id ?? 0))
 })
 
 const loadOrders = async () => {
@@ -143,17 +159,12 @@ const handleView = (row: IKit): void => {
   handleOpen(row)
 }
 
-const getOrderDisplayName = (order: KitOrder): string => {
-  return order.kit_name || 'Нет названия'
-}
-
 const openMobileSearch = () => {
   isMobileSearchOpen.value = true
 }
 
 const closeMobileSearch = () => {
   isMobileSearchOpen.value = false
-  searchQuery.value = ''
 }
 
 const isProfileComplete = (profile?: IProfile): boolean => {
@@ -429,7 +440,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
 <template>
   <section class="personal-orders">
     <div class="orders-card">
-      <div class="orders-toolbar orders-toolbar--desktop">
+      <div v-if="!isMobileView" class="orders-toolbar orders-toolbar--desktop">
         <el-tabs v-model="activeTab" class="filter-tabs">
           <el-tab-pane label="Все" name="all"></el-tab-pane>
           <el-tab-pane label="Оплаченные" name="paid"></el-tab-pane>
@@ -459,7 +470,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
         </div>
       </div>
 
-      <div class="orders-toolbar-mobile">
+      <div v-if="isMobileView" class="orders-toolbar-mobile">
         <template v-if="isMobileSearchOpen">
           <el-input
             v-model="searchQuery"
@@ -485,40 +496,53 @@ const handleDelete = async (row: IKit): Promise<void> => {
         </template>
       </div>
 
-      <div v-if="filteredOrders.length" class="orders-mobile-list">
-        <div class="orders-mobile-list__header">
-          <span class="orders-mobile-list__col-name">Наименование</span>
-          <span class="orders-mobile-list__col-status">Статус</span>
-        </div>
-        <button
-          v-for="order in filteredOrders"
-          :key="order.kit_id"
-          type="button"
-          class="orders-mobile-list__row"
-          @click="handleView(order)"
-        >
-          <span
-            class="orders-mobile-list__name"
-            :class="{ 'orders-mobile-list__name--empty': !order.kit_name }"
-          >
-            {{ getOrderDisplayName(order) }}
-          </span>
-          <span
-            class="status-chip status-chip--mobile"
-            :class="getStatusClass(order.status_name)"
-            :style="getStatusStyle(order.status_color)"
-          >
-            {{ getStatusText(order.status_name) }}
-          </span>
-        </button>
+      <div v-if="isMobileView" class="orders-mobile-tabs">
+        <el-tabs v-model="activeTab" class="filter-tabs filter-tabs--mobile">
+          <el-tab-pane label="Все" name="all"></el-tab-pane>
+          <el-tab-pane label="Оплаченные" name="paid"></el-tab-pane>
+          <el-tab-pane label="Неоплаченные" name="unpaid"></el-tab-pane>
+          <el-tab-pane label="Завершенные" name="completed"></el-tab-pane>
+        </el-tabs>
       </div>
-      <p v-else class="orders-mobile-empty">Нет данных</p>
+
+      <template v-if="isMobileView">
+        <div v-if="filteredOrders.length" class="orders-mobile-list">
+          <div class="orders-mobile-list__header">
+            <span class="orders-mobile-list__col-name">Наименование</span>
+            <span class="orders-mobile-list__col-status">Статус</span>
+          </div>
+          <button
+            v-for="order in filteredOrders"
+            :key="order.kit_id"
+            type="button"
+            class="orders-mobile-list__row"
+            @click="handleView(order)"
+          >
+            <span
+              class="orders-mobile-list__name"
+              :class="{ 'orders-mobile-list__name--empty': !order.kit_name }"
+            >
+              {{ getOrderDisplayName(order) }}
+            </span>
+            <span
+              class="status-chip status-chip--mobile"
+              :class="getStatusClass(getOrderStatus(order))"
+              :style="getStatusStyle(order.status_color)"
+              :title="getStatusText(getOrderStatus(order))"
+            >
+              {{ getStatusText(getOrderStatus(order)) }}
+            </span>
+          </button>
+        </div>
+        <p v-else class="orders-mobile-empty">Нет данных</p>
+      </template>
 
       <el-table
+        v-else
         ref="ordersTableRef"
         class="orders-table orders-table--desktop"
         :data="filteredOrders"
-        :default-sort="{ prop: 'kit_id', order: 'descending' }"
+        row-key="kit_id"
         empty-text="Нет данных"
       >
         <el-table-column type="selection" width="56" align="center" />
@@ -526,10 +550,13 @@ const handleDelete = async (row: IKit): Promise<void> => {
 
         <el-table-column prop="kit_name" label="Наименование">
           <template #default="{ row }">
-            <span v-if="row.kit_name" class="filename-text filename-text--link" @click="handleView(row)">{{
-              row.kit_name
-            }}</span>
-            <span v-else class="no-filename">Нет названия</span>
+            <span
+              class="filename-text filename-text--link"
+              :class="{ 'no-filename': !row.kit_name }"
+              @click="handleView(row)"
+            >
+              {{ getOrderDisplayName(row) }}
+            </span>
           </template>
         </el-table-column>
 
@@ -548,17 +575,17 @@ const handleDelete = async (row: IKit): Promise<void> => {
           <template #default="{ row }">
             <span
               class="status-chip"
-              :class="getStatusClass(row.status_name)"
+              :class="getStatusClass(getOrderStatus(row))"
               :style="getStatusStyle(row.status_color)"
             >
-              {{ getStatusText(row.status_name) }}
+              {{ getStatusText(getOrderStatus(row)) }}
             </span>
           </template>
         </el-table-column>
 
         <el-table-column prop="total_kit_price" label="Цена" width="120" align="right">
           <template #default="{ row }">
-            <span class="filename-text">{{ formatPrice(row.total_kit_price) }}</span>
+            <span class="filename-text">{{ formatPrice(row.total_kit_price, getOrderStatus(row)) }}</span>
           </template>
         </el-table-column>
 
@@ -855,12 +882,6 @@ const handleDelete = async (row: IKit): Promise<void> => {
   color: #55585b !important;
 }
 
-.orders-toolbar-mobile,
-.orders-mobile-list,
-.orders-mobile-empty {
-  display: none;
-}
-
 @media (max-width: 1200px) {
   .orders-card {
     padding: 24px;
@@ -893,16 +914,39 @@ const handleDelete = async (row: IKit): Promise<void> => {
     width: 100%;
   }
 
-  .orders-toolbar--desktop,
-  .orders-table--desktop {
-    display: none;
-  }
-
   .orders-toolbar-mobile {
     display: flex;
     gap: 8px;
     align-items: stretch;
     width: 100%;
+  }
+
+  .orders-mobile-tabs {
+    display: block;
+    width: 100%;
+  }
+
+  .filter-tabs--mobile :deep(.el-tabs__nav) {
+    height: auto;
+  }
+
+  .filter-tabs--mobile :deep(.el-tabs__item) {
+    font-size: 12px;
+    height: 16px;
+    line-height: 16px;
+    margin-right: 12px;
+    white-space: nowrap;
+  }
+
+  .filter-tabs--mobile :deep(.el-tabs__nav-wrap) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .filter-tabs--mobile :deep(.el-tabs__nav-wrap::-webkit-scrollbar) {
+    display: none;
   }
 
   .orders-mobile-btn {
@@ -1026,8 +1070,8 @@ const handleDelete = async (row: IKit): Promise<void> => {
   }
 
   .orders-mobile-list__col-status {
-    flex: 0 0 125px;
-    width: 125px;
+    flex: 1 1 0;
+    min-width: 0;
     padding-left: 4px;
     padding-right: 4px;
   }
@@ -1066,18 +1110,15 @@ const handleDelete = async (row: IKit): Promise<void> => {
   }
 
   .orders-mobile-list__row .status-chip--mobile {
-    flex: 0 0 125px;
-    width: 125px;
-    max-width: 125px;
+    flex: 1 1 0;
+    min-width: 0;
     margin-right: 0;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 12px;
     font-weight: 500;
     line-height: normal;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
     justify-content: flex-start;
     box-sizing: border-box;
   }
