@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
+import { ElMessage } from 'element-plus'
 import Select from '../ui/Select.vue'
 import Button from '../ui/Button.vue'
 import UploadFiles from '../UploadFiles.vue'
@@ -42,6 +43,7 @@ const selectedServiceId = computed(
     orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.serviceId ?? ''
 )
 const uploadServiceId = computed(() => props.service_id || selectedServiceId.value)
+const hasModel = computed(() => stp_id.value != null)
 const selectedRoutePath = computed(() => {
   if (selectedOrderType.value) {
     return orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.routePath ?? ''
@@ -61,7 +63,10 @@ const handleOrderTypeChange = (value: string | number | boolean | object) => {
 // }
 
 const submit = () => {
-  // if (!formModel.value.name || formModel.value.phone.length < 6) return
+  if (!hasModel.value) {
+    ElMessage.warning('Загрузите 3D-модель для расчёта стоимости')
+    return
+  }
   if (!selectedRoutePath.value) return
 
   isSubmitting.value = true
@@ -143,8 +148,12 @@ const submit = () => {
                 </el-option>
               </Select>
             </el-form-item>
+            <p v-if="!hasModel" class="calc-submit-warning" role="alert">
+              Для отправки необходимо загрузить 3D-модель
+            </p>
             <Button
               flat
+              :disabled="!hasModel"
               :loading="isSubmitting"
               @click="submit"
               class="calc-submit-button"
@@ -368,6 +377,16 @@ const submit = () => {
   line-height: normal !important;
   letter-spacing: 0 !important;
   color: #55585b !important;
+}
+
+.calc-submit-warning {
+  margin: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  color: #e84261;
+  text-align: center;
 }
 
 .calc-submit-button {
@@ -605,6 +624,11 @@ const submit = () => {
     border-radius: 8px;
     font-size: 14px;
     text-transform: capitalize;
+  }
+
+  .calc-submit-warning {
+    font-size: 12px;
+    text-align: left;
   }
 }
 </style>
