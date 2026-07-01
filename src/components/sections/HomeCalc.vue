@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
 import Select from '../ui/Select.vue'
+import HomeCalcOrderTypeMobile from '../ui/HomeCalcOrderTypeMobile.vue'
 import Button from '../ui/Button.vue'
 import UploadFiles from '../UploadFiles.vue'
 import { orderTypeOptions } from '@/helpers/order-type-options'
@@ -129,7 +130,13 @@ const submit = () => {
           </div>
           <div class="action-row">
             <el-form-item v-if="!hasExternalServiceId" class="calc-order-type-item">
+              <HomeCalcOrderTypeMobile
+                v-if="isMobile"
+                v-model="selectedOrderType"
+                @change="handleOrderTypeChange"
+              />
               <Select
+                v-else
                 v-model="selectedOrderType"
                 placeholder="Тип обработки"
                 aria-label="Тип обработки"
@@ -587,36 +594,6 @@ const submit = () => {
     gap: 8px;
   }
 
-  .calc-order-type-item :deep(.el-select__wrapper) {
-    height: 40px;
-    min-height: 40px;
-    padding: 0 8px;
-    border-radius: 10px;
-    font-size: 14px;
-  }
-
-  .calc-order-type-item :deep(.el-select__suffix) {
-    width: 20px;
-    height: 20px;
-  }
-
-  .calc-order-type-item :deep(.el-select__suffix .el-icon) {
-    width: 20px;
-    height: 20px;
-    font-size: 20px;
-  }
-
-  .calc-order-type-item :deep(.el-select__placeholder),
-  .calc-order-type-item :deep(.el-select__selected-item),
-  .calc-order-type-item :deep(.el-select__selection-text) {
-    font-family: 'Montserrat-SemiBold', sans-serif !important;
-    font-size: 14px !important;
-    font-weight: normal !important;
-    line-height: normal !important;
-    letter-spacing: 0 !important;
-    color: #000000 !important;
-  }
-
   .calc-submit-button {
     height: 40px;
     min-height: 40px;
@@ -691,19 +668,6 @@ const submit = () => {
   font-weight: normal !important;
   line-height: normal !important;
   letter-spacing: 0 !important;
-}
-
-@media (max-width: 768px) {
-  .calc-order-type-item .select-wrapper.full .el-select__wrapper {
-    font-size: 14px;
-  }
-
-  .calc-order-type-item .select-wrapper.full .el-select__placeholder,
-  .calc-order-type-item .select-wrapper.full .el-select__selection-text,
-  .calc-order-type-item .select-wrapper.full .el-select__selected-item {
-    font-size: 14px !important;
-    color: #000000 !important;
-  }
 }
 
 @media (min-width: 769px) {
