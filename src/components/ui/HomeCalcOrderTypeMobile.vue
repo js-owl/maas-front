@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { orderTypeOptions } from '@/helpers/order-type-options'
 import mechIcon from '@/icons/home/order-type/mech.svg?raw'
@@ -25,6 +25,10 @@ const orderTypeIcons: Record<string, string> = {
   composite: compositeIcon,
   galvanic: galvanicIcon,
 }
+
+const triggerLabel = computed(
+  () => orderTypeOptions.find((option) => option.value === props.modelValue)?.label ?? 'Тип обработки'
+)
 
 const hasIcon = (value: string) => value in orderTypeIcons
 
@@ -62,7 +66,7 @@ onClickOutside(rootRef, () => {
       aria-label="Тип обработки"
       @click="toggle"
     >
-      <span class="home-calc-order-type-mobile__label">Тип обработки</span>
+      <span class="home-calc-order-type-mobile__label">{{ triggerLabel }}</span>
       <span class="home-calc-order-type-mobile__chevron" aria-hidden="true">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
