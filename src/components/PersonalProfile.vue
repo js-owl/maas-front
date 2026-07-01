@@ -740,26 +740,23 @@ const contactFio = computed({
     line-height: normal;
   }
 
-  .profile-fields :deep(.el-col) {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-
   .profile-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
 
   .profile-fields :deep(.el-col) {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
 
   .profile-fields :deep(.el-form-item) {
-    margin-bottom: 4px;
-  }
-
-  .profile-fields :deep(.el-form-item:last-child) {
     margin-bottom: 0;
   }
 
