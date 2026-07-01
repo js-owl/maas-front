@@ -46,6 +46,8 @@ const isExcludedOrder = (order: KitOrder): boolean => {
 }
 
 const matchesActiveTab = (order: KitOrder): boolean => {
+  if (isMobileView.value) return true
+
   const status = getOrderStatus(order)
 
   if (activeTab.value === 'paid' || activeTab.value === 'completed') {
@@ -496,15 +498,6 @@ const handleDelete = async (row: IKit): Promise<void> => {
         </template>
       </div>
 
-      <div v-if="isMobileView" class="orders-mobile-tabs">
-        <el-tabs v-model="activeTab" class="filter-tabs filter-tabs--mobile">
-          <el-tab-pane label="Все" name="all"></el-tab-pane>
-          <el-tab-pane label="Оплаченные" name="paid"></el-tab-pane>
-          <el-tab-pane label="Неоплаченные" name="unpaid"></el-tab-pane>
-          <el-tab-pane label="Завершенные" name="completed"></el-tab-pane>
-        </el-tabs>
-      </div>
-
       <template v-if="isMobileView">
         <div v-if="filteredOrders.length" class="orders-mobile-list">
           <div class="orders-mobile-list__header">
@@ -919,34 +912,6 @@ const handleDelete = async (row: IKit): Promise<void> => {
     gap: 8px;
     align-items: stretch;
     width: 100%;
-  }
-
-  .orders-mobile-tabs {
-    display: block;
-    width: 100%;
-  }
-
-  .filter-tabs--mobile :deep(.el-tabs__nav) {
-    height: auto;
-  }
-
-  .filter-tabs--mobile :deep(.el-tabs__item) {
-    font-size: 12px;
-    height: 16px;
-    line-height: 16px;
-    margin-right: 12px;
-    white-space: nowrap;
-  }
-
-  .filter-tabs--mobile :deep(.el-tabs__nav-wrap) {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .filter-tabs--mobile :deep(.el-tabs__nav-wrap::-webkit-scrollbar) {
-    display: none;
   }
 
   .orders-mobile-btn {
