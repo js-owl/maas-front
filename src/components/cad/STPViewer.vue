@@ -250,6 +250,7 @@ async function createMeshesFromOCCTResult(result, file) {
     fileSize: formatFileSize(file.size),
   }
   fitCameraToModel()
+  nextTick(() => onWindowResize())
 }
 
 function readFileAsArrayBuffer(file) {
@@ -285,20 +286,69 @@ function clearMeshes() {
   selectedMesh.value = ''
 }
 
+function fitCameraToBox(box, fitOffset = 1.2) {
+  const center = box.getCenter(new THREE.Vector3())
+  const direction = new THREE.Vector3(1, 1, 1).normalize()
+
+  const worldUp = new THREE.Vector3(0, 1, 0)
+  const right = new THREE.Vector3().crossVectors(direction, worldUp)
+  if (right.lengthSq() < 1e-6) {
+    right.set(1, 0, 0)
+  } else {
+    right.normalize()
+  }
+  const camUp = new THREE.Vector3().crossVectors(right, direction).normalize()
+
+  const { min, max } = box
+  const corners = [
+    new THREE.Vector3(min.x, min.y, min.z),
+    new THREE.Vector3(min.x, min.y, max.z),
+    new THREE.Vector3(min.x, max.y, min.z),
+    new THREE.Vector3(min.x, max.y, max.z),
+    new THREE.Vector3(max.x, min.y, min.z),
+    new THREE.Vector3(max.x, min.y, max.z),
+    new THREE.Vector3(max.x, max.y, min.z),
+    new THREE.Vector3(max.x, max.y, max.z),
+  ]
+
+  const halfFovTan = Math.tan((camera.fov * Math.PI) / 360)
+  const aspect = camera.aspect
+  let distance = 0
+
+  for (const corner of corners) {
+    const rel = corner.clone().sub(center)
+    const depthAlongDir = rel.dot(direction)
+    const relParallel = direction.clone().multiplyScalar(depthAlongDir)
+    const relPerp = rel.clone().sub(relParallel)
+
+    const w = Math.abs(relPerp.dot(right))
+    const h = Math.abs(relPerp.dot(camUp))
+
+    distance = Math.max(
+      distance,
+      h / halfFovTan + depthAlongDir,
+      w / (halfFovTan * aspect) + depthAlongDir
+    )
+  }
+
+  distance *= fitOffset
+
+  camera.position.copy(center).add(direction.multiplyScalar(distance))
+  camera.lookAt(center)
+  controls.target.copy(center)
+  camera.near = Math.max(distance / 1000, 0.1)
+  camera.far = distance * 1000
+  camera.updateProjectionMatrix()
+  controls.update()
+}
+
 function fitCameraToModel() {
   if (meshes.value.length === 0) return
   const box = new THREE.Box3()
   meshes.value.forEach((meshData) => {
     box.expandByObject(meshData.mesh)
   })
-  const center = box.getCenter(new THREE.Vector3())
-  const size = box.getSize(new THREE.Vector3())
-  const maxDim = Math.max(size.x, size.y, size.z)
-  const distance = maxDim * 1.5
-  camera.position.set(center.x + distance, center.y + distance, center.z + distance)
-  camera.lookAt(center)
-  controls.target.copy(center)
-  controls.update()
+  fitCameraToBox(box)
 }
 
 function resetCamera() {
@@ -323,14 +373,7 @@ function focusOnSingleMesh(index) {
   const selectedMeshData = meshes.value[index]
   if (selectedMeshData) {
     const box = new THREE.Box3().setFromObject(selectedMeshData.mesh)
-    const center = box.getCenter(new THREE.Vector3())
-    const size = box.getSize(new THREE.Vector3())
-    const maxDim = Math.max(size.x, size.y, size.z)
-    const distance = maxDim * 2
-    camera.position.set(center.x + distance, center.y + distance, center.z + distance)
-    camera.lookAt(center)
-    controls.target.copy(center)
-    controls.update()
+    fitCameraToBox(box, 1.25)
   }
   selectedMesh.value = index.toString()
 }
@@ -397,6 +440,9 @@ function onWindowResize() {
   camera.aspect = width / height
   camera.updateProjectionMatrix()
   renderer.setSize(width, height)
+  if (hasModel.value) {
+    fitCameraToModel()
+  }
 }
 
 function animate() {
@@ -487,7 +533,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .stp-viewer {
   width: 100%;
-  height: 250px; /* меняет высоту 3D модели */
+  height: 400px;
   display: flex;
   flex-direction: column;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -498,11 +544,13 @@ onBeforeUnmount(() => {
   height: 100%;
   position: relative;
   background: #ffffff;
-  /* border: 2px solid var(--left-section-bg);
-  border-radius: 8px; */
   overflow: hidden;
   transition: border-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.canvas-container :deep(canvas) {
+  display: block;
 }
 
 .overlay {
@@ -573,7 +621,7 @@ onBeforeUnmount(() => {
 /* Responsive Design */
 @media (max-width: 768px) {
   .stp-viewer {
-    height: 300px;
+    height: 400px;
   }
 }
 </style>
