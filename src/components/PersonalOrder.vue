@@ -708,26 +708,30 @@ onMounted(() => {
       <div class="order-side">
         <div shadow="never" class="summary-card">
           <div class="summary-content">
-            <!-- Статус и даты -->
-            <div class="status-section">
-              <div class="status-row">
-                <span class="maas-text">Статус</span>
-                <span class="status-value">{{ orderStatus }}</span>
-              </div>
-              <div class="date-group">
-                <div class="date-row">
-                  <span class="maas-text">Дата создания</span>
-                  <span class="status-value">{{ createdDate }}</span>
-                </div>
-                <div class="date-row date-row--completion">
-                  <span class="maas-text">Дата завершения</span>
-                  <span class="status-value">-</span>
-                  <!-- <span class="status-value">{{ completionDate }}</span> -->
-                </div>
+            <div class="summary-field">
+              <span class="maas-text">Статус</span>
+              <span class="summary-field__value">{{ orderStatus }}</span>
+            </div>
+
+            <div class="summary-field">
+              <span class="maas-text">Дата создания</span>
+              <span class="summary-field__value">{{ createdDate }}</span>
+            </div>
+
+            <div class="summary-field summary-field--cost">
+              <span class="maas-text">Стоимость изготовления</span>
+              <span class="summary-field__value summary-field__value--cost">
+                {{ manufacturingCost }} <span class="rub">руб.</span>
+              </span>
+              <div v-if="hasZeroDetailPrice" class="price-disclaimer">
+                <p>
+                  Часть деталей заказа автоматически не оценена. Уточним цену заказа в ближайшее
+                  время.
+                </p>
               </div>
             </div>
 
-            <div class="manufacturer-section">
+            <!-- <div class="manufacturer-section">
               <div class="maas-subtitle">Выбор изготовителя</div>
               <el-radio-group
                 v-model="selectedLocation"
@@ -743,30 +747,7 @@ onMounted(() => {
                   {{ manufacturer.label }}
                 </Radio>
               </el-radio-group>
-            </div>
-
-            <div class="cost-section">
-              <div class="cost-item">
-                <div class="maas-text">Стоимость изготовления</div>
-                <div class="maas-subtitle">
-                  {{ manufacturingCost }} <span class="rub">руб.</span>
-                </div>
-                <div v-if="hasZeroDetailPrice" class="price-disclaimer">
-                  <p>
-                    Часть деталей заказа автоматически не оценена. Уточним цену заказа в ближайшее
-                    время.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Итого -->
-              <!-- <div class="cost-item total">
-                <div class="maas-text">Стоимость с учетом доставки</div>
-                <div class="maas-subtitle">
-                  {{ totalWithDelivery }} <span class="rub">руб.</span>
-                </div>
-              </div> -->
-            </div>
+            </div> -->
           </div>
 
           <div class="summary-actions summary-actions--desktop">
@@ -979,63 +960,40 @@ onMounted(() => {
   display: flex;
   flex: 1 0 0;
   flex-direction: column;
+  gap: 20px;
   width: 100%;
+}
+
+.summary-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.summary-field--cost {
+  gap: 4px;
 }
 
 .summary-card .maas-text {
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 500;
-  line-height: 1;
+  line-height: normal;
   color: #000;
 }
 
-.summary-card .maas-subtitle {
+.summary-field__value {
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
-  line-height: 1;
+  line-height: normal;
   color: #000;
 }
 
-.status-section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid var(--button-bg);
-}
-
-.status-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid var(--button-bg);
-}
-
-.status-row::before,
-.date-row::before {
-  content: '';
-  flex: 1;
-  order: 2;
-  border-bottom: 2px dashed var(--button-bg);
-  transform: translateY(7px);
-}
-
-.date-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-.date-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.summary-field__value--cost {
+  font-size: 24px;
+  line-height: 1.4;
 }
 
 .manufacturer-section {
@@ -1058,43 +1016,6 @@ onMounted(() => {
   height: auto;
   color: #000;
   font-weight: 500;
-}
-
-.status-value {
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1;
-  color: #000;
-}
-
-.status-row > :first-child,
-.date-row > :first-child {
-  order: 1;
-}
-
-.status-row > :last-child,
-.date-row > :last-child {
-  order: 3;
-  text-align: right;
-  white-space: nowrap;
-}
-
-.cost-section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding-top: 20px;
-}
-
-.cost-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.cost-item.total {
-  margin-bottom: 0;
 }
 
 .price-disclaimer {
@@ -1545,101 +1466,24 @@ onMounted(() => {
   }
 
   .summary-card .maas-text {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     line-height: normal;
   }
 
-  .summary-card .maas-subtitle {
+  .summary-field__value {
     font-size: 20px;
     font-weight: 600;
     line-height: normal;
   }
 
-  .status-section {
-    gap: 8px;
-    padding-bottom: 0;
-    margin-bottom: 0;
-    border-bottom: none;
-  }
-
-  .status-row {
-    gap: 4px;
-    padding-bottom: 0;
-    border-bottom: none;
-  }
-
-  .status-row::before,
-  .date-row::before {
-    border-bottom-color: #55585b;
-    transform: translateY(5px);
-  }
-
-  .date-group {
-    gap: 0;
-  }
-
-  .date-row--completion {
-    display: none;
-  }
-
-  .status-value {
-    font-size: 12px;
-    font-weight: 500;
-    line-height: normal;
-  }
-
-  .manufacturer-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 0;
-    border-bottom: none;
-  }
-
-  .manufacturer-section .maas-subtitle {
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: normal;
-  }
-
-  .manufacturer-radio-group {
-    gap: 8px;
-    width: 100%;
-  }
-
-  .manufacturer-radio-group :deep(.el-radio) {
-    margin-right: 0;
-    height: auto;
-    padding: 0;
-    align-items: center;
-  }
-
-  .manufacturer-radio-group :deep(.radio) {
-    --radio-size: 18px;
-    --radio-dot-size: 8px;
-    --radio-label-size: 12px;
-    --radio-min-height: 18px;
-    --radio-label-padding-left: 10px;
-    width: 100%;
+  .summary-field__value--cost {
+    font-size: 24px;
+    line-height: 1.4;
   }
 
   .summary-content {
-    gap: 16px;
-  }
-
-  .cost-section {
-    gap: 4px;
-    padding-top: 0;
-  }
-
-  .cost-item .maas-text {
-    font-size: 12px;
-  }
-
-  .cost-item .maas-subtitle {
-    font-size: 20px;
+    gap: 20px;
   }
 
   .price-disclaimer {
