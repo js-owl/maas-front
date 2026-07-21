@@ -1189,16 +1189,18 @@ onMounted(() => {
 @media (max-width: 767px) {
   .personal-order {
     border-radius: 0;
+    background-color: var(--bgcolor);
   }
 
   .order-layout {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 12px;
     margin-bottom: 0;
-    padding: 16px;
-    border-radius: 16px;
-    box-shadow: 0 0 5px #c8cfe3;
+    padding: 0;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: none;
     box-sizing: border-box;
     width: 100%;
   }
@@ -1206,7 +1208,13 @@ onMounted(() => {
   .order-main {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 24px;
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    background-color: #fff;
+    box-shadow: 0 0 5px #c8cfe3;
+    box-sizing: border-box;
   }
 
   .order-content-block {
@@ -1228,10 +1236,10 @@ onMounted(() => {
     border: none;
     border-radius: 8px;
     background: var(--button-bg);
-    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-family: 'Montserrat-Medium', sans-serif;
     font-size: 14px;
-    font-weight: 600;
-    line-height: normal;
+    font-weight: 500;
+    line-height: 1;
     color: #000;
     cursor: pointer;
     display: inline-flex;
@@ -1241,8 +1249,7 @@ onMounted(() => {
   }
 
   .order-mobile-btn--back {
-    flex: 1 1 0;
-    min-width: 0;
+    flex: 0 0 auto;
     height: 40px;
     gap: 10px;
     padding: 12px 16px;
@@ -1269,19 +1276,23 @@ onMounted(() => {
   }
 
   .order-number {
-    font-family: 'Montserrat-Medium', sans-serif;
+    font-family: 'Montserrat-SemiBold', sans-serif;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     line-height: normal;
     color: #000;
   }
 
   .order-name-wrapper {
     width: 100%;
+    align-items: flex-end;
+    gap: 8px;
   }
 
   .order-name-input :deep(.input-edit-value) {
+    font-family: 'Montserrat-SemiBold', sans-serif !important;
     font-size: 16px !important;
+    font-weight: 600 !important;
     line-height: normal;
   }
 
@@ -1312,6 +1323,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     width: 100%;
+    background-color: var(--bgcolor);
   }
 
   .order-details-mobile__col-preview,
@@ -1321,7 +1333,7 @@ onMounted(() => {
     font-size: 10px;
     font-weight: 400;
     line-height: 14px;
-    color: #7d8083;
+    color: #000;
     box-sizing: border-box;
   }
 
@@ -1335,11 +1347,13 @@ onMounted(() => {
   .order-details-mobile__col-designation {
     flex: 1 1 0;
     min-width: 0;
+    width: 197px;
     padding: 8px;
   }
 
   .order-details-mobile__col-price {
-    flex: 0 0 auto;
+    flex: 1 1 0;
+    min-width: 0;
     padding: 8px 20px;
     text-align: center;
   }
@@ -1364,21 +1378,23 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8px 4px;
+    padding: 9px 4px;
     box-sizing: border-box;
   }
 
   .model-preview--mobile {
-    width: 30px;
-    height: 30px;
+    width: 29px;
+    height: 29px;
     margin: 0;
   }
 
   .preview-placeholder--mobile {
-    width: 30px;
-    height: 30px;
+    width: 29px;
+    height: 29px;
     margin: 0;
+    border-radius: 4px;
     border-width: 1px;
+    background: linear-gradient(180deg, #fafafb 0%, var(--bgcolor) 99%);
   }
 
   .order-details-mobile__designation {
@@ -1414,14 +1430,15 @@ onMounted(() => {
   }
 
   .order-details-mobile__price {
-    flex: 0 0 auto;
+    flex: 1 1 0;
+    min-width: 0;
     padding: 16px 20px;
     font-family: 'Montserrat-Medium', sans-serif;
     font-size: 12px;
     font-weight: 500;
     line-height: normal;
     color: #000;
-    text-align: right;
+    text-align: center;
     white-space: nowrap;
     box-sizing: border-box;
   }
@@ -1440,6 +1457,7 @@ onMounted(() => {
   .order-add-detail-mobile {
     display: block;
     width: 100%;
+    margin-top: 8px;
   }
 
   .order-add-detail-mobile__dropdown {
@@ -1471,6 +1489,11 @@ onMounted(() => {
   .order-side {
     width: 100%;
     max-width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    background-color: #fff;
+    box-shadow: 0 0 5px #c8cfe3;
+    box-sizing: border-box;
   }
 
   .summary-card {
@@ -1478,6 +1501,7 @@ onMounted(() => {
     padding: 16px;
     border-radius: 8px;
     min-height: auto;
+    background-color: var(--bgcolor);
   }
 
   .summary-fields-group {
@@ -1518,8 +1542,14 @@ onMounted(() => {
     white-space: nowrap;
   }
 
+  .summary-field--cost {
+    gap: 4px;
+  }
+
   .summary-field__value--cost {
+    font-family: 'Montserrat-SemiBold', sans-serif;
     font-size: 20px;
+    font-weight: 600;
     line-height: normal;
   }
 
@@ -1553,10 +1583,6 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-  }
-
-  .summary-confirm-mobile {
-    background: #aeb2b5;
   }
 }
 </style>
