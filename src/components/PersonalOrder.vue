@@ -708,14 +708,18 @@ onMounted(() => {
       <div class="order-side">
         <div shadow="never" class="summary-card">
           <div class="summary-content">
-            <div class="summary-field">
-              <span class="maas-text">Статус</span>
-              <span class="summary-field__value">{{ orderStatus }}</span>
-            </div>
+            <div class="summary-fields-group">
+              <div class="summary-field summary-field--inline">
+                <span class="maas-text">Статус</span>
+                <span class="summary-field__leader" aria-hidden="true" />
+                <span class="summary-field__value">{{ orderStatus }}</span>
+              </div>
 
-            <div class="summary-field">
-              <span class="maas-text">Дата создания</span>
-              <span class="summary-field__value">{{ createdDate }}</span>
+              <div class="summary-field summary-field--inline">
+                <span class="maas-text">Дата создания</span>
+                <span class="summary-field__leader" aria-hidden="true" />
+                <span class="summary-field__value">{{ createdDate }}</span>
+              </div>
             </div>
 
             <div class="summary-field summary-field--cost">
@@ -757,9 +761,6 @@ onMounted(() => {
           </div>
 
           <div class="summary-actions-mobile">
-            <button type="button" class="summary-save-mobile" @click="saveOrder">
-              Сохранить заказ
-            </button>
             <button
               v-if="canConfirmOrder"
               type="button"
@@ -964,11 +965,25 @@ onMounted(() => {
   width: 100%;
 }
 
+.summary-fields-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .summary-field {
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: flex-start;
+}
+
+.summary-field--inline {
+  width: 100%;
+}
+
+.summary-field__leader {
+  display: none;
 }
 
 .summary-field--cost {
@@ -1465,25 +1480,47 @@ onMounted(() => {
     min-height: auto;
   }
 
-  .summary-card .maas-text {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: normal;
-  }
-
-  .summary-field__value {
-    font-size: 20px;
-    font-weight: 600;
-    line-height: normal;
-  }
-
-  .summary-field__value--cost {
-    font-size: 24px;
-    line-height: 1.4;
+  .summary-fields-group {
+    gap: 8px;
   }
 
   .summary-content {
-    gap: 20px;
+    gap: 16px;
+  }
+
+  .summary-field--inline {
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .summary-field__leader {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    align-self: stretch;
+    border-bottom: 1px dashed #55585b;
+    transform: translateY(5px);
+  }
+
+  .summary-card .maas-text {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    white-space: nowrap;
+  }
+
+  .summary-field--inline .summary-field__value {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    white-space: nowrap;
+  }
+
+  .summary-field__value--cost {
+    font-size: 20px;
+    line-height: normal;
   }
 
   .price-disclaimer {
