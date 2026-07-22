@@ -177,40 +177,41 @@ const submit = () => {
 <style scoped>
 .calc-section.section-basic {
   min-height: auto;
-  margin: 0 0 2.5em;
-  padding: 5em 2.5em;
+  margin: 0 0 2.5rem;
+  padding: 5rem 2.5rem;
   background-color: #ffffff;
-  border-radius: 1.25em;
-  box-shadow: 0 0.6875em 0.46875em #cbd1d5;
+  border-radius: 1.25rem;
+  box-shadow: 0 0.6875rem 0.46875rem #cbd1d5;
   box-sizing: border-box;
 }
 
 .calc-wrap {
   display: flex;
-  gap: 6.25em;
+  gap: clamp(2rem, 5vw, 6.25rem);
   align-items: flex-start;
   width: 100%;
 }
 
 .calc-wrap.mobile {
   flex-direction: column;
-  gap: 1.5em;
+  gap: 1.5rem;
 }
 
 .calc-left {
   display: flex;
   flex-direction: column;
-  gap: 5em;
-  flex: 0 0 37.5em;
-  max-width: 37.5em;
+  gap: 5rem;
+  flex: 0 0 37.5rem;
+  max-width: 37.5rem;
+  min-width: 0;
   box-sizing: border-box;
 }
 
 .calc-title {
   margin: 0;
-  max-width: 37.5em;
+  max-width: 100%;
   font-family: 'Montserrat-Black', sans-serif;
-  font-size: 3.75em;
+  font-size: clamp(2.5em, 3.2vw, 3.75em);
   font-weight: 900;
   line-height: normal;
   color: #e84261;
@@ -221,7 +222,7 @@ const submit = () => {
   display: flex;
   flex-direction: column;
   gap: 1em;
-  max-width: 31.25em;
+  max-width: 31.25rem;
 }
 
 .calc-text {
@@ -252,7 +253,7 @@ const submit = () => {
 .calc-form {
   display: flex;
   flex-direction: column;
-  gap: 2.5em;
+  gap: 2.5rem;
 }
 
 .calc-form :deep(.el-form-item) {
@@ -262,12 +263,12 @@ const submit = () => {
 .calc-upload-zone {
   display: flex;
   flex-direction: column;
-  gap: 1.25em;
+  gap: 1.25rem;
   align-items: center;
   width: 100%;
-  padding: 2.5em;
-  border: 0.25em dashed #e84261;
-  border-radius: 1.25em;
+  padding: 2.5rem;
+  border: 0.25rem dashed #e84261;
+  border-radius: 1.25rem;
   box-sizing: border-box;
   text-align: center;
 }
@@ -280,6 +281,7 @@ const submit = () => {
   font-weight: 600;
   line-height: normal;
   color: #000000;
+  overflow-wrap: break-word;
 }
 
 .calc-formats {
@@ -349,7 +351,7 @@ const submit = () => {
 .action-row {
   display: flex;
   flex-direction: column;
-  gap: 0.625em;
+  gap: 0.625rem;
   width: 100%;
 }
 
@@ -362,9 +364,9 @@ const submit = () => {
 }
 
 .calc-order-type-item :deep(.el-select__wrapper) {
-  border-radius: 0.4167em;
-  min-height: 2.875em;
-  padding: 0.833em 1.25em;
+  border-radius: 0.625rem;
+  min-height: 4.3125rem;
+  padding: 1.25rem 1.875rem;
   background-color: #cbd1d5;
   border-color: #cbd1d5;
   box-shadow: none;
@@ -398,9 +400,9 @@ const submit = () => {
 
 .calc-submit-button {
   width: 100%;
-  padding: 0.833em 1.25em;
+  padding: 1.25rem 1.875rem;
   background: #e84261 !important;
-  border-radius: 0.4167em;
+  border-radius: 0.625rem;
   color: #ffffff !important;
   font-family: 'Montserrat-SemiBold', sans-serif !important;
   font-size: 1.5em;
@@ -429,44 +431,44 @@ const submit = () => {
 
 .home-calc-order-option__chevron {
   position: relative;
-  width: 1em;
-  height: 1em;
+  width: 1.125rem;
+  height: 1.125rem;
   flex-shrink: 0;
-  margin-left: 1.111em;
+  margin-left: 1.25rem;
 }
 
 .home-calc-order-option__chevron::before {
   content: '';
   position: absolute;
-  top: 0.222em;
-  left: 0.278em;
-  width: 0.389em;
-  height: 0.389em;
-  border-top: 0.083em solid #000000;
-  border-right: 0.083em solid #000000;
+  top: 0.25rem;
+  left: 0.3125rem;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-top: 0.09375rem solid #000000;
+  border-right: 0.09375rem solid #000000;
   transform: rotate(45deg);
 }
 
 @media (max-width: 1300px) and (min-width: 769px) {
   .calc-section.section-basic {
-    padding: 2.5em;
-    border-radius: 2.5em;
-    box-shadow: 0 0.375em 0.9375em rgba(224, 227, 237, 0.5);
+    padding: 2.5rem;
+    border-radius: 2.5rem;
+    box-shadow: 0 0.375rem 0.9375rem rgba(224, 227, 237, 0.5);
   }
 
   .calc-wrap {
-    gap: 5.625em;
+    gap: clamp(1.5rem, 4vw, 5.625rem);
   }
 
   .calc-left {
     flex: 1 1 0;
     min-width: 0;
     max-width: none;
-    gap: 2.5em;
+    gap: 2.5rem;
   }
 
   .calc-title {
-    max-width: none;
+    max-width: 100%;
     font-family: 'Montserrat-Black', sans-serif;
     font-size: 3.25em;
     font-weight: 800;
@@ -486,10 +488,12 @@ const submit = () => {
   .calc-right {
     display: flex;
     flex-direction: column;
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .calc-form {
-    gap: 2.5em;
+    gap: 2.5rem;
     height: 100%;
   }
 
@@ -511,9 +515,9 @@ const submit = () => {
   }
 
   .calc-upload-zone {
-    padding: 1.875em;
-    gap: 1.25em;
-    border-width: 0.125em;
+    padding: 1.875rem;
+    gap: 1.25rem;
+    border-width: 0.125rem;
   }
 
   .calc-upload-title {
@@ -530,10 +534,10 @@ const submit = () => {
   }
 
   .calc-order-type-item :deep(.el-select__wrapper) {
-    min-height: 2.75em;
-    max-height: 2.75em;
-    padding: 0.75em 1.5em;
-    border-radius: 0.625em;
+    min-height: 2.75rem;
+    max-height: 2.75rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.625rem;
     font-family: 'Montserrat-Medium', sans-serif;
     font-size: 1em;
     font-weight: 500;
@@ -550,10 +554,10 @@ const submit = () => {
 
   .calc-submit-button {
     width: auto;
-    min-height: 2.75em;
-    height: 2.75em;
-    padding: 0.75em 1.5em;
-    border-radius: 0.625em;
+    min-height: 2.75rem;
+    height: 2.75rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.625rem;
     background: #cbd1d5 !important;
     color: #000000 !important;
     font-family: 'Montserrat-Medium', sans-serif !important;
