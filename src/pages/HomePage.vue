@@ -34,8 +34,8 @@ onMounted(() => {
         <div class="home-page__sections">
           <HomeCalc v-if="showHomeCalc" />
           <HomeUslugi />
-          <HomeMilestones />
           <HomeAdvantages />
+          <HomeMilestones />
         </div>
       </el-col>
     </el-row>
