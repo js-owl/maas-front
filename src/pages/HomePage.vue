@@ -13,7 +13,7 @@ const HomeMilestones = defineAsyncComponent(
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
-const isTablet = computed(() => width.value >= 768 && width.value <= 1620)
+const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
 const showHomeCalc = ref(true)
 
 const coefficientsStore = useCoefficientsStore()
@@ -62,7 +62,8 @@ onMounted(() => {
 }
 
 .home-page--tablet .home-page__sections {
-  gap: 24px;
+  gap: 40px;
+  padding: 40px 40px;
 }
 
 .home-page__sections :deep(.calc-section),
@@ -70,6 +71,14 @@ onMounted(() => {
 .home-page__sections :deep(.home-milestones),
 .home-page__sections :deep(.home-advantages) {
   margin: 0 !important;
+}
+
+@media (max-width: 1300px) and (min-width: 768px) {
+  .home-page :deep(.el-col) {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin-left: 0 !important;
+  }
 }
 
 @media (max-width: 767px) {

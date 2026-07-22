@@ -167,6 +167,61 @@ const openCallDialog = () => {
   color: #aeb2b5;
 }
 
+@media (max-width: 1300px) and (min-width: 768px) {
+  .footer {
+    padding: 40px;
+  }
+
+  .footer :deep(.el-col) {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin-left: 0 !important;
+  }
+
+  .footer__content {
+    gap: 40px;
+  }
+
+  .footer__top {
+    gap: 40px;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .footer__links {
+    flex: 1 1 auto;
+    gap: 10px;
+    max-width: 700px;
+  }
+
+  .footer__contacts {
+    flex: 0 0 auto;
+    gap: 10px;
+  }
+
+  .footer__link {
+    color: var(--button-bg, #cbd1d5);
+  }
+
+  .footer__bottom {
+    gap: 80px;
+    align-items: center;
+  }
+
+  .footer__logo {
+    width: 239px;
+    height: 45px;
+  }
+
+  .footer__legal {
+    color: var(--button-bg, #cbd1d5);
+  }
+
+  .footer__brand {
+    color: var(--button-bg, #cbd1d5);
+  }
+}
+
 @media (max-width: 767px) {
   .footer--mobile {
     padding: 16px 10px;

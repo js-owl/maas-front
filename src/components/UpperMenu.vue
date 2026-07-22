@@ -681,6 +681,56 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   text-align: left;
 }
 
+@media (max-width: 1300px) and (min-width: 768px) {
+  .uppermenu-wrapper {
+    padding: 40px 40px 0;
+  }
+
+  .uppermenu-wrapper--home {
+    padding: 60px 40px 0;
+  }
+
+  .uppermenu-wrapper :deep(.el-col) {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin-left: 0 !important;
+  }
+
+  .uppermenu-header {
+    height: 45px;
+  }
+
+  .uppermenu-wrapper--home .uppermenu-header {
+    height: 45px;
+  }
+
+  .logo-icon {
+    width: 239px;
+  }
+
+  .menu-container {
+    gap: 40px;
+  }
+
+  .cabinet-btn {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 20px;
+    box-shadow: none;
+  }
+
+  .services-title {
+    font-size: 16px;
+  }
+
+  .right-wrap {
+    gap: 0;
+  }
+}
+
 @media (max-width: 767px) {
   .uppermenu-header,
   .uppermenu-header--mobile {
