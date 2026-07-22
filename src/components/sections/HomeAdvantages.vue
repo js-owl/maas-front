@@ -245,14 +245,12 @@ const advantages = ref([
   }
 
   .items {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.25em;
   }
 
   .item {
-    flex: 1 1 calc(50% - 0.625em);
-    min-width: min(25em, 100%);
     min-height: 12.5em;
     height: 17.5em;
     padding: 1.875em;
@@ -261,15 +259,33 @@ const advantages = ref([
     overflow: hidden;
   }
 
-  .item:last-child {
-    flex: 1 1 100%;
+  /* Порядок как в макете: Качество, Материалы, Гибкость, Доставка, Скорость */
+  .item:nth-child(1) {
+    order: 1;
+  }
+
+  .item:nth-child(4) {
+    order: 2;
+  }
+
+  .item:nth-child(3) {
+    order: 3;
+  }
+
+  .item:nth-child(5) {
+    order: 4;
+  }
+
+  .item:nth-child(2) {
+    order: 5;
+    grid-column: 1 / -1;
   }
 
   .item-row {
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    gap: 0.625em;
+    gap: 0;
     height: 100%;
   }
 
@@ -279,7 +295,8 @@ const advantages = ref([
   }
 
   .item-number,
-  .item-chevron {
+  .item-chevron,
+  .item-text {
     display: none;
   }
 
@@ -294,11 +311,6 @@ const advantages = ref([
   .item-title--first {
     font-family: 'Montserrat-Black', sans-serif;
     font-weight: 800;
-  }
-
-  .item-text {
-    font-size: 1em;
-    line-height: 1.4;
   }
 }
 
