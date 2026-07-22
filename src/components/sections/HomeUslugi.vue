@@ -121,7 +121,12 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
             <div class="card-left">
               <div v-if="ability.icon" class="card-icon">
                 <el-icon :size="44">
-                  <component :is="ability.icon" :color="'#7d8083'" :backgroundColor="'#cbd1d5'" />
+                  <component
+                    :is="ability.icon"
+                    color="#e84261"
+                    backgroundColor="transparent"
+                    bgColor="transparent"
+                  />
                 </el-icon>
               </div>
               <div class="card-title montserrat-medium">{{ ability.title }}</div>
@@ -153,31 +158,31 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   gap: 1.25rem;
   padding: 2.5rem;
   background-color: #ffffff;
-  border-radius: 1.25rem;
-  box-shadow: 0 1.25rem 0.8125rem rgba(85, 88, 91, 0.2);
+  border-radius: 2.5rem;
+  box-shadow: 0 0.375rem 0.9375rem rgba(224, 227, 237, 0.5);
   box-sizing: border-box;
 }
 
 .uslugi-title {
   margin: 0;
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 1.5em;
+  font-size: 1.25em;
   font-weight: 600;
   line-height: normal;
-  color: #c84359;
+  color: #000000;
 }
 
 .services-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 1.25rem;
   width: 100%;
 }
 
 .service-card {
-  background-color: #cbd1d5;
-  border-radius: 0.625rem;
-  min-height: 5rem;
+  background-color: #f2f3f7;
+  border-radius: 1.25rem;
+  min-height: 6.25rem;
   height: auto;
   box-sizing: border-box;
   overflow: hidden;
@@ -186,26 +191,30 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
 .card-link {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  min-height: 5rem;
+  justify-content: flex-start;
+  gap: 2.5rem;
+  min-height: 6.25rem;
   height: 100%;
-  padding: 0.75rem 1.875rem;
+  padding: 1.25rem 1.875rem;
   text-decoration: none;
   color: inherit;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .card-left {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  justify-content: space-between;
+  gap: 2.5rem;
   min-width: 0;
   flex: 1 1 auto;
+  width: 100%;
 }
 
 .card-icon {
   flex-shrink: 0;
+  order: 2;
   width: 2.75rem;
   height: 2.75rem;
   display: flex;
@@ -213,19 +222,38 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   justify-content: center;
 }
 
-.card-icon :deep(svg) {
+.card-icon :deep(svg),
+.card-icon :deep(.card-icon-svg) {
   width: 2.75rem;
   height: 2.75rem;
+  display: block;
+}
+
+.card-icon :deep(.cls-1),
+.card-icon :deep(#Layer_1),
+.card-icon :deep(#Layer_1 *),
+.card-icon :deep(.st0),
+.card-icon :deep(svg > path:first-of-type) {
+  fill: transparent !important;
+}
+
+.card-icon :deep(.cls-2),
+.card-icon :deep(.st1),
+.card-icon :deep(#Layer_2),
+.card-icon :deep(#Layer_2 *),
+.card-icon :deep(svg > path:not(:first-of-type)) {
+  fill: #e84261 !important;
 }
 
 .card-title {
   margin: 0;
+  order: 1;
   min-width: 0;
   flex: 1 1 auto;
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: clamp(1.125em, 1.35vw, 1.5em);
-  font-weight: 500;
-  line-height: 1.25;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 1.5em;
+  font-weight: 600;
+  line-height: 1.4;
   color: #000000;
   text-align: left;
   overflow-wrap: break-word;
@@ -233,10 +261,7 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
 }
 
 .card-chevron {
-  flex-shrink: 0;
-  width: 2.25rem;
-  height: 2.25rem;
-  display: block;
+  display: none;
 }
 
 @media (max-width: 1300px) and (min-width: 769px) {
@@ -277,7 +302,7 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
     flex: 1 1 0;
     min-width: 0;
     font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 1.25em;
+    font-size: 1.5em;
     font-weight: 600;
     line-height: 1.4;
   }
@@ -299,19 +324,19 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   }
 
   .card-icon--tablet :deep(.cls-1),
-  .card-icon--tablet :deep(#Layer_1 path),
-  .card-icon--tablet :deep(#Layer_1 rect),
+  .card-icon--tablet :deep(#Layer_1),
+  .card-icon--tablet :deep(#Layer_1 *),
   .card-icon--tablet :deep(.st0),
-  .card-icon--tablet :deep(.icon-galv .st0),
-  .card-icon--tablet :deep(.icon-welding .st0) {
-    fill: transparent;
+  .card-icon--tablet :deep(svg > path:first-of-type) {
+    fill: transparent !important;
   }
 
   .card-icon--tablet :deep(.cls-2),
   .card-icon--tablet :deep(.st1),
-  .card-icon--tablet :deep(.icon-galv .st1),
-  .card-icon--tablet :deep(.icon-welding .st1) {
-    fill: #e84261;
+  .card-icon--tablet :deep(#Layer_2),
+  .card-icon--tablet :deep(#Layer_2 *),
+  .card-icon--tablet :deep(svg > path:not(:first-of-type)) {
+    fill: #e84261 !important;
   }
 }
 
@@ -345,6 +370,7 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   .card-link--mobile {
     align-items: center;
     justify-content: flex-start;
+    min-height: 0;
     padding: 16px;
     gap: 8px;
     cursor: pointer;
@@ -376,19 +402,19 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   }
 
   .card-icon--mobile :deep(.cls-1),
-  .card-icon--mobile :deep(#Layer_1 path),
-  .card-icon--mobile :deep(#Layer_1 rect),
+  .card-icon--mobile :deep(#Layer_1),
+  .card-icon--mobile :deep(#Layer_1 *),
   .card-icon--mobile :deep(.st0),
-  .card-icon--mobile :deep(.icon-galv .st0),
-  .card-icon--mobile :deep(.icon-welding .st0) {
-    fill: transparent;
+  .card-icon--mobile :deep(svg > path:first-of-type) {
+    fill: transparent !important;
   }
 
   .card-icon--mobile :deep(.cls-2),
   .card-icon--mobile :deep(.st1),
-  .card-icon--mobile :deep(.icon-galv .st1),
-  .card-icon--mobile :deep(.icon-welding .st1) {
-    fill: #e84261;
+  .card-icon--mobile :deep(#Layer_2),
+  .card-icon--mobile :deep(#Layer_2 *),
+  .card-icon--mobile :deep(svg > path:not(:first-of-type)) {
+    fill: #e84261 !important;
   }
 }
 </style>
