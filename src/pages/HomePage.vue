@@ -53,17 +53,17 @@ onMounted(() => {
 .home-page__sections {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 2.5em;
   position: relative;
   z-index: 2;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 2.5em;
+  padding-bottom: 2.5em;
   min-width: 0;
 }
 
 .home-page--tablet .home-page__sections {
-  gap: 40px;
-  padding: 40px 40px;
+  gap: 2.5em;
+  padding: 2.5em;
 }
 
 .home-page__sections :deep(.calc-section),

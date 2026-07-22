@@ -77,25 +77,25 @@ const steps: Step[] = [
 
 <style scoped>
 .home-milestones {
-  margin: 0 0 40px;
+  margin: 0 0 2.5em;
   padding: 0;
 }
 
 .milestones-wrap {
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 40px;
+  border-radius: 1.25em;
+  padding: 2.5em;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  box-shadow: 0 11px 15px var(--button-bg);
+  gap: 1.25em;
+  box-shadow: 0 0.6875em 0.9375em var(--button-bg);
   box-sizing: border-box;
 }
 
 .milestones-title {
   margin: 0;
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
+  font-size: 1.5em;
   font-weight: 600;
   line-height: normal;
   color: #c84359;
@@ -104,14 +104,14 @@ const steps: Step[] = [
 .steps {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
-  height: 300px;
+  gap: 1.25em;
+  height: 18.75em;
 }
 
 .step-card {
   background-color: var(--bgcolor);
-  border-radius: 20px;
-  padding: 30px 20px;
+  border-radius: 1.25em;
+  padding: 1.875em 1.25em;
   height: 100%;
   min-height: 0;
   display: flex;
@@ -130,7 +130,7 @@ const steps: Step[] = [
 .step-title {
   margin: 0;
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
+  font-size: 1.5em;
   font-weight: 600;
   line-height: normal;
   color: #000000;
@@ -145,7 +145,7 @@ const steps: Step[] = [
 .step-description {
   margin: 0;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 18px;
+  font-size: 1.125em;
   font-weight: 500;
   line-height: normal;
   color: #000000;
@@ -167,7 +167,7 @@ const steps: Step[] = [
   color: #e84261;
   cursor: pointer;
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 0.125em;
 }
 
 .step-description-link:hover {
@@ -176,39 +176,39 @@ const steps: Step[] = [
 
 @media (max-width: 1300px) and (min-width: 769px) {
   .milestones-wrap {
-    padding: 40px;
-    gap: 20px;
-    border-radius: 40px;
-    box-shadow: 0 6px 15px rgba(224, 227, 237, 0.5);
+    padding: 2.5em;
+    gap: 1.25em;
+    border-radius: 2.5em;
+    box-shadow: 0 0.375em 0.9375em rgba(224, 227, 237, 0.5);
   }
 
   .milestones-title {
-    font-size: 20px;
+    font-size: 1.25em;
     color: #000000;
   }
 
   .steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
+    gap: 1.25em;
     height: auto;
   }
 
   .step-card {
-    min-height: 240px;
-    height: 336px;
-    padding: 20px;
-    border-radius: 20px;
+    min-height: 15em;
+    height: 21em;
+    padding: 1.25em;
+    border-radius: 1.25em;
     background-color: #9bacb9;
   }
 
   .step-content {
-    gap: 40px;
+    gap: 2.5em;
     justify-content: flex-start;
   }
 
   .step-title {
     font-family: 'Montserrat-Black', sans-serif;
-    font-size: 24px;
+    font-size: 1.5em;
     font-weight: 800;
     line-height: 1.4;
     text-transform: none;
@@ -220,7 +220,7 @@ const steps: Step[] = [
   }
 
   .step-description {
-    font-size: 16px;
+    font-size: 1em;
     color: #596269;
   }
 }

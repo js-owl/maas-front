@@ -144,24 +144,24 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
 <style scoped>
 .uslugi-section2.section-basic {
   min-height: auto;
-  margin-top: -615px;
-  margin-bottom: 40px;
+  margin-top: -38.4375em;
+  margin-bottom: 2.5em;
   position: relative;
   z-index: 3;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 40px;
+  gap: 1.25em;
+  padding: 2.5em;
   background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 20px 13px rgba(85, 88, 91, 0.2);
+  border-radius: 1.25em;
+  box-shadow: 0 1.25em 0.8125em rgba(85, 88, 91, 0.2);
   box-sizing: border-box;
 }
 
 .uslugi-title {
   margin: 0;
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
+  font-size: 1.5em;
   font-weight: 600;
   line-height: normal;
   color: #c84359;
@@ -170,14 +170,14 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
 .services-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 1em;
   width: 100%;
 }
 
 .service-card {
   background-color: #cbd1d5;
-  border-radius: 10px;
-  height: 80px;
+  border-radius: 0.625em;
+  height: 5em;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -186,9 +186,9 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 1em;
   height: 100%;
-  padding: 0 30px;
+  padding: 0 1.875em;
   text-decoration: none;
   color: inherit;
   box-sizing: border-box;
@@ -197,29 +197,29 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
 .card-left {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 1.25em;
   min-width: 0;
   flex: 1 1 auto;
 }
 
 .card-icon {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  width: 2.75em;
+  height: 2.75em;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .card-icon :deep(svg) {
-  width: 44px;
-  height: 44px;
+  width: 2.75em;
+  height: 2.75em;
 }
 
 .card-title {
   margin: 0;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 24px;
+  font-size: 1.5em;
   font-weight: 500;
   line-height: normal;
   color: #000000;
@@ -229,8 +229,8 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
 
 .card-chevron {
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  width: 2.25em;
+  height: 2.25em;
   display: block;
 }
 
@@ -238,33 +238,33 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   .uslugi-section2.section-basic {
     margin-top: 0;
     margin-bottom: 0;
-    padding: 40px;
-    gap: 20px;
-    border-radius: 40px;
-    box-shadow: 0 6px 15px rgba(224, 227, 237, 0.5);
+    padding: 2.5em;
+    gap: 1.25em;
+    border-radius: 2.5em;
+    box-shadow: 0 0.375em 0.9375em rgba(224, 227, 237, 0.5);
   }
 
   .uslugi-title {
-    font-size: 20px;
+    font-size: 1.25em;
     color: #000000;
   }
 
   .services-grid {
-    gap: 20px;
+    gap: 1.25em;
   }
 
   .service-card {
     height: auto;
-    min-height: 100px;
+    min-height: 6.25em;
     background-color: #f2f3f7;
-    border-radius: 20px;
+    border-radius: 1.25em;
   }
 
   .card-link--tablet {
     align-items: center;
     justify-content: flex-start;
-    gap: 40px;
-    padding: 20px 30px;
+    gap: 2.5em;
+    padding: 1.25em 1.875em;
     cursor: pointer;
   }
 
@@ -272,15 +272,15 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
     flex: 1 1 0;
     min-width: 0;
     font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 20px;
+    font-size: 1.25em;
     font-weight: 600;
     line-height: 1.4;
   }
 
   .card-icon--tablet {
     flex-shrink: 0;
-    width: 44px;
-    height: 44px;
+    width: 2.75em;
+    height: 2.75em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -288,8 +288,8 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
 
   .card-icon--tablet :deep(.card-icon-svg),
   .card-icon--tablet :deep(svg) {
-    width: 44px;
-    height: 44px;
+    width: 2.75em;
+    height: 2.75em;
     display: block;
   }
 

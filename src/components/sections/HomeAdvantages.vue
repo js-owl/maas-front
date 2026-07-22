@@ -120,251 +120,143 @@ const advantages = ref([
 <style scoped>
 
 .home-advantages {
-
-  margin: 0 0 40px;
-
+  margin: 0 0 2.5em;
   padding: 0;
-
 }
-
-
 
 .advantages-wrap {
-
   background-color: #ffffff;
-
-  border-radius: 20px;
-
-  padding: 40px;
-
+  border-radius: 1.25em;
+  padding: 2.5em;
   display: flex;
-
   flex-direction: column;
-
-  gap: 24px;
-
-  box-shadow: 0 11px 7.5px var(--button-bg);
-
+  gap: 1.5em;
+  box-shadow: 0 0.6875em 0.46875em var(--button-bg);
   box-sizing: border-box;
-
 }
-
-
 
 .advantages-title {
-
   margin: 0;
-
   font-family: 'Montserrat-SemiBold', sans-serif;
-
-  font-size: 24px;
-
+  font-size: 1.5em;
   font-weight: 600;
-
   line-height: normal;
-
   color: #d4354f;
-
 }
-
-
 
 .items {
-
   display: flex;
-
   flex-direction: column;
-
-  gap: 20px;
-
+  gap: 1.25em;
   width: 100%;
-
 }
-
-
 
 .item {
-
   background-color: #d4354f;
-
-  border-radius: 20px;
-
-  padding: 30px;
-
+  border-radius: 1.25em;
+  padding: 1.875em;
   box-sizing: border-box;
-
 }
-
-
 
 .item-row {
-
   display: flex;
-
-  gap: 40px;
-
+  gap: 2.5em;
   align-items: center;
-
   width: 100%;
-
 }
-
-
 
 .item-head {
-
   display: flex;
-
   flex: 1 1 0;
-
-  gap: 20px;
-
+  gap: 1.25em;
   align-items: center;
-
   min-width: 0;
-
 }
-
-
 
 .item-number {
-
   flex-shrink: 0;
-
   box-sizing: border-box;
-
-  width: 48px;
-
-  height: 48px;
-
-  padding: 6px;
-
-  border: 2px solid #ffffff;
-
-  border-radius: 10px;
-
+  width: 1.6em;
+  height: 1.6em;
+  padding: 0.2em;
+  border: 0.0667em solid #ffffff;
+  border-radius: 0.333em;
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   font-family: 'Montserrat-Medium', sans-serif;
-
-  font-size: 30px;
-
+  font-size: 1.875em;
   font-weight: 500;
-
   line-height: normal;
-
   color: #ffffff;
-
   text-align: center;
-
 }
-
-
 
 .item-title {
-
   margin: 0;
-
   flex: 1 1 0;
-
   min-width: 0;
-
   font-family: 'Montserrat-SemiBold', sans-serif;
-
-  font-size: 24px;
-
+  font-size: 1.5em;
   font-weight: 600;
-
   line-height: normal;
-
   color: #ffffff;
-
   text-transform: uppercase;
-
   word-break: break-word;
-
 }
-
-
 
 .item-title--first {
-
   font-family: 'Montserrat-Medium', sans-serif;
-
   font-weight: 500;
-
 }
-
-
 
 .item-chevron {
-
   flex-shrink: 0;
-
-  width: 16px;
-
-  height: 39px;
-
+  width: 1em;
+  height: 2.4375em;
   display: block;
-
 }
 
-
-
 .item-text {
-
   margin: 0;
-
   flex: 1 1 0;
-
   min-width: 0;
-
   font-family: 'Montserrat-Medium', sans-serif;
-
-  font-size: 24px;
-
+  font-size: 1.5em;
   font-weight: 500;
-
   line-height: normal;
-
   color: #ffffff;
-
   word-break: break-word;
-
 }
 
 
 
 @media (max-width: 1300px) and (min-width: 769px) {
   .advantages-wrap {
-    padding: 40px;
-    gap: 20px;
-    border-radius: 40px;
-    box-shadow: 0 6px 15px rgba(224, 227, 237, 0.5);
+    padding: 2.5em;
+    gap: 1.25em;
+    border-radius: 2.5em;
+    box-shadow: 0 0.375em 0.9375em rgba(224, 227, 237, 0.5);
   }
 
   .advantages-title {
-    font-size: 20px;
+    font-size: 1.25em;
     color: #000000;
   }
 
   .items {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 1.25em;
   }
 
   .item {
-    flex: 1 1 calc(50% - 10px);
-    min-width: min(400px, 100%);
-    min-height: 200px;
-    height: 280px;
-    padding: 30px;
-    border-radius: 20px;
+    flex: 1 1 calc(50% - 0.625em);
+    min-width: min(25em, 100%);
+    min-height: 12.5em;
+    height: 17.5em;
+    padding: 1.875em;
+    border-radius: 1.25em;
     background-color: #e84261;
     overflow: hidden;
   }
@@ -377,7 +269,7 @@ const advantages = ref([
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    gap: 10px;
+    gap: 0.625em;
     height: 100%;
   }
 
@@ -393,7 +285,7 @@ const advantages = ref([
 
   .item-title {
     font-family: 'Montserrat-Black', sans-serif;
-    font-size: 24px;
+    font-size: 1.5em;
     font-weight: 800;
     line-height: 1.4;
     text-transform: none;
@@ -405,7 +297,7 @@ const advantages = ref([
   }
 
   .item-text {
-    font-size: 16px;
+    font-size: 1em;
     line-height: 1.4;
   }
 }

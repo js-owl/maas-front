@@ -377,28 +377,28 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   position: relative;
   width: 100%;
   background-color: var(--bgcolor);
-  padding: 10px 0 0;
+  padding: 0.625em 0 0;
   box-sizing: border-box;
 }
 
 .uppermenu-wrapper--home {
-  padding: 60px 0 0;
+  padding: 3.75em 0 0;
 }
 
 .uppermenu-wrapper--home .uppermenu-header {
-  height: 53px;
+  height: 3.3125em;
 }
 
 .uppermenu-wrapper--mobile {
-  padding: 40px 10px 0;
+  padding: 2.5em 0.625em 0;
 }
 
 .uppermenu-wrapper--mobile.uppermenu-wrapper--home {
-  padding: 40px 10px 0;
+  padding: 2.5em 0.625em 0;
 }
 
 .uppermenu-wrapper.fullscreen-bg {
-  height: 1000px;
+  height: 62.5em;
   background-image: url('/homePage/about.webp');
   background-size: cover;
   background-position: center;
@@ -424,8 +424,8 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   left: 0;
   right: 0;
   bottom: 0;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(0.25em);
+  -webkit-backdrop-filter: blur(0.25em);
   z-index: 0;
   pointer-events: none;
 }
@@ -440,7 +440,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100px;
+  height: 6.25em;
   width: 100%;
   margin-right: 0;
   padding: 0;
@@ -456,13 +456,13 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   align-items: center;
   justify-content: flex-end;
   margin-left: auto;
-  gap: 20px;
+  gap: 1.25em;
 }
 
 .menu-container {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 1.875em;
 }
 
 .logo-btn {
@@ -480,7 +480,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 }
 
 .logo-icon {
-  width: 240px;
+  width: 15em;
 }
 
 .services-title {
@@ -497,7 +497,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 36px;
+  height: 2.25em;
   box-sizing: border-box;
 }
 
@@ -506,8 +506,8 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 58.068px;
-  height: 36px;
+  width: 3.62925em;
+  height: 2.25em;
   padding: 0;
   border: none;
   background: transparent;
@@ -516,8 +516,8 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 
 .mobile-logo-icon {
   display: block;
-  width: 58.068px;
-  height: 36px;
+  width: 3.62925em;
+  height: 2.25em;
 }
 
 .mobile-calc-btn {
@@ -525,14 +525,14 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 36px;
-  padding: 0 24px;
+  height: 2.571em;
+  padding: 0 1.714em;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.571em;
   background-color: #ffffff;
   color: #000000;
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 14px;
+  font-size: 0.875em;
   font-weight: 600;
   line-height: normal;
   letter-spacing: 0;
@@ -545,11 +545,11 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  padding: 6px;
+  width: 2.25em;
+  height: 2.25em;
+  padding: 0.375em;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.5em;
   background-color: #ffffff;
   box-sizing: border-box;
   cursor: pointer;
@@ -557,8 +557,8 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 
 .mobile-menu-icon {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 1.5em;
+  height: 1.5em;
   flex-shrink: 0;
 }
 
@@ -570,21 +570,21 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   background-color: transparent;
   color: #333;
   border: none;
-  font-size: 24px;
-  padding: 8px 16px;
-  margin-right: 8px;
+  font-size: 1.5em;
+  padding: 0.333em 0.667em;
+  margin-right: 0.333em;
   height: auto;
 }
 
 .cabinet-btn {
   background-color: #fff;
   color: #55585b;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  font-size: 24px;
-  padding: 0 24px;
-  height: 46px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 0.0625em solid transparent;
+  border-radius: 0.4167em;
+  font-size: 1.5em;
+  padding: 0 1em;
+  height: 1.9167em;
+  box-shadow: 0 0.333em 1em rgba(0, 0, 0, 0.08);
 }
 
 .cabinet-btn:hover,
@@ -598,24 +598,24 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 .cabinet-menu {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0.125em;
   /* min-width: 280px; */
-  padding: 3px;
+  padding: 0.1875em;
 }
 
 .cabinet-menu-item {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 0.778em;
   width: 100%;
   border: none;
   background-color: transparent;
   color: #14161a;
-  font-size: 18px;
+  font-size: 1.125em;
   line-height: 1.2;
   text-align: left;
-  padding: 10px 5px;
-  border-radius: 12px;
+  padding: 0.556em 0.278em;
+  border-radius: 0.667em;
   cursor: pointer;
 }
 
@@ -631,10 +631,10 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 :deep(.cabinet-menu-popper.el-popper),
 :deep(.cabinet-menu-popper.el-popper.is-light),
 :deep(.cabinet-menu-popper.el-popover) {
-  --el-popover-border-radius: 20px;
-  border-radius: 20px !important;
+  --el-popover-border-radius: 1.25em;
+  border-radius: 1.25em !important;
   border: none;
-  box-shadow: 0 14px 34px rgba(30, 35, 44, 0.18);
+  box-shadow: 0 0.875em 2.125em rgba(30, 35, 44, 0.18);
   padding: 0;
   overflow: hidden;
 }
@@ -650,7 +650,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   background-color: transparent !important;
   border-color: transparent !important;
   color: #333 !important;
-  margin-right: 8px !important;
+  margin-right: 0.333em !important;
 }
 
 .fullscreen-bg .auth-btn:hover,
@@ -667,27 +667,27 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 .hero-content {
   position: relative;
   z-index: 1;
-  padding: 60px 0 80px;
+  padding: 3.75em 0 5em;
 }
 
 .hero-title {
-  font-size: 64px;
+  font-size: 4em;
   font-weight: 800;
   color: #fff;
   text-transform: uppercase;
   line-height: 1.2;
-  margin: 0 0 40px 0;
-  letter-spacing: 2px;
+  margin: 0 0 2.5em 0;
+  letter-spacing: 0.125em;
   text-align: left;
 }
 
 @media (max-width: 1300px) and (min-width: 768px) {
   .uppermenu-wrapper {
-    padding: 40px 40px 0;
+    padding: 2.5em 2.5em 0;
   }
 
   .uppermenu-wrapper--home {
-    padding: 60px 40px 0;
+    padding: 3.75em 2.5em 0;
   }
 
   .uppermenu-wrapper :deep(.el-col) {
@@ -697,33 +697,33 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   }
 
   .uppermenu-header {
-    height: 45px;
+    height: 2.8125em;
   }
 
   .uppermenu-wrapper--home .uppermenu-header {
-    height: 45px;
+    height: 2.8125em;
   }
 
   .logo-icon {
-    width: 239px;
+    width: 14.9375em;
   }
 
   .menu-container {
-    gap: 40px;
+    gap: 2.5em;
   }
 
   .cabinet-btn {
     font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 16px;
+    font-size: 1em;
     font-weight: 500;
-    height: 44px;
-    padding: 0 20px;
-    border-radius: 20px;
+    height: 2.75em;
+    padding: 0 1.25em;
+    border-radius: 1.25em;
     box-shadow: none;
   }
 
   .services-title {
-    font-size: 16px;
+    font-size: 1em;
   }
 
   .right-wrap {
@@ -786,8 +786,8 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 .cabinet-menu-popper.el-popper,
 .cabinet-menu-popper.el-popper.is-light,
 .cabinet-menu-popper.el-popover {
-  --el-popover-border-radius: 20px;
-  border-radius: 20px !important;
+  --el-popover-border-radius: 1.25em;
+  border-radius: 1.25em !important;
   overflow: hidden;
 }
 
@@ -797,10 +797,10 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   width: 100vw !important;
   max-width: 100vw !important;
   border-radius: 0 !important;
-  box-shadow: 0 14px 34px rgba(30, 35, 44, 0.18);
+  box-shadow: 0 0.875em 2.125em rgba(30, 35, 44, 0.18);
 }
 
 .cabinet-menu-popper--mobile .cabinet-menu {
-  padding: 8px 10px;
+  padding: 0.5em 0.625em;
 }
 </style>

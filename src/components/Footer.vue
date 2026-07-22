@@ -77,23 +77,23 @@ const openCallDialog = () => {
 <style scoped>
 .footer {
   background-color: var(--gray-footer);
-  padding: 20px 0;
+  padding: 1.25em 0;
 }
 
 .footer__content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.25em;
   width: 100%;
   box-sizing: border-box;
 }
 
 .footer__top {
   display: flex;
-  gap: 40px;
+  gap: 2.5em;
   align-items: flex-start;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #7d8083;
+  padding-bottom: 1.25em;
+  border-bottom: 0.125em solid #7d8083;
 }
 
 .footer__links,
@@ -101,7 +101,7 @@ const openCallDialog = () => {
   display: flex;
   flex: 1 1 0;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.25em;
   min-width: 0;
 }
 
@@ -115,7 +115,7 @@ const openCallDialog = () => {
   border: none;
   background: none;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 16px;
+  font-size: 1em;
   font-weight: 500;
   line-height: normal;
   color: #aeb2b5;
@@ -135,7 +135,7 @@ const openCallDialog = () => {
 
 .footer__bottom {
   display: flex;
-  gap: 40px;
+  gap: 2.5em;
   align-items: flex-start;
 }
 
@@ -153,15 +153,15 @@ const openCallDialog = () => {
 
 .footer__logo {
   display: block;
-  width: 245px;
-  height: 46px;
+  width: 15.3125em;
+  height: 2.875em;
 }
 
 .footer__legal {
   margin: 0;
-  max-width: 537px;
+  max-width: 33.5625em;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 16px;
+  font-size: 1em;
   font-weight: 500;
   line-height: normal;
   color: #aeb2b5;
@@ -169,7 +169,7 @@ const openCallDialog = () => {
 
 @media (max-width: 1300px) and (min-width: 768px) {
   .footer {
-    padding: 40px;
+    padding: 2.5em;
   }
 
   .footer :deep(.el-col) {
@@ -179,24 +179,24 @@ const openCallDialog = () => {
   }
 
   .footer__content {
-    gap: 40px;
+    gap: 2.5em;
   }
 
   .footer__top {
-    gap: 40px;
+    gap: 2.5em;
     padding-bottom: 0;
     border-bottom: none;
   }
 
   .footer__links {
     flex: 1 1 auto;
-    gap: 10px;
-    max-width: 700px;
+    gap: 0.625em;
+    max-width: 43.75em;
   }
 
   .footer__contacts {
     flex: 0 0 auto;
-    gap: 10px;
+    gap: 0.625em;
   }
 
   .footer__link {
@@ -204,13 +204,13 @@ const openCallDialog = () => {
   }
 
   .footer__bottom {
-    gap: 80px;
+    gap: 5em;
     align-items: center;
   }
 
   .footer__logo {
-    width: 239px;
-    height: 45px;
+    width: 14.9375em;
+    height: 2.8125em;
   }
 
   .footer__legal {

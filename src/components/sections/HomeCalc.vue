@@ -177,40 +177,40 @@ const submit = () => {
 <style scoped>
 .calc-section.section-basic {
   min-height: auto;
-  margin: 0 0 40px;
-  padding: 80px 40px;
+  margin: 0 0 2.5em;
+  padding: 5em 2.5em;
   background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 11px 7.5px #cbd1d5;
+  border-radius: 1.25em;
+  box-shadow: 0 0.6875em 0.46875em #cbd1d5;
   box-sizing: border-box;
 }
 
 .calc-wrap {
   display: flex;
-  gap: 100px;
+  gap: 6.25em;
   align-items: flex-start;
   width: 100%;
 }
 
 .calc-wrap.mobile {
   flex-direction: column;
-  gap: 24px;
+  gap: 1.5em;
 }
 
 .calc-left {
   display: flex;
   flex-direction: column;
-  gap: 80px;
-  flex: 0 0 600px;
-  max-width: 600px;
+  gap: 5em;
+  flex: 0 0 37.5em;
+  max-width: 37.5em;
   box-sizing: border-box;
 }
 
 .calc-title {
   margin: 0;
-  max-width: 600px;
+  max-width: 37.5em;
   font-family: 'Montserrat-Black', sans-serif;
-  font-size: 60px;
+  font-size: 3.75em;
   font-weight: 900;
   line-height: normal;
   color: #e84261;
@@ -221,13 +221,13 @@ const submit = () => {
   display: flex;
   flex-direction: column;
   gap: 1em;
-  max-width: 500px;
+  max-width: 31.25em;
 }
 
 .calc-text {
   margin: 0;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 24px;
+  font-size: 1.5em;
   font-weight: 500;
   line-height: normal;
   color: #000000;
@@ -252,7 +252,7 @@ const submit = () => {
 .calc-form {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 2.5em;
 }
 
 .calc-form :deep(.el-form-item) {
@@ -262,12 +262,12 @@ const submit = () => {
 .calc-upload-zone {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.25em;
   align-items: center;
   width: 100%;
-  padding: 40px;
-  border: 4px dashed #e84261;
-  border-radius: 20px;
+  padding: 2.5em;
+  border: 0.25em dashed #e84261;
+  border-radius: 1.25em;
   box-sizing: border-box;
   text-align: center;
 }
@@ -276,7 +276,7 @@ const submit = () => {
   margin: 0;
   width: 100%;
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 32px;
+  font-size: 2em;
   font-weight: 600;
   line-height: normal;
   color: #000000;
@@ -289,7 +289,7 @@ const submit = () => {
 .calc-format-text {
   margin: 0;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 12px;
+  font-size: 0.75em;
   font-weight: 500;
   line-height: normal;
   color: #e84261;
@@ -328,7 +328,7 @@ const submit = () => {
 .calc-upload-files :deep(.upload-subtitle) {
   margin: 0;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 20px;
+  font-size: 1.25em;
   font-weight: 500;
   line-height: normal;
   color: #e84261;
@@ -341,7 +341,7 @@ const submit = () => {
 .calc-upload-files :deep(.has-files .el-upload__text) {
   color: #000000 !important;
   font-family: 'Montserrat-SemiBold', sans-serif !important;
-  font-size: 20px !important;
+  font-size: 1.25em !important;
   font-weight: 600 !important;
   line-height: normal !important;
 }
@@ -349,7 +349,7 @@ const submit = () => {
 .action-row {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625em;
   width: 100%;
 }
 
@@ -362,14 +362,14 @@ const submit = () => {
 }
 
 .calc-order-type-item :deep(.el-select__wrapper) {
-  border-radius: 10px;
-  min-height: 69px;
-  padding: 20px 30px;
+  border-radius: 0.4167em;
+  min-height: 2.875em;
+  padding: 0.833em 1.25em;
   background-color: #cbd1d5;
   border-color: #cbd1d5;
   box-shadow: none;
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
+  font-size: 1.5em;
   font-weight: normal;
   line-height: normal;
   letter-spacing: 0;
@@ -379,7 +379,7 @@ const submit = () => {
 .calc-order-type-item :deep(.el-select__selected-item),
 .calc-order-type-item :deep(.el-select__selection-text) {
   font-family: 'Montserrat-SemiBold', sans-serif !important;
-  font-size: 24px !important;
+  font-size: 1em !important;
   font-weight: normal !important;
   line-height: normal !important;
   letter-spacing: 0 !important;
@@ -389,7 +389,7 @@ const submit = () => {
 .calc-submit-warning {
   margin: 0;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 14px;
+  font-size: 0.875em;
   font-weight: 500;
   line-height: normal;
   color: #e84261;
@@ -398,12 +398,12 @@ const submit = () => {
 
 .calc-submit-button {
   width: 100%;
-  padding: 20px 30px;
+  padding: 0.833em 1.25em;
   background: #e84261 !important;
-  border-radius: 10px;
+  border-radius: 0.4167em;
   color: #ffffff !important;
   font-family: 'Montserrat-SemiBold', sans-serif !important;
-  font-size: 24px;
+  font-size: 1.5em;
   font-weight: 600;
   line-height: normal;
   text-transform: capitalize;
@@ -429,46 +429,46 @@ const submit = () => {
 
 .home-calc-order-option__chevron {
   position: relative;
-  width: 18px;
-  height: 18px;
+  width: 1em;
+  height: 1em;
   flex-shrink: 0;
-  margin-left: 20px;
+  margin-left: 1.111em;
 }
 
 .home-calc-order-option__chevron::before {
   content: '';
   position: absolute;
-  top: 4px;
-  left: 5px;
-  width: 7px;
-  height: 7px;
-  border-top: 1.5px solid #000000;
-  border-right: 1.5px solid #000000;
+  top: 0.222em;
+  left: 0.278em;
+  width: 0.389em;
+  height: 0.389em;
+  border-top: 0.083em solid #000000;
+  border-right: 0.083em solid #000000;
   transform: rotate(45deg);
 }
 
 @media (max-width: 1300px) and (min-width: 769px) {
   .calc-section.section-basic {
-    padding: 40px;
-    border-radius: 40px;
-    box-shadow: 0 6px 15px rgba(224, 227, 237, 0.5);
+    padding: 2.5em;
+    border-radius: 2.5em;
+    box-shadow: 0 0.375em 0.9375em rgba(224, 227, 237, 0.5);
   }
 
   .calc-wrap {
-    gap: 90px;
+    gap: 5.625em;
   }
 
   .calc-left {
     flex: 1 1 0;
     min-width: 0;
     max-width: none;
-    gap: 40px;
+    gap: 2.5em;
   }
 
   .calc-title {
     max-width: none;
     font-family: 'Montserrat-Black', sans-serif;
-    font-size: 52px;
+    font-size: 3.25em;
     font-weight: 800;
   }
 
@@ -479,7 +479,7 @@ const submit = () => {
 
   .calc-text {
     font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 20px;
+    font-size: 1.25em;
     font-weight: 600;
   }
 
@@ -489,7 +489,7 @@ const submit = () => {
   }
 
   .calc-form {
-    gap: 40px;
+    gap: 2.5em;
     height: 100%;
   }
 
@@ -503,7 +503,7 @@ const submit = () => {
   }
 
   .calc-format-text {
-    font-size: 20px;
+    font-size: 1.25em;
   }
 
   .calc-format-docs {
@@ -511,13 +511,13 @@ const submit = () => {
   }
 
   .calc-upload-zone {
-    padding: 30px;
-    gap: 20px;
-    border-width: 2px;
+    padding: 1.875em;
+    gap: 1.25em;
+    border-width: 0.125em;
   }
 
   .calc-upload-title {
-    font-size: 24px;
+    font-size: 1.5em;
     line-height: 1.4;
   }
 
@@ -530,12 +530,12 @@ const submit = () => {
   }
 
   .calc-order-type-item :deep(.el-select__wrapper) {
-    min-height: 44px;
-    max-height: 44px;
-    padding: 12px 24px;
-    border-radius: 10px;
+    min-height: 2.75em;
+    max-height: 2.75em;
+    padding: 0.75em 1.5em;
+    border-radius: 0.625em;
     font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 16px;
+    font-size: 1em;
     font-weight: 500;
   }
 
@@ -543,21 +543,21 @@ const submit = () => {
   .calc-order-type-item :deep(.el-select__selected-item),
   .calc-order-type-item :deep(.el-select__selection-text) {
     font-family: 'Montserrat-Medium', sans-serif !important;
-    font-size: 16px !important;
+    font-size: 1em !important;
     font-weight: 500 !important;
     color: #000000 !important;
   }
 
   .calc-submit-button {
     width: auto;
-    min-height: 44px;
-    height: 44px;
-    padding: 12px 24px;
-    border-radius: 10px;
+    min-height: 2.75em;
+    height: 2.75em;
+    padding: 0.75em 1.5em;
+    border-radius: 0.625em;
     background: #cbd1d5 !important;
     color: #000000 !important;
     font-family: 'Montserrat-Medium', sans-serif !important;
-    font-size: 16px;
+    font-size: 1em;
     font-weight: 500;
     text-transform: none;
   }
@@ -699,10 +699,10 @@ const submit = () => {
 <style>
 .home-calc-order-select-dropdown.el-popper {
   box-sizing: border-box;
-  padding: 20px !important;
+  padding: 1.25em !important;
   background: #fff !important;
   border: none !important;
-  border-radius: 20px !important;
+  border-radius: 1.25em !important;
   box-shadow: none !important;
 }
 
@@ -722,12 +722,12 @@ const submit = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 50px;
-  padding: 10px 0 !important;
+  height: 2.778em;
+  padding: 0.556em 0 !important;
   color: #000 !important;
   background: #fff !important;
   font-family: 'Montserrat-Medium', sans-serif !important;
-  font-size: 18px !important;
+  font-size: 1.125em !important;
   font-weight: 500 !important;
   line-height: 1 !important;
 }
@@ -758,26 +758,26 @@ const submit = () => {
 
 @media (min-width: 1301px) {
   .calc-order-type-item .select-wrapper.full .el-select__wrapper {
-    font-size: 24px;
+    font-size: 1.5em;
   }
 
   .calc-order-type-item .select-wrapper.full .el-select__placeholder,
   .calc-order-type-item .select-wrapper.full .el-select__selection-text,
   .calc-order-type-item .select-wrapper.full .el-select__selected-item {
-    font-size: 24px !important;
+    font-size: 1em !important;
     color: #55585b !important;
   }
 }
 
 @media (max-width: 1300px) and (min-width: 769px) {
   .calc-order-type-item .select-wrapper.full .el-select__wrapper {
-    font-size: 16px;
+    font-size: 1em;
   }
 
   .calc-order-type-item .select-wrapper.full .el-select__placeholder,
   .calc-order-type-item .select-wrapper.full .el-select__selection-text,
   .calc-order-type-item .select-wrapper.full .el-select__selected-item {
-    font-size: 16px !important;
+    font-size: 1em !important;
     color: #000000 !important;
   }
 }
