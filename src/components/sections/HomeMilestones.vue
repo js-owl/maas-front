@@ -174,14 +174,54 @@ const steps: Step[] = [
   text-decoration: none;
 }
 
-@media (max-width: 1199px) {
+@media (max-width: 1300px) and (min-width: 769px) {
+  .milestones-wrap {
+    padding: 40px;
+    gap: 20px;
+    border-radius: 40px;
+    box-shadow: 0 6px 15px rgba(224, 227, 237, 0.5);
+  }
+
+  .milestones-title {
+    font-size: 20px;
+    color: #000000;
+  }
+
   .steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
     height: auto;
   }
 
   .step-card {
-    min-height: 300px;
+    min-height: 240px;
+    height: 336px;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: #9bacb9;
+  }
+
+  .step-content {
+    gap: 40px;
+    justify-content: flex-start;
+  }
+
+  .step-title {
+    font-family: 'Montserrat-Black', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.4;
+    text-transform: none;
+    color: #596269;
+  }
+
+  .step-title-number {
+    display: none;
+  }
+
+  .step-description {
+    font-size: 16px;
+    color: #596269;
   }
 }
 

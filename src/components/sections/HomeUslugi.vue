@@ -72,6 +72,7 @@ const abilities = ref([
 
 const { width } = useWindowSize()
 const isMobileLayout = computed(() => width.value <= 768)
+const isCompactLayout = computed(() => width.value <= 1300)
 
 const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(ability.link)
 </script>
@@ -90,11 +91,23 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
           :is="isCardRouterLink(ability) ? 'RouterLink' : 'div'"
           v-bind="isCardRouterLink(ability) ? { to: ability.link } : {}"
           class="card-link"
-          :class="{ 'card-link--mobile': isMobileLayout }"
+          :class="{
+            'card-link--mobile': isMobileLayout,
+            'card-link--tablet': isCompactLayout && !isMobileLayout,
+          }"
         >
-          <template v-if="isMobileLayout">
-            <div class="card-title card-title--mobile montserrat-semibold">{{ ability.title }}</div>
-            <div v-if="ability.icon" class="card-icon card-icon--mobile">
+          <template v-if="isCompactLayout">
+            <div
+              class="card-title card-title--mobile montserrat-semibold"
+              :class="{ 'card-title--tablet': !isMobileLayout }"
+            >
+              {{ ability.title }}
+            </div>
+            <div
+              v-if="ability.icon"
+              class="card-icon card-icon--mobile"
+              :class="{ 'card-icon--tablet': !isMobileLayout }"
+            >
               <component
                 :is="ability.icon"
                 class="card-icon-svg"
@@ -221,19 +234,79 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   display: block;
 }
 
-@media (max-width: 1620px) and (min-width: 769px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .uslugi-section2.section-basic {
     margin-top: 0;
-    margin-bottom: 40px;
-    padding: 32px;
+    margin-bottom: 0;
+    padding: 40px;
+    gap: 20px;
+    border-radius: 40px;
+    box-shadow: 0 6px 15px rgba(224, 227, 237, 0.5);
   }
 
-  .card-link {
-    padding: 0 20px;
-  }
-
-  .card-title {
+  .uslugi-title {
     font-size: 20px;
+    color: #000000;
+  }
+
+  .services-grid {
+    gap: 20px;
+  }
+
+  .service-card {
+    height: auto;
+    min-height: 100px;
+    background-color: #f2f3f7;
+    border-radius: 20px;
+  }
+
+  .card-link--tablet {
+    align-items: center;
+    justify-content: flex-start;
+    gap: 40px;
+    padding: 20px 30px;
+    cursor: pointer;
+  }
+
+  .card-title--tablet {
+    flex: 1 1 0;
+    min-width: 0;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .card-icon--tablet {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-icon--tablet :deep(.card-icon-svg),
+  .card-icon--tablet :deep(svg) {
+    width: 44px;
+    height: 44px;
+    display: block;
+  }
+
+  .card-icon--tablet :deep(.cls-1),
+  .card-icon--tablet :deep(#Layer_1 path),
+  .card-icon--tablet :deep(#Layer_1 rect),
+  .card-icon--tablet :deep(.st0),
+  .card-icon--tablet :deep(.icon-galv .st0),
+  .card-icon--tablet :deep(.icon-welding .st0) {
+    fill: transparent;
+  }
+
+  .card-icon--tablet :deep(.cls-2),
+  .card-icon--tablet :deep(.st1),
+  .card-icon--tablet :deep(.icon-galv .st1),
+  .card-icon--tablet :deep(.icon-welding .st1) {
+    fill: #e84261;
   }
 }
 
