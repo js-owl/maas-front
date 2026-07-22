@@ -133,12 +133,17 @@ html {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 40px;
   padding: 50px;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
 }
 .uslugi-section {
   display: flex;
   gap: 80px;
   margin-bottom: 60px;
   align-items: flex-start;
+  min-width: 0;
+  max-width: 100%;
 }
 .uslugi-title {
   font-family: 'Montserrat-SemiBold', sans-serif;
@@ -150,7 +155,8 @@ html {
 }
 
 .uslugi-text {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 18px;
   line-height: 1.6;
@@ -158,15 +164,40 @@ html {
   text-align: left;
 }
 .uslugi-image-wrapper {
-  flex: 0 0 420px;
+  flex: 0 1 420px;
+  width: 420px;
+  max-width: 100%;
+  min-width: 0;
   display: flex;
   justify-content: flex-end;
 }
 .uslugi-image {
-  max-width: 600px;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 1300px) and (min-width: 768px) {
+  .uslugi-wrapper {
+    padding: 32px;
+  }
+  .uslugi-section {
+    gap: 32px;
+  }
+  .uslugi-image-wrapper {
+    flex: 0 1 320px;
+    width: 320px;
+  }
+  .uslugi-title {
+    font-size: 1.5rem;
+  }
+  .uslugi-text {
+    font-size: 16px;
+  }
 }
 
 .uslugi-table-title {

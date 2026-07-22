@@ -9,11 +9,15 @@ import UslugiCalc from '@/components/sections/uslugi/UslugiCalc.vue'
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
+const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
 </script>
 
 <template>
   <!-- https://www.figma.com/design/HyoggbbVUgCqJp5UR7EU8T/MaaS-DEV--Copy-?node-id=3379-1782 -->
-  <div class="uslugi-mech-page" :class="{ 'uslugi-mech-page--mobile': isMobile }">
+  <div
+    class="uslugi-mech-page"
+    :class="{ 'uslugi-mech-page--mobile': isMobile, 'uslugi-mech-page--tablet': isTablet }"
+  >
     <el-row :gutter="0">
       <template v-if="isMobile">
         <el-col :span="24">
@@ -43,6 +47,45 @@ const isMobile = computed(() => width.value < 768)
 .uslugi-mech-page {
   background-color: var(--bgcolor);
   box-sizing: border-box;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+.uslugi-mech-page :deep(.el-row) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.uslugi-mech-page :deep(.el-col) {
+  min-width: 0;
+}
+
+.uslugi-mech-page :deep(.uslugi-wrapper) {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.uslugi-mech-page :deep(.uslugi-section) {
+  min-width: 0;
+}
+
+.uslugi-mech-page :deep(.uslugi-image-wrapper) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.uslugi-mech-page :deep(.uslugi-image) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.uslugi-mech-page :deep(.requirements-table-wrapper) {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .uslugi-mech-page__sections {
@@ -51,6 +94,30 @@ const isMobile = computed(() => width.value < 768)
   gap: 12px;
   padding: 32px 10px 40px;
   box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 1300px) and (min-width: 768px) {
+  .uslugi-mech-page :deep(.el-col) {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin-left: 0 !important;
+    padding-left: 24px;
+    padding-right: 24px;
+    box-sizing: border-box;
+  }
+
+  .uslugi-mech-page--tablet :deep(.uslugi-section) {
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .uslugi-mech-page--tablet :deep(.uslugi-image-wrapper) {
+    flex: 1 1 280px;
+    width: auto;
+    max-width: 420px;
+  }
 }
 
 .uslugi-mech-page--mobile .uslugi-mech-page__sections :deep(.el-col) {
