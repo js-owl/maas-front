@@ -144,17 +144,17 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
 <style scoped>
 .uslugi-section2.section-basic {
   min-height: auto;
-  margin-top: -38.4375em;
-  margin-bottom: 2.5em;
+  margin-top: -38.4375rem;
+  margin-bottom: 2.5rem;
   position: relative;
   z-index: 3;
   display: flex;
   flex-direction: column;
-  gap: 1.25em;
-  padding: 2.5em;
+  gap: 1.25rem;
+  padding: 2.5rem;
   background-color: #ffffff;
-  border-radius: 1.25em;
-  box-shadow: 0 1.25em 0.8125em rgba(85, 88, 91, 0.2);
+  border-radius: 1.25rem;
+  box-shadow: 0 1.25rem 0.8125rem rgba(85, 88, 91, 0.2);
   box-sizing: border-box;
 }
 
@@ -170,14 +170,15 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
 .services-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1em;
+  gap: 1rem;
   width: 100%;
 }
 
 .service-card {
   background-color: #cbd1d5;
-  border-radius: 0.625em;
-  height: 5em;
+  border-radius: 0.625rem;
+  min-height: 5rem;
+  height: auto;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -186,9 +187,10 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1em;
+  gap: 1rem;
+  min-height: 5rem;
   height: 100%;
-  padding: 0 1.875em;
+  padding: 0.75rem 1.875rem;
   text-decoration: none;
   color: inherit;
   box-sizing: border-box;
@@ -197,40 +199,43 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
 .card-left {
   display: flex;
   align-items: center;
-  gap: 1.25em;
+  gap: 1.25rem;
   min-width: 0;
   flex: 1 1 auto;
 }
 
 .card-icon {
   flex-shrink: 0;
-  width: 2.75em;
-  height: 2.75em;
+  width: 2.75rem;
+  height: 2.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .card-icon :deep(svg) {
-  width: 2.75em;
-  height: 2.75em;
+  width: 2.75rem;
+  height: 2.75rem;
 }
 
 .card-title {
   margin: 0;
+  min-width: 0;
+  flex: 1 1 auto;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 1.5em;
+  font-size: clamp(1.125em, 1.35vw, 1.5em);
   font-weight: 500;
-  line-height: normal;
+  line-height: 1.25;
   color: #000000;
   text-align: left;
+  overflow-wrap: break-word;
   word-break: break-word;
 }
 
 .card-chevron {
   flex-shrink: 0;
-  width: 2.25em;
-  height: 2.25em;
+  width: 2.25rem;
+  height: 2.25rem;
   display: block;
 }
 
