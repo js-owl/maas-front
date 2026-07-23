@@ -49,11 +49,20 @@ const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
   box-sizing: border-box;
   min-width: 0;
   overflow-x: clip;
+}
+
+.uslugi-mech-page:not(.uslugi-mech-page--mobile) {
   padding-top: 2.5em;
+  padding-bottom: 2.5em;
+}
+
+.uslugi-mech-page--tablet {
+  padding-left: 2.5em;
+  padding-right: 2.5em;
 }
 
 .uslugi-mech-page--mobile {
-  padding-top: 0;
+  padding: 0;
 }
 
 .uslugi-mech-page :deep(.el-row) {
@@ -108,9 +117,6 @@ const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
     max-width: 100% !important;
     flex: 0 0 100% !important;
     margin-left: 0 !important;
-    padding-left: 24px;
-    padding-right: 24px;
-    box-sizing: border-box;
   }
 
   .uslugi-mech-page--tablet :deep(.uslugi-section) {

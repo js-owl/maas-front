@@ -377,16 +377,12 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   position: relative;
   width: 100%;
   background-color: var(--bgcolor);
-  padding: 0.625em 0 0;
+  padding: 3.75em 0 0;
   box-sizing: border-box;
 }
 
 .uppermenu-wrapper--home {
   padding: 3.75em 0 0;
-}
-
-.uppermenu-wrapper--home .uppermenu-header {
-  height: 3.3125em;
 }
 
 .uppermenu-wrapper--mobile {
@@ -440,7 +436,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 6.25em;
+  height: 3.3125em;
   width: 100%;
   margin-right: 0;
   padding: 0;
