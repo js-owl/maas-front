@@ -200,10 +200,10 @@
   color: #000;
 }
 
-/* Tablet: 768–1300px (Figma 1040 / card 960) */
+/* Tablet: 768–1300px — same content width as UpperMenu / HomePage */
 @media (max-width: 1300px) and (min-width: 768px) {
   .calc-page {
-    padding: 40px;
+    padding: 2.5em;
   }
 
   .calc-page .el-col {
@@ -214,8 +214,8 @@
 
   .calc-page__card {
     width: 100%;
-    max-width: 960px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
     padding: 30px;
     grid-template-columns: minmax(0, 1fr) 300px;
     gap: 40px;
