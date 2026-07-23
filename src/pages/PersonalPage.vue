@@ -55,7 +55,7 @@ onMounted(async () => {
 
 <style scoped>
 .personal-page {
-  padding: 30px 0 40px;
+  padding: 40px 0;
   min-height: 60vh;
   background-color: var(--bgcolor);
   box-sizing: border-box;

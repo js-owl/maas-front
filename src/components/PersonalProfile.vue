@@ -598,30 +598,14 @@ const contactFio = computed({
 </template>
 
 <style scoped>
-.profile-page-title--individual {
-  margin: 0 0 30px 5px;
-}
-
-.profile-page-title--legal {
-  margin: 0 0 30px;
-}
-
-.profile-section-title {
-  margin-bottom: 20px;
+/* Desktop / tablet (≥768px) — Figma profile card */
+.profile-page-title,
+.profile-section--title {
+  display: none;
 }
 
 .profile-card {
   display: contents;
-}
-
-.profile-section {
-  margin-bottom: 32px;
-}
-
-.section-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 4px;
 }
 
 .profile-header {
@@ -629,17 +613,131 @@ const contactFio = computed({
   align-items: center;
   background-color: #fff;
   padding: 40px;
-  min-height: 100px;
-  border-radius: 20px;
+  min-height: auto;
+  border-radius: 40px;
+  box-shadow: 0 6px 15px rgba(224, 227, 237, 0.5);
   width: 100%;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.profile-legal,
+.profile-card--individual {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.profile-section {
+  margin-bottom: 0;
+}
+
+.profile-section-title {
+  margin-bottom: 10px;
+  font-size: 20px;
+  line-height: normal;
+}
+
+.profile-section--contact {
+  order: 1;
+}
+
+.profile-section--org {
+  order: 2;
+}
+
+.profile-section--bank {
+  order: 3;
+}
+
+.profile-section--address {
+  order: 4;
+}
+
+.profile-fields {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 10px;
+  margin-left: -5px !important;
+  margin-right: -5px !important;
+}
+
+.profile-fields :deep(.el-col) {
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
+
+.profile-fields :deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.profile-section--contact .profile-fields {
+  flex-direction: column;
+  gap: 10px;
+  row-gap: 10px;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.profile-section--contact .profile-fields :deep(.el-col) {
+  flex: 0 0 50%;
+  width: 50% !important;
+  max-width: 50%;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.profile-fields :deep(.input-wrapper) {
+  --input-bg: #f2f3f7;
+  --input-radius: 10px;
+  --input-padding: 14px 16px;
+  --input-text-color: #596269;
+}
+
+.profile-fields :deep(.input .el-input__wrapper) {
+  min-height: auto;
+  height: auto;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background-color: #f2f3f7;
+  box-shadow: none;
+  border: none;
+  box-sizing: border-box;
+}
+
+.profile-fields :deep(.input .el-input__inner) {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 18px !important;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #596269;
+  height: auto;
+}
+
+.profile-section--contact .profile-fields :deep(.input .el-input__inner) {
+  font-size: 16px !important;
+  line-height: normal;
+}
+
+.profile-fields :deep(.input .el-input__inner::placeholder) {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: inherit;
+  font-weight: 500;
+  line-height: inherit;
+  color: #596269;
+  opacity: 1;
 }
 
 .profile-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 24px;
-  padding-bottom: 24px;
+  margin-top: 80px;
+  padding-bottom: 0;
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -659,21 +757,39 @@ const contactFio = computed({
   display: none;
 }
 
-.profile-back-button :deep(.btn),
-.profile-orders-button :deep(.btn) {
-  --bgcolor: #e0e0e0;
-  border-radius: 24px;
-  font-weight: 500;
+.profile-back-button {
+  display: none;
 }
 
+.profile-orders-button :deep(.btn),
 .profile-update-button :deep(.btn) {
-  --bgcolor: #d0d4da;
-  border-radius: 24px;
+  --button-bg: #cbd1d5;
+  background: #cbd1d5;
+  width: auto !important;
+  height: 44px;
+  max-height: 44px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
   font-weight: 500;
+  box-shadow: none;
+}
+
+.profile-orders-button :deep(.btn::before),
+.profile-update-button :deep(.btn::before) {
+  display: none;
+}
+
+.profile-orders-button :deep(.btn:hover:not(.is-disabled)),
+.profile-update-button :deep(.btn:hover:not(.is-disabled)) {
+  transform: none;
+  box-shadow: none;
+  animation: none;
 }
 
 .email-verification-alert {
-  margin-bottom: 24px;
+  margin-bottom: 40px;
 }
 
 .email-verification-alert :deep(.el-alert__content) {
@@ -681,172 +797,6 @@ const contactFio = computed({
   flex-direction: column;
   gap: 12px;
   align-items: flex-start;
-}
-
-@media (max-width: 1300px) and (min-width: 768px) {
-  .profile-page-title,
-  .profile-section--title {
-    display: none;
-  }
-
-  .profile-header {
-    padding: 40px;
-    border-radius: 40px;
-    box-shadow: 0 6px 15px rgba(224, 227, 237, 0.5);
-    min-height: auto;
-  }
-
-  .profile-content {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .profile-legal,
-  .profile-card--individual {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-  }
-
-  .profile-section {
-    margin-bottom: 0;
-  }
-
-  .profile-section-title {
-    margin-bottom: 10px;
-    font-size: 20px;
-    line-height: normal;
-  }
-
-  .profile-section--contact {
-    order: 1;
-  }
-
-  .profile-section--org {
-    order: 2;
-  }
-
-  .profile-section--bank {
-    order: 3;
-  }
-
-  .profile-section--address {
-    order: 4;
-  }
-
-  .profile-fields {
-    display: flex;
-    flex-wrap: wrap;
-    row-gap: 10px;
-    margin-left: -5px !important;
-    margin-right: -5px !important;
-  }
-
-  .profile-fields :deep(.el-col) {
-    padding-left: 5px !important;
-    padding-right: 5px !important;
-  }
-
-  .profile-fields :deep(.el-form-item) {
-    margin-bottom: 0;
-  }
-
-  .profile-section--contact .profile-fields {
-    flex-direction: column;
-    gap: 10px;
-    row-gap: 10px;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
-
-  .profile-section--contact .profile-fields :deep(.el-col) {
-    flex: 0 0 50%;
-    width: 50% !important;
-    max-width: 50%;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  .profile-fields :deep(.input-wrapper) {
-    --input-bg: #f2f3f7;
-    --input-radius: 10px;
-    --input-padding: 14px 16px;
-    --input-text-color: #596269;
-  }
-
-  .profile-fields :deep(.input .el-input__wrapper) {
-    min-height: auto;
-    height: auto;
-    padding: 14px 16px;
-    border-radius: 10px;
-    background-color: #f2f3f7;
-    box-shadow: none;
-    border: none;
-    box-sizing: border-box;
-  }
-
-  .profile-fields :deep(.input .el-input__inner) {
-    font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 18px !important;
-    font-weight: 500;
-    line-height: 1.4;
-    color: #596269;
-    height: auto;
-  }
-
-  .profile-section--contact .profile-fields :deep(.input .el-input__inner) {
-    font-size: 16px !important;
-    line-height: normal;
-  }
-
-  .profile-fields :deep(.input .el-input__inner::placeholder) {
-    font-family: 'Montserrat-Medium', sans-serif;
-    font-size: inherit;
-    font-weight: 500;
-    line-height: inherit;
-    color: #596269;
-    opacity: 1;
-  }
-
-  .profile-footer--desktop {
-    margin-top: 80px;
-    padding-bottom: 0;
-  }
-
-  .profile-back-button {
-    display: none;
-  }
-
-  .profile-orders-button :deep(.btn),
-  .profile-update-button :deep(.btn) {
-    --button-bg: #cbd1d5;
-    background: #cbd1d5;
-    width: auto !important;
-    height: 44px;
-    max-height: 44px;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    box-shadow: none;
-  }
-
-  .profile-orders-button :deep(.btn::before),
-  .profile-update-button :deep(.btn::before) {
-    display: none;
-  }
-
-  .profile-orders-button :deep(.btn:hover:not(.is-disabled)),
-  .profile-update-button :deep(.btn:hover:not(.is-disabled)) {
-    transform: none;
-    box-shadow: none;
-    animation: none;
-  }
-
-  .email-verification-alert {
-    margin-bottom: 40px;
-  }
 }
 
 @media (max-width: 767px) {
@@ -863,6 +813,7 @@ const contactFio = computed({
     padding: 0;
     min-height: auto;
     border-radius: 0;
+    box-shadow: none;
     width: 100%;
   }
 
@@ -922,6 +873,12 @@ const contactFio = computed({
     padding-right: 0 !important;
   }
 
+  .profile-section--contact .profile-fields :deep(.el-col) {
+    flex: 0 0 auto;
+    width: 100% !important;
+    max-width: 100%;
+  }
+
   .profile-fields :deep(.el-form-item) {
     margin-bottom: 0;
   }
@@ -944,7 +901,8 @@ const contactFio = computed({
     box-sizing: border-box;
   }
 
-  .profile-fields :deep(.input .el-input__inner) {
+  .profile-fields :deep(.input .el-input__inner),
+  .profile-section--contact .profile-fields :deep(.input .el-input__inner) {
     font-family: 'Montserrat-Medium', sans-serif;
     font-size: 12px !important;
     font-weight: 500;
