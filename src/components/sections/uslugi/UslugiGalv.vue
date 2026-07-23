@@ -388,7 +388,7 @@ const galvanicServices: GalvanicService[] = [
 }
 
 .uslugi-section {
-  align-items: stretch;
+  align-items: flex-start;
   gap: 80px;
   margin-bottom: 80px;
 }
@@ -400,14 +400,27 @@ const galvanicServices: GalvanicService[] = [
 }
 
 .uslugi-image-wrapper {
-  flex: 0 0 590px;
+  flex: 0 1 590px;
+  width: 590px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .uslugi-image {
   border-radius: 10px;
   box-shadow: none;
-  height: 100%;
+  display: block;
   width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+@media (max-width: 1300px) and (min-width: 768px) {
+  .uslugi-image-wrapper {
+    flex: 0 1 420px;
+    width: 420px;
+  }
 }
 
 .uslugi-table-title {
