@@ -661,7 +661,7 @@ const contactFio = computed({
 .profile-fields {
   display: flex;
   flex-wrap: wrap;
-  row-gap: 10px;
+  row-gap: 0;
   margin-left: -5px !important;
   margin-right: -5px !important;
 }
@@ -672,13 +672,19 @@ const contactFio = computed({
 }
 
 .profile-fields :deep(.el-form-item) {
-  margin-bottom: 0;
+  margin-bottom: 10px;
+}
+
+.profile-fields :deep(.el-form-item__error) {
+  position: static;
+  padding-top: 4px;
+  line-height: 1.2;
 }
 
 .profile-section--contact .profile-fields {
   flex-direction: column;
-  gap: 10px;
-  row-gap: 10px;
+  gap: 0;
+  row-gap: 0;
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
@@ -860,7 +866,7 @@ const contactFio = computed({
   .profile-fields {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 0;
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
@@ -880,7 +886,13 @@ const contactFio = computed({
   }
 
   .profile-fields :deep(.el-form-item) {
-    margin-bottom: 0;
+    margin-bottom: 4px;
+  }
+
+  .profile-fields :deep(.el-form-item__error) {
+    position: static;
+    padding-top: 4px;
+    line-height: 1.2;
   }
 
   .profile-fields :deep(.input-wrapper) {
