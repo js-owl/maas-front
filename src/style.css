@@ -184,22 +184,20 @@ html {
 
 @media (max-width: 1300px) and (min-width: 768px) {
   .uslugi-wrapper {
-    padding: 32px;
+    padding: 40px;
   }
   .uslugi-section {
-    flex-wrap: wrap;
-    gap: 24px;
+    gap: 80px;
   }
   .uslugi-image-wrapper {
-    flex: 1 1 280px;
-    height: auto;
-    aspect-ratio: 16 / 10;
+    flex: 1 1 0;
+    height: 380px;
   }
   .uslugi-title {
-    font-size: 1.5rem;
+    font-size: 32px;
   }
   .uslugi-text {
-    font-size: 16px;
+    font-size: 18px;
   }
 }
 
