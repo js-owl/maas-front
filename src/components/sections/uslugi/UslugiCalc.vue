@@ -156,13 +156,13 @@ const submit = () => {
 
 .uslugi-calc-upload-files :deep(.upload) {
   box-sizing: border-box;
-  height: 144px;
+  height: auto;
   min-height: 144px;
   padding: 20px;
   border: 2px dashed #7d8083;
   border-radius: 10px;
   background-color: #e1e4e6 !important;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .uslugi-calc-upload-files :deep(.upload.has-files) {
@@ -177,9 +177,11 @@ const submit = () => {
 
 .uslugi-calc-upload-files :deep(.custom) {
   flex-direction: column;
-  gap: 20px;
+  flex-wrap: nowrap;
+  gap: 12px;
   align-items: center;
   width: 100%;
+  min-width: 0;
 }
 
 .uslugi-calc-upload-files :deep(.el-upload__text) {
@@ -187,7 +189,7 @@ const submit = () => {
   font-family: 'Montserrat-SemiBold', sans-serif !important;
   font-size: 20px !important;
   font-weight: 600 !important;
-  line-height: normal !important;
+  line-height: 1.25 !important;
 }
 
 .uslugi-calc-upload-files :deep(.upload-subtitle) {
@@ -195,7 +197,7 @@ const submit = () => {
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  line-height: normal;
+  line-height: 1.35;
   color: #7d8083;
 }
 
@@ -232,6 +234,38 @@ const submit = () => {
   box-shadow: none !important;
 }
 
+@media (max-width: 1300px) and (min-width: 769px) {
+  .uslugi-calc-section {
+    padding: 32px;
+  }
+
+  .uslugi-calc-wrap {
+    gap: 40px;
+    align-items: flex-start;
+  }
+
+  .uslugi-calc-left {
+    gap: 24px;
+  }
+
+  .uslugi-calc-title {
+    font-size: 28px;
+  }
+
+  .uslugi-calc-description {
+    padding-right: 0;
+    font-size: 16px;
+  }
+
+  .uslugi-calc-upload-files :deep(.el-upload__text) {
+    font-size: 18px !important;
+  }
+
+  .uslugi-calc-upload-files :deep(.upload-subtitle) {
+    font-size: 14px;
+  }
+}
+
 @media (max-width: 768px) {
   .uslugi-calc-section {
     border-radius: 0;
@@ -252,7 +286,6 @@ const submit = () => {
   }
 
   .uslugi-calc-upload-files :deep(.upload) {
-    height: auto;
     min-height: 144px;
     padding: 20px;
   }
