@@ -374,55 +374,6 @@ const galvanicServices: GalvanicService[] = [
   width: 363px;
 }
 
-.uslugi-wrapper {
-  box-shadow: 0 10px 15px 0 var(--button-bg);
-  border-radius: 20px;
-  margin-bottom: 40px;
-  padding: 40px;
-}
-
-.uslugi-title {
-  font-size: 32px;
-  line-height: 1;
-  margin-bottom: 20px;
-}
-
-.uslugi-section {
-  align-items: flex-start;
-  gap: 80px;
-  margin-bottom: 80px;
-}
-
-.uslugi-text {
-  font-size: 18px;
-  font-family: 'Montserrat-Medium', sans-serif;
-  line-height: 1.3;
-}
-
-.uslugi-image-wrapper {
-  flex: 0 1 590px;
-  width: 590px;
-  max-width: 100%;
-  min-width: 0;
-}
-
-.uslugi-image {
-  border-radius: 10px;
-  box-shadow: none;
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  object-fit: cover;
-}
-
-@media (max-width: 1300px) and (min-width: 768px) {
-  .uslugi-image-wrapper {
-    flex: 0 1 420px;
-    width: 420px;
-  }
-}
-
 .uslugi-table-title {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;

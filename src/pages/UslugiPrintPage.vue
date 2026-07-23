@@ -10,17 +10,18 @@ const { isMobile, isTablet } = usePageBreakpoints()
 <template>
   <!-- https://www.figma.com/design/0JRYgu37H4xKjqliiJLvI1/MaaS-Frontend--Copy-?node-id=4510-2381 -->
   <div
-    class="uslugi-print-page content-page"
+    class="uslugi-page uslugi-print-page content-page"
     :class="{
       'content-page--mobile': isMobile,
       'content-page--tablet': isTablet,
+      'uslugi-page--mobile': isMobile,
       'uslugi-print-page--mobile': isMobile,
     }"
   >
     <el-row :gutter="0">
       <template v-if="isMobile">
         <el-col :span="24">
-          <div class="uslugi-print-page__sections">
+          <div class="uslugi-page__sections">
             <UslugiPrint />
             <UslugiPrintExample />
           </div>
@@ -39,100 +40,39 @@ const { isMobile, isTablet } = usePageBreakpoints()
 </template>
 
 <style scoped>
-.uslugi-print-page__sections {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 32px 10px 40px;
-  box-sizing: border-box;
-}
-
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.el-col) {
-  width: 100%;
-  max-width: 100%;
-  flex: 0 0 100%;
-}
-
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.uslugi-print-cards) {
+.uslugi-print-page--mobile :deep(.uslugi-print-cards) {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.uslugi-wrapper) {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin: 0;
-  padding: 16px;
-  border-radius: 16px;
-  background-color: #ffffff;
-  box-shadow: 0 0 5px #c8cfe3;
-  box-sizing: border-box;
-}
-
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.uslugi-wrapper--print) {
+.uslugi-print-page--mobile :deep(.uslugi-wrapper) {
   gap: 24px;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.uslugi-wrapper--print-materials) {
+.uslugi-print-page--mobile :deep(.uslugi-wrapper--print-materials) {
   gap: 20px;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.uslugi-wrapper--application) {
+.uslugi-print-page--mobile :deep(.uslugi-wrapper--application) {
   gap: 16px;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.uslugi-title) {
-  margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  line-height: normal;
-  color: #000000;
-}
-
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.uslugi-text) {
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: normal;
-  color: #000000;
-}
-
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.uslugi-image-wrapper) {
-  flex: none;
-  width: 100%;
-  height: 200px;
-  min-height: 200px;
-}
-
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.uslugi-image) {
-  display: block;
-  width: 100%;
-  height: 200px;
-  min-height: 200px;
-  max-width: none;
-  border-radius: 10px;
-  object-fit: cover;
-  box-shadow: none;
-}
-
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.technical-requirements) {
+.uslugi-print-page--mobile :deep(.technical-requirements) {
   margin: 0;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.technical-requirements--expanded) {
+.uslugi-print-page--mobile :deep(.technical-requirements--expanded) {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.requirements-header .uslugi-table-title) {
+.uslugi-print-page--mobile :deep(.requirements-header .uslugi-table-title) {
   font-size: 16px;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.materials-mobile__item) {
+.uslugi-print-page--mobile :deep(.materials-mobile__item) {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -143,20 +83,20 @@ const { isMobile, isTablet } = usePageBreakpoints()
   box-sizing: border-box;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.materials-mobile__item:first-child) {
+.uslugi-print-page--mobile :deep(.materials-mobile__item:first-child) {
   border-top: 1px solid var(--button-bg);
   border-radius: 8px 8px 0 0;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.materials-mobile__item:last-child) {
+.uslugi-print-page--mobile :deep(.materials-mobile__item:last-child) {
   border-radius: 0 0 8px 8px;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.materials-mobile__item:only-child) {
+.uslugi-print-page--mobile :deep(.materials-mobile__item:only-child) {
   border-radius: 8px;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.materials-mobile__title) {
+.uslugi-print-page--mobile :deep(.materials-mobile__title) {
   margin: 0;
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 14px;
@@ -165,7 +105,7 @@ const { isMobile, isTablet } = usePageBreakpoints()
   color: #000000;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.materials-mobile__text) {
+.uslugi-print-page--mobile :deep(.materials-mobile__text) {
   margin: 0;
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 10px;
@@ -174,7 +114,7 @@ const { isMobile, isTablet } = usePageBreakpoints()
   color: #000000;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.print-examples .uslugi-table-title) {
+.uslugi-print-page--mobile :deep(.print-examples .uslugi-table-title) {
   margin: 0;
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 18px;
@@ -183,19 +123,19 @@ const { isMobile, isTablet } = usePageBreakpoints()
   color: #000000;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.application-grid) {
+.uslugi-print-page--mobile :deep(.application-grid) {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.application-card) {
+.uslugi-print-page--mobile :deep(.application-card) {
   padding: 16px;
   border-radius: 8px;
   background-color: var(--bgcolor);
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.application-title) {
+.uslugi-print-page--mobile :deep(.application-title) {
   margin: 0 0 10px;
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 16px;
@@ -204,7 +144,7 @@ const { isMobile, isTablet } = usePageBreakpoints()
   color: #000000;
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__sections :deep(.application-text) {
+.uslugi-print-page--mobile :deep(.application-text) {
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 12px;
   font-weight: 500;

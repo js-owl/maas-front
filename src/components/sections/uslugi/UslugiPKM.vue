@@ -2,7 +2,7 @@
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="pkm-info">
+    <div class="uslugi-wrapper pkm-info">
       <div class="uslugi-section pkm-section">
         <div class="uslugi-text pkm-text">
           <div class="uslugi-title pkm-title">Изделия из полимерно-композиционных материалов</div>
@@ -22,7 +22,11 @@
         </div>
 
         <div class="uslugi-image-wrapper">
-          <img src="/uslugiPages/pkm-main.png" alt="Изделия из полимерно-композиционных материалов" class="uslugi-image" />
+          <img
+            src="/uslugiPages/pkm-main.png"
+            alt="Изделия из полимерно-композиционных материалов"
+            class="uslugi-image"
+          />
         </div>
       </div>
 
@@ -45,30 +49,21 @@
 
 <style scoped>
 .pkm-info {
-  background-color: #fff;
-  border-radius: 20px;
-  box-shadow: 0 10px 15px 0 var(--button-bg);
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 80px;
-  margin-bottom: 40px;
-  padding: 40px;
+  gap: 60px;
 }
 
 .pkm-section {
-  align-items: stretch;
   margin-bottom: 0;
 }
 
 .pkm-title {
-  font-size: 32px;
   line-height: 1;
   margin-bottom: 20px;
 }
 
 .pkm-text {
-  font-size: 18px;
   line-height: 1.35;
 }
 
@@ -124,37 +119,13 @@
   background-color: var(--bgcolor);
 }
 
-.uslugi-image-wrapper {
-  flex: 1;
-  min-height: 380px;
-}
-
-.uslugi-image {
-  border-radius: 10px;
-  box-shadow: none;
-  height: 100%;
-  min-height: 380px;
-  object-fit: cover;
-  width: 100%;
-}
-
 @media (max-width: 767px) {
   .pkm-info {
     gap: 40px;
-    padding: 20px;
-  }
-
-  .pkm-title {
-    font-size: 24px;
   }
 
   .pkm-lead span {
     font-size: 20px;
-  }
-
-  .uslugi-image-wrapper,
-  .uslugi-image {
-    min-height: 240px;
   }
 }
 </style>

@@ -173,16 +173,6 @@ const getRalStyle = (code: string) => {
 </template>
 
 <style scoped>
-.uslugi-wrapper {
-  box-shadow: 0 10px 15px 0 var(--button-bg);
-  padding: 40px;
-}
-
-.uslugi-title {
-  line-height: 1;
-  margin-bottom: 20px;
-}
-
 .technical-requirements {
   margin-top: 20px;
 }
@@ -290,20 +280,5 @@ const getRalStyle = (code: string) => {
 
 .uslugi-text p {
   margin: 0;
-}
-
-.uslugi-section {
-  align-items: stretch;
-  margin-bottom: 80px;
-}
-
-.uslugi-image-wrapper {
-  flex: 0 0 590px;
-}
-
-.uslugi-image {
-  box-shadow: none;
-  height: 100%;
-  width: 100%;
 }
 </style>
