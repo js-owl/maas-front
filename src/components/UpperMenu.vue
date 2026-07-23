@@ -436,7 +436,8 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 3.3125em;
+  --el-header-height: 2.8125em;
+  height: 2.8125em;
   width: 100%;
   margin-right: 0;
   padding: 0;
@@ -452,13 +453,13 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   align-items: center;
   justify-content: flex-end;
   margin-left: auto;
-  gap: 1.25em;
+  gap: 0;
 }
 
 .menu-container {
   display: flex;
   align-items: center;
-  gap: 1.875em;
+  gap: 2.5em;
 }
 
 .logo-btn {
@@ -476,7 +477,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 }
 
 .logo-icon {
-  width: 15em;
+  width: 14.9375em;
 }
 
 .services-title {
@@ -574,13 +575,15 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 
 .cabinet-btn {
   background-color: #fff;
-  color: #55585b;
+  color: #000;
   border: 0.0625em solid transparent;
-  border-radius: 0.4167em;
-  font-size: 1.5em;
-  padding: 0 1em;
-  height: 1.9167em;
-  box-shadow: 0 0.333em 1em rgba(0, 0, 0, 0.08);
+  border-radius: 1em;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 1.25em;
+  font-weight: 500;
+  padding: 0.5em 1em;
+  height: 2.2em;
+  box-shadow: none;
 }
 
 .cabinet-btn:hover,
@@ -690,40 +693,6 @@ const desktopCabinetPopoverAttrs = computed(() => ({
     max-width: 100% !important;
     flex: 0 0 100% !important;
     margin-left: 0 !important;
-  }
-
-  .uppermenu-header {
-    height: 2.8125em;
-  }
-
-  .uppermenu-wrapper--home .uppermenu-header {
-    height: 2.8125em;
-  }
-
-  .logo-icon {
-    width: 14.9375em;
-  }
-
-  .menu-container {
-    gap: 2.5em;
-  }
-
-  .cabinet-btn {
-    font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 1em;
-    font-weight: 500;
-    height: 2.75em;
-    padding: 0 1.25em;
-    border-radius: 1.25em;
-    box-shadow: none;
-  }
-
-  .services-title {
-    font-size: 1em;
-  }
-
-  .right-wrap {
-    gap: 0;
   }
 }
 
