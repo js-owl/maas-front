@@ -8,7 +8,6 @@ import { useAuthStore } from '../stores/auth.store'
 import { useRouter, useRoute } from 'vue-router'
 import IconLogoHeader2 from '../icons/IconLogoHeader2.vue'
 import IconLogoMark from '../icons/IconLogoMark.vue'
-import IconMobileMenu from '../icons/IconMobileMenu.vue'
 import IconCabinetMenu from '../icons/IconCabinetMenu.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
 import IconReg from '../icons/IconReg.vue'
@@ -186,7 +185,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
                     class="mobile-menu-btn"
                     aria-label="Открыть меню"
                   >
-                    <IconMobileMenu class="mobile-menu-icon" />
+                    <IconCabinetMenu class="mobile-menu-icon" />
                   </button>
                 </template>
                 <div class="cabinet-menu">
@@ -222,7 +221,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
                     class="mobile-menu-btn"
                     aria-label="Открыть меню"
                   >
-                    <IconMobileMenu class="mobile-menu-icon" />
+                    <IconCabinetMenu class="mobile-menu-icon" />
                   </button>
                 </template>
                 <div class="cabinet-menu">
@@ -546,12 +545,13 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 2.25em;
-  height: 2.25em;
-  padding: 0.375em;
+  width: 2.5em;
+  height: 2.5em;
+  padding: 0.5em;
   border: none;
   border-radius: 0.5em;
   background-color: #ffffff;
+  color: #000000;
   box-sizing: border-box;
   cursor: pointer;
 }
