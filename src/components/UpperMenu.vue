@@ -9,6 +9,7 @@ import { useRouter, useRoute } from 'vue-router'
 import IconLogoHeader2 from '../icons/IconLogoHeader2.vue'
 import IconLogoMark from '../icons/IconLogoMark.vue'
 import IconMobileMenu from '../icons/IconMobileMenu.vue'
+import IconCabinetMenu from '../icons/IconCabinetMenu.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
 import IconReg from '../icons/IconReg.vue'
 // import IconCall from '@/icons/IconCall.vue'
@@ -259,7 +260,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
                 :offset="12"
               >
                 <template #reference>
-                  <el-button class="cabinet-btn services-title montserrat-semibold">
+                  <el-button class="cabinet-btn services-title montserrat-medium">
                     Расчет стоимости
                   </el-button>
                 </template>
@@ -279,7 +280,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
                 v-bind="desktopCabinetPopoverAttrs"
               >
                 <template #reference>
-                  <el-button class="cabinet-btn montserrat-semibold">Вход / Регистрация</el-button>
+                  <el-button class="cabinet-btn montserrat-medium">Вход / Регистрация</el-button>
                 </template>
                 <div class="cabinet-menu">
                   <button
@@ -329,7 +330,10 @@ const desktopCabinetPopoverAttrs = computed(() => ({
                 v-bind="desktopCabinetPopoverAttrs"
               >
                 <template #reference>
-                  <el-button class="cabinet-btn montserrat-semibold">Личный кабинет</el-button>
+                  <el-button class="cabinet-btn montserrat-medium">
+                    <IconCabinetMenu class="cabinet-btn-icon" />
+                    Личный кабинет
+                  </el-button>
                 </template>
                 <div class="cabinet-menu">
                   <button type="button" class="cabinet-menu-item montserrat-medium" @click="openCabinetPage">
@@ -574,16 +578,35 @@ const desktopCabinetPopoverAttrs = computed(() => ({
 }
 
 .cabinet-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625em;
   background-color: #fff;
   color: #000;
-  border: 0.0625em solid transparent;
-  border-radius: 1em;
+  border: none;
+  border-radius: 1.25em;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 1.25em;
+  font-size: 1em;
   font-weight: 500;
-  padding: 0.5em 1em;
-  height: 2.2em;
+  line-height: normal;
+  padding: 0.625em 1.25em;
+  height: 2.75em;
+  max-height: 2.75em;
   box-shadow: none;
+}
+
+.cabinet-btn :deep(span) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625em;
+}
+
+.cabinet-btn-icon {
+  display: block;
+  width: 1.5em;
+  height: 1.5em;
+  flex-shrink: 0;
 }
 
 .cabinet-btn:hover,
