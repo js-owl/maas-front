@@ -49,6 +49,11 @@ const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
   box-sizing: border-box;
   min-width: 0;
   overflow-x: clip;
+  padding-top: 2.5em;
+}
+
+.uslugi-mech-page--mobile {
+  padding-top: 0;
 }
 
 .uslugi-mech-page :deep(.el-row) {
