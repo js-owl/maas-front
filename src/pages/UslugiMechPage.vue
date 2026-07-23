@@ -1,22 +1,24 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useWindowSize } from '@vueuse/core'
 import UslugiLathe from '../components/sections/uslugi/UslugiLathe.vue'
 import UslugiMilling from '../components/sections/uslugi/UslugiMilling.vue'
 import UslugiTooling from '../components/sections/uslugi/UslugiTooling.vue'
 import UslugiGrinding from '../components/sections/uslugi/UslugiGrinding.vue'
 import UslugiCalc from '@/components/sections/uslugi/UslugiCalc.vue'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
-const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
+const { isMobile, isTablet } = usePageBreakpoints()
 </script>
 
 <template>
   <!-- https://www.figma.com/design/HyoggbbVUgCqJp5UR7EU8T/MaaS-DEV--Copy-?node-id=3379-1782 -->
   <div
-    class="uslugi-mech-page"
-    :class="{ 'uslugi-mech-page--mobile': isMobile, 'uslugi-mech-page--tablet': isTablet }"
+    class="uslugi-mech-page content-page"
+    :class="{
+      'content-page--mobile': isMobile,
+      'content-page--tablet': isTablet,
+      'uslugi-mech-page--mobile': isMobile,
+      'uslugi-mech-page--tablet': isTablet,
+    }"
   >
     <el-row :gutter="0">
       <template v-if="isMobile">
@@ -45,24 +47,7 @@ const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
 
 <style scoped>
 .uslugi-mech-page {
-  background-color: var(--bgcolor);
-  box-sizing: border-box;
-  min-width: 0;
   overflow-x: clip;
-}
-
-.uslugi-mech-page:not(.uslugi-mech-page--mobile) {
-  padding-top: 2.5em;
-  padding-bottom: 2.5em;
-}
-
-.uslugi-mech-page--tablet {
-  padding-left: 2.5em;
-  padding-right: 2.5em;
-}
-
-.uslugi-mech-page--mobile {
-  padding: 0;
 }
 
 .uslugi-mech-page :deep(.el-row) {
@@ -113,12 +98,6 @@ const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
 }
 
 @media (max-width: 1300px) and (min-width: 768px) {
-  .uslugi-mech-page :deep(.el-col) {
-    max-width: 100% !important;
-    flex: 0 0 100% !important;
-    margin-left: 0 !important;
-  }
-
   .uslugi-mech-page--tablet :deep(.uslugi-section) {
     flex-wrap: wrap;
     gap: 24px;

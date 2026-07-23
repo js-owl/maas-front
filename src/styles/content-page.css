@@ -1,0 +1,29 @@
+/* Shared layout spacing for content pages (Home, Uslugi*, Testing) */
+
+.content-page {
+  background-color: var(--bgcolor);
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.content-page:not(.content-page--mobile) {
+  padding-top: 2.5em;
+  padding-bottom: 2.5em;
+}
+
+.content-page--tablet {
+  padding-left: 2.5em;
+  padding-right: 2.5em;
+}
+
+.content-page--mobile {
+  padding: 0;
+}
+
+@media (max-width: 1300px) and (min-width: 768px) {
+  .content-page .el-col {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin-left: 0 !important;
+  }
+}

@@ -1,20 +1,21 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useWindowSize } from '@vueuse/core'
 import UslugiCalc from '@/components/sections/uslugi/UslugiCalc.vue'
 import UslugiPrint from '@/components/sections/uslugi/UslugiPrint.vue'
 import UslugiPrintExample from '@/components/sections/uslugi/UslugiPrintExample.vue'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
-const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
+const { isMobile, isTablet } = usePageBreakpoints()
 </script>
 
 <template>
   <!-- https://www.figma.com/design/0JRYgu37H4xKjqliiJLvI1/MaaS-Frontend--Copy-?node-id=4510-2381 -->
   <div
-    class="uslugi-print-page"
-    :class="{ 'uslugi-print-page--mobile': isMobile, 'uslugi-print-page--tablet': isTablet }"
+    class="uslugi-print-page content-page"
+    :class="{
+      'content-page--mobile': isMobile,
+      'content-page--tablet': isTablet,
+      'uslugi-print-page--mobile': isMobile,
+    }"
   >
     <el-row :gutter="0">
       <template v-if="isMobile">
@@ -38,33 +39,6 @@ const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
 </template>
 
 <style scoped>
-.uslugi-print-page {
-  background-color: var(--bgcolor);
-  box-sizing: border-box;
-}
-
-.uslugi-print-page:not(.uslugi-print-page--mobile) {
-  padding-top: 2.5em;
-  padding-bottom: 2.5em;
-}
-
-.uslugi-print-page--tablet {
-  padding-left: 2.5em;
-  padding-right: 2.5em;
-}
-
-.uslugi-print-page--mobile {
-  padding: 0;
-}
-
-@media (max-width: 1300px) and (min-width: 768px) {
-  .uslugi-print-page :deep(.el-col) {
-    max-width: 100% !important;
-    flex: 0 0 100% !important;
-    margin-left: 0 !important;
-  }
-}
-
 .uslugi-print-page__sections {
   display: flex;
   flex-direction: column;

@@ -1,21 +1,22 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useWindowSize } from '@vueuse/core'
 import UslugiCalc from '@/components/sections/uslugi/UslugiCalc.vue'
 import UslugiTestExternal from '@/components/sections/uslugi/UslugiTestExternal.vue'
 import UslugiTestOptical from '@/components/sections/uslugi/UslugiTestOptical.vue'
 import UslugiTestEquipment from '@/components/sections/uslugi/UslugiTestEquipment.vue'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
-const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
+const { isMobile, isTablet } = usePageBreakpoints()
 </script>
 
 <template>
   <!-- https://www.figma.com/design/0JRYgu37H4xKjqliiJLvI1/MaaS-Frontend--Copy-?node-id=4510-3090 -->
   <div
-    class="uslugi-test-page"
-    :class="{ 'uslugi-test-page--mobile': isMobile, 'uslugi-test-page--tablet': isTablet }"
+    class="uslugi-test-page content-page"
+    :class="{
+      'content-page--mobile': isMobile,
+      'content-page--tablet': isTablet,
+      'uslugi-test-page--mobile': isMobile,
+    }"
   >
     <el-row :gutter="0">
       <template v-if="isMobile">
@@ -41,33 +42,6 @@ const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
 </template>
 
 <style scoped>
-.uslugi-test-page {
-  background-color: var(--bgcolor);
-  box-sizing: border-box;
-}
-
-.uslugi-test-page:not(.uslugi-test-page--mobile) {
-  padding-top: 2.5em;
-  padding-bottom: 2.5em;
-}
-
-.uslugi-test-page--tablet {
-  padding-left: 2.5em;
-  padding-right: 2.5em;
-}
-
-.uslugi-test-page--mobile {
-  padding: 0;
-}
-
-@media (max-width: 1300px) and (min-width: 768px) {
-  .uslugi-test-page :deep(.el-col) {
-    max-width: 100% !important;
-    flex: 0 0 100% !important;
-    margin-left: 0 !important;
-  }
-}
-
 .uslugi-test-page__sections {
   display: flex;
   flex-direction: column;
