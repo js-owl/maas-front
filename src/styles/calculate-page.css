@@ -223,12 +223,7 @@
   }
 
   .calc-page__aside {
-    justify-content: space-between;
-    gap: 0;
-  }
-
-  .calc-block--cad {
-    display: none;
+    gap: 20px;
   }
 
   .calc-block--form .calc-title {
