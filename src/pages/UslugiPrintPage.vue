@@ -7,11 +7,15 @@ import UslugiPrintExample from '@/components/sections/uslugi/UslugiPrintExample.
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
+const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
 </script>
 
 <template>
   <!-- https://www.figma.com/design/0JRYgu37H4xKjqliiJLvI1/MaaS-Frontend--Copy-?node-id=4510-2381 -->
-  <div class="uslugi-print-page" :class="{ 'uslugi-print-page--mobile': isMobile }">
+  <div
+    class="uslugi-print-page"
+    :class="{ 'uslugi-print-page--mobile': isMobile, 'uslugi-print-page--tablet': isTablet }"
+  >
     <el-row :gutter="0">
       <template v-if="isMobile">
         <el-col :span="24">
@@ -37,6 +41,28 @@ const isMobile = computed(() => width.value < 768)
 .uslugi-print-page {
   background-color: var(--bgcolor);
   box-sizing: border-box;
+}
+
+.uslugi-print-page:not(.uslugi-print-page--mobile) {
+  padding-top: 2.5em;
+  padding-bottom: 2.5em;
+}
+
+.uslugi-print-page--tablet {
+  padding-left: 2.5em;
+  padding-right: 2.5em;
+}
+
+.uslugi-print-page--mobile {
+  padding: 0;
+}
+
+@media (max-width: 1300px) and (min-width: 768px) {
+  .uslugi-print-page :deep(.el-col) {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin-left: 0 !important;
+  }
 }
 
 .uslugi-print-page__sections {

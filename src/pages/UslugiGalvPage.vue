@@ -6,11 +6,15 @@ import UslugiGalv from '@/components/sections/uslugi/UslugiGalv.vue'
 
 const { width } = useWindowSize()
 const isMobile = computed(() => width.value < 768)
+const isTablet = computed(() => width.value >= 768 && width.value <= 1300)
 </script>
 
 <template>
   <!-- https://www.figma.com/design/0JRYgu37H4xKjqliiJLvI1/MaaS-Frontend--Copy-?node-id=4510-3516 -->
-  <div class="uslugi-galv-page" :class="{ 'uslugi-galv-page--mobile': isMobile }">
+  <div
+    class="uslugi-galv-page"
+    :class="{ 'uslugi-galv-page--mobile': isMobile, 'uslugi-galv-page--tablet': isTablet }"
+  >
     <el-row :gutter="0">
       <template v-if="isMobile">
         <el-col :span="24">
@@ -34,6 +38,28 @@ const isMobile = computed(() => width.value < 768)
 .uslugi-galv-page {
   background-color: var(--bgcolor);
   box-sizing: border-box;
+}
+
+.uslugi-galv-page:not(.uslugi-galv-page--mobile) {
+  padding-top: 2.5em;
+  padding-bottom: 2.5em;
+}
+
+.uslugi-galv-page--tablet {
+  padding-left: 2.5em;
+  padding-right: 2.5em;
+}
+
+.uslugi-galv-page--mobile {
+  padding: 0;
+}
+
+@media (max-width: 1300px) and (min-width: 768px) {
+  .uslugi-galv-page :deep(.el-col) {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin-left: 0 !important;
+  }
 }
 
 .uslugi-galv-page__sections {
