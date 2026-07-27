@@ -51,6 +51,17 @@ const steps: Step[] = [
               <span class="step-title-number">{{ step.id }}.</span>
               {{ step.title }}
             </div>
+
+            <div class="step-gears" aria-hidden="true">
+              <img
+                src="@/assets/advantage-gears.png"
+                alt=""
+                class="step-gears-img"
+                width="736"
+                height="736"
+              />
+            </div>
+
             <p class="step-description">
               <template v-if="step.highlightWord">
                 {{ step.description.split(step.highlightWord)[0] }}
@@ -127,10 +138,12 @@ const steps: Step[] = [
   justify-content: flex-start;
   gap: 2.5em;
   min-height: 0;
+  height: 100%;
 }
 
 .step-title {
   margin: 0;
+  flex: none;
   font-family: 'Montserrat-Black', sans-serif;
   font-size: 1.75em;
   font-weight: 800;
@@ -144,7 +157,26 @@ const steps: Step[] = [
   display: none;
 }
 
+.step-gears {
+  position: relative;
+  flex: none;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.step-gears-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+
 .step-description {
+  display: none;
   margin: 0;
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 1.125em;
@@ -227,6 +259,7 @@ const steps: Step[] = [
   .step-content {
     gap: 10px;
     justify-content: flex-start;
+    height: auto;
   }
 
   .step-title {
@@ -237,7 +270,12 @@ const steps: Step[] = [
     color: #e84261;
   }
 
+  .step-gears {
+    display: none;
+  }
+
   .step-description {
+    display: block;
     font-size: 12px;
     line-height: normal;
     color: #000000;
