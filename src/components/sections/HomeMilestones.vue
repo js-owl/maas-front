@@ -243,16 +243,17 @@ const steps: Step[] = [
   .steps {
     grid-template-columns: 1fr;
     height: auto;
-    gap: 16px;
+    gap: 8px;
   }
 
   .step-card {
     height: auto;
     min-height: 0;
-    padding: 4px 0 4px 16px;
-    background-color: transparent;
-    border-radius: 0;
-    border-left: 4px solid #e84261;
+    width: 100%;
+    padding: 16px;
+    background-color: #9bacb9;
+    border-radius: 8px;
+    border-left: none;
     overflow: visible;
   }
 
@@ -264,10 +265,10 @@ const steps: Step[] = [
 
   .step-title {
     font-family: 'Montserrat-SemiBold', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
+    font-weight: 700;
+    font-size: 16px;
     text-transform: none;
-    color: #e84261;
+    color: #596269;
   }
 
   .step-gears {
@@ -281,7 +282,9 @@ const steps: Step[] = [
     color: #000000;
   }
 
+  .step-description-highlight,
   .step-description-link {
+    color: #000000;
     text-decoration: none;
   }
 }
