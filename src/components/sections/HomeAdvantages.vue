@@ -1,83 +1,44 @@
 <script setup lang="ts">
-
 import { ref } from 'vue'
 
 const advantages = ref([
-
   {
-
     id: 1,
-
     title: 'Качество',
-
     text: 'Вы работаете напрямую с собственной сетью производств, мы гарантируем качество на каждом этапе выполнения заказа',
-
   },
-
   {
-
     id: 2,
-
     title: 'Скорость производства',
-
     text: 'Мы работаем быстро, чтобы вы получили заказ в точно назначенные сроки',
-
   },
-
   {
-
     id: 3,
-
     title: 'Гибкость',
-
     text: 'Специалисты учтут ваши пожелания и помогут найти оптимальные решения',
-
   },
-
   {
-
     id: 4,
-
     title: 'Материалы и оборудование',
-
     text: 'Мы гарантируем качество и работаем только с надежными поставщиками',
-
   },
-
   {
-
     id: 5,
-
     title: 'Доставка',
-
     text: 'Не беспокойтесь о логистике - мы сами позаботимся о доставке готовой продукции',
-
   },
-
 ])
-
 </script>
 
-
-
 <template>
-
   <section class="home-advantages">
-
     <div class="advantages-wrap">
-
       <h2 class="maas-title advantages-title">Наши преимущества</h2>
 
-
-
       <div class="items">
-
         <div v-for="advantage in advantages" :key="advantage.id" class="item">
-
           <div class="item-row">
-
             <div class="item-head">
-
               <div class="item-number" aria-hidden="true">{{ advantage.id }}</div>
 
               <div
@@ -98,27 +59,27 @@ const advantages = ref([
                 width="16"
                 height="39"
               />
+            </div>
 
+            <div class="item-gears" aria-hidden="true">
+              <img
+                src="@/assets/advantage-gears.png"
+                alt=""
+                class="item-gears-img"
+                width="736"
+                height="736"
+              />
             </div>
 
             <p class="maas-text item-text">{{ advantage.text }}</p>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   </section>
-
 </template>
 
-
-
 <style scoped>
-
 .home-advantages {
   margin: 0 0 2.5em;
   padding: 0;
@@ -152,6 +113,7 @@ const advantages = ref([
 }
 
 .item {
+  position: relative;
   background-color: #e84261;
   border-radius: 1.25em;
   padding: 1.875em;
@@ -204,6 +166,8 @@ const advantages = ref([
   gap: 1.25em;
   align-items: center;
   min-width: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .item-number {
@@ -250,6 +214,25 @@ const advantages = ref([
   display: none;
 }
 
+/* Figma: Image 380×380 in 440 card / 610×610 in 670 card — square, clipped by overflow */
+.item-gears {
+  position: relative;
+  flex: none;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.item-gears-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+
 .item-text {
   margin: 0;
   flex: 1 1 0;
@@ -262,8 +245,6 @@ const advantages = ref([
   word-break: break-word;
   display: none;
 }
-
-
 
 @media (max-width: 1300px) and (min-width: 769px) {
   .advantages-wrap {
@@ -349,140 +330,72 @@ const advantages = ref([
   }
 }
 
-
-
 @media (max-width: 767px) {
-
   .home-advantages {
-
     margin-bottom: 0;
-
   }
-
-
 
   .advantages-wrap {
-
     border-radius: 16px;
-
     padding: 16px;
-
     gap: 16px;
-
     box-shadow: 0 0 5px #c8cfe3;
-
   }
-
-
 
   .advantages-title {
-
     font-size: 14px;
-
     color: #000000;
-
   }
-
-
 
   .items {
-
     display: flex;
-
     flex-direction: column;
-
     gap: 8px;
-
   }
-
-
 
   .item {
-
     order: initial;
-
     grid-column: auto;
-
     height: auto;
-
     min-height: 0;
-
     padding: 16px;
-
     border-radius: 8px;
-
     background-color: #e84261;
-
   }
-
-
 
   .item-row {
-
     flex-direction: column;
-
     align-items: flex-start;
-
     gap: 8px;
-
   }
-
-
 
   .item-head {
-
     width: 100%;
-
   }
-
-
 
   .item-number,
-
-  .item-chevron {
-
+  .item-chevron,
+  .item-gears {
     display: none;
-
   }
-
-
 
   .item-title {
-
     font-size: 14px;
-
     font-family: 'Montserrat-SemiBold', sans-serif;
-
     font-weight: 600;
-
     line-height: normal;
-
     text-transform: none;
-
   }
-
-
 
   .item-title--first {
-
     font-family: 'Montserrat-SemiBold', sans-serif;
-
     font-weight: 600;
-
   }
-
-
 
   .item-text {
-
     display: block;
-
     font-size: 12px;
-
     line-height: normal;
-
   }
-
 }
-
 </style>
