@@ -224,82 +224,71 @@ const openCallDialog = () => {
 
 @media (max-width: 767px) {
   .footer--mobile {
-    padding: 16px 10px;
+    padding: 40px;
   }
 
   .footer--mobile .footer__content {
-    gap: 16px;
+    gap: 40px;
   }
 
   .footer__top {
     flex-direction: column;
-    gap: 0;
+    gap: 20px;
     padding-bottom: 0;
     border-bottom: none;
   }
 
   .footer__links {
     flex: none;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
   }
 
   .footer__contacts--desktop {
+    display: flex;
+    flex: none;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .footer__contacts--mobile {
     display: none;
   }
 
   .footer__link {
-    font-size: 12px;
-    color: var(--button-bg);
+    font-size: 14px;
+    color: var(--button-bg, #cbd1d5);
   }
 
   .footer__bottom {
     flex-direction: column;
     gap: 10px;
-    align-items: stretch;
-    padding-top: 16px;
-    border-top: 1px solid #7d8083;
+    align-items: flex-start;
+    padding-top: 0;
+    border-top: none;
   }
 
   .footer__bottom-row {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 12px;
-    width: 100%;
-  }
-
-  .footer__contacts--mobile {
-    display: flex;
-    flex: none;
-    gap: 4px;
-    align-items: flex-start;
-    min-width: 0;
-  }
-
-  .footer__contacts--mobile .footer__link {
-    font-size: 10px;
-    line-height: normal;
-    white-space: nowrap;
+    display: contents;
   }
 
   .footer__brand {
-    color: var(--button-bg);
+    color: var(--button-bg, #cbd1d5);
   }
 
   .footer__logo {
-    width: 128px;
-    height: 24px;
+    width: 192px;
+    height: 36px;
   }
 
   .footer__legal {
     max-width: none;
-    font-size: 10px;
-    color: var(--button-bg);
+    font-size: 14px;
+    color: var(--button-bg, #cbd1d5);
   }
 
   .footer__legal-year {
-    display: none;
+    display: inline;
   }
 }
 </style>
