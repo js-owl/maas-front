@@ -38,7 +38,7 @@ const advantages = ref([
 
     id: 4,
 
-    title: 'Проверенные материалы и оборудование',
+    title: 'Материалы и оборудование',
 
     text: 'Мы гарантируем качество и работаем только с надежными поставщиками',
 
@@ -85,7 +85,7 @@ const advantages = ref([
                 :class="{ 'item-title--first': advantage.id === 1 }"
               >
                 <template v-if="advantage.id === 4">
-                  Проверенные материалы<br />и оборудование
+                  Материалы и<br />оборудование
                 </template>
                 <template v-else>{{ advantage.title }}</template>
               </div>
@@ -126,48 +126,81 @@ const advantages = ref([
 
 .advantages-wrap {
   background-color: #ffffff;
-  border-radius: 1.25em;
+  border-radius: 2.5em;
   padding: 2.5em;
   display: flex;
   flex-direction: column;
-  gap: 1.5em;
-  box-shadow: 0 0.6875em 0.46875em var(--button-bg);
+  gap: 1.25em;
+  box-shadow: 0 0.375em 0.9375em rgba(224, 227, 237, 0.5);
   box-sizing: border-box;
 }
 
 .advantages-title {
   margin: 0;
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 1.5em;
+  font-size: 1.25em;
   font-weight: 600;
   line-height: normal;
-  color: #d4354f;
+  color: #000000;
 }
 
 .items {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 1.25em;
   width: 100%;
 }
 
 .item {
-  background-color: #d4354f;
+  background-color: #e84261;
   border-radius: 1.25em;
   padding: 1.875em;
   box-sizing: border-box;
+  min-height: 17.5em;
+  height: 17.5em;
+  overflow: hidden;
+}
+
+/* Порядок как в макете: Качество, Материалы, Гибкость, Доставка, Скорость */
+.item:nth-child(1) {
+  order: 1;
+  grid-column: span 2;
+}
+
+.item:nth-child(4) {
+  order: 2;
+  grid-column: span 2;
+}
+
+.item:nth-child(3) {
+  order: 3;
+  grid-column: span 2;
+}
+
+.item:nth-child(5) {
+  order: 4;
+  grid-column: span 3;
+}
+
+.item:nth-child(2) {
+  order: 5;
+  grid-column: span 3;
 }
 
 .item-row {
   display: flex;
-  gap: 2.5em;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0;
+  height: 100%;
   width: 100%;
 }
 
 .item-head {
   display: flex;
-  flex: 1 1 0;
+  width: 100%;
+  flex: none;
   gap: 1.25em;
   align-items: center;
   min-width: 0;
@@ -181,7 +214,7 @@ const advantages = ref([
   padding: 0.2em;
   border: 0.0667em solid #ffffff;
   border-radius: 0.333em;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   font-family: 'Montserrat-Medium', sans-serif;
@@ -196,25 +229,25 @@ const advantages = ref([
   margin: 0;
   flex: 1 1 0;
   min-width: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 1.5em;
-  font-weight: 600;
+  font-family: 'Montserrat-Black', sans-serif;
+  font-size: 1.75em;
+  font-weight: 800;
   line-height: normal;
   color: #ffffff;
-  text-transform: uppercase;
+  text-transform: none;
   word-break: break-word;
 }
 
 .item-title--first {
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-weight: 500;
+  font-family: 'Montserrat-Black', sans-serif;
+  font-weight: 800;
 }
 
 .item-chevron {
   flex-shrink: 0;
   width: 1em;
   height: 2.4375em;
-  display: block;
+  display: none;
 }
 
 .item-text {
@@ -227,6 +260,7 @@ const advantages = ref([
   line-height: normal;
   color: #ffffff;
   word-break: break-word;
+  display: none;
 }
 
 
@@ -257,6 +291,7 @@ const advantages = ref([
     border-radius: 1.25em;
     background-color: #e84261;
     overflow: hidden;
+    grid-column: auto;
   }
 
   /* Порядок как в макете: Качество, Материалы, Гибкость, Доставка, Скорость */
@@ -352,6 +387,10 @@ const advantages = ref([
 
   .items {
 
+    display: flex;
+
+    flex-direction: column;
+
     gap: 8px;
 
   }
@@ -359,6 +398,14 @@ const advantages = ref([
 
 
   .item {
+
+    order: initial;
+
+    grid-column: auto;
+
+    height: auto;
+
+    min-height: 0;
 
     padding: 16px;
 
@@ -427,6 +474,8 @@ const advantages = ref([
 
 
   .item-text {
+
+    display: block;
 
     font-size: 12px;
 
