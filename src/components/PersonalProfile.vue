@@ -589,7 +589,7 @@ const contactFio = computed({
             @click="onUpdate"
           >
             <span v-if="isSaving" class="profile-footer-mobile__spinner" aria-hidden="true" />
-            Сохранить
+            Сохранить изменения
           </button>
         </div>
       </el-col>
@@ -972,24 +972,26 @@ const contactFio = computed({
 
   .profile-footer-mobile {
     display: flex;
+    flex-direction: column;
     gap: 8px;
-    align-items: stretch;
-    justify-content: center;
+    align-items: flex-start;
     width: 100%;
   }
 
-  .profile-footer-mobile__orders {
-    flex: 1 1 0;
-    min-width: 0;
-    height: 40px;
-    padding: 0 16px;
+  .profile-footer-mobile__orders,
+  .profile-footer-mobile__save {
+    flex: 0 0 auto;
+    width: auto;
+    max-height: 44px;
+    height: 44px;
+    padding: 12px 24px;
     border: none;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 0 5px #c8cfe3;
-    font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
+    border-radius: 10px;
+    background: #cbd1d5;
+    box-shadow: none;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
     line-height: normal;
     color: #000;
     cursor: pointer;
@@ -1001,25 +1003,7 @@ const contactFio = computed({
   }
 
   .profile-footer-mobile__save {
-    flex-shrink: 0;
-    height: 40px;
-    padding: 0 16px;
-    border: none;
-    border-radius: 8px;
-    background: #e84261;
-    box-shadow: 0 0 5px #c8cfe3;
-    font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: normal;
-    color: #fff;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     gap: 8px;
-    box-sizing: border-box;
-    white-space: nowrap;
   }
 
   .profile-footer-mobile__save:disabled {
@@ -1030,8 +1014,8 @@ const contactFio = computed({
   .profile-footer-mobile__spinner {
     width: 14px;
     height: 14px;
-    border: 2px solid rgba(255, 255, 255, 0.35);
-    border-top-color: #fff;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #000;
     border-radius: 50%;
     animation: profile-save-spin 0.8s linear infinite;
     flex-shrink: 0;
