@@ -406,28 +406,275 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .personal-calcs {
     padding: 0;
   }
 
   .calcs-card {
-    border-radius: 0;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
   }
 
-  .order-number,
+  .page-header {
+    order: 2;
+    width: 100%;
+    margin-bottom: 0;
+    align-items: flex-start;
+  }
+
+  .page-title {
+    gap: 8px;
+    width: 100%;
+  }
+
+  .order-number {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .order-name-row {
+    gap: 8px;
+    align-items: flex-end;
+    width: 100%;
+  }
+
   .order-name {
-    font-size: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .order-edit-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background: var(--button-bg);
+    color: #7d8083;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+
+  .calcs-table {
+    order: 3;
+    width: 100%;
+  }
+
+  .calcs-table :deep(.el-table__inner-wrapper::before),
+  .calcs-table :deep(.el-table__border-left-patch),
+  .calcs-table :deep(.el-table__border-bottom-patch) {
+    display: none;
+  }
+
+  .calcs-table :deep(colgroup) {
+    display: none;
+  }
+
+  .calcs-table :deep(table),
+  .calcs-table :deep(.el-table__header),
+  .calcs-table :deep(.el-table__body) {
+    width: 100% !important;
+  }
+
+  .calcs-table :deep(.el-table__header tr),
+  .calcs-table :deep(.el-table__body .el-table__row) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 100px;
+    width: 100%;
+  }
+
+  .calcs-table :deep(.el-table__body .el-table__row) {
+    border-bottom: 1px solid var(--bgcolor);
+  }
+
+  /* Hide №, qty, calc, unit price, VAT columns */
+  .calcs-table :deep(.el-table__header th:nth-child(1)),
+  .calcs-table :deep(.el-table__header th:nth-child(3)),
+  .calcs-table :deep(.el-table__header th:nth-child(4)),
+  .calcs-table :deep(.el-table__header th:nth-child(5)),
+  .calcs-table :deep(.el-table__header th:nth-child(6)),
+  .calcs-table :deep(.el-table__header th:nth-child(8)),
+  .calcs-table :deep(.el-table__header th:nth-child(9)),
+  .calcs-table :deep(.el-table__body td:nth-child(1)),
+  .calcs-table :deep(.el-table__body td:nth-child(4)),
+  .calcs-table :deep(.el-table__body td:nth-child(5)),
+  .calcs-table :deep(.el-table__body td:nth-child(6)),
+  .calcs-table :deep(.el-table__body td:nth-child(8)) {
+    display: none !important;
+  }
+
+  .calcs-table :deep(.el-table__header th.el-table__cell),
+  .calcs-table :deep(.el-table__body td.el-table__cell) {
+    border-bottom: none !important;
+  }
+
+  .calcs-table :deep(.el-table__header th:nth-child(2)) {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 11px 8px !important;
+  }
+
+  .calcs-table :deep(.el-table__header th:nth-child(7)) {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 4px !important;
+    text-align: right;
+  }
+
+  .calcs-table :deep(.el-table__header th:nth-child(2) .cell),
+  .calcs-table :deep(.el-table__header th:nth-child(7) .cell) {
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    padding: 0;
+  }
+
+  .calcs-table :deep(.el-table__header th:nth-child(7) .cell) {
+    font-size: 0;
+    text-align: right;
+  }
+
+  .calcs-table :deep(.el-table__header th:nth-child(7) .cell::after) {
+    content: 'Стоимость (руб):\A без НДС / с НДС';
+    white-space: pre-line;
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+  }
+
+  /* Обозначение */
+  .calcs-table :deep(.el-table__body td:nth-child(2)) {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 8px 8px 2px !important;
+  }
+
+  /* Наименование under code */
+  .calcs-table :deep(.el-table__body td:nth-child(3)) {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 2px 8px 8px !important;
+  }
+
+  /* Стоимость без НДС */
+  .calcs-table :deep(.el-table__body td:nth-child(7)) {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 8px 4px 2px !important;
+    text-align: right;
+  }
+
+  /* Стоимость с НДС under net */
+  .calcs-table :deep(.el-table__body td:nth-child(9)) {
+    grid-column: 2;
+    grid-row: 2;
+    padding: 2px 4px 8px !important;
+    text-align: right;
+  }
+
+  .calcs-table :deep(.el-table__body td.el-table__cell .cell) {
+    padding: 0;
+    line-height: normal;
+  }
+
+  .calcs-table :deep(.el-table__body td:nth-child(2) .cell) {
+    font-size: 12px;
+    font-weight: 500;
+    color: #000;
+    word-break: break-word;
+  }
+
+  .calcs-table :deep(.el-table__body td:nth-child(3) .cell) {
+    font-size: 10px;
+    font-weight: 500;
+    color: #7d8083;
+    word-break: break-word;
+  }
+
+  .calcs-table :deep(.el-table__body td:nth-child(7) .cell) {
+    font-size: 12px;
+    font-weight: 500;
+    color: #000;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .calcs-table :deep(.el-table__body td:nth-child(9) .cell) {
+    font-size: 10px;
+    font-weight: 500;
+    color: #000;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .calcs-table :deep(.el-table__body .el-table__row td:first-child .cell) {
+    color: inherit;
   }
 
   .table-append-total {
-    gap: 16px;
-    padding-top: 20px;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 16px 8px 8px 8px;
+  }
+
+  .table-append-total__label,
+  .table-append-total__value {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .actions {
+    order: 1;
+    width: 100%;
+    margin-top: 0;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
   }
 
   .actions :deep(.btn) {
-    width: 100% !important;
+    width: auto !important;
+    height: 40px !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    font-family: 'Montserrat-Medium', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    gap: 10px !important;
+  }
+
+  .actions :deep(.btn:last-child) {
+    display: none !important;
+  }
+
+  .actions :deep(.btn-icon-left) {
+    width: 5px;
+    height: 10px;
+  }
+
+  .actions :deep(.btn-icon-left svg) {
+    width: 5px;
+    height: 10px;
   }
 }
 </style>
