@@ -246,6 +246,7 @@ const advantages = ref([
   display: none;
 }
 
+/* Tablet 960: 2×2 + Скорость на всю ширину — Figma 5050:4495 */
 @media (max-width: 1300px) and (min-width: 769px) {
   .advantages-wrap {
     padding: 2.5em;
@@ -272,24 +273,28 @@ const advantages = ref([
     border-radius: 1.25em;
     background-color: #e84261;
     overflow: hidden;
-    grid-column: auto;
+    grid-column: span 1;
   }
 
-  /* Порядок как в макете: Качество, Материалы, Гибкость, Доставка, Скорость */
+  /* Порядок: Качество, Материалы, Гибкость, Доставка, Скорость — по 2 в ряду */
   .item:nth-child(1) {
     order: 1;
+    grid-column: span 1;
   }
 
   .item:nth-child(4) {
     order: 2;
+    grid-column: span 1;
   }
 
   .item:nth-child(3) {
     order: 3;
+    grid-column: span 1;
   }
 
   .item:nth-child(5) {
     order: 4;
+    grid-column: span 1;
   }
 
   .item:nth-child(2) {
@@ -327,6 +332,28 @@ const advantages = ref([
   .item-title--first {
     font-family: 'Montserrat-Black', sans-serif;
     font-weight: 800;
+  }
+
+  .item-gears {
+    display: block;
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    max-width: none;
+    aspect-ratio: 1 / 1;
+    margin: 0;
+  }
+
+  .item-gears-img {
+    object-fit: contain;
+    object-position: center center;
+  }
+
+  /* Скорость: как в макете — квадрат 1:1 на всю ширину, clip overflow (не absolute) */
+  .item:nth-child(2) .item-gears {
+    margin-top: 0.25em;
   }
 }
 
