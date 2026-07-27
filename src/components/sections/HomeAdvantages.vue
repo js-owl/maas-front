@@ -407,16 +407,16 @@ const advantages = ref([
   }
 
   .item-title {
-    font-size: 14px;
-    font-family: 'Montserrat-SemiBold', sans-serif;
-    font-weight: 600;
+    font-size: 16px;
+    font-family: 'Montserrat-Black', sans-serif;
+    font-weight: 800;
     line-height: normal;
     text-transform: none;
   }
 
   .item-title--first {
-    font-family: 'Montserrat-SemiBold', sans-serif;
-    font-weight: 600;
+    font-family: 'Montserrat-Black', sans-serif;
+    font-weight: 800;
   }
 
   .item-text {
