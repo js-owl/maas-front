@@ -1649,8 +1649,8 @@ onMounted(() => {
   }
 
   .order-details-mobile__col-preview {
-    flex: 0 0 38px;
-    width: 38px;
+    flex: 0 0 50px;
+    width: 50px;
     padding: 8px 4px;
     text-align: center;
   }
@@ -1683,13 +1683,13 @@ onMounted(() => {
   }
 
   .order-details-mobile__preview {
-    flex: 0 0 38px;
-    width: 38px;
+    flex: 0 0 50px;
+    width: 50px;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8px 4px;
+    padding: 9px 10px;
     box-sizing: border-box;
   }
 
