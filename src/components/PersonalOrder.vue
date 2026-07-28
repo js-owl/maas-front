@@ -579,104 +579,100 @@ onMounted(() => {
           </div>
         </div>
 
-        <el-table
-          class="order-table order-table--desktop"
-          :data="calcRows"
-          style="margin-top: 10px; width: 100%"
-          v-loading="isLoading"
-          empty-text="Нет данных по деталям"
-        >
-          <!-- <el-table-column prop="id" label="№" width="60">
-            <template #default="{ row }">
-              {{ row.order_id }}
-            </template>
-          </el-table-column> -->
-          <el-table-column prop="file_id" label="Превью" width="90" class-name="preview-column">
-            <template #default="{ row }">
-              <div v-if="row.file_id" class="model-preview">
-                <CadPreview :file-id="row.file_id" />
-              </div>
-              <div v-else class="preview-placeholder" />
-            </template>
-          </el-table-column>
-          <el-table-column label="Обозначение" min-width="250">
-            <template #default="{ row }">
-              <span class="order-name-link" @click="handleOpenCalculation(row)">
-                {{ row.order_code }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="Наименование"
-            min-width="200"
-            class-name="order-col-name"
-            label-class-name="order-col-name"
+        <div class="order-table-wrap">
+          <el-table
+            class="order-table order-table--desktop"
+            :data="calcRows"
+            v-loading="isLoading"
+            empty-text="Нет данных по деталям"
           >
-            <template #default="{ row }">
-              {{ row.order_name }}
-            </template>
-          </el-table-column>
-          <el-table-column label="Кол-во, шт" width="96" align="center">
-            <template #default="{ row }">
-              <div class="quantity-controls-cell">
-                <!-- <el-button
-                  :icon="Minus"
-                  size="small"
-                  circle
-                  :disabled="quantityUpdating === row.order_id || (row.quantity || 1) <= 1"
-                  :loading="quantityUpdating === row.order_id"
-                  @click="decrementQuantity(row)"
-                /> -->
-                <span class="quantity-value">{{ row.quantity || 1 }}</span>
-                <!-- <el-button
-                  :icon="Plus"
-                  size="small"
-                  circle
-                  :disabled="quantityUpdating === row.order_id"
-                  :loading="quantityUpdating === row.order_id"
-                  @click="incrementQuantity(row)"
-                /> -->
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="Цена" width="105" align="right">
-            <template #default="{ row }">
-              {{ formatPrice(row.total_price) }}
-            </template>
-          </el-table-column>
-
-          <el-table-column label="" width="52" align="center">
-            <template #default="{ row }">
-              <div class="action-buttons">
-                <!-- <el-button
-                  link
-                  type="primary"
-                  size="small"
-                  @click="handleOpenCalcInfo(row)"
-                  :icon="Notebook"
-                  title="Калькуляция"
-                /> -->
-                <!-- <el-button
-                  link
-                  type="primary"
-                  size="small"
-                  @click="handleEdit(row)"
-                  :icon="Edit"
-                  title="Редактировать"
-                /> -->
-                <el-button
-                  link
-                  type="primary"
-                  @click="handleDelete(row)"
-                  :loading="deleteLoading === row.order_id"
-                  :icon="Delete"
-                  title="Удалить"
-                  class="delete-button"
-                />
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column
+              prop="file_id"
+              label="Превью"
+              width="90"
+              class-name="preview-column"
+            >
+              <template #default="{ row }">
+                <div v-if="row.file_id" class="model-preview">
+                  <CadPreview :file-id="row.file_id" />
+                </div>
+                <div v-else class="preview-placeholder" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="Обозначение"
+              min-width="160"
+              class-name="order-col-code"
+              label-class-name="order-col-code"
+            >
+              <template #default="{ row }">
+                <span class="order-name-link" @click="handleOpenCalculation(row)">
+                  {{ row.order_code }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="Наименование"
+              min-width="160"
+              class-name="order-col-name"
+              label-class-name="order-col-name"
+            >
+              <template #default="{ row }">
+                {{ row.order_name }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              class-name="order-col-spacer"
+              label-class-name="order-col-spacer"
+              min-width="80"
+            />
+            <el-table-column
+              label="Кол-во, шт"
+              width="96"
+              align="center"
+              class-name="order-col-qty"
+              label-class-name="order-col-qty"
+            >
+              <template #default="{ row }">
+                <div class="quantity-controls-cell">
+                  <span class="quantity-value">{{ row.quantity || 1 }}</span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="Цена"
+              width="105"
+              align="right"
+              class-name="order-col-price"
+              label-class-name="order-col-price"
+            >
+              <template #default="{ row }">
+                {{ formatPrice(row.total_price) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              label=""
+              width="52"
+              align="center"
+              class-name="order-col-actions"
+              label-class-name="order-col-actions"
+            >
+              <template #default="{ row }">
+                <div class="action-buttons">
+                  <el-button
+                    link
+                    type="primary"
+                    @click="handleDelete(row)"
+                    :loading="deleteLoading === row.order_id"
+                    :icon="Delete"
+                    title="Удалить"
+                    class="delete-button"
+                  />
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
 
         <div class="order-footer order-footer--desktop">
           <ButtonRound width="274px" @click="goBack">
@@ -863,6 +859,21 @@ onMounted(() => {
   --el-table-border-color: var(--bgcolor);
   --el-table-text-color: #000;
   --el-table-row-hover-bg-color: #fff;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.order-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.order-table :deep(.el-table__inner-wrapper),
+.order-table :deep(.el-table__header),
+.order-table :deep(.el-table__body) {
+  width: 100% !important;
 }
 
 .order-table :deep(.el-table__header-wrapper th.el-table__cell) {
@@ -1144,6 +1155,19 @@ onMounted(() => {
   text-decoration: underline;
 }
 
+/* Spacer: desktop hidden; tablet absorbs free width so right cols stay right */
+.order-table :deep(.order-col-spacer) {
+  display: none !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.order-table :deep(colgroup col:nth-child(4)) {
+  width: 0 !important;
+  min-width: 0 !important;
+  display: none !important;
+}
+
 .order-quantity :deep(.btn),
 .order-footer :deep(.btn) {
   background: var(--button-bg) !important;
@@ -1252,30 +1276,71 @@ onMounted(() => {
   }
 
   .order-table :deep(.el-table__header-wrapper th.el-table__cell) {
-    padding: 12px 10px;
+    padding: 12px 8px;
     font-size: 12px;
     line-height: normal;
   }
 
   .order-table :deep(.el-table__body-wrapper td.el-table__cell) {
-    padding: 26px 10px;
+    padding: 20px 8px;
     font-size: 16px;
   }
 
   .order-table :deep(.preview-column.el-table__cell) {
-    padding: 16px 10px;
+    padding: 16px 4px;
   }
 
+  /* Hide «Наименование» (col 3) */
   .order-table :deep(.order-col-name) {
     display: none !important;
   }
 
   .order-table :deep(colgroup col:nth-child(3)) {
     width: 0 !important;
+    min-width: 0 !important;
     display: none !important;
   }
 
+  /* Show spacer (col 4) — pushes qty/price/actions to the right */
+  .order-table :deep(.order-col-spacer) {
+    display: table-cell !important;
+  }
+
+  .order-table :deep(colgroup col:nth-child(4)) {
+    display: table-column !important;
+    width: auto !important;
+    min-width: 80px !important;
+  }
+
+  /* «Обозначение» — фиксированная видимая ширина, не схлопывается */
+  .order-table :deep(colgroup col:nth-child(2)) {
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: 280px !important;
+  }
+
+  .order-table :deep(.order-col-code .cell) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .order-table :deep(.order-col-spacer .cell) {
+    padding: 0;
+  }
+
+  .order-table :deep(.order-col-qty),
+  .order-table :deep(.order-col-price),
+  .order-table :deep(.order-col-actions) {
+    white-space: nowrap;
+  }
+
   .model-preview {
+    width: 60px;
+    height: 40px;
+  }
+
+  .preview-placeholder {
     width: 60px;
     height: 40px;
   }
@@ -1457,6 +1522,7 @@ onMounted(() => {
   }
 
   .order-quantity--desktop,
+  .order-table-wrap,
   .order-table--desktop,
   .order-footer--desktop,
   .summary-actions--desktop {
