@@ -606,7 +606,12 @@ onMounted(() => {
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="Наименование" min-width="200">
+          <el-table-column
+            label="Наименование"
+            min-width="200"
+            class-name="order-col-name"
+            label-class-name="order-col-name"
+          >
             <template #default="{ row }">
               {{ row.order_name }}
             </template>
@@ -1172,16 +1177,162 @@ onMounted(() => {
   display: none;
 }
 
-@media (max-width: 992px) {
+/* Tablet (768–1300px) — Figma node 5070:5307 */
+@media (max-width: 1300px) and (min-width: 768px) {
   .order-layout {
-    padding: 20px;
-    grid-template-columns: 1fr;
-    gap: 20px;
+    padding: 40px;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 40px;
+    border-radius: 40px;
+    box-shadow: 0 6px 15px rgba(224, 227, 237, 0.5);
+    align-items: stretch;
   }
 
   .order-side {
-    max-width: 100%;
-    justify-self: stretch;
+    max-width: 300px;
+    justify-self: end;
+  }
+
+  .order-header {
+    margin-bottom: 40px;
+  }
+
+  .order-title {
+    gap: 10px;
+  }
+
+  .order-name-input :deep(.input-edit-value) {
+    font-family: 'Montserrat-SemiBold', sans-serif !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    line-height: normal;
+  }
+
+  .order-name-wrapper {
+    gap: 10px;
+  }
+
+  .order-name-input :deep(.input-edit-btn) {
+    padding: 4px !important;
+    width: 28px;
+    height: 28px;
+    min-height: 28px !important;
+    border-radius: 6px;
+    background: var(--button-bg) !important;
+    color: #7d8083 !important;
+  }
+
+  .order-name-input :deep(.input-edit-btn .el-icon) {
+    font-size: 20px;
+  }
+
+  .order-name-input :deep(.input-edit-view) {
+    gap: 10px;
+  }
+
+  .order-quantity :deep(.btn),
+  .order-footer :deep(.btn) {
+    width: auto !important;
+    height: 44px !important;
+    max-height: 44px !important;
+    padding: 10px 15px !important;
+    border-radius: 10px !important;
+    font-family: 'Montserrat-Medium', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    gap: 10px;
+  }
+
+  .order-footer :deep(.btn) {
+    padding: 12px 24px !important;
+  }
+
+  .order-footer :deep(.btn-icon-left) {
+    display: none;
+  }
+
+  .order-table :deep(.el-table__header-wrapper th.el-table__cell) {
+    padding: 12px 10px;
+    font-size: 12px;
+    line-height: normal;
+  }
+
+  .order-table :deep(.el-table__body-wrapper td.el-table__cell) {
+    padding: 26px 10px;
+    font-size: 16px;
+  }
+
+  .order-table :deep(.preview-column.el-table__cell) {
+    padding: 16px 10px;
+  }
+
+  .order-table :deep(.order-col-name) {
+    display: none !important;
+  }
+
+  .order-table :deep(colgroup col:nth-child(3)) {
+    width: 0 !important;
+    display: none !important;
+  }
+
+  .model-preview {
+    width: 60px;
+    height: 40px;
+  }
+
+  .order-footer {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 20px;
+    margin-top: 80px;
+    justify-items: end;
+  }
+
+  .order-footer > :first-child {
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
+
+  .order-type-select {
+    margin-left: 0;
+    width: auto !important;
+  }
+
+  .order-footer :deep(.el-select__wrapper) {
+    min-height: 44px !important;
+    height: 44px !important;
+    max-height: 44px !important;
+    padding: 12px 24px !important;
+    border-radius: 10px !important;
+    font-family: 'Montserrat-Medium', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+  }
+
+  .order-footer :deep(.el-select__placeholder),
+  .order-footer :deep(.el-select__selected-item) {
+    font-family: 'Montserrat-Medium', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: #000 !important;
+  }
+
+  .summary-card {
+    gap: 40px;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .pay-order-button :deep(.btn) {
+    height: 44px !important;
+    max-height: 44px !important;
+    padding: 12px 24px !important;
+    border-radius: 10px !important;
+    font-family: 'Montserrat-Medium', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    background: var(--button-bg) !important;
   }
 }
 
