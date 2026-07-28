@@ -450,17 +450,17 @@ const handleDelete = async (row: IKit): Promise<void> => {
           <el-tab-pane label="Завершенные" name="completed"></el-tab-pane>
         </el-tabs>
         <div class="toolbar-actions">
-          <ButtonRound width="220px" @click="createOrder">
+          <ButtonRound width="auto" @click="createOrder">
             <template #icon-left>
               <el-icon><Plus /></el-icon>
             </template>
             Создать заказ
           </ButtonRound>
-          <ButtonRound width="170px" :loading="repeatLoading" @click="handleRepeatOrder">
+          <ButtonRound width="auto" :loading="repeatLoading" @click="handleRepeatOrder">
             <template #icon-left>
               <el-icon><Refresh /></el-icon>
             </template>
-            Повторить
+            Повторить заказ
           </ButtonRound>
           <el-input
             v-model="searchQuery"
@@ -628,7 +628,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 20px;
+  gap: 10px;
 }
 
 .filter-tabs :deep(.el-tabs__header) {
@@ -669,12 +669,17 @@ const handleDelete = async (row: IKit): Promise<void> => {
 .toolbar-actions :deep(.btn) {
   background: var(--button-bg) !important;
   box-shadow: none !important;
-  border-radius: 40px !important;
+  border-radius: 10px !important;
   color: #000 !important;
-  font-family: 'Montserrat-SemiBold', sans-serif !important;
-  font-size: 20px !important;
-  font-weight: 600 !important;
+  font-family: 'Montserrat-Medium', sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
   letter-spacing: 0 !important;
+  height: 44px !important;
+  max-height: 44px !important;
+  padding: 10px 15px !important;
+  gap: 10px !important;
+  white-space: nowrap;
 }
 
 .toolbar-actions :deep(.btn:hover),
@@ -688,16 +693,31 @@ const handleDelete = async (row: IKit): Promise<void> => {
   display: none !important;
 }
 
+.toolbar-actions :deep(.btn-icon-left) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.toolbar-actions :deep(.btn-icon-left .el-icon) {
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+}
+
 .search-input {
-  width: 181px;
-  flex: 0 0 181px;
-  --el-input-height: 48px;
+  width: 290px;
+  flex: 0 0 290px;
+  --el-input-height: 44px;
 }
 
 .search-input :deep(.el-input__wrapper) {
   box-sizing: border-box;
-  height: 48px;
-  background-color: var(--whity);
+  height: 44px;
+  background-color: #f2f3f7;
   border: 2px solid var(--button-bg);
   border-radius: 10px;
   box-shadow: none;
@@ -930,19 +950,18 @@ const handleDelete = async (row: IKit): Promise<void> => {
   }
 
   .toolbar-actions {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto auto;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: start;
     gap: 10px;
     flex: 0 0 auto;
-    max-width: 340px;
+    width: max-content;
   }
 
   .toolbar-actions :deep(.btn) {
     width: auto !important;
     min-width: unset !important;
-    flex: 0 0 auto;
     height: 44px !important;
     max-height: 44px !important;
     padding: 10px 15px !important;
@@ -971,8 +990,9 @@ const handleDelete = async (row: IKit): Promise<void> => {
   }
 
   .search-input {
+    grid-column: 1 / -1;
     width: 100%;
-    flex: 1 1 100%;
+    flex: none;
     --el-input-height: 44px;
   }
 
