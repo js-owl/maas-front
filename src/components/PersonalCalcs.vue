@@ -400,9 +400,16 @@ onMounted(() => {
   }
 
   .actions {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     gap: 12px;
-    align-items: stretch;
+  }
+
+  .actions :deep(.btn) {
+    width: auto !important;
+    min-width: 0;
+    flex: 1 1 0;
   }
 }
 
