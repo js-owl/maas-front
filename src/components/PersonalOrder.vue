@@ -1633,7 +1633,8 @@ onMounted(() => {
     display: flex;
     align-items: center;
     width: 100%;
-    background-color: var(--bgcolor);
+    background-color: transparent;
+    border-bottom: 1px solid var(--bgcolor);
   }
 
   .order-details-mobile__col-preview,
@@ -1643,7 +1644,7 @@ onMounted(() => {
     font-size: var(--order-fs-table-header);
     font-weight: 400;
     line-height: 14px;
-    color: #000;
+    color: #7d8083;
     box-sizing: border-box;
   }
 
@@ -1657,21 +1658,20 @@ onMounted(() => {
   .order-details-mobile__col-designation {
     flex: 1 1 0;
     min-width: 0;
-    width: 197px;
     padding: 8px;
   }
 
   .order-details-mobile__col-price {
-    flex: 1 1 0;
-    min-width: 0;
+    flex: 0 0 auto;
     padding: 8px 20px;
-    text-align: center;
+    text-align: right;
   }
 
   .order-details-mobile__row {
     display: flex;
     align-items: center;
     width: 100%;
+    height: 48px;
     min-height: 48px;
     padding: 0;
     border: none;
@@ -1685,26 +1685,29 @@ onMounted(() => {
   .order-details-mobile__preview {
     flex: 0 0 38px;
     width: 38px;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 9px 4px;
+    padding: 8px 4px;
     box-sizing: border-box;
   }
 
   .model-preview--mobile {
-    width: 29px;
-    height: 29px;
+    width: 20px;
+    height: 20px;
     margin: 0;
+    border-radius: 4px;
+    overflow: hidden;
   }
 
   .preview-placeholder--mobile {
-    width: 29px;
-    height: 29px;
+    width: 20px;
+    height: 20px;
     margin: 0;
     border-radius: 4px;
-    border-width: 1px;
-    background: linear-gradient(180deg, #fafafb 0%, var(--bgcolor) 99%);
+    border: none;
+    background: var(--button-bg);
   }
 
   .order-details-mobile__designation {
@@ -1712,6 +1715,7 @@ onMounted(() => {
     min-width: 0;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 4px;
     padding: 8px;
     box-sizing: border-box;
@@ -1740,15 +1744,18 @@ onMounted(() => {
   }
 
   .order-details-mobile__price {
-    flex: 1 1 0;
-    min-width: 0;
+    flex: 0 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     padding: 16px 20px;
     font-family: 'Montserrat-Medium', sans-serif;
     font-size: var(--order-fs-table-body);
     font-weight: 500;
     line-height: normal;
     color: #000;
-    text-align: center;
+    text-align: right;
     white-space: nowrap;
     box-sizing: border-box;
   }
