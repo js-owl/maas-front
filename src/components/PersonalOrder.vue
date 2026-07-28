@@ -1236,7 +1236,7 @@ onMounted(() => {
   text-decoration: underline;
 }
 
-/* Spacer: desktop hidden; tablet absorbs free width so right cols stay right */
+/* Spacer column: hidden — free width goes to «Обозначение» */
 .order-table :deep(.order-col-spacer) {
   display: none !important;
   padding: 0 !important;
@@ -1441,32 +1441,25 @@ onMounted(() => {
     display: none !important;
   }
 
-  /* Show spacer (col 4) — pushes qty/price/actions to the right */
-  .order-table :deep(.order-col-spacer) {
-    display: table-cell !important;
+  .order-table :deep(colgroup col:nth-child(1)) {
+    width: 72px !important;
+    min-width: 72px !important;
   }
 
-  .order-table :deep(colgroup col:nth-child(4)) {
-    display: table-column !important;
+  /* «Обозначение» — адаптивная ширина: занимает свободное место */
+  .order-table :deep(colgroup col:nth-child(2)) {
     width: auto !important;
     min-width: 80px !important;
   }
 
-  /* «Обозначение» — фиксированная видимая ширина, не схлопывается */
-  .order-table :deep(colgroup col:nth-child(2)) {
-    width: 200px !important;
-    min-width: 200px !important;
-    max-width: 280px !important;
+  .order-table :deep(.order-col-code.el-table__cell) {
+    max-width: 0;
   }
 
   .order-table :deep(.order-col-code .cell) {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .order-table :deep(.order-col-spacer .cell) {
-    padding: 0;
   }
 
   .order-table :deep(.order-col-qty),
