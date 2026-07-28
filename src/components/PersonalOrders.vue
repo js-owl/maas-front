@@ -875,19 +875,139 @@ const handleDelete = async (row: IKit): Promise<void> => {
   color: #55585b !important;
 }
 
-@media (max-width: 1200px) {
+/* Tablet — Figma node 5070:3859 */
+@media (max-width: 1300px) and (min-width: 768px) {
   .orders-card {
-    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    border-radius: 40px;
+    padding: 40px;
+    box-shadow: 0 6px 15px rgba(224, 227, 237, 0.5);
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .orders-toolbar {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 0;
+  }
+
+  .filter-tabs {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .filter-tabs :deep(.el-tabs__nav) {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    float: none;
+    height: auto;
+    white-space: nowrap;
+  }
+
+  .filter-tabs :deep(.el-tabs__item) {
+    color: #9bacb9;
+    font-size: 16px;
+    font-weight: 500;
+    height: auto;
+    line-height: normal;
+    padding: 0;
+    margin-right: 20px;
+    flex-shrink: 0;
+  }
+
+  .filter-tabs :deep(.el-tabs__item.is-active) {
+    color: var(--custom-red);
+  }
+
+  .filter-tabs :deep(.el-tabs__item:not(.is-active)) {
+    border-bottom-color: var(--button-bg);
   }
 
   .toolbar-actions {
+    display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: flex-start;
+    gap: 10px;
+    flex: 0 0 auto;
+    max-width: 340px;
+  }
+
+  .toolbar-actions :deep(.btn) {
+    width: auto !important;
+    min-width: unset !important;
+    flex: 0 0 auto;
+    height: 44px !important;
+    max-height: 44px !important;
+    padding: 10px 15px !important;
+    border-radius: 10px !important;
+    font-family: 'Montserrat-Medium', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    line-height: normal !important;
+    gap: 10px !important;
+    white-space: nowrap;
+  }
+
+  .toolbar-actions :deep(.btn-icon-left) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .toolbar-actions :deep(.btn-icon-left .el-icon) {
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+  }
+
+  .search-input {
+    width: 100%;
+    flex: 1 1 100%;
+    --el-input-height: 44px;
+  }
+
+  .search-input :deep(.el-input__wrapper) {
+    height: 44px;
+    background-color: #f2f3f7;
+    border: 2px solid var(--button-bg);
+    border-radius: 10px;
+    padding: 0 24px;
+  }
+
+  .search-input :deep(.el-input__inner) {
+    font-size: 20px;
+  }
+
+  .orders-table :deep(.el-table__header-wrapper th.el-table__cell) {
+    padding: 12px 10px;
+  }
+
+  .orders-table :deep(.el-table__body-wrapper td.el-table__cell) {
+    padding: 26px 10px;
+  }
+
+  /* Колонка «Статус» ужее в макете планшета */
+  .orders-table :deep(colgroup col:nth-child(5)) {
+    width: 170px !important;
+  }
+
+  .orders-table :deep(.el-table__header colgroup col:nth-child(2)),
+  .orders-table :deep(.el-table__body colgroup col:nth-child(2)) {
+    width: 40px !important;
+  }
+
+  .orders-table :deep(.el-table-column--selection) {
+    width: 44px !important;
   }
 }
 
