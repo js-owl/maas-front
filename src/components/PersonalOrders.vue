@@ -567,7 +567,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
         <el-table-column
           prop="status_name"
           label="Статус"
-          min-width="240"
+          min-width="150"
           align="left"
           class-name="orders-table__status"
           label-class-name="orders-table__status"
