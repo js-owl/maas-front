@@ -681,25 +681,52 @@ onMounted(() => {
             </template>
             Расчеты и заказы
           </ButtonRound>
-          <Select
-            v-model="selectedOrderType"
-            placeholder="Добавить деталь"
-            width="266px"
-            class="order-type-select"
-            dropdown-class="order-type-select-dropdown"
-            @change="handleOrderTypeChange"
-          >
-            <el-option
-              v-for="option in orderTypeOptions"
-              :key="option.value"
-              :label="option.label"
-              :value="option.value"
+          <div class="order-footer-actions">
+            <Select
+              v-model="selectedOrderType"
+              placeholder="Добавить деталь"
+              width="266px"
+              class="order-type-select order-type-select--desktop"
+              dropdown-class="order-type-select-dropdown"
+              @change="handleOrderTypeChange"
             >
-              <span class="order-type-option__label">{{ option.label }}</span>
-              <span class="order-type-option__chevron" aria-hidden="true" />
-            </el-option>
-          </Select>
-          <ButtonRound width="162px" @click="saveOrder"> Сохранить </ButtonRound>
+              <el-option
+                v-for="option in orderTypeOptions"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"
+              >
+                <span class="order-type-option__label">{{ option.label }}</span>
+                <span class="order-type-option__chevron" aria-hidden="true" />
+              </el-option>
+            </Select>
+            <el-dropdown
+              trigger="click"
+              placement="bottom"
+              popper-class="order-add-detail-dropdown"
+              class="order-add-detail-tablet"
+              @command="handleOrderTypeChange"
+            >
+              <button type="button" class="order-add-detail-tablet__btn">
+                Добавить деталь
+                <el-icon :size="16">
+                  <Plus />
+                </el-icon>
+              </button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item
+                    v-for="option in orderTypeOptions"
+                    :key="option.value"
+                    :command="option.value"
+                  >
+                    {{ option.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+            <ButtonRound width="162px" @click="saveOrder"> Сохранить </ButtonRound>
+          </div>
         </div>
         <!-- </el-card> -->
       </div>
@@ -778,7 +805,18 @@ onMounted(() => {
 
 <style scoped>
 .personal-order {
-  /* min-height: auto; */
+  /* Adaptive type scale */
+  --order-fs-number: 16px;
+  --order-fs-title: 24px;
+  --order-fs-table-header: 12px;
+  --order-fs-table-body: 16px;
+  --order-fs-label: 14px;
+  --order-fs-value: 20px;
+  --order-fs-cost: 24px;
+  --order-fs-btn: 20px;
+  --order-fs-disclaimer: 14px;
+  --order-fs-mobile-meta: 10px;
+
   background-color: var(--bgcolor);
   padding: 0;
   border-radius: 20px;
@@ -880,7 +918,7 @@ onMounted(() => {
   background-color: var(--bgcolor) !important;
   color: #000;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 12px;
+  font-size: var(--order-fs-table-header);
   font-weight: 400;
   line-height: 14px;
   padding: 12px 10px;
@@ -889,7 +927,7 @@ onMounted(() => {
 .order-table :deep(.el-table__body-wrapper td.el-table__cell) {
   color: #000;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 16px;
+  font-size: var(--order-fs-table-body);
   font-weight: 500;
   line-height: 1;
   padding: 20px 10px;
@@ -919,16 +957,59 @@ onMounted(() => {
 .order-footer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 20px;
   margin-top: 40px;
 }
 
-.order-type-select {
+.order-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
   margin-left: auto;
 }
 
+.order-type-select {
+  margin-left: 0;
+}
+
+.order-add-detail-tablet {
+  display: none;
+}
+
+.order-add-detail-tablet__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 44px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background: var(--button-bg);
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: var(--order-fs-btn);
+  font-weight: 500;
+  line-height: normal;
+  color: #000;
+  cursor: pointer;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
 .order-number {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: var(--order-fs-number);
+  font-weight: 500;
   line-height: 1;
+  color: #000;
+}
+
+.order-name-input :deep(.input-edit-value) {
+  font-family: 'Montserrat-SemiBold', sans-serif !important;
+  font-size: var(--order-fs-title) !important;
+  font-weight: 600 !important;
+  line-height: normal;
 }
 
 .order-type-option__label {
@@ -1007,7 +1088,7 @@ onMounted(() => {
 
 .summary-card .maas-text {
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 14px;
+  font-size: var(--order-fs-label);
   font-weight: 500;
   line-height: normal;
   color: #000;
@@ -1015,14 +1096,14 @@ onMounted(() => {
 
 .summary-field__value {
   font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 20px;
+  font-size: var(--order-fs-value);
   font-weight: 600;
   line-height: normal;
   color: #000;
 }
 
 .summary-field__value--cost {
-  font-size: 24px;
+  font-size: var(--order-fs-cost);
   line-height: 1.4;
 }
 
@@ -1054,7 +1135,7 @@ onMounted(() => {
   gap: 10px;
   margin-top: 10px;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 14px;
+  font-size: var(--order-fs-disclaimer);
   font-weight: 500;
   color: #55585b;
 }
@@ -1085,7 +1166,7 @@ onMounted(() => {
   color: #000 !important;
   border-radius: 10px !important;
   font-family: 'Montserrat-SemiBold', sans-serif !important;
-  font-size: 20px !important;
+  font-size: var(--order-fs-btn) !important;
   font-weight: 600 !important;
   box-shadow: none !important;
   padding: 12px 24px !important;
@@ -1138,7 +1219,7 @@ onMounted(() => {
   min-width: 30px;
   text-align: center;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 16px;
+  font-size: var(--order-fs-table-body);
   font-weight: 500;
 }
 
@@ -1146,7 +1227,7 @@ onMounted(() => {
   cursor: pointer;
   transition: color 0.2s;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 16px;
+  font-size: var(--order-fs-table-body);
   font-weight: 500;
   color: #000;
 }
@@ -1176,7 +1257,7 @@ onMounted(() => {
   animation: none !important;
   color: #000 !important;
   font-family: 'Montserrat-SemiBold', sans-serif !important;
-  font-size: 20px !important;
+  font-size: var(--order-fs-btn) !important;
   font-weight: 600 !important;
   height: 48px !important;
   border-radius: 320px !important;
@@ -1191,6 +1272,7 @@ onMounted(() => {
   min-height: 48px !important;
   padding-top: 12px !important;
   padding-bottom: 12px !important;
+  font-size: var(--order-fs-btn) !important;
 }
 
 .order-toolbar-mobile,
@@ -1203,6 +1285,18 @@ onMounted(() => {
 
 /* Tablet (768–1300px) — Figma node 5070:5307 */
 @media (max-width: 1300px) and (min-width: 768px) {
+  .personal-order {
+    --order-fs-number: 16px;
+    --order-fs-title: 20px;
+    --order-fs-table-header: 12px;
+    --order-fs-table-body: 16px;
+    --order-fs-label: 14px;
+    --order-fs-value: 20px;
+    --order-fs-cost: 24px;
+    --order-fs-btn: 16px;
+    --order-fs-disclaimer: 14px;
+  }
+
   .order-layout {
     padding: 40px;
     grid-template-columns: minmax(0, 1fr) 300px;
@@ -1227,7 +1321,6 @@ onMounted(() => {
 
   .order-name-input :deep(.input-edit-value) {
     font-family: 'Montserrat-SemiBold', sans-serif !important;
-    font-size: 20px !important;
     font-weight: 600 !important;
     line-height: normal;
   }
@@ -1257,33 +1350,80 @@ onMounted(() => {
   .order-quantity :deep(.btn),
   .order-footer :deep(.btn) {
     width: auto !important;
+    min-width: unset !important;
     height: 44px !important;
     max-height: 44px !important;
-    padding: 10px 15px !important;
+    padding: 12px 24px !important;
     border-radius: 10px !important;
     font-family: 'Montserrat-Medium', sans-serif !important;
-    font-size: 16px !important;
     font-weight: 500 !important;
     gap: 10px;
+    white-space: nowrap;
   }
 
-  .order-footer :deep(.btn) {
-    padding: 12px 24px !important;
+  .order-quantity :deep(.btn) {
+    padding: 10px 15px !important;
   }
 
   .order-footer :deep(.btn-icon-left) {
     display: none;
   }
 
+  .order-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+    margin-top: 80px;
+  }
+
+  .order-footer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    width: auto;
+    margin-left: 0;
+  }
+
+  .order-type-select--desktop {
+    display: none !important;
+  }
+
+  .order-add-detail-tablet {
+    display: inline-flex;
+  }
+
+  .order-add-detail-tablet__btn {
+    height: 44px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: var(--order-fs-btn);
+  }
+
+  .summary-card {
+    gap: 40px;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .pay-order-button :deep(.btn) {
+    height: 44px !important;
+    max-height: 44px !important;
+    padding: 12px 24px !important;
+    border-radius: 10px !important;
+    font-family: 'Montserrat-Medium', sans-serif !important;
+    font-weight: 500 !important;
+    background: var(--button-bg) !important;
+  }
+
   .order-table :deep(.el-table__header-wrapper th.el-table__cell) {
     padding: 12px 8px;
-    font-size: 12px;
     line-height: normal;
   }
 
   .order-table :deep(.el-table__body-wrapper td.el-table__cell) {
     padding: 20px 8px;
-    font-size: 16px;
   }
 
   .order-table :deep(.preview-column.el-table__cell) {
@@ -1344,65 +1484,21 @@ onMounted(() => {
     width: 60px;
     height: 40px;
   }
-
-  .order-footer {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 20px;
-    margin-top: 80px;
-    justify-items: end;
-  }
-
-  .order-footer > :first-child {
-    grid-column: 1 / -1;
-    justify-self: end;
-  }
-
-  .order-type-select {
-    margin-left: 0;
-    width: auto !important;
-  }
-
-  .order-footer :deep(.el-select__wrapper) {
-    min-height: 44px !important;
-    height: 44px !important;
-    max-height: 44px !important;
-    padding: 12px 24px !important;
-    border-radius: 10px !important;
-    font-family: 'Montserrat-Medium', sans-serif !important;
-    font-size: 16px !important;
-    font-weight: 500 !important;
-    box-shadow: none !important;
-  }
-
-  .order-footer :deep(.el-select__placeholder),
-  .order-footer :deep(.el-select__selected-item) {
-    font-family: 'Montserrat-Medium', sans-serif !important;
-    font-size: 16px !important;
-    font-weight: 500 !important;
-    color: #000 !important;
-  }
-
-  .summary-card {
-    gap: 40px;
-    padding: 20px;
-    border-radius: 20px;
-  }
-
-  .pay-order-button :deep(.btn) {
-    height: 44px !important;
-    max-height: 44px !important;
-    padding: 12px 24px !important;
-    border-radius: 10px !important;
-    font-family: 'Montserrat-Medium', sans-serif !important;
-    font-size: 16px !important;
-    font-weight: 500 !important;
-    background: var(--button-bg) !important;
-  }
 }
 
 @media (max-width: 767px) {
   .personal-order {
+    --order-fs-number: 12px;
+    --order-fs-title: 16px;
+    --order-fs-table-header: 10px;
+    --order-fs-table-body: 12px;
+    --order-fs-label: 12px;
+    --order-fs-value: 12px;
+    --order-fs-cost: 20px;
+    --order-fs-btn: 14px;
+    --order-fs-disclaimer: 12px;
+    --order-fs-mobile-meta: 10px;
+
     border-radius: 0;
     background-color: var(--bgcolor);
   }
@@ -1452,7 +1548,7 @@ onMounted(() => {
     border-radius: 8px;
     background: var(--button-bg);
     font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 14px;
+    font-size: var(--order-fs-btn);
     font-weight: 500;
     line-height: 1;
     color: #000;
@@ -1492,7 +1588,6 @@ onMounted(() => {
 
   .order-number {
     font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 12px;
     font-weight: 600;
     line-height: normal;
     color: #000;
@@ -1506,7 +1601,6 @@ onMounted(() => {
 
   .order-name-input :deep(.input-edit-value) {
     font-family: 'Montserrat-SemiBold', sans-serif !important;
-    font-size: 16px !important;
     font-weight: 600 !important;
     line-height: normal;
   }
@@ -1546,7 +1640,7 @@ onMounted(() => {
   .order-details-mobile__col-designation,
   .order-details-mobile__col-price {
     font-family: 'Montserrat-Regular', sans-serif;
-    font-size: 10px;
+    font-size: var(--order-fs-table-header);
     font-weight: 400;
     line-height: 14px;
     color: #000;
@@ -1625,7 +1719,7 @@ onMounted(() => {
 
   .order-details-mobile__code {
     font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 12px;
+    font-size: var(--order-fs-table-body);
     font-weight: 500;
     line-height: normal;
     color: #000;
@@ -1636,7 +1730,7 @@ onMounted(() => {
 
   .order-details-mobile__name {
     font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 10px;
+    font-size: var(--order-fs-mobile-meta);
     font-weight: 500;
     line-height: normal;
     color: #7d8083;
@@ -1650,7 +1744,7 @@ onMounted(() => {
     min-width: 0;
     padding: 16px 20px;
     font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 12px;
+    font-size: var(--order-fs-table-body);
     font-weight: 500;
     line-height: normal;
     color: #000;
@@ -1663,7 +1757,7 @@ onMounted(() => {
     display: block;
     margin: 0;
     font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 12px;
+    font-size: var(--order-fs-table-body);
     font-weight: 500;
     line-height: normal;
     color: #7d8083;
@@ -1689,7 +1783,7 @@ onMounted(() => {
     border-radius: 8px;
     background: var(--button-bg);
     font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 14px;
+    font-size: var(--order-fs-btn);
     font-weight: 600;
     line-height: normal;
     color: #000;
@@ -1744,7 +1838,6 @@ onMounted(() => {
   }
 
   .summary-card .maas-text {
-    font-size: 12px;
     font-weight: 500;
     line-height: normal;
     white-space: nowrap;
@@ -1752,7 +1845,6 @@ onMounted(() => {
 
   .summary-field--inline .summary-field__value {
     font-family: 'Montserrat-Medium', sans-serif;
-    font-size: 12px;
     font-weight: 500;
     line-height: normal;
     white-space: nowrap;
@@ -1764,13 +1856,11 @@ onMounted(() => {
 
   .summary-field__value--cost {
     font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 20px;
     font-weight: 600;
     line-height: normal;
   }
 
   .price-disclaimer {
-    font-size: 12px;
     margin-top: 4px;
   }
 
@@ -1790,7 +1880,7 @@ onMounted(() => {
     border-radius: 8px;
     background: var(--button-bg);
     font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 14px;
+    font-size: var(--order-fs-btn);
     font-weight: 600;
     line-height: normal;
     color: #000;
@@ -1887,5 +1977,21 @@ onMounted(() => {
 
 .order-add-detail-dropdown .el-popper__arrow {
   display: none;
+}
+
+@media (max-width: 1300px) and (min-width: 768px) {
+  .order-type-select-dropdown .el-select-dropdown__item,
+  .order-add-detail-dropdown .el-dropdown-menu__item {
+    font-size: 16px !important;
+    height: 44px;
+  }
+}
+
+@media (max-width: 767px) {
+  .order-type-select-dropdown .el-select-dropdown__item,
+  .order-add-detail-dropdown .el-dropdown-menu__item {
+    font-size: 14px !important;
+    height: 40px;
+  }
 }
 </style>
