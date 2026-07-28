@@ -541,7 +541,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
         <el-table-column type="selection" width="56" align="center" />
         <el-table-column prop="kit_id" label="№" width="74" />
 
-        <el-table-column prop="kit_name" label="Наименование">
+        <el-table-column prop="kit_name" label="Наименование" min-width="180">
           <template #default="{ row }">
             <span
               class="filename-text filename-text--link"
@@ -564,7 +564,14 @@ const handleDelete = async (row: IKit): Promise<void> => {
           </template>
         </el-table-column> -->
 
-        <el-table-column prop="status_name" label="Статус" min-width="160" align="left">
+        <el-table-column
+          prop="status_name"
+          label="Статус"
+          min-width="240"
+          align="left"
+          class-name="orders-table__status"
+          label-class-name="orders-table__status"
+        >
           <template #default="{ row }">
             <span
               class="status-chip"
@@ -794,6 +801,11 @@ const handleDelete = async (row: IKit): Promise<void> => {
   color: #7d8083;
 }
 
+.orders-table :deep(th.orders-table__status .cell),
+.orders-table :deep(td.orders-table__status .cell) {
+  overflow: hidden;
+}
+
 .orders-table :deep(.el-table__header-wrapper th.el-table-column--selection .cell) {
   display: flex;
   justify-content: center;
@@ -1019,9 +1031,10 @@ const handleDelete = async (row: IKit): Promise<void> => {
     padding: 26px 10px;
   }
 
-  /* Колонка «Статус» ужее в макете планшета */
+  /* Колонка «Статус» — не уже минимальной ширины под длинный бейдж */
   .orders-table :deep(colgroup col:nth-child(5)) {
-    width: 170px !important;
+    width: 240px !important;
+    min-width: 240px !important;
   }
 
   .orders-table :deep(.el-table__header colgroup col:nth-child(2)),
@@ -1220,8 +1233,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
 
   .orders-mobile-list__row .status-chip--mobile {
     justify-self: start;
-    width: fit-content;
-    max-width: 100%;
+    width: max-content;
     margin-right: 0;
     padding: 4px 8px;
     border-radius: 4px;
