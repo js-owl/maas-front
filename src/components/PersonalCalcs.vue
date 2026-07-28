@@ -402,14 +402,48 @@ onMounted(() => {
   .actions {
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     gap: 12px;
   }
 
   .actions :deep(.btn) {
     width: auto !important;
-    min-width: 0;
-    flex: 1 1 0;
+    min-width: unset !important;
+    flex: 0 0 auto;
+    height: 44px !important;
+    max-height: 44px !important;
+    padding: 10px 15px !important;
+    border-radius: 10px !important;
+    font-family: 'Montserrat-Medium', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    line-height: normal !important;
+    gap: 10px !important;
+    white-space: nowrap;
+  }
+
+  /* В макете планшета иконка «Скачать» справа */
+  .actions :deep(.btn:last-child) {
+    flex-direction: row-reverse;
+  }
+
+  .actions :deep(.btn-icon-left) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .actions :deep(.btn:first-child .btn-icon-left svg) {
+    width: 6px;
+    height: 12px;
+  }
+
+  .actions :deep(.btn:last-child .btn-icon-left svg) {
+    width: 12px;
+    height: 12px;
   }
 }
 
