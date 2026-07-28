@@ -564,7 +564,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
           </template>
         </el-table-column> -->
 
-        <el-table-column prop="status_name" label="Статус" width="350">
+        <el-table-column prop="status_name" label="Статус" min-width="160" align="left">
           <template #default="{ row }">
             <span
               class="status-chip"
@@ -855,7 +855,9 @@ const handleDelete = async (row: IKit): Promise<void> => {
 .status-chip {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  width: fit-content;
+  max-width: 100%;
   padding: 6px 12px;
   border-radius: 10px;
   border: 1px solid transparent;
@@ -864,6 +866,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
   font-weight: 500;
   color: #000;
   white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .status-chip--default,
@@ -1151,7 +1154,8 @@ const handleDelete = async (row: IKit): Promise<void> => {
   }
 
   .orders-mobile-list__header {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
     width: 100%;
   }
@@ -1168,21 +1172,22 @@ const handleDelete = async (row: IKit): Promise<void> => {
   }
 
   .orders-mobile-list__col-name {
-    flex: 1 1 0;
     min-width: 0;
     padding-left: 8px;
     padding-right: 8px;
   }
 
   .orders-mobile-list__col-status {
-    flex: 1 1 0;
     min-width: 0;
     padding-left: 4px;
     padding-right: 4px;
+    justify-self: start;
+    width: fit-content;
   }
 
   .orders-mobile-list__row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
     width: 100%;
     min-height: 48px;
@@ -1196,7 +1201,6 @@ const handleDelete = async (row: IKit): Promise<void> => {
   }
 
   .orders-mobile-list__name {
-    flex: 1 1 0;
     min-width: 0;
     padding: 0 8px;
     font-family: 'Montserrat-Medium', sans-serif;
@@ -1215,15 +1219,16 @@ const handleDelete = async (row: IKit): Promise<void> => {
   }
 
   .orders-mobile-list__row .status-chip--mobile {
-    flex: 1 1 0;
-    min-width: 0;
+    justify-self: start;
+    width: fit-content;
+    max-width: 100%;
     margin-right: 0;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 12px;
     font-weight: 500;
     line-height: normal;
-    white-space: normal;
+    white-space: nowrap;
     justify-content: flex-start;
     box-sizing: border-box;
   }
