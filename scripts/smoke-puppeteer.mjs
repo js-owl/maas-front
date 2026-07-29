@@ -3,6 +3,7 @@
  */
 import { execFileSync } from 'node:child_process'
 import { accessSync, constants } from 'node:fs'
+import { join } from 'node:path'
 import puppeteer from 'puppeteer-core'
 
 const LAUNCH_ARGS = [
@@ -12,20 +13,41 @@ const LAUNCH_ARGS = [
   '--disable-gpu',
 ]
 
-function resolveChromiumExecutable() {
-  const candidates = [
+function resolveSymlink(candidate) {
+  if (process.platform === 'win32') {
+    return candidate
+  }
+  try {
+    return execFileSync('readlink', ['-f', candidate], { encoding: 'utf8' }).trim() || candidate
+  } catch {
+    return candidate
+  }
+}
+
+function chromiumCandidates() {
+  const localAppData = process.env.LOCALAPPDATA || ''
+  const programFiles = process.env.PROGRAMFILES || 'C:\\Program Files'
+  const programFilesX86 = process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)'
+
+  return [
     process.env.PUPPETEER_EXECUTABLE_PATH,
     '/usr/lib/chromium/chromium',
     '/usr/bin/chromium',
     '/usr/bin/chromium-browser',
+    join(programFiles, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+    join(programFilesX86, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+    join(localAppData, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+    join(programFiles, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+    join(programFilesX86, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    '/Applications/Chromium.app/Contents/MacOS/Chromium',
   ].filter(Boolean)
+}
 
-  for (const candidate of candidates) {
+function resolveChromiumExecutable() {
+  for (const candidate of chromiumCandidates()) {
     try {
-      const resolved = execFileSync('readlink', ['-f', candidate], { encoding: 'utf8' }).trim()
-      if (!resolved) {
-        continue
-      }
+      const resolved = resolveSymlink(candidate)
       accessSync(resolved, constants.X_OK)
       console.log(`[smoke-puppeteer] using chromium: ${resolved}`)
       return resolved
