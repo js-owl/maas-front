@@ -46,7 +46,7 @@ const advantages = ref([
                 :class="{ 'item-title--first': advantage.id === 1 }"
               >
                 <template v-if="advantage.id === 4">
-                  Материалы и<br />оборудование
+                  Материалы и оборудование
                 </template>
                 <template v-else>{{ advantage.title }}</template>
               </div>
@@ -412,6 +412,10 @@ const advantages = ref([
     font-weight: 800;
     line-height: normal;
     text-transform: none;
+  }
+
+  .item-title-br {
+    display: none;
   }
 
   .item-title--first {
