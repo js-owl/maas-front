@@ -96,8 +96,9 @@ const submit = () => {
             чертежам: от единичного экземпляра до серии.
           </p>
           <p class="calc-text calc-text--gap" aria-hidden="true">&#8203;</p>
-          <p class="calc-text calc-text--mobile-line">От чертежа до готового изделия - </p>
-          <p class="calc-text calc-text--mobile-line">без посредников и лишних звонков.</p>
+          <p class="calc-text calc-text--mobile-line">
+            От чертежа до готового изделия - без посредников и лишних звонков.
+          </p>
           <p class="calc-text calc-text--desktop-second">
             От чертежа до готового изделия -<br />
             без посредников и лишних звонков.
@@ -606,11 +607,15 @@ const submit = () => {
 
   .calc-description {
     gap: 0;
+    max-width: none;
+    width: 100%;
   }
 
   .calc-text {
     font-size: 14px;
     line-height: normal;
+    width: 100%;
+    max-width: none;
   }
 
   .calc-text--gap,
