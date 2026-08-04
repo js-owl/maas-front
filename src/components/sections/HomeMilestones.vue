@@ -46,7 +46,7 @@ const steps: Step[] = [
 
       <div class="steps">
         <div v-for="step in steps" :key="step.id" class="step-card">
-          <div class="step-content">
+          <div class="step-face step-face--front">
             <div class="step-title">
               <span class="step-title-number">{{ step.id }}.</span>
               {{ step.title }}
@@ -60,6 +60,13 @@ const steps: Step[] = [
                 width="736"
                 height="736"
               />
+            </div>
+          </div>
+
+          <div class="step-face step-face--back">
+            <div class="step-title">
+              <span class="step-title-number">{{ step.id }}.</span>
+              {{ step.title }}
             </div>
 
             <p class="step-description">
@@ -120,6 +127,7 @@ const steps: Step[] = [
 }
 
 .step-card {
+  position: relative;
   background-color: #9bacb9;
   border-radius: 1.25em;
   padding: 1.25em;
@@ -129,21 +137,55 @@ const steps: Step[] = [
   flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
+  cursor: pointer;
 }
 
-.step-content {
-  flex: 1;
+.step-face {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-start;
-  gap: 2.5em;
-  min-height: 0;
+  width: 100%;
   height: 100%;
+  box-sizing: border-box;
+}
+
+.step-face--front {
+  position: relative;
+  z-index: 1;
+  gap: 2.5em;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.step-face--back {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 1.25em;
+  border-radius: inherit;
+  background-color: #e0e3ed;
+  gap: 1.25em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .step-card:hover .step-face--front {
+    opacity: 0;
+  }
+
+  .step-card:hover .step-face--back {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 .step-title {
   margin: 0;
   flex: none;
+  width: 100%;
   font-family: 'Montserrat-Black', sans-serif;
   font-size: 1.75em;
   font-weight: 800;
@@ -176,18 +218,19 @@ const steps: Step[] = [
 }
 
 .step-description {
-  display: none;
   margin: 0;
+  flex: 1 1 0;
+  min-width: 0;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 1.125em;
+  font-size: 1em;
   font-weight: 500;
   line-height: normal;
-  color: #596269;
+  color: #000000;
   word-break: break-word;
 }
 
 .step-description-highlight {
-  color: #e84261;
+  color: #000000;
   font-family: inherit;
   font-weight: 500;
 }
@@ -198,7 +241,7 @@ const steps: Step[] = [
   padding: 0;
   margin: 0;
   font: inherit;
-  color: #e84261;
+  color: #000000;
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 0.125em;
@@ -255,12 +298,22 @@ const steps: Step[] = [
     border-radius: 8px;
     border-left: none;
     overflow: visible;
+    cursor: default;
   }
 
-  .step-content {
+  .step-face--front {
+    display: none;
+  }
+
+  .step-face--back {
+    position: static;
+    inset: auto;
+    padding: 0;
+    border-radius: 0;
+    background-color: transparent;
     gap: 10px;
-    justify-content: flex-start;
-    height: auto;
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .step-title {
@@ -271,12 +324,7 @@ const steps: Step[] = [
     color: #596269;
   }
 
-  .step-gears {
-    display: none;
-  }
-
   .step-description {
-    display: block;
     font-size: 12px;
     line-height: normal;
     color: #000000;
