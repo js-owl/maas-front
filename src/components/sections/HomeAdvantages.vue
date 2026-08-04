@@ -37,10 +37,8 @@ const advantages = ref([
 
       <div class="items">
         <div v-for="advantage in advantages" :key="advantage.id" class="item">
-          <div class="item-row">
+          <div class="item-face item-face--front">
             <div class="item-head">
-              <div class="item-number" aria-hidden="true">{{ advantage.id }}</div>
-
               <div
                 class="maas-subtitle item-title"
                 :class="{ 'item-title--first': advantage.id === 1 }"
@@ -50,15 +48,6 @@ const advantages = ref([
                 </template>
                 <template v-else>{{ advantage.title }}</template>
               </div>
-
-              <img
-                src="@/assets/advantage-chevron.svg"
-                alt=""
-                class="item-chevron"
-                aria-hidden="true"
-                width="16"
-                height="39"
-              />
             </div>
 
             <div class="item-gears" aria-hidden="true">
@@ -69,6 +58,20 @@ const advantages = ref([
                 width="736"
                 height="736"
               />
+            </div>
+          </div>
+
+          <div class="item-face item-face--back">
+            <div class="item-head">
+              <div
+                class="maas-subtitle item-title item-title--back"
+                :class="{ 'item-title--first': advantage.id === 1 }"
+              >
+                <template v-if="advantage.id === 4">
+                  Материалы и оборудование
+                </template>
+                <template v-else>{{ advantage.title }}</template>
+              </div>
             </div>
 
             <p class="maas-text item-text">{{ advantage.text }}</p>
@@ -121,6 +124,7 @@ const advantages = ref([
   min-height: 17.5em;
   height: 17.5em;
   overflow: hidden;
+  cursor: pointer;
 }
 
 /* Порядок как в макете: Качество, Материалы, Гибкость, Доставка, Скорость */
@@ -149,14 +153,45 @@ const advantages = ref([
   grid-column: span 3;
 }
 
-.item-row {
+.item-face {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 0;
-  height: 100%;
   width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.item-face--front {
+  position: relative;
+  z-index: 1;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.item-face--back {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 1.875em;
+  border-radius: inherit;
+  background-color: #e0e3ed;
+  gap: 1.25em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .item:hover .item-face--front {
+    opacity: 0;
+  }
+
+  .item:hover .item-face--back {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 .item-head {
@@ -168,25 +203,6 @@ const advantages = ref([
   min-width: 0;
   position: relative;
   z-index: 1;
-}
-
-.item-number {
-  flex-shrink: 0;
-  box-sizing: border-box;
-  width: 1.6em;
-  height: 1.6em;
-  padding: 0.2em;
-  border: 0.0667em solid #ffffff;
-  border-radius: 0.333em;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 1.875em;
-  font-weight: 500;
-  line-height: normal;
-  color: #ffffff;
-  text-align: center;
 }
 
 .item-title {
@@ -207,11 +223,10 @@ const advantages = ref([
   font-weight: 800;
 }
 
-.item-chevron {
-  flex-shrink: 0;
-  width: 1em;
-  height: 2.4375em;
-  display: none;
+.item-title--back {
+  color: #596269;
+  font-family: 'Montserrat-Black', sans-serif;
+  font-weight: 800;
 }
 
 /* Figma: Image 380×380 in 440 card / 610×610 in 670 card — square, clipped by overflow */
@@ -238,12 +253,11 @@ const advantages = ref([
   flex: 1 1 0;
   min-width: 0;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 1.5em;
+  font-size: 1em;
   font-weight: 500;
   line-height: normal;
-  color: #ffffff;
+  color: #000000;
   word-break: break-word;
-  display: none;
 }
 
 /* Tablet 960: 2×2 + Скорость на всю ширину — Figma 5050:4495 */
@@ -302,23 +316,8 @@ const advantages = ref([
     grid-column: 1 / -1;
   }
 
-  .item-row {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 0;
-    height: 100%;
-  }
-
-  .item-head {
-    width: 100%;
-    flex: none;
-  }
-
-  .item-number,
-  .item-chevron,
-  .item-text {
-    display: none;
+  .item-face--back {
+    padding: 1.875em;
   }
 
   .item-title {
@@ -329,7 +328,8 @@ const advantages = ref([
     text-transform: none;
   }
 
-  .item-title--first {
+  .item-title--first,
+  .item-title--back {
     font-family: 'Montserrat-Black', sans-serif;
     font-weight: 800;
   }
@@ -388,34 +388,36 @@ const advantages = ref([
     padding: 16px;
     border-radius: 8px;
     background-color: #e84261;
+    cursor: default;
   }
 
-  .item-row {
-    flex-direction: column;
-    align-items: flex-start;
+  .item-face--front {
+    display: none;
+  }
+
+  .item-face--back {
+    position: static;
+    inset: auto;
+    padding: 0;
+    border-radius: 0;
+    background-color: transparent;
     gap: 8px;
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .item-head {
     width: 100%;
   }
 
-  .item-number,
-  .item-chevron,
-  .item-gears {
-    display: none;
-  }
-
-  .item-title {
+  .item-title,
+  .item-title--back {
     font-size: 16px;
     font-family: 'Montserrat-Black', sans-serif;
     font-weight: 800;
     line-height: normal;
     text-transform: none;
-  }
-
-  .item-title-br {
-    display: none;
+    color: #ffffff;
   }
 
   .item-title--first {
@@ -427,6 +429,7 @@ const advantages = ref([
     display: block;
     font-size: 12px;
     line-height: normal;
+    color: #ffffff;
   }
 }
 </style>
