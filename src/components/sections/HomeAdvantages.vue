@@ -1,31 +1,55 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+import imgQuality from '@/assets/advantage-quality.png'
+import imgMaterials from '@/assets/advantage-materials.png'
+import imgFlexibility from '@/assets/advantage-flexibility.png'
+import imgDelivery from '@/assets/advantage-delivery.png'
+import imgSpeed from '@/assets/advantage-speed.png'
+import imgSecurity from '@/assets/advantage-security.png'
+
 const advantages = ref([
   {
     id: 1,
+    key: 'quality',
     title: 'Качество',
     text: 'Вы работаете напрямую с собственной сетью производств, мы гарантируем качество на каждом этапе выполнения заказа',
+    image: imgQuality,
   },
   {
     id: 2,
-    title: 'Скорость производства',
-    text: 'Мы работаем быстро, чтобы вы получили заказ в точно назначенные сроки',
+    key: 'materials',
+    title: 'Материалы',
+    text: 'Мы гарантируем качество и работаем только с надежными поставщиками',
+    image: imgMaterials,
   },
   {
     id: 3,
+    key: 'flexibility',
     title: 'Гибкость',
     text: 'Специалисты учтут ваши пожелания и помогут найти оптимальные решения',
+    image: imgFlexibility,
   },
   {
     id: 4,
-    title: 'Материалы и оборудование',
-    text: 'Мы гарантируем качество и работаем только с надежными поставщиками',
+    key: 'delivery',
+    title: 'Доставка',
+    text: 'Не беспокойтесь о логистике - мы сами позаботимся о доставке готовой продукции',
+    image: imgDelivery,
   },
   {
     id: 5,
-    title: 'Доставка',
-    text: 'Не беспокойтесь о логистике - мы сами позаботимся о доставке готовой продукции',
+    key: 'speed',
+    title: 'Скорость производства',
+    text: 'Мы работаем быстро, чтобы вы получили заказ в точно назначенные сроки',
+    image: imgSpeed,
+  },
+  {
+    id: 6,
+    key: 'security',
+    title: 'Безопасность',
+    text: 'Обеспечиваем конфиденциальность данных и надёжную защиту заказов на всех этапах',
+    image: imgSecurity,
   },
 ])
 </script>
@@ -36,39 +60,38 @@ const advantages = ref([
       <h2 class="maas-title advantages-title">Наши преимущества</h2>
 
       <div class="items">
-        <div v-for="advantage in advantages" :key="advantage.id" class="item">
+        <div
+          v-for="advantage in advantages"
+          :key="advantage.id"
+          class="item"
+          :class="`item--${advantage.key}`"
+        >
           <div class="item-face item-face--front">
             <div class="item-head">
-              <div
-                class="maas-subtitle item-title"
-                :class="{ 'item-title--first': advantage.id === 1 }"
-              >
-                <template v-if="advantage.id === 4">
-                  Материалы и оборудование
+              <div class="maas-subtitle item-title">
+                <template v-if="advantage.key === 'speed'">
+                  Скорость<br />производства
                 </template>
                 <template v-else>{{ advantage.title }}</template>
               </div>
             </div>
 
-            <div class="item-gears" aria-hidden="true">
+            <div class="item-visual" aria-hidden="true">
               <img
-                src="@/assets/advantage-gears.png"
+                :src="advantage.image"
                 alt=""
-                class="item-gears-img"
-                width="736"
-                height="736"
+                class="item-visual-img"
+                width="512"
+                height="512"
               />
             </div>
           </div>
 
           <div class="item-face item-face--back">
             <div class="item-head">
-              <div
-                class="maas-subtitle item-title item-title--back"
-                :class="{ 'item-title--first': advantage.id === 1 }"
-              >
-                <template v-if="advantage.id === 4">
-                  Материалы и оборудование
+              <div class="maas-subtitle item-title item-title--back">
+                <template v-if="advantage.key === 'speed'">
+                  Скорость<br />производства
                 </template>
                 <template v-else>{{ advantage.title }}</template>
               </div>
@@ -110,7 +133,7 @@ const advantages = ref([
 
 .items {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.25em;
   width: 100%;
 }
@@ -125,32 +148,6 @@ const advantages = ref([
   height: 17.5em;
   overflow: hidden;
   cursor: pointer;
-}
-
-/* Порядок как в макете: Качество, Материалы, Гибкость, Доставка, Скорость */
-.item:nth-child(1) {
-  order: 1;
-  grid-column: span 2;
-}
-
-.item:nth-child(4) {
-  order: 2;
-  grid-column: span 2;
-}
-
-.item:nth-child(3) {
-  order: 3;
-  grid-column: span 2;
-}
-
-.item:nth-child(5) {
-  order: 4;
-  grid-column: span 3;
-}
-
-.item:nth-child(2) {
-  order: 5;
-  grid-column: span 3;
 }
 
 .item-face {
@@ -218,34 +215,116 @@ const advantages = ref([
   word-break: break-word;
 }
 
-.item-title--first {
-  font-family: 'Montserrat-Black', sans-serif;
-  font-weight: 800;
-}
-
 .item-title--back {
   color: #596269;
   font-family: 'Montserrat-Black', sans-serif;
   font-weight: 800;
 }
 
-/* Figma: Image 380×380 in 440 card / 610×610 in 670 card — square, clipped by overflow */
-.item-gears {
-  position: relative;
-  flex: none;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  margin: 0;
+/* Figma 440×280 cards — visual frames absolute, overflow clipped */
+.item-visual {
+  position: absolute;
   pointer-events: none;
   user-select: none;
+  overflow: hidden;
 }
 
-.item-gears-img {
+.item-visual-img {
   display: block;
+  position: absolute;
+  max-width: none;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Качество: 258×259, bottom 0, right -12 */
+.item--quality .item-visual {
+  right: -2.727%;
+  bottom: 0;
+  width: 58.636%;
+  height: 92.5%;
+}
+
+.item--quality .item-visual-img {
+  left: 0.06%;
+  top: 7.32%;
+  width: 92.68%;
+  height: 92.68%;
+}
+
+/* Материалы: 290×245, left 163, top 46 */
+.item--materials .item-visual {
+  left: 37.045%;
+  top: 16.429%;
+  width: 65.909%;
+  height: 87.5%;
+}
+
+.item--materials .item-visual-img {
+  left: 6.15%;
+  top: -2.54%;
+  width: 84.48%;
+  height: 100%;
+}
+
+/* Гибкость: 276×233, left 164, top 47 */
+.item--flexibility .item-visual {
+  left: 37.273%;
+  top: 16.786%;
+  width: 62.727%;
+  height: 83.214%;
+}
+
+.item--flexibility .item-visual-img {
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: center center;
+}
+
+/* Доставка: 376×222, bottom -29, right -31 */
+.item--delivery .item-visual {
+  right: -7.045%;
+  bottom: -10.357%;
+  width: 85.455%;
+  height: 79.286%;
+}
+
+.item--delivery .item-visual-img {
+  left: 3.23%;
+  top: 4.67%;
+  width: 100%;
+  height: 95.32%;
+}
+
+/* Скорость: 295×228, bottom -25, right -25 */
+.item--speed .item-visual {
+  right: -5.682%;
+  bottom: -8.929%;
+  width: 67.045%;
+  height: 81.429%;
+}
+
+.item--speed .item-visual-img {
+  left: 1.87%;
+  top: 5.61%;
+  width: 103.33%;
+  height: 100.04%;
+}
+
+/* Безопасность: 273×225, bottom -18, right -27 */
+.item--security .item-visual {
+  right: -6.136%;
+  bottom: -6.429%;
+  width: 62.045%;
+  height: 80.357%;
+}
+
+.item--security .item-visual-img {
+  left: 4.68%;
+  top: 7.57%;
+  width: 95.35%;
+  height: 92.64%;
 }
 
 .item-text {
@@ -260,7 +339,7 @@ const advantages = ref([
   word-break: break-word;
 }
 
-/* Tablet 960: 2×2 + Скорость на всю ширину — Figma 5050:4495 */
+/* Tablet */
 @media (max-width: 1300px) and (min-width: 769px) {
   .advantages-wrap {
     padding: 2.5em;
@@ -287,33 +366,6 @@ const advantages = ref([
     border-radius: 1.25em;
     background-color: #e84261;
     overflow: hidden;
-    grid-column: span 1;
-  }
-
-  /* Порядок: Качество, Материалы, Гибкость, Доставка, Скорость — по 2 в ряду */
-  .item:nth-child(1) {
-    order: 1;
-    grid-column: span 1;
-  }
-
-  .item:nth-child(4) {
-    order: 2;
-    grid-column: span 1;
-  }
-
-  .item:nth-child(3) {
-    order: 3;
-    grid-column: span 1;
-  }
-
-  .item:nth-child(5) {
-    order: 4;
-    grid-column: span 1;
-  }
-
-  .item:nth-child(2) {
-    order: 5;
-    grid-column: 1 / -1;
   }
 
   .item-face--back {
@@ -328,32 +380,9 @@ const advantages = ref([
     text-transform: none;
   }
 
-  .item-title--first,
   .item-title--back {
     font-family: 'Montserrat-Black', sans-serif;
     font-weight: 800;
-  }
-
-  .item-gears {
-    display: block;
-    position: relative;
-    right: auto;
-    bottom: auto;
-    left: auto;
-    width: 100%;
-    max-width: none;
-    aspect-ratio: 1 / 1;
-    margin: 0;
-  }
-
-  .item-gears-img {
-    object-fit: contain;
-    object-position: center center;
-  }
-
-  /* Скорость: как в макете — квадрат 1:1 на всю ширину, clip overflow (не absolute) */
-  .item:nth-child(2) .item-gears {
-    margin-top: 0.25em;
   }
 }
 
@@ -381,8 +410,6 @@ const advantages = ref([
   }
 
   .item {
-    order: initial;
-    grid-column: auto;
     height: auto;
     min-height: 0;
     padding: 16px;
@@ -418,11 +445,6 @@ const advantages = ref([
     line-height: normal;
     text-transform: none;
     color: #ffffff;
-  }
-
-  .item-title--first {
-    font-family: 'Montserrat-Black', sans-serif;
-    font-weight: 800;
   }
 
   .item-text {
