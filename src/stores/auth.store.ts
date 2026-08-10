@@ -118,8 +118,12 @@ export const useAuthStore = defineStore("auth", () => {
     setToken(data.access_token, rememberMe);
     mustChangePassword.value = data.must_change_password;
 
-    const profileStore = useProfileStore();
-    await profileStore.getProfile();
+    try {
+      const profileStore = useProfileStore();
+      await profileStore.getProfile();
+    } catch {
+      // Login already succeeded; profile can be loaded later.
+    }
   }
 
   async function logout() {
