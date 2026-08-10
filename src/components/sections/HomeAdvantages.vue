@@ -106,6 +106,7 @@ const advantages = ref([
 </template>
 
 <style scoped>
+/* Desktop — Figma 5067:2657 (1440) */
 .home-advantages {
   margin: 0 0 2.5em;
   padding: 0;
@@ -140,7 +141,7 @@ const advantages = ref([
 
 .item {
   position: relative;
-  background-color: #e84261;
+  background-color: #b82130;
   border-radius: 1.25em;
   padding: 1.875em;
   box-sizing: border-box;
@@ -339,7 +340,7 @@ const advantages = ref([
   word-break: break-word;
 }
 
-/* Tablet */
+/* Tablet — Figma 5067:2727 (960), cards 430×280, 2 columns */
 @media (max-width: 1300px) and (min-width: 769px) {
   .advantages-wrap {
     padding: 2.5em;
@@ -349,7 +350,10 @@ const advantages = ref([
   }
 
   .advantages-title {
+    font-family: 'Montserrat-SemiBold', sans-serif;
     font-size: 1.25em;
+    font-weight: 600;
+    line-height: normal;
     color: #000000;
   }
 
@@ -360,11 +364,11 @@ const advantages = ref([
   }
 
   .item {
-    min-height: 12.5em;
+    min-height: 17.5em;
     height: 17.5em;
     padding: 1.875em;
     border-radius: 1.25em;
-    background-color: #e84261;
+    background-color: #b82130;
     overflow: hidden;
   }
 
@@ -374,15 +378,58 @@ const advantages = ref([
 
   .item-title {
     font-family: 'Montserrat-Black', sans-serif;
-    font-size: 1.5em;
+    font-size: 1.75em;
     font-weight: 800;
-    line-height: 1.4;
+    line-height: normal;
     text-transform: none;
   }
 
   .item-title--back {
     font-family: 'Montserrat-Black', sans-serif;
     font-weight: 800;
+  }
+
+  /* Tablet card 430×280 — image frames from Figma instances */
+  .item--quality .item-visual {
+    right: -2.791%;
+    bottom: 0;
+    width: 60%;
+    height: 92.5%;
+  }
+
+  .item--materials .item-visual {
+    left: 37.907%;
+    top: 16.429%;
+    width: 67.442%;
+    height: 87.5%;
+  }
+
+  .item--flexibility .item-visual {
+    left: 38.14%;
+    top: 16.786%;
+    width: 64.186%;
+    height: 83.214%;
+  }
+
+  .item--delivery .item-visual {
+    right: -7.209%;
+    bottom: -10.357%;
+    width: 87.442%;
+    height: 79.286%;
+  }
+
+  .item--speed .item-visual {
+    right: -5.814%;
+    bottom: -8.929%;
+    width: 68.605%;
+    height: 81.429%;
+  }
+
+  .item--security .item-visual {
+    right: -6.279%;
+    bottom: -6.429%;
+    width: 63.488%;
+    height: 80.357%;
   }
 }
 
