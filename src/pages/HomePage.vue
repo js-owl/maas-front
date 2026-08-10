@@ -11,6 +11,9 @@ const HomeCalc = defineAsyncComponent(() => import('../components/sections/HomeC
 const HomeMilestones = defineAsyncComponent(
   () => import('../components/sections/HomeMilestones.vue')
 )
+const HomeMilestones2 = defineAsyncComponent(
+  () => import('../components/sections/HomeMilestones2.vue')
+)
 
 const { isMobile, isTablet } = usePageBreakpoints()
 const showHomeCalc = ref(true)
@@ -38,7 +41,7 @@ onMounted(() => {
           <HomeCalc v-if="showHomeCalc" />
           <HomeUslugi />
           <HomeAdvantages />
-          <HomeMilestones />
+          <HomeMilestones2 />
         </div>
       </el-col>
     </el-row>
@@ -62,6 +65,7 @@ onMounted(() => {
 .home-page__sections :deep(.calc-section),
 .home-page__sections :deep(.uslugi-section2),
 .home-page__sections :deep(.home-milestones),
+.home-page__sections :deep(.home-milestones2),
 .home-page__sections :deep(.home-advantages) {
   margin: 0 !important;
 }
