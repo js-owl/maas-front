@@ -8,9 +8,6 @@ const HomeAdvantages = defineAsyncComponent(
   () => import('../components/sections/HomeAdvantages.vue')
 )
 const HomeCalc = defineAsyncComponent(() => import('../components/sections/HomeCalc.vue'))
-const HomeMilestones = defineAsyncComponent(
-  () => import('../components/sections/HomeMilestones.vue')
-)
 const HomeMilestones2 = defineAsyncComponent(
   () => import('../components/sections/HomeMilestones2.vue')
 )
@@ -64,7 +61,6 @@ onMounted(() => {
 
 .home-page__sections :deep(.calc-section),
 .home-page__sections :deep(.uslugi-section2),
-.home-page__sections :deep(.home-milestones),
 .home-page__sections :deep(.home-milestones2),
 .home-page__sections :deep(.home-advantages) {
   margin: 0 !important;
