@@ -110,7 +110,7 @@ const submit = () => {
         <el-form :model="formModel" class="calc-form" label-position="top">
           <div class="calc-upload-zone">
             <h3 class="calc-upload-title">Расчет стоимости изготовления</h3>
-            <div v-if="!isMobile || isAuthenticated" class="calc-formats">
+            <div v-if="isAuthenticated" class="calc-formats">
               <p class="calc-format-text">
                 Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY,
                 3DS, DAE, FBX, BLEND
@@ -526,7 +526,7 @@ const submit = () => {
     line-height: 1.4;
   }
 
-  .calc-upload-files :deep(.upload-subtitle) {
+  .calc-upload-files :deep(.upload:not(.has-guest-message) .upload-subtitle) {
     display: none;
   }
 
