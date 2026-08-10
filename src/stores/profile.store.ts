@@ -70,20 +70,7 @@ export const useProfileStore = defineStore("user", () => {
   if (savedProfile) {
     try {
       const parsed = JSON.parse(savedProfile) as IProfile & { apartment?: string };
-      const { apartment: _omitStorage, ...parsedProfile } = parsed;
-
-      // Парсим адрес из поля city и заполняем отдельные поля
-      const addressFields = parseAddressString(parsedProfile.city);
-      const nameFields = nameFieldsFromFullName(
-        parsedProfile.full_name || "",
-        parsedProfile.user_type
-      );
-      profile.value = {
-        ...parsedProfile,
-        office: parsedProfile.office ?? parsed.apartment ?? "",
-        ...addressFields,
-        ...nameFields,
-      };
+      profile.value = enrichProfile(parsed);
     } catch (error) {
       console.error("Failed to parse saved profile:", error);
       localStorage.removeItem(PROFILE_STORE_KEY);
@@ -255,18 +242,29 @@ export const useProfileStore = defineStore("user", () => {
     };
   }
 
-  function enrichProfile(profileData: IProfile & { apartment?: string }): IProfile {
-    const { apartment: _omit, ...rest } = profileData;
+  function normalizeUserType(userType: string | undefined | null): "legal" | "individual" {
+    const normalized = String(userType ?? "")
+      .trim()
+      .toLowerCase();
+    return normalized === "individual" ? "individual" : "legal";
+  }
+
+  function enrichProfile(
+    profileData: IProfile & { apartment?: string; userType?: string }
+  ): IProfile {
+    const { apartment: _omit, userType: userTypeCamel, ...rest } = profileData;
+    const userType = normalizeUserType(rest.user_type ?? userTypeCamel);
     const addressFields = parseAddressString(rest.city);
-    const nameFields = nameFieldsFromFullName(rest.full_name || "", rest.user_type);
+    const nameFields = nameFieldsFromFullName(rest.full_name || "", userType);
     const personalEmail = rest.personal_email ?? rest.email ?? "";
     const companyEmail =
-      rest.user_type === "legal"
+      userType === "legal"
         ? (rest.company_email ?? rest.email ?? "").trim()
         : rest.company_email;
 
     return {
       ...rest,
+      user_type: userType,
       personal_email: personalEmail,
       email: personalEmail || rest.email || "",
       username: personalEmail || rest.username || "",
@@ -277,15 +275,16 @@ export const useProfileStore = defineStore("user", () => {
     };
   }
 
-  async function getProfile() {
+  async function getProfile(): Promise<boolean> {
     const r = await req_json_auth(`/profile`, "GET");
-    if (r) {
-      const profileData = (await r.json()) as IProfile;
-      const enrichedProfileData = enrichProfile(profileData);
+    if (!r) return false;
 
-      profile.value = enrichedProfileData;
-      saveProfileToStorage(enrichedProfileData);
-    }
+    const profileData = (await r.json()) as IProfile & { userType?: string };
+    const enrichedProfileData = enrichProfile(profileData);
+
+    profile.value = enrichedProfileData;
+    saveProfileToStorage(enrichedProfileData);
+    return true;
   }
 
   async function updateProfile(updated: IProfile) {

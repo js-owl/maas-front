@@ -23,7 +23,17 @@ const profileForm = ref<IProfile>()
 const formRef = ref<FormInstance>()
 const isSaving = ref(false)
 const isResendingEmail = ref(false)
-const activeTab = ref('legal')
+
+/** Нормализуем тип: пустое/неизвестное — legal (как при регистрации). */
+function normalizeUserType(userType: string | undefined | null): 'legal' | 'individual' {
+  const normalized = String(userType ?? '')
+    .trim()
+    .toLowerCase()
+  return normalized === 'individual' ? 'individual' : 'legal'
+}
+
+/** Форма только после hydrate с /profile — не читаем stale user_type из localStorage. */
+const isLegalProfile = computed(() => normalizeUserType(profileForm.value?.user_type) === 'legal')
 
 const showEmailVerificationBanner = computed(() => {
   if (profileStore.profile?.is_admin) return false
@@ -51,6 +61,7 @@ const onResendConfirmation = async () => {
 
 /** При регистрации указывается один телефон — дублируем в оба поля профиля юр. лица. */
 const applyPhoneDefaults = (profile: IProfile) => {
+  profile.user_type = normalizeUserType(profile.user_type)
   profile.phone_number = ensureRuPhoneModelValue(profile.phone_number)
   profile.personal_phone_number = ensureRuPhoneModelValue(profile.personal_phone_number)
 
@@ -68,36 +79,36 @@ const applyPhoneDefaults = (profile: IProfile) => {
   }
 }
 
+function hydrateProfileForm(profile: IProfile) {
+  const userType = normalizeUserType(profile.user_type)
+  profileForm.value = { ...profile, user_type: userType }
+  applyPhoneDefaults(profileForm.value)
+}
+
 onMounted(async () => {
+  // Всегда тянем свежий профиль с API — иначе stale localStorage с individual
+  // перекрывает актуальный user_type=legal и показывает форму физлица.
+  let refreshed = false
+  try {
+    refreshed = await profileStore.getProfile()
+  } catch (e) {
+    console.error('Failed to refresh profile:', e)
+  }
+
   if (profileStore.profile) {
-    profileForm.value = Object.assign({}, profileStore.profile)
-    if (profileForm.value) applyPhoneDefaults(profileForm.value)
-    const profile = profileStore.profile as IProfile
-    if (profile && profile.user_type) activeTab.value = profile.user_type
-    else if (profileForm.value) (profileForm.value as IProfile).user_type = activeTab.value
-  } else {
-    await profileStore.getProfile()
-    if (profileStore.profile) {
-      profileForm.value = Object.assign({}, profileStore.profile)
-      if (profileForm.value) applyPhoneDefaults(profileForm.value)
-      const profile = profileStore.profile as IProfile
-      if (profile && profile.user_type) activeTab.value = profile.user_type
-      else if (profileForm.value) (profileForm.value as IProfile).user_type = activeTab.value
-    }
+    hydrateProfileForm(profileStore.profile)
+  } else if (!refreshed) {
+    console.error('Failed to load profile: no API response and no cache')
   }
 })
 
-watch(activeTab, (newTab) => {
-  if (profileForm.value) {
-    profileForm.value.user_type = newTab
-    if (formRef.value) {
-      formRef.value.validateField('last_name')
-      formRef.value.validateField('first_name')
-      formRef.value.validateField('payment_inn')
-      formRef.value.validateField('payment_kpp')
-      formRef.value.validateField('payment_bik')
-    }
-  }
+watch(isLegalProfile, () => {
+  if (!formRef.value) return
+  formRef.value.validateField('last_name')
+  formRef.value.validateField('first_name')
+  formRef.value.validateField('payment_inn')
+  formRef.value.validateField('payment_kpp')
+  formRef.value.validateField('payment_bik')
 })
 
 const validatePaymentInn = (_rule: any, value: string, callback: (error?: Error) => void) => {
@@ -248,13 +259,16 @@ async function onUpdate() {
 
     const profile = profileForm.value
     profile.city = buildAddressString()
-    profile.user_type = activeTab.value
+    // user_type на этой странице только для отображения — не затираем legal из API
+    // устаревшим individual из localStorage/формы.
+    profile.user_type = normalizeUserType(
+      profileStore.profile?.user_type ?? profile.user_type,
+    )
 
     const isUpdated = await profileStore.updateProfile(profile as IProfile)
 
     if (isUpdated && profileStore.profile) {
-      profileForm.value = { ...profileStore.profile }
-      if (profileForm.value) applyPhoneDefaults(profileForm.value)
+      hydrateProfileForm(profileStore.profile)
       router.push({ path: '/personal/profile' })
     }
   } catch (error) {
@@ -323,8 +337,9 @@ const contactFio = computed({
             Отправить письмо повторно
           </Button>
         </el-alert>
-        <div v-if="activeTab === 'individual'">
-          <div v-if="profileForm" class="profile-card profile-card--individual">
+        <template v-if="profileForm">
+        <div v-if="!isLegalProfile">
+          <div class="profile-card profile-card--individual">
             <div class="profile-section profile-section--profile">
               <el-row :gutter="20">
                 <div class="maas-title profile-page-title profile-page-title--individual">Профиль</div>
@@ -413,8 +428,8 @@ const contactFio = computed({
           </div>
         </div>
         <!-- Юридическое лицо -->
-        <div v-if="activeTab === 'legal'" class="profile-legal">
-          <div v-if="profileForm" class="profile-section profile-section--title">
+        <div v-else class="profile-legal">
+          <div class="profile-section profile-section--title">
             <el-row :gutter="20">
               <el-col :span="24">
                 <div class="maas-title profile-page-title profile-page-title--legal">Профиль</div>
@@ -422,7 +437,7 @@ const contactFio = computed({
             </el-row>
           </div>
 
-          <div v-if="profileForm" class="profile-card profile-card--primary">
+          <div class="profile-card profile-card--primary">
             <div class="profile-section profile-section--org">
               <div class="maas-subtitle profile-section-title">Данные организации</div>
               <el-row :gutter="20" class="profile-fields">
@@ -494,7 +509,7 @@ const contactFio = computed({
             </div>
           </div>
 
-          <div v-if="profileForm" class="profile-card profile-card--secondary">
+          <div class="profile-card profile-card--secondary">
             <div class="profile-section profile-section--bank">
               <div class="maas-subtitle profile-section-title">Банковские реквизиты</div>
               <el-row :gutter="20" class="profile-fields profile-fields--bank">
@@ -558,6 +573,7 @@ const contactFio = computed({
             </div>
           </div>
         </div>
+        </template>
 
         <div class="profile-footer profile-footer--desktop">
           <div class="profile-footer-left">
