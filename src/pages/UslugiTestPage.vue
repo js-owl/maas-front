@@ -23,6 +23,7 @@ const { isMobile, isTablet } = usePageBreakpoints()
       <template v-if="isMobile">
         <el-col :span="24">
           <div class="uslugi-page__sections">
+            <UslugiCalc service_id="other" />
             <UslugiTestExternal />
             <UslugiTestOptical />
             <UslugiTestEquipment />

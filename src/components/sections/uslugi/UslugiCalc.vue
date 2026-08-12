@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
 import Button from '@/components/ui/Button.vue'
 import UploadFiles from '@/components/UploadFiles.vue'
+import UploadFiles2 from '@/components/UploadFiles2.vue'
 import { orderTypeOptions } from '@/helpers/order-type-options'
 
 const props = withDefaults(
@@ -50,11 +51,40 @@ const submit = () => {
       isSubmitting.value = false
     })
 }
+
+let mobileSubmitTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(
+  [document_ids, stp_id],
+  () => {
+    if (!isMobile.value || isSubmitting.value) return
+    if (stp_id.value == null && !(document_ids.value?.length > 0)) return
+
+    if (mobileSubmitTimer) clearTimeout(mobileSubmitTimer)
+    mobileSubmitTimer = setTimeout(() => {
+      if (!isMobile.value || isSubmitting.value) return
+      if (stp_id.value == null && !(document_ids.value?.length > 0)) return
+      submit()
+    }, 400)
+  },
+  { deep: true }
+)
 </script>
 
 <template>
   <section class="uslugi-calc-section" :class="{ mobile: isMobile }">
-    <div class="uslugi-calc-wrap">
+    <template v-if="isMobile">
+      <UploadFiles2
+        v-model="document_ids"
+        color="#000"
+        :hide-formats-text="true"
+        upload-text="Загрузите файлы"
+        v-model:stp_id="stp_id"
+        class="uslugi-calc-upload-files-mobile"
+      />
+    </template>
+
+    <div v-else class="uslugi-calc-wrap">
       <div class="uslugi-calc-left">
         <h2 class="uslugi-calc-title">{{ title }}</h2>
         <p class="uslugi-calc-description">{{ description }}</p>
@@ -100,12 +130,6 @@ const submit = () => {
   gap: 80px;
   align-items: center;
   width: 100%;
-}
-
-.uslugi-calc-section.mobile .uslugi-calc-wrap {
-  flex-direction: column;
-  gap: 40px;
-  align-items: stretch;
 }
 
 .uslugi-calc-left {
@@ -234,6 +258,27 @@ const submit = () => {
   box-shadow: none !important;
 }
 
+.uslugi-calc-upload-files-mobile {
+  width: 100%;
+}
+
+.uslugi-calc-upload-files-mobile :deep(.upload) {
+  min-height: 0;
+  padding: 16px 32px;
+  border-radius: 8px;
+  border: 2px dashed var(--button-bg);
+  background-color: transparent !important;
+}
+
+.uslugi-calc-upload-files-mobile :deep(.custom .el-upload__text) {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 16px !important;
+  font-weight: 600;
+  line-height: normal;
+  max-width: none;
+  color: #000 !important;
+}
+
 @media (max-width: 1300px) and (min-width: 769px) {
   .uslugi-calc-section {
     padding: 32px;
@@ -267,44 +312,11 @@ const submit = () => {
 }
 
 @media (max-width: 768px) {
-  .uslugi-calc-section {
-    border-radius: 0;
-    padding: 20px;
-  }
-
-  .uslugi-calc-left {
-    gap: 24px;
-  }
-
-  .uslugi-calc-title {
-    font-size: 24px;
-  }
-
-  .uslugi-calc-description {
-    padding-right: 0;
-    font-size: 16px;
-  }
-
-  .uslugi-calc-upload-files :deep(.upload) {
-    min-height: 144px;
-    padding: 20px;
-  }
-
-  .uslugi-calc-upload-files :deep(.el-upload__text) {
-    font-size: 18px !important;
-  }
-
-  .uslugi-calc-upload-files :deep(.upload-subtitle) {
-    font-size: 14px;
-  }
-
-  .uslugi-calc-submit-button {
-    width: 100% !important;
-    font-size: 18px;
-  }
-
-  .uslugi-calc-action {
-    justify-content: stretch;
+  .uslugi-calc-section.mobile {
+    margin: 0;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 0 5px #c8cfe3;
   }
 }
 </style>
