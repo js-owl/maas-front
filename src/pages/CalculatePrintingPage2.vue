@@ -10,7 +10,6 @@ import CoefficientOtk2 from '../components/coefficients/CoefficientOtk2.vue'
 // import CoefficientCertificate from '../components/coefficients/CoefficientCertificate.vue'
 import CoefficientCover2 from '../components/coefficients/CoefficientCover2.vue'
 import Input from '../components/ui/Input.vue'
-import SelectCalc from '../components/ui/SelectCalc.vue'
 import SelectGroup from '../components/ui/SelectGroup.vue'
 
 import { useRoute } from 'vue-router'
@@ -55,10 +54,6 @@ const quantityInput = computed({
 
 let material_id = ref('')
 let material_form = ref('powder')
-const printing_technology = ref('sls')
-const printingTechnologies = ref<Array<{ value: string; label: string }>>([
-  { value: 'sls', label: 'SLS (послойное лазерное спекание)' },
-])
 const materials = ref<MaterialOptionGroup[]>([])
 
 let cover_id = ref<string[]>(['1'])
@@ -299,7 +294,7 @@ watch(
                   </div>
                   <div class="calc-field-group">
                     <div class="calc-title">Технология печати</div>
-                    <SelectCalc v-model="printing_technology" :input-data="printingTechnologies" />
+                    <p class="calc-readonly">SLS (послойное лазерное спекание)</p>
                   </div>
                 </div>
 

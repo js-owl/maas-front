@@ -502,6 +502,22 @@ html {
   width: 100%;
 }
 
+.calc-readonly {
+  margin: 0;
+  min-height: 48px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background-color: var(--whity);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  color: #000;
+}
+
 /* Footer */
 .footer-wrapper {
   background-color: white;
