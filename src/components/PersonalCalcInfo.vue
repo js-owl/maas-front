@@ -55,7 +55,7 @@ const formatPrice = (value?: number | string | null) => {
   if (value == null || value === '') return '-'
   const num = Number(value)
   if (Number.isNaN(num)) return '-'
-  return `${num.toFixed(2)} руб`
+  return num.toFixed(2)
 }
 
 const costRows = computed(() => [
@@ -184,21 +184,21 @@ onMounted(() => {
     <section class="calc-info-container">
       <header class="calc-header">
         <div class="document-number">Заказ №{{ kitId }}</div>
-        <InputEdit v-model="orderName" :font-size="'24px'" @update:model-value="handleOrderNameUpdate" />
+        <InputEdit v-model="orderName" @update:model-value="handleOrderNameUpdate" />
       </header>
 
       <div class="cost-section">
         <div v-for="row in costRows" :key="`${row.number}-${row.label}`" class="cost-line">
           <span class="line-number">{{ row.number }}</span>
           <span class="line-label">{{ row.label }}</span>
-          <span class="line-dash"></span>
+          <span class="line-dash" aria-hidden="true"></span>
           <span class="line-value">{{ row.value || '-' }}</span>
         </div>
       </div>
 
       <div class="total-section">
         <span class="total-label">Итого</span>
-        <span class="section-line"></span>
+        <span class="section-line" aria-hidden="true"></span>
         <span class="section-value">{{ totalCosts }}</span>
       </div>
 
@@ -229,10 +229,11 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* .calc-info-page {
-  background: #e1e4e6;
-  padding: 24px 0 40px;
-} */
+.calc-info-page {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
 
 .calc-info-container {
   background: #fff;
@@ -241,6 +242,9 @@ onMounted(() => {
   min-height: 620px;
   font-family: 'Montserrat-Medium', sans-serif;
   letter-spacing: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .calc-header {
@@ -249,6 +253,24 @@ onMounted(() => {
   align-items: flex-start;
   gap: 10px;
   margin-bottom: 40px;
+  min-width: 0;
+  width: 100%;
+}
+
+.calc-header :deep(.input-edit-view),
+.calc-header :deep(.input-edit-edit) {
+  width: 100%;
+  min-width: 0;
+}
+
+.calc-header :deep(.input-edit-value) {
+  font-size: 24px;
+  word-break: break-word;
+}
+
+.calc-header :deep(.input-edit-input) {
+  min-width: 0;
+  width: 100%;
 }
 
 .document-number {
@@ -262,6 +284,7 @@ onMounted(() => {
 
 .cost-section {
   margin-bottom: 40px;
+  min-width: 0;
 }
 
 .total-section {
@@ -269,6 +292,7 @@ onMounted(() => {
   align-items: flex-end;
   gap: 10px;
   margin-bottom: 60px;
+  min-width: 0;
 }
 
 .total-label {
@@ -278,6 +302,7 @@ onMounted(() => {
   line-height: 1;
   color: #000;
   letter-spacing: 0;
+  flex-shrink: 0;
 }
 
 .section-head {
@@ -298,6 +323,7 @@ onMounted(() => {
 
 .section-line {
   flex: 1;
+  min-width: 12px;
   border-bottom: 1px dashed #cbd1d5;
   transform: translateY(-4px);
 }
@@ -312,6 +338,7 @@ onMounted(() => {
   color: #000;
   white-space: nowrap;
   letter-spacing: 0;
+  flex-shrink: 0;
 }
 
 .cost-line {
@@ -320,11 +347,13 @@ onMounted(() => {
   gap: 10px;
   min-height: 28px;
   margin-bottom: 0;
+  min-width: 0;
 }
 
 .line-number {
   font-family: 'Montserrat-Medium', sans-serif;
   width: 40px;
+  flex-shrink: 0;
   font-size: 18px;
   font-weight: 500;
   line-height: 1;
@@ -340,6 +369,7 @@ onMounted(() => {
   line-height: 1;
   color: #000;
   letter-spacing: 0;
+  flex-shrink: 0;
 }
 
 .line-dash {
@@ -360,6 +390,7 @@ onMounted(() => {
   word-break: break-word;
   white-space: nowrap;
   letter-spacing: 0;
+  flex-shrink: 0;
 }
 
 .action-section {
@@ -367,6 +398,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-top: 20px;
+  gap: 12px;
 }
 
 .right-actions {
@@ -421,27 +453,141 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 768px) {
-  .section-name,
-  .section-value,
-  .document-number,
-  .total-label {
-    font-size: 20px;
+@media (max-width: 767px) {
+  .calc-info-container {
+    padding: 16px;
+    border-radius: 16px;
+    min-height: 0;
+    box-shadow: 0 0 5px #c8cfe3;
   }
 
-  .line-number,
-  .line-label,
+  .calc-header {
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .document-number {
+    font-size: 12px;
+    line-height: normal;
+  }
+
+  .calc-header :deep(.input-edit-value) {
+    font-size: 16px !important;
+    line-height: normal;
+  }
+
+  .calc-header :deep(.input-edit-btn) {
+    width: 24px;
+    height: 24px;
+    min-height: 24px;
+    padding: 0;
+    border-radius: 4px;
+    background: var(--button-bg, #e1e4e6);
+    color: #7d8083;
+  }
+
+  .cost-section {
+    margin-bottom: 24px;
+  }
+
+  .cost-line {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) max-content;
+    grid-template-areas: 'number label value';
+    align-items: start;
+    column-gap: 8px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e8ecef;
+    min-height: 0;
+  }
+
+  .cost-line:last-child {
+    border-bottom: none;
+  }
+
+  .line-number {
+    grid-area: number;
+    width: auto;
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .line-label {
+    grid-area: label;
+    white-space: normal;
+    font-size: 14px;
+    line-height: 1.35;
+    min-width: 0;
+  }
+
+  .line-dash {
+    display: none;
+  }
+
   .line-value {
+    grid-area: value;
+    justify-self: end;
+    min-width: 0;
+    max-width: none;
+    font-size: 14px;
+    line-height: 1.35;
+    white-space: nowrap;
+    word-break: normal;
+    text-align: right;
+  }
+
+  .total-section {
+    flex-wrap: nowrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding-top: 8px;
+  }
+
+  .total-label,
+  .section-value {
     font-size: 16px;
+    line-height: normal;
+  }
+
+  .section-line {
+    display: none;
+  }
+
+  .section-value {
+    margin-left: 0;
+    min-width: 0;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .action-section {
+    margin-top: 8px;
+    gap: 10px;
   }
 
   .right-actions {
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
+    width: 100%;
   }
 
   .action-section :deep(.btn) {
     width: 100% !important;
+    max-width: 100% !important;
+    height: 44px !important;
+    max-height: 44px !important;
+    padding: 10px 15px !important;
+    border-radius: 10px !important;
+    font-family: 'Montserrat-Medium', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    justify-content: center;
+  }
+
+  .action-section :deep(.btn-icon-left) {
+    transform: none;
   }
 }
 </style>
