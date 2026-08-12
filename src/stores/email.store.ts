@@ -70,12 +70,10 @@ export const useEmailStore = defineStore('email', () => {
       throw new Error(detail || UI_MESSAGES.featureDisabled)
     }
 
-    const data = (await res.json()) as SendConfirmationResponse
+    await res.json()
     lastSentAt.value = Date.now()
     return {
-      message:
-        data.message ||
-        'If the email is registered, a confirmation message has been sent.',
+      message: UI_MESSAGES.sendConfirmationSuccess,
     }
   }
 
@@ -112,7 +110,7 @@ export const useEmailStore = defineStore('email', () => {
 
     const data = (await res.json()) as ConfirmEmailResponse
     return {
-      message: data.message || 'Email confirmed.',
+      message: UI_MESSAGES.confirmSuccess,
       email_verified: data.email_verified ?? true,
     }
   }

@@ -148,20 +148,13 @@ const submitForm = async () => {
 
     console.log('Form submitted:', form.value)
     const { email } = await regStore.register(form)
-    const sendResult = await emailStore.sendConfirmation(email)
+    await emailStore.sendConfirmation(email)
 
     ElMessage({
       type: 'success',
       message: UI_MESSAGES.registrationCheckEmail(email),
       duration: 8000,
     })
-    if (sendResult.message) {
-      ElMessage({
-        type: 'info',
-        message: sendResult.message,
-        duration: 6000,
-      })
-    }
 
     closeDialog()
   } catch (error) {

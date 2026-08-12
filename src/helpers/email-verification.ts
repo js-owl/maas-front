@@ -14,6 +14,8 @@ export const UI_MESSAGES = {
   confirmSuccess: 'Email подтверждён. Теперь вы можете войти в аккаунт.',
   confirmInvalidLink: 'Ссылка недействительна или устарела.',
   confirmMissingToken: 'В ссылке отсутствует код подтверждения.',
+  sendConfirmationSuccess:
+    'Если email зарегистрирован, на него отправлено письмо для подтверждения.',
   registrationCheckEmail: (email: string) =>
     `На ${email} отправлено письмо. Перейдите по ссылке для подтверждения, затем войдите в аккаунт.`,
   loginEmailNotVerified:
