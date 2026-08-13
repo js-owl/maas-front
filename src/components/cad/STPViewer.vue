@@ -3,8 +3,12 @@ import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick, watch } 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
-import { fetchWithAuth } from '../../api'
-import { ensureLocalStpCacheReady, getLocalStpFileById } from '../../helpers/local-stp-files'
+import { fetchWithAuth, fileToBase64 } from '../../api'
+import {
+  ensureLocalStpCacheReady,
+  getLocalStpFileById,
+  saveFile3D,
+} from '../../helpers/local-stp-files'
 
 const file_id = defineModel()
 
@@ -17,6 +21,7 @@ const error = ref(null)
 const modelInfo = ref(null)
 const selectedMesh = ref('')
 const fileType = ref('')
+const isDragOver = ref(false)
 
 // Non-reactive instance fields
 let scene = null
@@ -26,6 +31,7 @@ let controls = null
 let isDestroyed = false
 let envMapTexture = null
 let pmremGenerator = null
+let dragDepth = 0
 
 // OCCT
 let occt = null
@@ -34,6 +40,7 @@ let occtLoadingPromise = null
 
 // Refs
 const canvasContainer = ref(null)
+const fileInput = ref(null)
 
 const hasModel = computed(() => meshes.value.length > 0)
 
@@ -130,6 +137,68 @@ function initThreeJS() {
   scene.add(hemisphereLight)
 
   window.addEventListener('resize', onWindowResize)
+}
+
+function handleFileUpload(event) {
+  const file = event.target.files?.[0]
+  if (file) {
+    saveAndLoadDroppedFile(file)
+  }
+  if (event.target) event.target.value = ''
+}
+
+function handleDragEnter(event) {
+  event.preventDefault()
+  dragDepth += 1
+  isDragOver.value = true
+}
+
+function handleDragOver(event) {
+  event.preventDefault()
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = 'copy'
+  }
+}
+
+function handleDragLeave(event) {
+  event.preventDefault()
+  dragDepth = Math.max(0, dragDepth - 1)
+  if (dragDepth === 0) {
+    isDragOver.value = false
+  }
+}
+
+function handleFileDrop(event) {
+  event.preventDefault()
+  dragDepth = 0
+  isDragOver.value = false
+  const file = event.dataTransfer?.files?.[0]
+  if (!file) return
+
+  const fileName = file.name.toLowerCase()
+  if (fileName.endsWith('.stp') || fileName.endsWith('.step')) {
+    saveAndLoadDroppedFile(file)
+  } else {
+    error.value = 'Unsupported file format. Please use STP or STEP files.'
+  }
+}
+
+async function saveAndLoadDroppedFile(file) {
+  const extension = file.name.split('.').pop()?.toLowerCase()
+  if (!extension || (extension !== 'stp' && extension !== 'step')) {
+    error.value = 'Unsupported file format. Please use STP or STEP files.'
+    return
+  }
+
+  try {
+    const base64Data = await fileToBase64(file)
+    const id = await saveFile3D(file.name, base64Data, extension)
+    // Обновляем file_id — watch / родитель подхватят модель для расчёта
+    file_id.value = id
+  } catch (err) {
+    console.error('Error saving dropped STP file:', err)
+    error.value = 'Ошибка загрузки файла: ' + (err?.message || err)
+  }
 }
 
 async function loadFile(file) {
@@ -500,10 +569,23 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="stp-viewer">
+    <input
+      type="file"
+      @change="handleFileUpload"
+      accept=".stp,.step"
+      ref="fileInput"
+      class="file-input"
+    />
+
     <!-- 3D Canvas Container -->
     <div
       ref="canvasContainer"
       class="canvas-container"
+      :class="{ 'drag-over': isDragOver }"
+      @dragenter="handleDragEnter"
+      @dragover="handleDragOver"
+      @dragleave="handleDragLeave"
+      @drop="handleFileDrop"
     >
       <!-- Loading Overlay -->
       <div v-if="loading" class="overlay loading-overlay">
@@ -526,6 +608,17 @@ onBeforeUnmount(() => {
           <button @click="clearError" class="btn btn-danger">Try Again</button>
         </div>
       </div>
+
+      <!-- Drop Zone -->
+      <div v-if="!hasModel && !loading && !error" class="overlay drop-zone">
+        <div class="drop-content">
+          <h3>Перетащите STP модель сюда</h3>
+          <p>Поддерживаются файлы .stp и .step</p>
+          <button type="button" @click="fileInput && fileInput.click()" class="btn btn-primary large">
+            Выбрать файл
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -539,14 +632,22 @@ onBeforeUnmount(() => {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.file-input {
+  display: none;
+}
+
 .canvas-container {
   width: 100%;
   height: 100%;
   position: relative;
   background: #ffffff;
   overflow: hidden;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, background 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.canvas-container.drag-over {
+  background: #f8f9ff;
 }
 
 .canvas-container :deep(canvas) {
@@ -560,6 +661,49 @@ onBeforeUnmount(() => {
   transform: translate(-50%, -50%);
   text-align: center;
   z-index: 10;
+}
+
+.drop-zone {
+  color: #6c757d;
+  pointer-events: none;
+}
+
+.drop-content {
+  max-width: 300px;
+  pointer-events: auto;
+}
+
+.drop-content h3 {
+  margin: 0 0 10px 0;
+  color: #495057;
+}
+
+.drop-content p {
+  margin: 0 0 20px 0;
+  color: #6c757d;
+}
+
+.btn {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-primary.large {
+  padding: 12px 24px;
+  font-size: 1em;
+  background: #3d4146;
+  color: #fff;
+}
+
+.btn-danger {
+  padding: 8px 16px;
+  background: #dc3545;
+  color: #fff;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
 }
 
 .loading-overlay {

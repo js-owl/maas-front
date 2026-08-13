@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed, defineAsyncComponent } from "vue";
+import { ref, watch, defineAsyncComponent } from "vue";
 import { fetchWithAuth } from "../../api";
 import { ensureLocalStpCacheReady, getLocalStpFileById } from "../../helpers/local-stp-files";
 
@@ -86,8 +86,8 @@ watch(
     <!-- STL Viewer -->
     <STLViewer v-else-if="detectedType === 'stl'" v-model="file_id" />
     
-    <!-- STP Viewer -->
-    <STPViewer v-else-if="detectedType === 'stp'" v-model="file_id" />
+    <!-- STP Viewer (в т.ч. пустой — для drag-and-drop модели) -->
+    <STPViewer v-else-if="detectedType === 'stp' || !file_id" v-model="file_id" />
     
     <!-- Placeholder для неизвестного типа -->
     <div v-else class="file-type-placeholder">

@@ -381,7 +381,7 @@ watch(
                 </div>
               </div>
 
-              <div v-if="file_id" class="calc-block calc-block--cad">
+              <div class="calc-block calc-block--cad">
                 <div class="calc-cad">
                   <CadShowById :key="cadViewerKey" v-model="file_id" />
                 </div>
