@@ -73,10 +73,11 @@ export const usePasswordStore = defineStore('password', () => {
       throw new Error(detail || UI_MESSAGES.recoveryFeatureDisabled)
     }
 
-    const data = (await res.json()) as SendRecoveryResponse
+    await res.json().catch(() => null)
     lastSentAt.value = Date.now()
     return {
-      message: data.message || UI_MESSAGES.recoverySendSuccess,
+      // API may return English; always show localized UI copy
+      message: UI_MESSAGES.recoverySendSuccess,
     }
   }
 

@@ -82,9 +82,9 @@ const onSubmit = async () => {
 
   try {
 
-    const result = await passwordStore.sendRecovery(email.value)
+    await passwordStore.sendRecovery(email.value)
 
-    successMessage.value = result.message || UI_MESSAGES.recoverySendSuccess
+    successMessage.value = UI_MESSAGES.recoverySendSuccess
 
     ElMessage.success(successMessage.value)
 
