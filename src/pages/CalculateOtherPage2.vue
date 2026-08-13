@@ -431,6 +431,7 @@ async function getOrder(id: number) {
                   <div class="calc-docs__title">Загруженные файлы</div>
                   <DocumentShowByIds2
                     v-model="document_ids"
+                    v-model:stp_id="file_id"
                     class="calc-docs-list calc-docs-list--mobile"
                   />
                 </div>
@@ -457,6 +458,7 @@ async function getOrder(id: number) {
                   />
                   <DocumentShowByIds2
                     v-model="document_ids"
+                    v-model:stp_id="file_id"
                     class="calc-docs-list calc-docs-list--desktop"
                   />
                 </div>

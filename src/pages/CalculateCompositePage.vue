@@ -387,6 +387,7 @@ watch(file_id, () => {
                   <div class="calc-docs__title">Загруженные файлы</div>
                   <DocumentShowByIds2
                     v-model="document_ids"
+                    v-model:stp_id="file_id"
                     class="calc-docs-list calc-docs-list--mobile"
                   />
                 </div>
@@ -419,6 +420,7 @@ watch(file_id, () => {
                   />
                   <DocumentShowByIds2
                     v-model="document_ids"
+                    v-model:stp_id="file_id"
                     class="calc-docs-list calc-docs-list--desktop"
                   />
                 </div>

@@ -3,6 +3,11 @@ import { onMounted, ref, watch, computed } from "vue";
 import { req_json_auth } from "../api";
 import { ElMessage } from "element-plus";
 import { Download } from "@element-plus/icons-vue";
+import {
+  getLocalStpFileById,
+  localStpCacheVersion,
+  type LocalStpFile,
+} from "../helpers/local-stp-files";
 
 type DocumentInfo = {
   id: number;
@@ -11,7 +16,26 @@ type DocumentInfo = {
   uploaded_at?: string | null;
 };
 
+type ListItem =
+  | {
+      key: string;
+      kind: "stp";
+      id: number;
+      name: string;
+      created_at?: string | null;
+      localFile: LocalStpFile | null;
+    }
+  | {
+      key: string;
+      kind: "document";
+      id: number;
+      name: string;
+      created_at?: string | null;
+      uploaded_at?: string | null;
+    };
+
 const document_ids = defineModel<number[]>();
+const stp_id = defineModel<number | null | undefined>("stp_id");
 
 const isLoading = ref<boolean>(false);
 const allDocuments = ref<DocumentInfo[]>([]);
@@ -19,6 +43,41 @@ const allDocuments = ref<DocumentInfo[]>([]);
 const filteredDocuments = computed<DocumentInfo[]>(() => {
   const ids = new Set(document_ids.value ?? []);
   return allDocuments.value.filter((d) => ids.has(d.id));
+});
+
+const localStpFile = computed(() => {
+  localStpCacheVersion.value;
+  if (stp_id.value == null) return null;
+  return getLocalStpFileById(stp_id.value);
+});
+
+const listItems = computed<ListItem[]>(() => {
+  const items: ListItem[] = [];
+
+  if (stp_id.value != null) {
+    const local = localStpFile.value;
+    items.push({
+      key: `stp-${stp_id.value}`,
+      kind: "stp",
+      id: stp_id.value,
+      name: local?.file_name ?? "3D-модель",
+      created_at: local?.created_at ?? null,
+      localFile: local,
+    });
+  }
+
+  for (const doc of filteredDocuments.value) {
+    items.push({
+      key: `doc-${doc.id}`,
+      kind: "document",
+      id: doc.id,
+      name: doc.original_filename,
+      created_at: doc.created_at,
+      uploaded_at: doc.uploaded_at,
+    });
+  }
+
+  return items;
 });
 
 async function loadUserDocuments() {
@@ -55,9 +114,33 @@ async function loadUserDocuments() {
     const documents = await Promise.all(documentPromises);
     allDocuments.value = documents.filter((d): d is DocumentInfo => d !== null);
   } catch (e) {
-    console.error('Error loading user documents:', e);
+    console.error("Error loading user documents:", e);
   }
   isLoading.value = false;
+}
+
+function downloadLocalStp(file: LocalStpFile) {
+  try {
+    const base64 = file.file_data.includes(",")
+      ? file.file_data.split(",")[1]
+      : file.file_data;
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+
+    const blob = new Blob([bytes], { type: "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = file.file_name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (error) {
+    console.error("Ошибка при скачивании STP:", error);
+    ElMessage.error("Ошибка при скачивании файла");
+  }
 }
 
 async function downloadDoc(id: number) {
@@ -101,26 +184,40 @@ function removeDocument(id: number) {
   if (idx >= 0) {
     document_ids.value.splice(idx, 1);
 
-    const docIdx = allDocuments.value.findIndex(d => d.id === id);
+    const docIdx = allDocuments.value.findIndex((d) => d.id === id);
     if (docIdx >= 0) {
       allDocuments.value.splice(docIdx, 1);
     }
   }
 }
 
-function handleMenuCommand(command: string, id: number) {
-  if (command === "download") {
-    downloadDoc(id);
-    return;
-  }
-  removeDocument(id);
+function removeStp() {
+  stp_id.value = undefined;
 }
 
-const getDocumentDateSource = (doc: DocumentInfo): string | null | undefined =>
-  doc.created_at ?? doc.uploaded_at;
+function handleMenuCommand(command: string, item: ListItem) {
+  if (command === "download") {
+    if (item.kind === "stp") {
+      if (item.localFile) downloadLocalStp(item.localFile);
+      else ElMessage.warning("Скачивание недоступно для этого файла");
+      return;
+    }
+    downloadDoc(item.id);
+    return;
+  }
 
-const formatDocumentDate = (doc: DocumentInfo): string => {
-  const sourceDate = getDocumentDateSource(doc);
+  if (item.kind === "stp") {
+    removeStp();
+    return;
+  }
+  removeDocument(item.id);
+}
+
+const getItemDateSource = (item: ListItem): string | null | undefined =>
+  item.kind === "stp" ? item.created_at : item.created_at ?? item.uploaded_at;
+
+const formatItemDate = (item: ListItem): string => {
+  const sourceDate = getItemDateSource(item);
   if (!sourceDate) return "";
 
   const date = new Date(sourceDate);
@@ -141,8 +238,8 @@ const formatDocumentDate = (doc: DocumentInfo): string => {
   return `${datePart}   ${timePart}`;
 };
 
-const formatDocumentDatePart = (doc: DocumentInfo): string => {
-  const sourceDate = getDocumentDateSource(doc);
+const formatItemDatePart = (item: ListItem): string => {
+  const sourceDate = getItemDateSource(item);
   if (!sourceDate) return "";
 
   const date = new Date(sourceDate);
@@ -154,8 +251,8 @@ const formatDocumentDatePart = (doc: DocumentInfo): string => {
   return `${day}.${month}.${year}`;
 };
 
-const formatDocumentTimePart = (doc: DocumentInfo): string => {
-  const sourceDate = getDocumentDateSource(doc);
+const formatItemTimePart = (item: ListItem): string => {
+  const sourceDate = getItemDateSource(item);
   if (!sourceDate) return "";
 
   const date = new Date(sourceDate);
@@ -166,6 +263,15 @@ const formatDocumentTimePart = (doc: DocumentInfo): string => {
   return `${hours}:${minutes}`;
 };
 
+function downloadItem(item: ListItem) {
+  if (item.kind === "stp") {
+    if (item.localFile) downloadLocalStp(item.localFile);
+    else ElMessage.warning("Скачивание недоступно для этого файла");
+    return;
+  }
+  downloadDoc(item.id);
+}
+
 onMounted(() => {
   if (Array.isArray(document_ids.value) && document_ids.value.length > 0) {
     loadUserDocuments();
@@ -174,45 +280,40 @@ onMounted(() => {
 watch(
   document_ids,
   (newVal) => {
-    console.log('DocumentShowByIds.vue document_ids', newVal)
+    console.log("DocumentShowByIds.vue document_ids", newVal);
     loadUserDocuments();
   },
-  { deep: true },
-)
+  { deep: true }
+);
 </script>
 
 <template>
   <div>
     <el-skeleton :loading="isLoading" animated>
       <template #default>
-        <div
-          v-if="filteredDocuments.length === 0"
-          style="color: #577aad; font-size: 14px"
-        >
-          
-        </div>
+        <div v-if="listItems.length === 0" style="color: #577aad; font-size: 14px" />
         <div v-else class="doc-list">
-          <div v-for="doc in filteredDocuments" :key="doc.id" class="doc-row">
+          <div v-for="item in listItems" :key="item.key" class="doc-row">
             <div class="doc-row-left">
-              <span class="doc-name">{{ doc.original_filename }}</span>
-              <span class="doc-date doc-date--desktop">{{ formatDocumentDate(doc) }}</span>
+              <span class="doc-name">{{ item.name }}</span>
+              <span class="doc-date doc-date--desktop">{{ formatItemDate(item) }}</span>
               <button
                 type="button"
                 class="doc-download"
                 aria-label="Скачать"
-                @click="downloadDoc(doc.id)"
+                @click="downloadItem(item)"
               >
                 <el-icon :size="20"><Download /></el-icon>
               </button>
             </div>
             <div class="doc-row-right">
-              <span class="doc-date doc-date--mobile">{{ formatDocumentDatePart(doc) }}</span>
-              <span class="doc-time doc-time--mobile">{{ formatDocumentTimePart(doc) }}</span>
+              <span class="doc-date doc-date--mobile">{{ formatItemDatePart(item) }}</span>
+              <span class="doc-time doc-time--mobile">{{ formatItemTimePart(item) }}</span>
               <el-dropdown
                 trigger="click"
                 placement="bottom-end"
                 popper-class="calc-doc-dropdown"
-                @command="(command: string) => handleMenuCommand(command, doc.id)"
+                @command="(command: string) => handleMenuCommand(command, item)"
               >
                 <button class="file-menu" type="button" aria-label="Действия с документом">
                   <span class="menu-dots" />
