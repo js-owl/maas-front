@@ -2,7 +2,12 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { req_json, req_json_auth } from '../api'
-import { getLocalStpFileById, localStpCacheVersion } from '../helpers/local-stp-files'
+import {
+  buildCalculateFileFields,
+  ensureLocalStpCacheReady,
+  getLocalStpFileById,
+  localStpCacheVersion,
+} from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
 import { formatDeadline, parseDeadline } from '../helpers/deadline'
 import { toMaterialOptionGroupsByFamily } from '../helpers/material-family'
@@ -124,15 +129,7 @@ const localStpFile = computed(() => {
 
 // Пэйлоад только для расчета (игнорируем order_name, чтобы не дергать /calculate-price)
 const calculationPayload = computed(() => {
-  const fileFields = localStpFile.value
-    ? {
-        file_type: localStpFile.value.file_type,
-        file_name: localStpFile.value.file_name,
-        file_data: localStpFile.value.file_data,
-      }
-    : {
-        file_id: payload.file_id,
-      }
+  const fileFields = buildCalculateFileFields(payload.file_id, localStpFile.value)
 
   return {
     service_id: payload.service_id,
@@ -166,7 +163,7 @@ watch(
 
 onMounted(async () => {
   try {
-    await Promise.all([loadMaterials(), loadFinishAndTolerance()])
+    await Promise.all([loadMaterials(), loadFinishAndTolerance(), ensureLocalStpCacheReady()])
     deadline.value = new Date()
     if (order_id.value === 0) {
       const filesQuery = route.query.files

@@ -5,7 +5,7 @@ import { ElMessage } from 'element-plus'
 import { useProfileStore, type IProfile } from '../../stores/profile.store'
 import { useAuthStore } from '../../stores/auth.store'
 import { req_json, req_json_auth } from '../../api'
-import { ensureLocalStpCacheReady, getLocalStpFileById } from '../../helpers/local-stp-files'
+import { ensureLocalStpCacheReady, getLocalStpFileById, toServerFileId } from '../../helpers/local-stp-files'
 import type {
   IKit,
   IOrderPayload,
@@ -130,7 +130,10 @@ const uploadLocalModel = async (fileId?: number): Promise<{ fileId?: number; fil
   await ensureLocalStpCacheReady()
   const localFile = getLocalStpFileById(fileId)
 
-  if (!localFile) return { fileId, fileName: fileId ? await fetchOriginalFilename(fileId) : null }
+  if (!localFile) {
+    const serverId = toServerFileId(fileId)
+    return { fileId: serverId, fileName: serverId ? await fetchOriginalFilename(serverId) : null }
+  }
 
   const response = await req_json_auth('/files', 'POST', {
     file_name: localFile.file_name,

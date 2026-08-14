@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, defineAsyncComponent } from "vue";
 import { fetchWithAuth } from "../../api";
-import { ensureLocalStpCacheReady, getLocalStpFileById } from "../../helpers/local-stp-files";
+import { ensureLocalStpCacheReady, getLocalStpFileById, isServerFileId } from "../../helpers/local-stp-files";
 
 const STLViewer = defineAsyncComponent(() => import("./STLViewer.vue"));
 const STPViewer = defineAsyncComponent(() => import("./STPViewer.vue"));
@@ -23,6 +23,12 @@ async function detectFileType(id) {
   if (localFile) {
     const extension = localFile.file_type?.toLowerCase();
     detectedType.value = extension === "stl" ? "stl" : ["stp", "step"].includes(extension) ? "stp" : null;
+    isLoading.value = false;
+    return;
+  }
+
+  if (!isServerFileId(id)) {
+    detectedType.value = null;
     isLoading.value = false;
     return;
   }

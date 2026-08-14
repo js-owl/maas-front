@@ -7,6 +7,7 @@ import { fetchWithAuth, fileToBase64 } from '../../api'
 import {
   ensureLocalStpCacheReady,
   getLocalStpFileById,
+  isServerFileId,
   saveFile3D,
 } from '../../helpers/local-stp-files'
 
@@ -466,6 +467,10 @@ async function loadFileFromServer(id) {
 
       loadingProgress.value = 50
       await loadFile(file)
+      return
+    }
+
+    if (!isServerFileId(id)) {
       return
     }
 

@@ -120,12 +120,51 @@ export const getLocalStpFileById = (id: number | string | null | undefined): Loc
   return fileCache.get(numericId) || null
 }
 
+/** Backend file_id columns are PostgreSQL int32. */
+const INT32_MAX = 2147483647
+const INT32_MIN = -2147483648
+
+/** Stable local-only id — only one STP is kept in IndexedDB at a time. */
+export const LOCAL_STP_FILE_ID = -1
+
+export const isServerFileId = (id: number | string | null | undefined): boolean => {
+  const numericId = Number(id)
+  if (!Number.isFinite(numericId) || !Number.isInteger(numericId)) return false
+  if (numericId <= 0) return false
+  if (numericId > INT32_MAX || numericId < INT32_MIN) return false
+  // Prefer cache: anything stored locally must not be sent as server file_id
+  if (getLocalStpFileById(numericId)) return false
+  return true
+}
+
+export const toServerFileId = (id: number | string | null | undefined): number | undefined => {
+  const numericId = Number(id)
+  if (!isServerFileId(numericId)) return undefined
+  return numericId
+}
+
+/** Fields for /calculate-price: local models go as file_data, server models as file_id. */
+export const buildCalculateFileFields = (
+  fileId: number | string | null | undefined,
+  localFile: LocalStpFile | null = getLocalStpFileById(fileId)
+): { file_type: string; file_name: string; file_data: string } | { file_id: number } | Record<string, never> => {
+  if (localFile) {
+    return {
+      file_type: localFile.file_type,
+      file_name: localFile.file_name,
+      file_data: localFile.file_data,
+    }
+  }
+
+  const serverId = toServerFileId(fileId)
+  return serverId != null ? { file_id: serverId } : {}
+}
+
 export const saveFile3D = async (fileName: string, fileData: string, fileType: string): Promise<number> => {
   await ensureLocalStpCacheReady()
 
-  const files = getLocalStpFiles()
-  const lastId = files.reduce((maxId, file) => Math.max(maxId, file.id), 0)
-  const id = Math.max(Date.now(), lastId + 1)
+  // Never use Date.now() — those values exceed int32 and break /calculate-price if sent as file_id.
+  const id = LOCAL_STP_FILE_ID
 
   const file: LocalStpFile = {
     id,
