@@ -21,7 +21,7 @@ const { isMobile, isTablet } = usePageBreakpoints()
       <template v-if="isMobile">
         <el-col :span="24">
           <div class="uslugi-page__sections">
-            <UslugiCalc service_id="other" />
+            <UslugiCalc service_id="electroplating_auto" />
             <UslugiGalv />
           </div>
         </el-col>
@@ -29,7 +29,7 @@ const { isMobile, isTablet } = usePageBreakpoints()
 
       <template v-else>
         <el-col :offset="3" :span="18">
-          <UslugiCalc service_id="other" />
+          <UslugiCalc service_id="electroplating_auto" />
         </el-col>
         <UslugiGalv />
       </template>
