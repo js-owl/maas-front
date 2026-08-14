@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { uploadDocument, fileToBase64 } from '../api'
-import { saveFile3D } from '../helpers/local-stp-files'
 // import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from '../stores/auth.store'
 import DialogLogin from './dialog/DialogLogin.vue'
@@ -21,7 +20,7 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'update:stp_id', value: number | null): void
 }>()
 
@@ -31,10 +30,6 @@ const uploadingCount = ref(0)
 const fileInput = ref<HTMLInputElement>()
 
 const isUploading = computed(() => uploadingCount.value > 0)
-const modelExtensions = new Set([
-  'step',
-  'stp',
-])
 
 const isDisabled = () => {
   if (authStore.getToken) return false
@@ -42,20 +37,9 @@ const isDisabled = () => {
 }
 
 const processUploadedFile = async (file: File) => {
-  const extension = file.name.split('.').pop()?.toLowerCase()
-  const isModel = !!extension && modelExtensions.has(extension)
-
   const base64Data = await fileToBase64(file)
 
-  // Модель сохраняем локально, чтобы /calculate-price получил file_type/file_name/file_data
-  if (isModel) {
-    const id = await saveFile3D(file.name, base64Data, extension)
-
-    emit('update:stp_id', id)
-    return
-  }
-
-  // Все остальные файлы (включая последующие STP) отправляем как документы
+  // Файлы из этой зоны только добавляются в список. STP в 3D и пересчёт — через окно 3D.
   const response = await uploadDocument(file.name, base64Data, 'technical_spec')
   if (!response?.ok) throw new Error('Upload failed')
 

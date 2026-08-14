@@ -114,7 +114,6 @@ const calculationPayload = computed(() => {
   return {
     service_id: payload.service_id,
     ...fileFields,
-    document_ids: payload.document_ids,
     quantity: payload.quantity,
     length: payload.length,
     width: payload.width,

@@ -194,8 +194,13 @@ async function saveAndLoadDroppedFile(file) {
   try {
     const base64Data = await fileToBase64(file)
     const id = await saveFile3D(file.name, base64Data, extension)
-    // Обновляем file_id — watch / родитель подхватят модель для расчёта
-    file_id.value = id
+    // Обновляем file_id — родитель подхватит модель для расчёта.
+    // Если id тот же (локальный -1), watch не сработает — грузим вьюер явно.
+    if (file_id.value === id) {
+      await loadFileFromServer(id)
+    } else {
+      file_id.value = id
+    }
   } catch (err) {
     console.error('Error saving dropped STP file:', err)
     error.value = 'Ошибка загрузки файла: ' + (err?.message || err)

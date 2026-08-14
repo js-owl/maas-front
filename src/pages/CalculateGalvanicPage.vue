@@ -212,7 +212,6 @@ const calculationPayload = computed(() => {
     service_id: payload.service_id,
     location: payload.location,
     ...fileFields,
-    document_ids: payload.document_ids,
     quantity: payload.quantity,
     electroplating_family: payload.electroplating_family,
     electroplating_process_id: payload.electroplating_process_id,
