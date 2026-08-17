@@ -1,15 +1,36 @@
 <script lang="ts" setup>
-import { onMounted, ref, computed, defineAsyncComponent } from 'vue'
+import { onMounted, ref, computed, defineAsyncComponent, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { /* Edit, */ Delete, Plus /*, Notebook, Minus */ } from '@element-plus/icons-vue'
+import { Search, /* Edit, */ Delete, Plus /*, Notebook, Minus */ } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
-import { statusTexts } from '../helpers/status-text'
+import { formatKitStatusLabel } from '../helpers/status-text'
+import { useProfileStore } from '../stores/profile.store'
+import {
+  buildDeliveryPointsQuery,
+  buildDeliveryPointByCodeQuery,
+  filterPvzPoints,
+  formatDeliveryTracking,
+  normalizePostalCode,
+  pickCheapestPvzTariff,
+  pickCityCode,
+  pickDefaultPvzCode,
+  kitDeliveryQuoteReadiness,
+  pvzCodeLabel,
+  pvzStreetLabel,
+  shouldRefreshShipmentOnLoad,
+  unwrapList,
+  type CdekCity,
+  type CdekPvz,
+  type CdekTariff,
+  type DeliveryShipment,
+} from '../helpers/cdek-delivery'
 const CadPreview = defineAsyncComponent(() => import('./cad/CadPreview.vue'))
 // import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
 import Button from './ui/Button.vue'
 import ButtonRound from './ui/ButtonRound.vue'
+import PvzMapPreview from './delivery/PvzMapPreview.vue'
 import Select from './ui/Select.vue'
 import InputEdit from './ui/InputEdit.vue'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
@@ -86,6 +107,72 @@ const hasZeroDetailPrice = computed(() =>
   calcRows.value.some((row) => Number(row.detail_price) === 0)
 )
 
+const profileStore = useProfileStore()
+const shipment = ref<DeliveryShipment | null>(null)
+const pvzPoints = ref<CdekPvz[]>([])
+const resolvedPvz = ref<CdekPvz | null>(null)
+const pvzSearchQuery = ref('')
+const pvzDropdownOpen = ref(false)
+const selectedPvzCode = ref<string>('')
+const pvzTariff = ref<CdekTariff | null>(null)
+const cityCode = ref<number | null>(null)
+const deliveryLoading = ref(false)
+const deliveryError = ref('')
+const confirmLoading = ref(false)
+
+const deliveryQuote = computed(() => {
+  if (pvzTariff.value?.delivery_sum != null) return Number(pvzTariff.value.delivery_sum)
+  if (shipment.value?.delivery_sum != null) return Number(shipment.value.delivery_sum)
+  return Number(order.value?.delivery_price ?? 0)
+})
+
+const deliveryCostLabel = computed(() => formatPrice(deliveryQuote.value))
+
+const totalWithDelivery = computed(() => {
+  const total = Number(order.value?.total_kit_price ?? 0) + Number(deliveryQuote.value || 0)
+  return formatPrice(total)
+})
+
+const displayPvz = computed(() => {
+  const code = (selectedPvzCode.value || shipment.value?.delivery_point_code || '').trim()
+  if (!code) return null
+  const fromList = pvzPoints.value.find((p) => p.code === code)
+  if (fromList) return fromList
+  if (resolvedPvz.value?.code === code) return resolvedPvz.value
+  return null
+})
+const showPvzDetails = computed(
+  () => Boolean(displayPvz.value) && (!canConfirmOrder.value || !pvzDropdownOpen.value)
+)
+const displayPvzPoints = computed(() => filterPvzPoints(pvzPoints.value, pvzSearchQuery.value))
+
+const onPvzFilter = (query: string) => {
+  pvzSearchQuery.value = query
+}
+
+const pvzPopperOptions = {
+  modifiers: [
+    { name: 'flip', enabled: false },
+    { name: 'offset', options: { offset: [0, 8] } },
+    { name: 'preventOverflow', options: { padding: 8, altAxis: false } },
+  ],
+}
+
+const onPvzVisibleChange = (visible: boolean) => {
+  pvzDropdownOpen.value = visible
+  if (!visible) {
+    pvzSearchQuery.value = ''
+    return
+  }
+  nextTick(() => {
+    const input = document.querySelector<HTMLInputElement>('.delivery-pvz-select .el-select__input')
+    input?.focus()
+    input?.select()
+  })
+}
+
+const deliveryTracking = computed(() => formatDeliveryTracking(shipment.value))
+
 // const totalWithDelivery = computed(() => {
 //   const total = (order.value?.total_kit_price ?? 0) + (order.value?.delivery_price ?? 0)
 //   return formatPrice(total)
@@ -104,14 +191,11 @@ const formatDate = (dateString?: string | null): string => {
 const createdDate = computed(() => formatDate(order.value?.created_at))
 // const completionDate = computed(() => formatDate(order.value?.updated_at))
 
-const orderStatus = computed(() => {
-  const text = !order.value?.status_name
-    ? 'Ожидает оплаты'
-    : statusTexts[order.value.status_name] || order.value.status_name
-  return text.length > 20 ? `${text.slice(0, 20)}...` : text
-})
+const orderStatus = computed(() => formatKitStatusLabel(order.value))
 
 const canConfirmOrder = computed(() => order.value?.status === 'AWAITING_CONFIRMATION')
+
+const deliveryQuoteReadiness = computed(() => kitDeliveryQuoteReadiness(calcRows.value))
 
 const selectedLocation = computed({
   get: () => order.value?.location || 'location_1',
@@ -209,6 +293,10 @@ const loadOrder = async () => {
     quantity.value = data.quantity ?? 0
     filename.value = data.kit_name ?? ''
     await loadCalcs()
+    await loadShipment()
+    if (data.status === 'AWAITING_CONFIRMATION') {
+      await loadDeliveryQuote()
+    }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e)
@@ -260,6 +348,155 @@ const loadOrder = async () => {
 //       break
 //   }
 // }
+
+const loadPvzDetailsForShipment = async () => {
+  const code = (shipment.value?.delivery_point_code || selectedPvzCode.value || '').trim()
+  if (!code) {
+    resolvedPvz.value = null
+    return
+  }
+  if (pvzPoints.value.some((p) => p.code === code)) {
+    resolvedPvz.value = pvzPoints.value.find((p) => p.code === code) || null
+    return
+  }
+  if (resolvedPvz.value?.code === code) return
+  try {
+    const res = await req_json_auth(buildDeliveryPointByCodeQuery(code), 'GET')
+    if (!res?.ok) return
+    const points = unwrapList<CdekPvz>(await res.json())
+    resolvedPvz.value = points.find((p) => p.code === code) || points[0] || null
+  } catch {
+    resolvedPvz.value = null
+  }
+}
+
+const loadShipment = async () => {
+  if (!kitId.value) return
+  try {
+    const res = await req_json_auth(`/delivery/kits/${kitId.value}/shipment`, 'GET')
+    if (!res?.ok) {
+      shipment.value = null
+      return
+    }
+    const data = await res.json()
+    shipment.value = data && typeof data === 'object' ? (data as DeliveryShipment) : null
+    if (shipment.value?.delivery_point_code) {
+      selectedPvzCode.value = shipment.value.delivery_point_code
+    }
+    await refreshShipmentIfNeeded()
+    await loadPvzDetailsForShipment()
+  } catch {
+    shipment.value = null
+  }
+}
+
+const refreshShipmentIfNeeded = async () => {
+  const current = shipment.value
+  if (!shouldRefreshShipmentOnLoad(current, order.value?.status)) return
+  if (!current?.id) return
+  try {
+    const res = await req_json_auth(`/delivery/shipments/${current.id}/refresh`, 'POST')
+    if (!res?.ok) return
+    const data = await res.json()
+    if (data && typeof data === 'object') {
+      shipment.value = data as DeliveryShipment
+      if (shipment.value.delivery_point_code) {
+        selectedPvzCode.value = shipment.value.delivery_point_code
+      }
+      await loadPvzDetailsForShipment()
+    }
+  } catch {
+    // Keep cached shipment; tracking block still shows UUID/status fallback.
+  }
+}
+
+const loadDeliveryQuote = async () => {
+  if (!kitId.value) return
+  const readiness = deliveryQuoteReadiness.value
+  if (!readiness.ready) {
+    deliveryLoading.value = false
+    deliveryError.value = readiness.reason
+    pvzPoints.value = []
+    pvzTariff.value = null
+    return
+  }
+  deliveryLoading.value = true
+  deliveryError.value = ''
+  pvzSearchQuery.value = ''
+  pvzTariff.value = null
+  try {
+    if (!profileStore.profile) {
+      await profileStore.getProfile()
+    }
+    const profile = profileStore.profile
+    const cityName = (profile?.city_name || profile?.city || '').trim()
+    const postal = normalizePostalCode(profile?.postal)
+    const phone = (profile?.personal_phone_number || profile?.phone_number || '').trim()
+    if (!cityName) {
+      deliveryError.value = 'Укажите город в профиле, чтобы рассчитать доставку в ПВЗ'
+      return
+    }
+    if (!phone) {
+      deliveryError.value = 'Укажите телефон в профиле для оформления доставки'
+      return
+    }
+    const citiesRes = await req_json_auth(
+      `/delivery/cdek/cities?q=${encodeURIComponent(cityName)}&size=5`,
+      'GET'
+    )
+    if (!citiesRes?.ok) throw new Error('cities')
+    const cities = unwrapList<CdekCity>(await citiesRes.json())
+    const code = pickCityCode(cities, cityName)
+    if (!code) {
+      deliveryError.value = 'Не удалось определить город СДЭК по адресу профиля'
+      return
+    }
+    cityCode.value = code
+
+    let pointsRes = await req_json_auth(buildDeliveryPointsQuery(code, postal), 'GET')
+    if (!pointsRes?.ok) throw new Error('pvz')
+    let points = unwrapList<CdekPvz>(await pointsRes.json()).filter((p) => Boolean(p.code))
+    if (!points.length && postal) {
+      pointsRes = await req_json_auth(buildDeliveryPointsQuery(code), 'GET')
+      if (!pointsRes?.ok) throw new Error('pvz')
+      points = unwrapList<CdekPvz>(await pointsRes.json()).filter((p) => Boolean(p.code))
+    }
+    pvzPoints.value = points
+    if (!pvzPoints.value.length) {
+      deliveryError.value = postal
+        ? 'Рядом с индексом из профиля нет пунктов выдачи СДЭК'
+        : 'Рядом с адресом нет пунктов выдачи СДЭК'
+      return
+    }
+    if (!selectedPvzCode.value || !pvzPoints.value.some((p) => p.code === selectedPvzCode.value)) {
+      selectedPvzCode.value = pickDefaultPvzCode(pvzPoints.value, postal)
+    }
+
+    const calcRes = await req_json_auth('/delivery/cdek/calculate', 'POST', {
+      kit_id: kitId.value,
+      to_location_code: code,
+    })
+    if (!calcRes?.ok) {
+      const detail = await calcRes?.text()
+      throw new Error(detail || 'calculate')
+    }
+    const calcBody = await calcRes.json()
+    const tariffs = unwrapList<CdekTariff>(
+      (calcBody as { tariff_codes?: CdekTariff[] })?.tariff_codes ?? calcBody
+    )
+    const cheapest = pickCheapestPvzTariff(tariffs)
+    if (!cheapest) {
+      deliveryError.value = 'Нет тарифа СДЭК до пункта выдачи для этого заказа'
+      return
+    }
+    pvzTariff.value = cheapest
+  } catch (e) {
+    console.error(e)
+    deliveryError.value = 'Не удалось рассчитать доставку. Проверьте вес деталей и адрес профиля.'
+  } finally {
+    deliveryLoading.value = false
+  }
+}
 
 const updateKit = async (): Promise<Response | undefined> => {
   if (!order.value) return undefined
@@ -453,20 +690,42 @@ const saveOrder = async () => {
 
 const confirmOrder = async () => {
   if (!kitId.value) return
+  if (!selectedPvzCode.value || !pvzTariff.value?.tariff_code) {
+    ElMessage.warning(deliveryError.value || 'Выберите пункт выдачи СДЭК')
+    return
+  }
+  if (confirmLoading.value) return
+  confirmLoading.value = true
 
   try {
     const updateRes = await updateKit()
     if (!updateRes?.ok) throw new Error('Failed to save order before confirm')
 
+    const optionRes = await req_json_auth(`/delivery/kits/${kitId.value}/option`, 'PUT', {
+      tariff_code: pvzTariff.value.tariff_code,
+      delivery_mode: 'pvz',
+      delivery_point_code: selectedPvzCode.value,
+      delivery_sum: pvzTariff.value.delivery_sum,
+      period_min: pvzTariff.value.period_min,
+      period_max: pvzTariff.value.period_max,
+      to_location_code: cityCode.value,
+    })
+    if (!optionRes?.ok) {
+      const detail = await optionRes?.text()
+      throw new Error(detail || 'Failed to save delivery option')
+    }
+
     const res = await req_json_auth(`/kits/${kitId.value}/confirm`, 'PUT')
     if (!res?.ok) throw new Error('Failed to confirm order')
 
     await loadOrder()
-    ElMessage.success('Заказ подтверждён')
+    ElMessage.success('Заказ подтверждён. Доставка в ПВЗ будет оформлена после изготовления.')
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e)
     ElMessage.error('Не удалось подтвердить заказ')
+  } finally {
+    confirmLoading.value = false
   }
 }
 
@@ -762,6 +1021,103 @@ onMounted(() => {
               </div>
             </div>
 
+            <div class="delivery-section">
+              <div class="maas-subtitle delivery-section__title">Доставка СДЭК (ПВЗ)</div>
+              <p v-if="deliveryLoading" class="delivery-section__hint">Расчёт доставки…</p>
+              <p
+                v-else-if="canConfirmOrder && !deliveryQuoteReadiness.ready"
+                class="delivery-section__hint"
+              >
+                {{ deliveryQuoteReadiness.reason }}
+              </p>
+              <p v-else-if="deliveryError && canConfirmOrder" class="delivery-section__error">
+                {{ deliveryError }}
+              </p>
+              <template v-else>
+                <p v-if="canConfirmOrder && pvzPoints.length" class="delivery-section__search-hint">
+                  Введите код ПВЗ или улицу для поиска
+                </p>
+                <Select
+                  v-if="canConfirmOrder && pvzPoints.length"
+                  v-model="selectedPvzCode"
+                  placeholder="Найти ПВЗ: код или улица"
+                  filterable
+                  clearable
+                  fit-input-width
+                  placement="bottom-start"
+                  :popper-options="pvzPopperOptions"
+                  :filter-method="onPvzFilter"
+                  no-match-text="Пункт не найден"
+                  dropdown-class="delivery-pvz-select-dropdown"
+                  width="100%"
+                  size="default"
+                  class="delivery-pvz-select"
+                  @visible-change="onPvzVisibleChange"
+                >
+                  <template #prefix>
+                    <el-icon class="delivery-pvz-select__search-icon" aria-hidden="true">
+                      <Search />
+                    </el-icon>
+                  </template>
+                  <template #header>
+                    <div class="delivery-pvz-dropdown__header">
+                      Поиск по коду или улице
+                    </div>
+                  </template>
+                  <el-option
+                    v-for="point in displayPvzPoints"
+                    :key="point.code"
+                    :label="pvzCodeLabel(point)"
+                    :value="point.code || ''"
+                  >
+                    <div class="delivery-pvz-option">
+                      <span class="delivery-pvz-option__code">{{ pvzCodeLabel(point) }}</span>
+                      <span class="delivery-pvz-option__addr">{{ pvzStreetLabel(point) }}</span>
+                    </div>
+                  </el-option>
+                </Select>
+                <div v-if="showPvzDetails && displayPvz" class="delivery-section__selected-pvz">
+                  <span class="delivery-section__selected-pvz-code">{{ pvzCodeLabel(displayPvz) }}</span>
+                  <span class="delivery-section__selected-pvz-addr">{{ pvzStreetLabel(displayPvz) }}</span>
+                </div>
+                <PvzMapPreview v-if="showPvzDetails && displayPvz" :point="displayPvz" />
+                <div
+                  v-else-if="shipment?.delivery_point_code && !displayPvz"
+                  class="summary-field summary-field--inline"
+                >
+                  <span class="maas-text">ПВЗ</span>
+                  <span class="summary-field__leader" aria-hidden="true" />
+                  <span class="summary-field__value">{{ shipment.delivery_point_code }}</span>
+                </div>
+                <div class="summary-field summary-field--inline">
+                  <span class="maas-text">Стоимость доставки</span>
+                  <span class="summary-field__leader" aria-hidden="true" />
+                  <span class="summary-field__value">{{ deliveryCostLabel }} руб.</span>
+                </div>
+                <div
+                  v-if="pvzTariff?.period_min && canConfirmOrder"
+                  class="summary-field summary-field--inline"
+                >
+                  <span class="maas-text">Срок</span>
+                  <span class="summary-field__leader" aria-hidden="true" />
+                  <span class="summary-field__value">
+                    {{ pvzTariff.period_min }}–{{ pvzTariff.period_max }} дн. после отгрузки
+                  </span>
+                </div>
+                <div v-if="deliveryTracking" class="summary-field summary-field--inline">
+                  <span class="maas-text">Отправление</span>
+                  <span class="summary-field__leader" aria-hidden="true" />
+                  <span class="summary-field__value">{{ deliveryTracking }}</span>
+                </div>
+                <div class="summary-field summary-field--cost">
+                  <span class="maas-text">Итого с доставкой</span>
+                  <span class="summary-field__value summary-field__value--cost">
+                    {{ totalWithDelivery }} <span class="rub">руб.</span>
+                  </span>
+                </div>
+              </template>
+            </div>
+
             <!-- <div class="manufacturer-section">
               <div class="maas-subtitle">Выбор изготовителя</div>
               <el-radio-group
@@ -782,7 +1138,13 @@ onMounted(() => {
           </div>
 
           <div class="summary-actions summary-actions--desktop">
-            <Button v-if="canConfirmOrder" @click="confirmOrder" class="pay-order-button">
+            <Button
+              v-if="canConfirmOrder"
+              :loading="confirmLoading"
+              :disabled="confirmLoading || deliveryLoading || !selectedPvzCode || !pvzTariff"
+              @click="confirmOrder"
+              class="pay-order-button"
+            >
               Подтвердить заказ
             </Button>
           </div>
@@ -792,6 +1154,7 @@ onMounted(() => {
               v-if="canConfirmOrder"
               type="button"
               class="summary-confirm-mobile"
+              :disabled="confirmLoading || deliveryLoading || !selectedPvzCode || !pvzTariff"
               @click="confirmOrder"
             >
               Подтвердить заказ
@@ -1084,6 +1447,120 @@ onMounted(() => {
 
 .summary-field--cost {
   gap: 4px;
+}
+
+.delivery-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.delivery-section__title {
+  font-size: var(--order-fs-label);
+}
+
+.delivery-section__hint,
+.delivery-section__error,
+.delivery-section__search-hint {
+  margin: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: var(--order-fs-disclaimer);
+  line-height: 1.4;
+}
+
+.delivery-section__search-hint {
+  color: #475467;
+}
+
+.delivery-section__selected-pvz {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+.delivery-section__selected-pvz-code {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 14px;
+  line-height: 1.2;
+  color: #101828;
+}
+
+.delivery-section__selected-pvz-addr {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #475467;
+  word-break: break-word;
+}
+
+.delivery-section__selected-pvz--readonly {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: var(--order-fs-value);
+}
+
+.delivery-section__error {
+  color: #b42318;
+}
+
+.delivery-pvz-select {
+  width: 100%;
+}
+
+.delivery-pvz-select :deep(.el-select__wrapper) {
+  min-height: 44px;
+  height: 44px;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 14px;
+  cursor: text;
+}
+
+.delivery-pvz-select :deep(.el-select__selection) {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.delivery-pvz-select :deep(.el-select__selected-item),
+.delivery-pvz-select :deep(.el-select__selection-text) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.delivery-pvz-select :deep(.el-select__suffix) {
+  align-self: center;
+}
+
+.delivery-pvz-select :deep(.el-select__prefix) {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 8px;
+  color: #667085;
+}
+
+.delivery-pvz-select__search-icon {
+  font-size: 18px;
+}
+
+.delivery-pvz-select :deep(.el-select__placeholder) {
+  color: #667085;
+}
+
+.delivery-pvz-select :deep(.el-select__input) {
+  cursor: text;
 }
 
 .summary-card .maas-text {
@@ -1938,6 +2415,100 @@ onMounted(() => {
 
 .order-type-select-dropdown .el-popper__arrow {
   display: none;
+}
+
+.delivery-pvz-select-dropdown.el-popper {
+  box-sizing: border-box;
+  padding: 12px 16px 16px !important;
+  background: #fff !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.12) !important;
+}
+
+.delivery-pvz-select-dropdown .el-select-dropdown {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.delivery-pvz-select-dropdown .el-popper__arrow {
+  display: none;
+}
+
+.delivery-pvz-dropdown__header {
+  padding: 0 4px 10px;
+  border-bottom: 1px solid #f2f4f7;
+  margin-bottom: 8px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 13px;
+  line-height: 1.3;
+  color: #667085;
+}
+
+.delivery-pvz-select-dropdown .el-select-dropdown__wrap {
+  height: 260px;
+  max-height: 260px;
+  min-height: 260px;
+}
+
+.delivery-pvz-select-dropdown .el-select-dropdown__list {
+  min-height: 220px;
+  padding: 0 !important;
+}
+
+.delivery-pvz-select-dropdown .el-select-dropdown__item {
+  display: flex;
+  align-items: flex-start;
+  height: auto;
+  min-height: 52px;
+  padding: 10px 12px !important;
+  line-height: 1.2 !important;
+  color: #101828 !important;
+  background: #fff !important;
+}
+
+.delivery-pvz-option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+
+.delivery-pvz-option__code {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 14px;
+  color: #101828;
+}
+
+.delivery-pvz-option__addr {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #475467;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.delivery-pvz-select-dropdown .el-select-dropdown__item.is-hovering,
+.delivery-pvz-select-dropdown .el-select-dropdown__item:hover {
+  background: #f9fafb !important;
+}
+
+.delivery-pvz-select-dropdown .el-select-dropdown__item.is-selected {
+  font-weight: 600 !important;
+  background: #f2f4f7 !important;
+}
+
+.delivery-pvz-select-dropdown .el-select-dropdown__empty {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 14px;
+  color: #667085;
 }
 
 .order-add-detail-dropdown.el-popper {

@@ -15,7 +15,7 @@ export const getMaterialFamilyRuLabel = (rawFamily: string) => {
     stainless: 'Нержавеющая сталь',
     'stainless steel': 'Нержавеющая сталь',
     alum: 'Алюминий',
-    aluminium: 'Алюминий',
+    aluminum: 'Алюминий',
     titanium: 'Титан',
     copper: 'Медь',
     latun: 'Латунь',

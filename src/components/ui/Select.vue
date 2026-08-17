@@ -12,6 +12,11 @@ const props = withDefaults(
     disabled?: boolean
     clearable?: boolean
     filterable?: boolean
+    filterMethod?: (query: string) => void
+    noMatchText?: string
+    placement?: 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end'
+    fitInputWidth?: boolean
+    popperOptions?: Record<string, unknown>
     multiple?: boolean
     width?: string
     dropdownClass?: string
@@ -21,6 +26,8 @@ const props = withDefaults(
     disabled: false,
     clearable: false,
     filterable: false,
+    fitInputWidth: false,
+    placement: 'bottom-start',
     multiple: false,
     width: '100%',
   }
@@ -57,6 +64,11 @@ const handleChange = (value: string | number | boolean | object) => {
     :disabled="disabled"
     :clearable="clearable"
     :filterable="filterable"
+    :filter-method="filterMethod"
+    :no-match-text="noMatchText"
+    :placement="placement"
+    :fit-input-width="fitInputWidth"
+    :popper-options="popperOptions"
     :multiple="multiple"
     :popper-class="popperClass"
     :suffix-icon="IconArrowDown"
@@ -70,6 +82,12 @@ const handleChange = (value: string | number | boolean | object) => {
     @blur="emit('blur', $event)"
     @focus="emit('focus', $event)"
   >
+    <template v-if="$slots.prefix" #prefix>
+      <slot name="prefix" />
+    </template>
+    <template v-if="$slots.header" #header>
+      <slot name="header" />
+    </template>
     <slot />
   </el-select>
 </template>

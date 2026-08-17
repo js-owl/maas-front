@@ -65,6 +65,11 @@ RUN npm ci --include=dev
 # Copy the entire project source code
 COPY . .
 
+# Bake a relative API base so local nginx can proxy /api/v3 to backend.
+# .env.production otherwise embeds the public production URL at build time.
+ENV VITE_API_BASE=/api/v3
+ENV VITE_BASE_PATH=/
+
 # Build the application for production
 # This  creates the /app/dist folder
 

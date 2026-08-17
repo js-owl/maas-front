@@ -7,7 +7,13 @@ import { req_json_auth } from '../api'
 import { useProfileStore, type IProfile } from '../stores/profile.store'
 import { useAuthStore } from '../stores/auth.store'
 import { hidePrice } from '../helpers/hide-price'
-import { statusTexts } from '../helpers/status-text'
+import {
+  formatKitStatusLabel,
+  getKitStatusCode,
+  kitMatchesPaidTab,
+  kitMatchesUnpaidTab,
+  kitStatusChipClass,
+} from '../helpers/status-text'
 import { Search, Delete, Plus, Refresh } from '@element-plus/icons-vue'
 import ButtonRound from './ui/ButtonRound.vue'
 import type { IKit, IOrderPostPayload, IOrderResponse } from '../interfaces/order.interface'
@@ -30,12 +36,10 @@ const { width } = useWindowSize()
 const isMobileView = computed(() => width.value <= 767)
 
 const excludedStatuses = ['cancelled', 'C3:LOSE']
-const paidStatuses = new Set(['completed', 'C3:WIN'])
-const unpaidStatuses = new Set(['pending', 'processing', 'in-progress'])
 
-const getOrderStatus = (order: KitOrder): string => {
-  return (order.status_name || order.status || '').trim()
-}
+const getOrderStatus = (order: KitOrder): string => getKitStatusCode(order)
+
+const getOrderStatusLabel = (order: KitOrder): string => formatKitStatusLabel(order)
 
 const getOrderDisplayName = (order: KitOrder): string => {
   return order.kit_name || 'Нет названия'
@@ -48,14 +52,12 @@ const isExcludedOrder = (order: KitOrder): boolean => {
 const matchesActiveTab = (order: KitOrder): boolean => {
   if (isMobileView.value) return true
 
-  const status = getOrderStatus(order)
-
   if (activeTab.value === 'paid' || activeTab.value === 'completed') {
-    return paidStatuses.has(status)
+    return kitMatchesPaidTab(order)
   }
 
   if (activeTab.value === 'unpaid') {
-    return unpaidStatuses.has(status)
+    return kitMatchesUnpaidTab(order)
   }
 
   return true
@@ -115,26 +117,12 @@ const formatPrice = (cellValue: number | string | null | undefined, status?: str
   return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(Math.trunc(value))
 }
 
-const statusClasses: Record<string, string> = {
-  pending: 'status-chip--pending',
-  processing: 'status-chip--processing',
-  'in-progress': 'status-chip--processing',
-  completed: 'status-chip--completed',
-  'C3:WIN': 'status-chip--completed',
-  'C3:LOSE': 'status-chip--cancelled',
-  cancelled: 'status-chip--cancelled',
-}
-
-const getStatusText = (status?: string | null): string => {
-  if (!status) return ''
-  const text = statusTexts[status] || status
+const getStatusText = (order: KitOrder): string => {
+  const text = getOrderStatusLabel(order)
   return text.length > 30 ? `${text.slice(0, 30)}...` : text
 }
 
-const getStatusClass = (status?: string | null): string => {
-  if (!status) return 'status-chip--default'
-  return statusClasses[status] || 'status-chip--default'
-}
+const getStatusClass = (order: KitOrder): string => kitStatusChipClass(order)
 
 const normalizeStatusColor = (statusColor?: string | null): string | null => {
   if (!statusColor) return null
@@ -519,11 +507,11 @@ const handleDelete = async (row: IKit): Promise<void> => {
             </span>
             <span
               class="status-chip status-chip--mobile"
-              :class="getStatusClass(getOrderStatus(order))"
+              :class="getStatusClass(order)"
               :style="getStatusStyle(order.status_color)"
-              :title="getStatusText(getOrderStatus(order))"
+              :title="getStatusText(order)"
             >
-              {{ getStatusText(getOrderStatus(order)) }}
+              {{ getStatusText(order) }}
             </span>
           </button>
         </div>
@@ -575,10 +563,10 @@ const handleDelete = async (row: IKit): Promise<void> => {
           <template #default="{ row }">
             <span
               class="status-chip"
-              :class="getStatusClass(getOrderStatus(row))"
+              :class="getStatusClass(row)"
               :style="getStatusStyle(row.status_color)"
             >
-              {{ getStatusText(getOrderStatus(row)) }}
+              {{ getStatusText(row) }}
             </span>
           </template>
         </el-table-column>

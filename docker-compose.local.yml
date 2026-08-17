@@ -9,7 +9,8 @@ services:
       dockerfile: Dockerfile.local
     container_name: maas-front
     ports:
-      - "80:80"
+      # Port 80 often conflicts on Windows Docker Desktop; use 8080 locally.
+      - "8080:80"
     environment:
       - CORS_ORIGINS=["*"]
       - CORS_ALLOW_CREDENTIALS=true
