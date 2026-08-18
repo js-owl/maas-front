@@ -23,7 +23,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- https://www.figma.com/design/HyoggbbVUgCqJp5UR7EU8T/MaaS-DEV--Copy-?node-id=3248-1490 -->
+  <!-- https://www.figma.com/design/8MeY8OxWGlYkUaGMvggFmu/MaaS--Copy-?node-id=5067-2607 -->
   <div
     class="home-page content-page"
     :class="{
