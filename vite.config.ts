@@ -86,7 +86,7 @@ export default defineConfig(({ mode }) => {
     server: {
       watch: {
         // Windows often locks short-lived editor/temp files (EBUSY on watch)
-        ignored: ['**/_tmp*', '**/~*', '**/*.tmp'],
+        ignored: ['**/_tmp*', '**/~*', '**/*.tmp', '**/src/assets/**/*.png'],
       },
       proxy: {
         '/api/v3': {
