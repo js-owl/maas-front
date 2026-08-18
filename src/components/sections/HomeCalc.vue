@@ -106,15 +106,28 @@ const submit = () => {
         <el-form :model="formModel" class="calc-form" label-position="top">
           <div class="calc-upload-zone">
             <h3 class="calc-upload-title">Расчет стоимости изготовления</h3>
-            <div v-if="isAuthenticated" class="calc-formats">
-              <p class="calc-format-text">
-                Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY,
-                3DS, DAE, FBX, BLEND
-              </p>
-              <div class="calc-format-docs">
-                <p class="calc-format-text"> Форматы тех. документации: </p>
-                <p class="calc-format-text">DWG, DXF, PDF, SVG, AI, EPS</p>
+            <div class="calc-formats">
+              <div
+                class="calc-formats-auth"
+                :class="{ 'is-hidden': !isAuthenticated }"
+                :aria-hidden="!isAuthenticated"
+              >
+                <p class="calc-format-text">
+                  Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY,
+                  3DS, DAE, FBX, BLEND
+                </p>
+                <div class="calc-format-docs">
+                  <p class="calc-format-text"> Форматы тех. документации: </p>
+                  <p class="calc-format-text">DWG, DXF, PDF, SVG, AI, EPS</p>
+                </div>
               </div>
+              <p
+                class="calc-format-text calc-formats-guest"
+                :class="{ 'is-hidden': isAuthenticated }"
+                :aria-hidden="isAuthenticated"
+              >
+                Без авторизации можно загружать только STP-файлы.
+              </p>
             </div>
             <UploadFiles
               v-model="document_ids"
@@ -258,8 +271,10 @@ const submit = () => {
 }
 
 .calc-upload-zone {
+  position: relative;
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   gap: 0;
   align-items: center;
   width: 100%;
@@ -282,14 +297,35 @@ const submit = () => {
 }
 
 .calc-formats {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  display: grid;
+  grid-template-rows: 1fr;
+  flex: 1 1 auto;
   align-items: stretch;
   width: 100%;
   padding: 0.625rem 0 0;
   box-sizing: border-box;
   text-align: center;
+}
+
+.calc-formats-auth,
+.calc-formats-guest {
+  grid-area: 1 / 1;
+}
+
+.calc-formats-auth {
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  width: 100%;
+}
+
+.calc-formats-guest {
+  align-self: center;
+}
+
+.calc-formats .is-hidden {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .calc-format-text {
@@ -312,6 +348,12 @@ const submit = () => {
   width: 100%;
 }
 
+.calc-upload-files:not(:has(.has-files, .is-uploading)) {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 .calc-upload-files :deep(.upload) {
   height: auto;
   min-height: 0;
@@ -321,11 +363,15 @@ const submit = () => {
   background-color: transparent !important;
 }
 
-.calc-upload-files :deep(.upload:not(.has-files):not(.is-uploading) .el-upload__text) {
-  display: none;
+.calc-upload-files :deep(.upload:not(.has-files):not(.is-uploading)) {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  cursor: pointer;
 }
 
-.calc-upload-files :deep(.upload:not(.has-guest-message) .upload-subtitle) {
+.calc-upload-files :deep(.upload:not(.has-files):not(.is-uploading) .el-upload__text),
+.calc-upload-files :deep(.upload-subtitle) {
   display: none;
 }
 
@@ -334,19 +380,6 @@ const submit = () => {
   gap: 0;
   align-items: center;
   width: 100%;
-}
-
-.calc-upload-files :deep(.upload-subtitle) {
-  margin: 0;
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: normal;
-  color: #e84261;
-}
-
-.calc-upload-files :deep(.upload-subtitle + .upload-subtitle) {
-  margin-top: 1em;
 }
 
 .calc-upload-files :deep(.has-files .el-upload__text) {
@@ -360,6 +393,7 @@ const submit = () => {
 .action-row {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   gap: 0.625rem;
   width: 100%;
 }
@@ -572,25 +606,6 @@ const submit = () => {
   .calc-upload-title {
     font-size: 16px;
     line-height: normal;
-  }
-
-  .calc-upload-files :deep(.upload:not(.has-files):not(.is-uploading):not(.has-guest-message)) {
-    height: 0;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .calc-upload-files :deep(.upload.has-guest-message) {
-    height: auto;
-    min-height: 0;
-    padding: 0;
-    overflow: visible;
-  }
-
-  .calc-upload-files :deep(.upload-subtitle) {
-    margin: 0;
-    font-size: 12px;
-    text-align: left;
   }
 
   .calc-upload-files :deep(.custom) {
