@@ -533,7 +533,7 @@ const submit = () => {
   transform: rotate(45deg);
 }
 
-@media (max-width: 1300px) and (min-width: 769px) {
+@media (max-width: 1300px) and (min-width: 768px) {
   .calc-wrap {
     gap: clamp(1.5rem, 4vw, 5.625rem);
   }
@@ -566,7 +566,19 @@ const submit = () => {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 959px) and (min-width: 768px) {
+  .calc-wrap {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .calc-left {
+    flex: none;
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
   .calc-section.section-basic {
     margin-bottom: 0;
     border-radius: 16px;
@@ -575,6 +587,7 @@ const submit = () => {
   }
 
   .calc-wrap {
+    flex-direction: column;
     gap: 24px;
   }
 

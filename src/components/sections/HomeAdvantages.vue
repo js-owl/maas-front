@@ -341,7 +341,7 @@ const advantages = ref([
 }
 
 /* Tablet — Figma 5067:2727 (960), cards 430×280, 2 columns */
-@media (max-width: 1300px) and (min-width: 769px) {
+@media (max-width: 1300px) and (min-width: 768px) {
   .advantages-wrap {
     padding: 2.5em;
     gap: 1.25em;

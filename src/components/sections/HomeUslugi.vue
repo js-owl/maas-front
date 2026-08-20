@@ -71,7 +71,7 @@ const abilities = ref([
 ])
 
 const { width } = useWindowSize()
-const isMobileLayout = computed(() => width.value <= 768)
+const isMobileLayout = computed(() => width.value < 768)
 const isCompactLayout = computed(() => width.value <= 1300)
 
 const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(ability.link)
@@ -264,7 +264,7 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   display: none;
 }
 
-@media (max-width: 1300px) and (min-width: 769px) {
+@media (max-width: 1300px) and (min-width: 768px) {
   .uslugi-section2.section-basic {
     margin-top: 0;
     margin-bottom: 0;
@@ -340,7 +340,7 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .uslugi-section2.section-basic {
     margin-top: 0;
     margin-bottom: 0;
