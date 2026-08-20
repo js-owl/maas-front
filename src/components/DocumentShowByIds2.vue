@@ -8,6 +8,7 @@ import {
   localStpCacheVersion,
   type LocalStpFile,
 } from "../helpers/local-stp-files";
+import { DEFAULT_PRINTING_FILE_ID, DEFAULT_PRINTING_FILE_NAME } from "../helpers/model-file-types";
 
 type DocumentInfo = {
   id: number;
@@ -60,7 +61,9 @@ const listItems = computed<ListItem[]>(() => {
       key: `stp-${stp_id.value}`,
       kind: "stp",
       id: stp_id.value,
-      name: local?.file_name ?? "3D-модель",
+      name:
+        local?.file_name ??
+        (stp_id.value === DEFAULT_PRINTING_FILE_ID ? DEFAULT_PRINTING_FILE_NAME : "3D-модель"),
       created_at: local?.created_at ?? null,
       localFile: local,
     });

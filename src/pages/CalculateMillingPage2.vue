@@ -6,6 +6,7 @@ import {
   buildCalculateFileFields,
   ensureLocalStpCacheReady,
   getLocalStpFileById,
+  hasCalculateModel,
   localStpCacheVersion,
 } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
@@ -235,6 +236,16 @@ async function loadFinishAndTolerance() {
 }
 
 async function sendData(payload: IOrderPayload) {
+  if (!hasCalculateModel(payload)) {
+    result.value = {
+      ...result.value,
+      total_price: 0,
+      detail_price: 0,
+      detail_price_one: 0,
+      quantity: quantity.value,
+    } as IOrderResponse
+    return
+  }
   startLoading()
   try {
     const res = await req_json('/calculate-price', 'POST', payload)

@@ -1,20 +1,28 @@
 <script setup>
 import { fetchWithAuth } from '../../api'
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import {
+  ensureLocalStpCacheReady,
+  getLocalStpFileById,
+  isServerFileId,
+} from '../../helpers/local-stp-files'
+import { DEFAULT_PRINTING_FILE_ID } from '../../helpers/model-file-types'
 
 const file_id = defineModel()
 
-let geometry = ref()
 const container = ref(null)
+const isLoading = ref(true)
+const error = ref('')
+
 const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 10000)
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
-  alpha: true,
+  alpha: false,
   powerPreference: 'high-performance',
 })
 renderer.shadowMap.enabled = true
@@ -22,184 +30,299 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.toneMapping = THREE.ACESFilmicToneMapping
 renderer.toneMappingExposure = 1.0
 renderer.outputColorSpace = THREE.SRGBColorSpace
+
+let parsedGeometry = null
 let model = null
 let animationId = null
 let controls = null
+let envMapTexture = null
+let resizeObserver = null
+let isDestroyed = false
 
-// Освещение для металлического эффекта
-const ambientLight = new THREE.AmbientLight(0x404040, 0.3)
-scene.add(ambientLight)
-
-// Основной направленный свет
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2)
-directionalLight.position.set(5, 5, 5)
-directionalLight.castShadow = true
-directionalLight.shadow.mapSize.width = 2048
-directionalLight.shadow.mapSize.height = 2048
+scene.add(new THREE.AmbientLight(0xffffff, 0.7))
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.1)
+directionalLight.position.set(5, 8, 5)
 scene.add(directionalLight)
-
-// Дополнительный свет для лучшего освещения
-const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8)
-directionalLight2.position.set(-5, 3, -5)
-scene.add(directionalLight2)
-
-// Точечный свет для акцентов
-const pointLight = new THREE.PointLight(0xffffff, 0.5, 100)
-pointLight.position.set(0, 10, 0)
-scene.add(pointLight)
+const fillLight = new THREE.DirectionalLight(0xffffff, 0.5)
+fillLight.position.set(-6, 3, -4)
+scene.add(fillLight)
+scene.add(new THREE.HemisphereLight(0xffffff, 0xb0b0b0, 0.45))
 
 onMounted(async () => {
-  geometry = await getModel()
-  renderModel()
+  window.addEventListener('resize', updateRendererSize)
+  await loadAndRender()
+  if (container.value) {
+    resizeObserver = new ResizeObserver(updateRendererSize)
+    resizeObserver.observe(container.value)
+  }
 })
 
 watch(
   () => file_id.value,
-  async (newVal) => {
-    console.log(`${newVal}`)
-    geometry = await getModel()
-
-    if (model) scene.remove(model)
-    if (!geometry) return
-
-    renderModel()
+  async () => {
+    await loadAndRender()
   }
 )
 
 onBeforeUnmount(() => {
+  isDestroyed = true
   cancelAnimationFrame(animationId)
   window.removeEventListener('resize', updateRendererSize)
+  resizeObserver?.disconnect()
+  if (model) {
+    scene.remove(model)
+    model.geometry?.dispose()
+    model.material?.dispose()
+  }
+  envMapTexture?.dispose()
+  controls?.dispose()
   renderer.dispose()
 })
 
+async function loadAndRender() {
+  error.value = ''
+  isLoading.value = true
+  parsedGeometry = await getModel()
+  await nextTick()
+  if (isDestroyed) return
+  isLoading.value = false
+
+  if (model) {
+    scene.remove(model)
+    model.geometry?.dispose()
+    model.material?.dispose()
+    model = null
+  }
+
+  if (!parsedGeometry) {
+    error.value = 'Не удалось загрузить STL-модель'
+    return
+  }
+
+  renderModel()
+}
+
 function updateRendererSize() {
-  const width = container.value.clientWidth
-  const height = container.value.clientHeight
+  if (!container.value) return
+  const width = Math.max(container.value.clientWidth, 1)
+  const height = Math.max(container.value.clientHeight, 1)
   camera.aspect = width / height
   camera.updateProjectionMatrix()
   renderer.setSize(width, height)
 }
 
 function animate() {
+  if (isDestroyed) return
   animationId = requestAnimationFrame(animate)
-  controls.update()
+  controls?.update()
   renderer.render(scene, camera)
+}
+
+function decodeBase64ToArrayBuffer(base64Data) {
+  const binary = atob(base64Data)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i)
+  }
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)
+}
+
+function looksLikeAsciiStl(bytes) {
+  const head = new TextDecoder('utf-8', { fatal: false }).decode(bytes.slice(0, 64)).trimStart()
+  return head.toLowerCase().startsWith('solid')
+}
+
+function looksLikeStep(bytes) {
+  const head = new TextDecoder('utf-8', { fatal: false }).decode(bytes.slice(0, 32)).trimStart()
+  return head.startsWith('ISO-10303')
+}
+
+function parseStl(arrayBuffer) {
+  const bytes = new Uint8Array(arrayBuffer)
+  if (!bytes.byteLength) {
+    throw new Error('Пустой файл модели')
+  }
+  if (looksLikeStep(bytes)) {
+    throw new Error('Сервер отдал STEP вместо STL')
+  }
+
+  const loader = new STLLoader()
+  const geometry = looksLikeAsciiStl(bytes)
+    ? loader.parse(new TextDecoder().decode(bytes))
+    : loader.parse(arrayBuffer)
+
+  const position = geometry.getAttribute('position')
+  if (!position || position.count < 3) {
+    throw new Error('В STL нет треугольников')
+  }
+
+  geometry.computeVertexNormals()
+  geometry.computeBoundingBox()
+  return geometry
+}
+
+function bundledDemoStlUrl() {
+  const base = import.meta.env.BASE_URL || '/'
+  return `${base.replace(/\/?$/, '/')}models/demo_printing_default.stl`
+}
+
+async function loadArrayBuffer(url, options = {}) {
+  const res = await fetch(url, { cache: 'no-store', ...options })
+  if (!res.ok) {
+    throw new Error(`Failed to download STL file: ${res.status}`)
+  }
+  return res.arrayBuffer()
 }
 
 async function getModel() {
   try {
-    const headers = new Headers()
-    headers.append('Content-Type', 'application/octet-stream')
+    await ensureLocalStpCacheReady()
+    const localFile = getLocalStpFileById(file_id.value)
+    if (localFile) {
+      return parseStl(decodeBase64ToArrayBuffer(localFile.file_data))
+    }
 
-    const res = await fetchWithAuth(`/files/${file_id.value}/download`, {
+    const numericId = Number(file_id.value)
+    if (numericId === DEFAULT_PRINTING_FILE_ID) {
+      try {
+        return parseStl(await loadArrayBuffer(bundledDemoStlUrl()))
+      } catch (bundledError) {
+        console.warn('Bundled demo STL failed, falling back to API', bundledError)
+      }
+    }
+
+    if (!isServerFileId(file_id.value)) return null
+
+    const res = await fetchWithAuth(`/files/${file_id.value}/download?format=stl`, {
       method: 'GET',
-      headers: headers,
+      cache: 'no-store',
     })
-    const blob = await res.blob()
-    const arrayBuffer = await blob.arrayBuffer()
-    const geometry = new STLLoader().parse(arrayBuffer)
-
-    return geometry
-  } catch (error) {
-    console.error({ error })
+    if (!res.ok) {
+      throw new Error(`Failed to download STL file: ${res.status}`)
+    }
+    return parseStl(await res.arrayBuffer())
+  } catch (err) {
+    console.error({ error: err })
+    return null
   }
 }
 
-function renderModel() {
-  // Создаем металлический материал
-  const material = new THREE.MeshPhysicalMaterial({
-    color: 0x888888, // Базовый серый цвет металла
-    metalness: 0.9, // Высокая металличность
-    roughness: 0.1, // Низкая шероховатость для блеска
-    clearcoat: 1.0, // Прозрачное покрытие
-    clearcoatRoughness: 0.1, // Шероховатость покрытия
-    reflectivity: 1.0, // Высокая отражательная способность
-    envMapIntensity: 1.0, // Интенсивность отражения окружения
-  })
-
-  model = new THREE.Mesh(geometry, material)
-
-  // Центрируем модель
+function fitCameraToGeometry(geometry) {
   geometry.computeBoundingBox()
-  const boundingBox = geometry.boundingBox
-  const center = new THREE.Vector3()
-  boundingBox.getCenter(center)
-  model.position.copy(center.negate())
+  const box = geometry.boundingBox
+  if (!box) return
 
-  scene.add(model)
+  const size = new THREE.Vector3()
+  box.getSize(size)
+  const maxDim = Math.max(size.x, size.y, size.z, 1)
+  const fov = camera.fov * (Math.PI / 180)
+  const distance = Math.abs(maxDim / (2 * Math.tan(fov / 2))) * 2.2
+  const isometricAngle = Math.PI / 4
 
-  // Создаем карту окружения для отражений (корректно)
-  const pmremGenerator = new THREE.PMREMGenerator(renderer)
-  const environment = new RoomEnvironment()
-  const envMap = pmremGenerator.fromScene(environment, 0.04).texture
-  scene.environment = envMap
-  material.envMap = envMap
-  pmremGenerator.dispose()
-
-  // Устанавливаем фон сцены
-  scene.background = new THREE.Color(0xffffff) // Темно-синий фон для контраста
-  updateRendererSize()
-  container.value.appendChild(renderer.domElement)
-
-  // Настройка изометрической камеры
-  const distance = 80
-  const isometricAngle = Math.PI / 4 // 45 градусов
-
-  // Позиция камеры для изометрического вида
+  camera.near = Math.max(distance / 100, 0.01)
+  camera.far = Math.max(distance * 100, 1000)
   camera.position.set(
     distance * Math.cos(isometricAngle),
     distance * Math.sin(isometricAngle),
     distance * Math.sin(isometricAngle)
   )
-
-  // Камера смотрит на центр сцены
   camera.lookAt(0, 0, 0)
+  camera.updateProjectionMatrix()
 
-  controls = new OrbitControls(camera, renderer.domElement)
-  controls.enableDamping = true
-  controls.dampingFactor = 0.05
-  controls.minDistance = 80
-  controls.maxDistance = 200
+  if (controls) {
+    controls.target.set(0, 0, 0)
+    controls.minDistance = maxDim * 0.3
+    controls.maxDistance = Math.max(distance * 8, maxDim * 6)
+    controls.update()
+  }
+}
 
-  window.addEventListener('resize', updateRendererSize)
+function renderModel() {
+  if (!parsedGeometry || !container.value || isDestroyed) return
 
-  // Инициализация анимации
-  animate()
+  const material = new THREE.MeshStandardMaterial({
+    color: 0x8a9199,
+    metalness: 0.15,
+    roughness: 0.45,
+    side: THREE.DoubleSide,
+    envMapIntensity: 0.6,
+  })
+
+  model = new THREE.Mesh(parsedGeometry, material)
+  parsedGeometry.computeBoundingBox()
+  const center = new THREE.Vector3()
+  parsedGeometry.boundingBox.getCenter(center)
+  model.position.copy(center.negate())
+  scene.add(model)
+
+  if (!envMapTexture) {
+    const pmremGenerator = new THREE.PMREMGenerator(renderer)
+    envMapTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture
+    pmremGenerator.dispose()
+  }
+  scene.environment = envMapTexture
+  material.envMap = envMapTexture
+  scene.background = new THREE.Color(0xf4f5f7)
+
+  updateRendererSize()
+  if (!container.value.contains(renderer.domElement)) {
+    container.value.appendChild(renderer.domElement)
+  }
+
+  if (!controls) {
+    controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.dampingFactor = 0.05
+  }
+
+  fitCameraToGeometry(parsedGeometry)
+
+  if (!animationId) {
+    animate()
+  }
 }
 </script>
 
 <template>
-  <div ref="container" class="stl-container"></div>
+  <div ref="container" class="stl-container">
+    <div v-if="isLoading" class="stl-overlay">Загрузка STL-модели...</div>
+    <div v-else-if="error" class="stl-overlay stl-overlay--error">{{ error }}</div>
+  </div>
 </template>
 
 <style scoped>
 .stl-container {
   width: 100%;
   height: 400px;
-  /* border: 2px dashed red; */
   border-radius: 8px;
-  /* margin-bottom: 10px; */
-  /* background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);  */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   overflow: hidden;
   position: relative;
-}
-
-.stl-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 1;
+  background: #f4f5f7;
 }
 
 .stl-container canvas {
   border-radius: 6px;
+  display: block;
   position: relative;
-  z-index: 2;
+  z-index: 1;
+}
+
+.stl-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #495057;
+  font-size: 16px;
+  background: #f4f5f7;
+}
+
+.stl-overlay--error {
+  color: #c45656;
+  padding: 24px;
+  text-align: center;
 }
 </style>

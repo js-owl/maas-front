@@ -1,6 +1,16 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { uploadDocument, fileToBase64 } from '../api'
+import { saveFile3D } from '../helpers/local-stp-files'
+import {
+  getFileExtension,
+  getGuestAcceptAttribute,
+  getGuestModelOnlyMessage,
+  getIncompatibleModelMessage,
+  getModelFormatsLabel,
+  isAllowedModelFile,
+  isPrintingService,
+} from '../helpers/model-file-types'
 // import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from '../stores/auth.store'
 import DialogLogin from './dialog/DialogLogin.vue'
@@ -13,6 +23,7 @@ const props = withDefaults(
     stp_id?: number | null
     hideFormatsText?: boolean
     uploadText?: string
+    service_id?: string
   }>(),
   {
     hideFormatsText: false,
@@ -20,7 +31,7 @@ const props = withDefaults(
   }
 )
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'update:stp_id', value: number | null): void
 }>()
 
@@ -30,13 +41,35 @@ const uploadingCount = ref(0)
 const fileInput = ref<HTMLInputElement>()
 
 const isUploading = computed(() => uploadingCount.value > 0)
+const isAuthenticated = computed(() => Boolean(authStore.getToken))
+const isPrinting = computed(() => isPrintingService(props.service_id))
+const modelFormatsLabel = computed(() => getModelFormatsLabel(props.service_id))
+const guestAccept = computed(() => getGuestAcceptAttribute(props.service_id))
 
 const isDisabled = () => {
   if (authStore.getToken) return false
   return isUploading.value
 }
 
-const processUploadedFile = async (file: File) => {
+const processUploadedFile = async (file: File): Promise<boolean> => {
+  const extension = getFileExtension(file.name)
+
+  if (isPrinting.value) {
+    if (!isAllowedModelFile(file.name, props.service_id)) {
+      ElMessage.warning(
+        isAuthenticated.value
+          ? getIncompatibleModelMessage(props.service_id)
+          : getGuestModelOnlyMessage(props.service_id)
+      )
+      return false
+    }
+
+    const base64Data = await fileToBase64(file)
+    const id = await saveFile3D(file.name, base64Data, extension || 'stl')
+    emit('update:stp_id', id)
+    return true
+  }
+
   const base64Data = await fileToBase64(file)
 
   // Файлы из этой зоны только добавляются в список. STP в 3D и пересчёт — через окно 3D.
@@ -48,11 +81,12 @@ const processUploadedFile = async (file: File) => {
   const id = Number((data as any).document_id)
 
   if (!Array.isArray(document_ids.value)) document_ids.value = []
-  if (!Number.isFinite(id)) return
+  if (!Number.isFinite(id)) return false
 
   if (!document_ids.value.includes(id)) {
     document_ids.value.push(id)
   }
+  return true
 }
 
 const handleFilesUpload = async (files: FileList | File[]) => {
@@ -66,8 +100,10 @@ const handleFilesUpload = async (files: FileList | File[]) => {
   for (const file of list) {
     uploadingCount.value += 1
     try {
-      await processUploadedFile(file)
-      ElMessage.success('Документ успешно загружен!')
+      const uploaded = await processUploadedFile(file)
+      if (uploaded) {
+        ElMessage.success(isPrinting.value ? 'Файл успешно загружен!' : 'Документ успешно загружен!')
+      }
     } catch (error) {
       console.error('Document upload error:', error)
       ElMessage.error('Ошибка загрузки документа')
@@ -138,9 +174,9 @@ const handleDragOver = (event: DragEvent) => {
           </div>
           <template v-if="!props.hideFormatsText">
             <div class="upload-subtitle">
-              Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
+              {{ modelFormatsLabel }}
             </div>
-            <div class="upload-subtitle">
+            <div v-if="!isPrinting" class="upload-subtitle">
               Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
             </div>
           </template>
@@ -149,7 +185,8 @@ const handleDragOver = (event: DragEvent) => {
             @change="handleFileChange"
             style="display: none"
             ref="fileInput"
-            multiple
+            :multiple="!isPrinting"
+            :accept="isPrinting ? guestAccept : undefined"
             aria-label="Загрузка файлов для расчёта"
             :disabled="isDisabled() || isUploading"
           />

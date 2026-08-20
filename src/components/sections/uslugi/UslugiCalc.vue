@@ -79,6 +79,7 @@ watch(
         color="#000"
         :hide-formats-text="true"
         upload-text="Загрузите файлы"
+        :service_id="uploadServiceId"
         v-model:stp_id="stp_id"
         class="uslugi-calc-upload-files-mobile"
       />

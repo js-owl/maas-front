@@ -2,12 +2,20 @@
 import { computed, ref, watch } from 'vue'
 import { uploadDocument, fileToBase64, req_json_auth } from '../api'
 import { getLocalStpFileById, localStpCacheVersion, saveFile3D } from '../helpers/local-stp-files'
+import {
+  getFileExtension,
+  getGuestAcceptAttribute,
+  getGuestModelOnlyMessage,
+  getGuestSingleModelMessage,
+  getIncompatibleModelMessage,
+  getModelFormatsLabel,
+  isAllowedModelFile,
+  isPrintingService,
+} from '../helpers/model-file-types'
 // import IconDrawing from "../icons/IconDrawing.vue";
 import { useAuthStore } from '../stores/auth.store'
 // import DialogLogin from './dialog/DialogLogin.vue'
 import { ElMessage } from 'element-plus'
-
-const GUEST_STP_ONLY_MESSAGE = 'Без авторизации можно загружать только STP-файлы.'
 
 type DocumentInfo = {
   id: number
@@ -89,6 +97,10 @@ const uploadMainText = computed(() => {
   if (!isAuthenticated.value && uploadedStpFileName.value) return uploadedStpFileName.value
   return 'Перетащите или выберите файл'
 })
+const guestOnlyMessage = computed(() => getGuestModelOnlyMessage(props.service_id))
+const modelFormatsLabel = computed(() => getModelFormatsLabel(props.service_id))
+const guestAccept = computed(() => getGuestAcceptAttribute(props.service_id))
+const showDocsFormats = computed(() => !isPrintingService(props.service_id))
 
 async function loadDocumentsByIds(ids: number[]) {
   if (ids.length === 0) {
@@ -125,38 +137,49 @@ const isDisabled = () => {
 }
 
 const rejectGuestFile = (file: File): boolean => {
-  const extension = file.name.split('.').pop()?.toLowerCase()
-  if (extension !== 'stp') {
-    ElMessage.warning(GUEST_STP_ONLY_MESSAGE)
+  if (!isAllowedModelFile(file.name, props.service_id)) {
+    ElMessage.warning(guestOnlyMessage.value)
     return true
   }
   if (props.stp_id != null) {
-    ElMessage.warning('Без авторизации можно загрузить только один STP-файл.')
+    ElMessage.warning(getGuestSingleModelMessage(props.service_id))
     return true
   }
   return false
 }
 
 const processUploadedFile = async (file: File): Promise<boolean> => {
-  const extension = file.name.split('.').pop()?.toLowerCase()
+  const extension = getFileExtension(file.name) || 'stp'
+
+  if (isPrintingService(props.service_id)) {
+    if (!isAllowedModelFile(file.name, props.service_id)) {
+      ElMessage.warning(getIncompatibleModelMessage(props.service_id))
+      return false
+    }
+
+    const base64Data = await fileToBase64(file)
+    const id = await saveFile3D(file.name, base64Data, extension)
+    emit('update:stp_id', id)
+    return true
+  }
 
   if (!isAuthenticated.value) {
     if (rejectGuestFile(file)) return false
 
     const base64Data = await fileToBase64(file)
-    const id = await saveFile3D(file.name, base64Data, 'stp')
+    const id = await saveFile3D(file.name, base64Data, extension)
     emit('update:stp_id', id)
     return true
   }
 
-  const isStp = extension === 'stp'
-  const hasMainStp = props.stp_id != null
+  const isModelFile = isAllowedModelFile(file.name, props.service_id)
+  const hasMainModel = props.stp_id != null
 
   const base64Data = await fileToBase64(file)
 
-  // Первый STP-файл сохраняем локально и используем его id как основной stp_id
-  if (isStp && !hasMainStp) {
-    const id = await saveFile3D(file.name, base64Data, extension || 'stp')
+  // Первый файл 3D-модели сохраняем локально и используем его id как основной stp_id
+  if (isModelFile && !hasMainModel) {
+    const id = await saveFile3D(file.name, base64Data, extension)
 
     emit('update:stp_id', id)
     return true
@@ -195,7 +218,11 @@ const handleFilesUpload = async (files: FileList | File[]) => {
     uploadingCount.value += 1
     try {
       const uploaded = await processUploadedFile(file)
-      if (uploaded) ElMessage.success('Документ успешно загружен!')
+      if (uploaded) {
+        ElMessage.success(
+          isPrintingService(props.service_id) ? 'Файл успешно загружен!' : 'Документ успешно загружен!'
+        )
+      }
     } catch (error) {
       console.error('Document upload error:', error)
       ElMessage.error('Ошибка загрузки документа')
@@ -287,22 +314,22 @@ const handleDragOver = (event: DragEvent) => {
         </div>
         <template v-if="isAuthenticated && !hasUploadedFiles && !props.hideFormatsText">
             <div class="upload-subtitle">
-              Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND
+              {{ modelFormatsLabel }}
             </div>
-            <div class="upload-subtitle">
+            <div v-if="showDocsFormats" class="upload-subtitle">
               Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
             </div>
           </template>
           <div v-else-if="!isAuthenticated && !hasUploadedFiles" class="upload-subtitle">
-            Без авторизации можно загружать только STP-файлы.
+            {{ guestOnlyMessage }}
           </div>
         <input
           type="file"
           @change="handleFileChange"
           style="display: none"
           ref="fileInput"
-          :multiple="isAuthenticated"
-          :accept="isAuthenticated ? undefined : '.stp'"
+          :multiple="isAuthenticated && showDocsFormats"
+          :accept="isAuthenticated && showDocsFormats ? undefined : guestAccept"
           aria-label="Загрузка файлов для расчёта"
           :disabled="isDisabled() || isUploading"
         />

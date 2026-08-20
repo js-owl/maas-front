@@ -27,8 +27,9 @@ const status = computed(() => props.result?.status ?? null)
 const hidePrice = computed(() => hidePriceFn(username, status.value))
 
 const formatNumber = (value: number | string | null | undefined) => {
-  const num = Number(value ?? 0)
-  return isFinite(num) ? Math.round(num).toLocaleString('ru-RU') : '0'
+  if (value == null || value === '') return '—'
+  const num = Number(value)
+  return isFinite(num) ? Math.round(num).toLocaleString('ru-RU') : '—'
 }
 </script>
 

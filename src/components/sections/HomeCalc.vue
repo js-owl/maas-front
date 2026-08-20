@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
@@ -8,6 +8,14 @@ import HomeCalcOrderTypeMobile from '../ui/HomeCalcOrderTypeMobile.vue'
 import Button from '../ui/Button.vue'
 import UploadFiles from '../UploadFiles.vue'
 import { orderTypeOptions } from '@/helpers/order-type-options'
+import { getLocalStpFileById } from '@/helpers/local-stp-files'
+import {
+  getGuestModelOnlyMessage,
+  getIncompatibleModelMessage,
+  getModelFormatsLabel,
+  isAllowedModelFile,
+  isPrintingService,
+} from '@/helpers/model-file-types'
 import { useAuthStore } from '@/stores/auth.store'
 // import { useAuthStore } from '../../stores/auth.store'
 
@@ -45,6 +53,9 @@ const selectedServiceId = computed(
 )
 const uploadServiceId = computed(() => props.service_id || selectedServiceId.value)
 const hasModel = computed(() => stp_id.value != null)
+const modelFormatsLabel = computed(() => getModelFormatsLabel(uploadServiceId.value))
+const guestOnlyMessage = computed(() => getGuestModelOnlyMessage(uploadServiceId.value))
+const showDocsFormats = computed(() => !isPrintingService(uploadServiceId.value))
 const selectedRoutePath = computed(() => {
   if (selectedOrderType.value) {
     return orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.routePath ?? ''
@@ -57,6 +68,18 @@ const handleOrderTypeChange = (value: string | number | boolean | object) => {
   if (!value) return
   selectedOrderType.value = String(value)
 }
+
+watch(uploadServiceId, (serviceId) => {
+  if (stp_id.value == null) return
+
+  const localFile = getLocalStpFileById(stp_id.value)
+  if (!localFile) return
+
+  if (isAllowedModelFile(localFile.file_name, serviceId)) return
+
+  stp_id.value = null
+  ElMessage.warning(getIncompatibleModelMessage(serviceId))
+})
 
 // const onFilesChange = (files: FileList | null) => {
 //   if (!files) return
@@ -113,10 +136,9 @@ const submit = () => {
                 :aria-hidden="!isAuthenticated"
               >
                 <p class="calc-format-text">
-                  Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY,
-                  3DS, DAE, FBX, BLEND
+                  {{ modelFormatsLabel }}
                 </p>
-                <div class="calc-format-docs">
+                <div v-if="showDocsFormats" class="calc-format-docs">
                   <p class="calc-format-text"> Форматы тех. документации: </p>
                   <p class="calc-format-text">DWG, DXF, PDF, SVG, AI, EPS</p>
                 </div>
@@ -126,7 +148,7 @@ const submit = () => {
                 :class="{ 'is-hidden': isAuthenticated }"
                 :aria-hidden="isAuthenticated"
               >
-                Без авторизации можно загружать только STP-файлы.
+                {{ guestOnlyMessage }}
               </p>
             </div>
             <UploadFiles

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { req_json_auth } from '../../api'
 import Icon3D from '../../icons/Icon3D.vue'
 import { useAuthStore } from '../../stores/auth.store'
@@ -7,9 +7,18 @@ import DialogLogin from '../dialog/DialogLogin.vue'
 import { ElMessage } from 'element-plus'
 
 const file_id = defineModel<number>()
-const { color = 'white' } = defineProps({
-  color: String,
-})
+const props = withDefaults(
+  defineProps<{
+    color?: string
+    accept?: string
+  }>(),
+  {
+    color: 'white',
+    accept: '.stp,.step,.stl',
+  }
+)
+
+const isStlOnly = computed(() => props.accept === '.stl')
 
 const authStore = useAuthStore()
 const isLoginDialogVisible = ref(false)
@@ -55,8 +64,21 @@ const handleFileUpload = async (file: File) => {
   isUploading.value = true
 
   try {
-    const base64Data = await fileToBase64(file)
     const ext = file.name.split('.').pop()?.toLowerCase()
+    const allowed = props.accept
+      .split(',')
+      .map((item) => item.trim().replace(/^\./, '').toLowerCase())
+      .filter(Boolean)
+
+    if (!ext || !allowed.includes(ext)) {
+      ElMessage.warning(
+        isStlOnly.value ? 'Для 3D-печати загрузите STL-файл.' : 'Неподдерживаемый формат файла'
+      )
+      isUploading.value = false
+      return
+    }
+
+    const base64Data = await fileToBase64(file)
     const fileType = ext === 'stl' || ext === 'stp' || ext === 'step' ? ext : undefined
 
     const response = await req_json_auth('/files', 'POST', {
@@ -113,20 +135,20 @@ const handleDragOver = (event: DragEvent) => {
   <div>
     <div
       class="upload"
-      :style="{ '--border-color': color }"
+      :style="{ '--border-color': props.color }"
       :class="{ 'is-disabled': isDisabled(), 'is-uploading': isUploading }"
       @click="handleUploadClick"
       @drop="handleDrop"
       @dragover="handleDragOver"
     >
       <div class="custom">
-        <Icon3D :color="color" style="display: block; width: 30px; height: 30px" />
-        <div class="el-upload__text" :style="{ color }" style="font-size: 20px">
-          {{ isUploading ? 'Загрузка...' : '3D-модель (STEP/STP)' }}
+        <Icon3D :color="props.color" style="display: block; width: 30px; height: 30px" />
+        <div class="el-upload__text" :style="{ color: props.color }" style="font-size: 20px">
+          {{ isUploading ? 'Загрузка...' : isStlOnly ? '3D-модель (STL)' : '3D-модель (STEP/STP)' }}
         </div>
         <input
           type="file"
-          accept=".stp,.step,.stl"
+          :accept="props.accept"
           @change="handleFileChange"
           style="display: none"
           ref="fileInput"

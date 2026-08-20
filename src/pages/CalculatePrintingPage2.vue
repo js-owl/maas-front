@@ -5,9 +5,12 @@ import {
   buildCalculateFileFields,
   ensureLocalStpCacheReady,
   getLocalStpFileById,
+  hasCalculateModel,
+  LOCAL_STP_FILE_ID,
   localStpCacheVersion,
 } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
+import { DEFAULT_PRINTING_FILE_ID } from '../helpers/model-file-types'
 import { formatDeadline, parseDeadline } from '../helpers/deadline'
 import { toMaterialOptionGroupsByFamily } from '../helpers/material-family'
 
@@ -57,7 +60,7 @@ const quantityInput = computed({
   },
 })
 
-let material_id = ref('')
+let material_id = ref('plastic_PA11')
 let material_form = ref('powder')
 const materials = ref<MaterialOptionGroup[]>([])
 
@@ -158,7 +161,7 @@ onMounted(async () => {
           }
         }
       } else {
-        file_id.value = 1
+        file_id.value = DEFAULT_PRINTING_FILE_ID
       }
     } else {
       await getOrder(order_id.value)
@@ -182,9 +185,7 @@ async function loadMaterials() {
       }
       materials.value = transformMaterials(backendMaterials)
       const flat = materials.value.flatMap((g) => g.options)
-      if (order_id.value === 0 && flat.length) {
-        material_id.value = flat[0].value
-      } else if (!flat.some((item) => item.value === material_id.value) && flat.length) {
+      if (flat.length && !flat.some((item) => item.value === material_id.value)) {
         material_id.value = flat[0].value
       }
     }
@@ -194,15 +195,39 @@ async function loadMaterials() {
 }
 
 async function sendData(payload: IOrderPayload) {
+  if (!hasCalculateModel(payload)) {
+    result.value = {
+      ...result.value,
+      total_price: 0,
+      detail_price: 0,
+      detail_price_one: 0,
+      quantity: quantity.value,
+    } as IOrderResponse
+    return
+  }
   startLoading()
   try {
     const res = await req_json('/calculate-price', 'POST', payload)
-    const data = (await res?.json()) as IOrderResponse
+    if (!res?.ok) {
+      result.value = null
+      return
+    }
+    const data = (await res.json()) as IOrderResponse
+    if (typeof data?.total_price !== 'number') {
+      console.error('calculate-price returned no total_price', data)
+      result.value = null
+      return
+    }
     result.value = data
+    if (data.length) length.value = data.length
+    if (data.width) width.value = data.width
+    if (data.height) height.value = data.height
   } catch (error) {
     console.error({ error })
+    result.value = null
+  } finally {
+    await stopLoading()
   }
-  await stopLoading()
 }
 
 const onUpdateResult = (d: IOrderResponse) => {
@@ -257,6 +282,12 @@ async function getOrder(id: number) {
 
 watch(file_id, () => {
   cadViewerKey.value += 1
+})
+
+watch(localStpCacheVersion, () => {
+  if (file_id.value === LOCAL_STP_FILE_ID) {
+    cadViewerKey.value += 1
+  }
 })
 
 watch(
@@ -380,7 +411,7 @@ watch(
 
               <div class="calc-block calc-block--cad">
                 <div class="calc-cad">
-                  <CadShowById :key="cadViewerKey" v-model="file_id" />
+                  <CadShowById :key="cadViewerKey" v-model="file_id" stl-only />
                 </div>
               </div>
 
@@ -392,6 +423,7 @@ watch(
                     color="#000"
                     :hide-formats-text="true"
                     upload-text="Загрузите файлы"
+                    service_id="printing"
                     v-model:stp_id="file_id"
                     class="upload-files-bordered upload-files--desktop"
                   />
@@ -400,6 +432,7 @@ watch(
                     color="#000"
                     :hide-formats-text="true"
                     upload-text="Загрузите файлы"
+                    service_id="printing"
                     v-model:stp_id="file_id"
                     class="upload-files-bordered upload-files--mobile"
                   />

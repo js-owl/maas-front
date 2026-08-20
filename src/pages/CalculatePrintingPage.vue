@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { req_json, req_json_auth } from '../api'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
+import { DEFAULT_PRINTING_FILE_ID } from '../helpers/model-file-types'
 
 // import Length from "../components/coefficients/Length.vue";
 // import Width from "../components/coefficients/Width.vue";
@@ -138,7 +139,7 @@ onMounted(() => {
         }
       }
     } else {
-      file_id.value = 1
+      file_id.value = DEFAULT_PRINTING_FILE_ID
     }
 
     sendData(calculationPayload.value as unknown as IOrderPayload)
@@ -236,13 +237,13 @@ async function getOrder(id: number) {
 
         <el-row :gutter="20" class="component-section">
           <el-col :offset="0" :span="24" class="cad-section">
-            <CadShowById v-model="file_id" />
+            <CadShowById v-model="file_id" stl-only />
           </el-col>
         </el-row>
         <el-row :gutter="5" class="upload-section">
           <el-col :span="24" class="upload-title"> Загрузите файлы для расчета </el-col>
           <el-col :span="24" class="upload-model">
-            <UploadModel v-model="file_id" color="#000" />
+            <UploadModel v-model="file_id" color="#000" accept=".stl" />
           </el-col>
           <el-col :span="24" class="upload-drawings">
             <UploadDrawings v-model="document_ids" color="#000" />

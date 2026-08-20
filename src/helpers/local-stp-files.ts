@@ -113,19 +113,23 @@ ensureLocalStpCacheReady()
 
 export const getLocalStpFiles = (): LocalStpFile[] => Array.from(fileCache.values())
 
-export const getLocalStpFileById = (id: number | string | null | undefined): LocalStpFile | null => {
-  const numericId = Number(id)
-  if (!Number.isFinite(numericId)) return null
-
-  return fileCache.get(numericId) || null
-}
-
 /** Backend file_id columns are PostgreSQL int32. */
 const INT32_MAX = 2147483647
 const INT32_MIN = -2147483648
 
 /** Stable local-only id — only one STP is kept in IndexedDB at a time. */
 export const LOCAL_STP_FILE_ID = -1
+
+const DEMO_SERVER_FILE_IDS = new Set([1, 2, 3, 4, 5])
+
+export const getLocalStpFileById = (id: number | string | null | undefined): LocalStpFile | null => {
+  const numericId = Number(id)
+  if (!Number.isFinite(numericId)) return null
+  // Demo models always come from the server, even if an old IndexedDB row reused the same id.
+  if (DEMO_SERVER_FILE_IDS.has(numericId)) return null
+
+  return fileCache.get(numericId) || null
+}
 
 export const isServerFileId = (id: number | string | null | undefined): boolean => {
   const numericId = Number(id)
@@ -158,6 +162,14 @@ export const buildCalculateFileFields = (
 
   const serverId = toServerFileId(fileId)
   return serverId != null ? { file_id: serverId } : {}
+}
+
+export const hasCalculateModel = (payload: {
+  file_id?: number | string | null
+  file_data?: string | null
+}): boolean => {
+  if (payload.file_data) return true
+  return toServerFileId(payload.file_id) != null || getLocalStpFileById(payload.file_id) != null
 }
 
 export const saveFile3D = async (fileName: string, fileData: string, fileType: string): Promise<number> => {
