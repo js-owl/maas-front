@@ -306,6 +306,7 @@ watch(
       <el-row :gutter="0" class="calc-page__row">
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
           <div class="calc-page__card">
+            <h2 class="calc-page__title">3D-печать</h2>
             <div class="calc-page__main">
               <div class="calc-block calc-block--form">
                 <h2 class="calc-page__mobile-title">3D-печать</h2>

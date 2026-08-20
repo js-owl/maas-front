@@ -339,6 +339,7 @@ async function getOrder(id: number) {
       <el-row :gutter="0" class="calc-page__row">
         <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
           <div class="calc-page__card">
+            <h2 class="calc-page__title">Прочее</h2>
             <div class="calc-page__main calc-page__main--spaced">
               <div class="calc-block calc-block--form">
                 <h2 class="calc-page__mobile-title">Прочее</h2>
