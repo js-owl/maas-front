@@ -26,19 +26,29 @@ const modelValue = defineModel<RadioValue>()
 .radio {
   margin-right: 0;
   width: var(--radio-width, 100%);
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
   min-height: var(--radio-min-height, 20px);
+  white-space: var(--radio-white-space, nowrap);
+  align-items: flex-start;
 }
 
 .radio-label {
+  display: inline-block;
   font-family: var(--radio-font-family, 'Montserrat-Medium'), sans-serif;
   font-size: var(--radio-label-size, 16px);
-  line-height: var(--radio-line-height, 1);
+  line-height: var(--radio-line-height, 1.25);
   color: var(--radio-text-color, #000);
   white-space: var(--radio-white-space, nowrap);
+  overflow-wrap: break-word;
 }
 
 .radio :deep(.el-radio__label) {
   padding-left: var(--radio-label-padding-left, 10px);
+  white-space: var(--radio-white-space, nowrap);
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 .radio :deep(.el-radio__inner) {
@@ -69,6 +79,7 @@ const modelValue = defineModel<RadioValue>()
 .radio :deep(.el-radio__input) {
   display: inline-flex;
   align-items: center;
+  margin-top: 2px;
 }
 
 .radio :deep(.el-radio__input.is-checked + .el-radio__label) {

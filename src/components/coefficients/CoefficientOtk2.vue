@@ -41,16 +41,15 @@ const otks = [
 
 .otk-radio {
   width: 100%;
+  min-width: 0;
+  --radio-white-space: normal;
+  --radio-line-height: 1.25;
 }
 
 @media (max-width: 767px) {
   .otk-radio-group {
     grid-template-columns: 1fr;
     row-gap: 8px;
-  }
-
-  .otk-radio {
-    --radio-white-space: normal;
   }
 }
 </style>

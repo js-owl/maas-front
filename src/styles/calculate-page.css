@@ -302,7 +302,8 @@
     --radio-checked-bg-color: #f2f3f7;
     --radio-label-size: 16px;
     --radio-label-padding-left: 10px;
-    --radio-white-space: nowrap;
+    --radio-line-height: 1.25;
+    --radio-white-space: normal;
   }
 
   .calc-block--results .card {
