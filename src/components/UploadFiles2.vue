@@ -4,9 +4,6 @@ import { uploadDocument, fileToBase64 } from '../api'
 import { saveFile3D } from '../helpers/local-stp-files'
 import {
   getFileExtension,
-  getGuestAcceptAttribute,
-  getGuestModelOnlyMessage,
-  getIncompatibleModelMessage,
   getModelFormatsLabel,
   isAllowedModelFile,
   isPrintingService,
@@ -41,10 +38,8 @@ const uploadingCount = ref(0)
 const fileInput = ref<HTMLInputElement>()
 
 const isUploading = computed(() => uploadingCount.value > 0)
-const isAuthenticated = computed(() => Boolean(authStore.getToken))
 const isPrinting = computed(() => isPrintingService(props.service_id))
 const modelFormatsLabel = computed(() => getModelFormatsLabel(props.service_id))
-const guestAccept = computed(() => getGuestAcceptAttribute(props.service_id))
 
 const isDisabled = () => {
   if (authStore.getToken) return false
@@ -53,40 +48,34 @@ const isDisabled = () => {
 
 const processUploadedFile = async (file: File): Promise<boolean> => {
   const extension = getFileExtension(file.name)
+  const base64Data = await fileToBase64(file)
 
-  if (isPrinting.value) {
-    if (!isAllowedModelFile(file.name, props.service_id)) {
-      ElMessage.warning(
-        isAuthenticated.value
-          ? getIncompatibleModelMessage(props.service_id)
-          : getGuestModelOnlyMessage(props.service_id)
-      )
-      return false
+  const response = await uploadDocument(file.name, base64Data, 'technical_spec')
+  if (response?.ok) {
+    const data = await response.json()
+    console.log('Document upload response:', data)
+    const id = Number((data as any).document_id)
+
+    if (!Array.isArray(document_ids.value)) document_ids.value = []
+    if (!Number.isFinite(id)) return false
+
+    if (!document_ids.value.includes(id)) {
+      document_ids.value.push(id)
     }
+    return true
+  }
 
-    const base64Data = await fileToBase64(file)
-    const id = await saveFile3D(file.name, base64Data, extension || 'stl')
+  if (isAllowedModelFile(file.name, props.service_id)) {
+    const id = await saveFile3D(
+      file.name,
+      base64Data,
+      extension || (isPrinting.value ? 'stl' : 'stp')
+    )
     emit('update:stp_id', id)
     return true
   }
 
-  const base64Data = await fileToBase64(file)
-
-  // Файлы из этой зоны только добавляются в список. STP в 3D и пересчёт — через окно 3D.
-  const response = await uploadDocument(file.name, base64Data, 'technical_spec')
-  if (!response?.ok) throw new Error('Upload failed')
-
-  const data = await response.json()
-  console.log('Document upload response:', data)
-  const id = Number((data as any).document_id)
-
-  if (!Array.isArray(document_ids.value)) document_ids.value = []
-  if (!Number.isFinite(id)) return false
-
-  if (!document_ids.value.includes(id)) {
-    document_ids.value.push(id)
-  }
-  return true
+  throw new Error('Upload failed')
 }
 
 const handleFilesUpload = async (files: FileList | File[]) => {
@@ -102,7 +91,7 @@ const handleFilesUpload = async (files: FileList | File[]) => {
     try {
       const uploaded = await processUploadedFile(file)
       if (uploaded) {
-        ElMessage.success(isPrinting.value ? 'Файл успешно загружен!' : 'Документ успешно загружен!')
+        ElMessage.success('Файл успешно загружен!')
       }
     } catch (error) {
       console.error('Document upload error:', error)
@@ -176,7 +165,7 @@ const handleDragOver = (event: DragEvent) => {
             <div class="upload-subtitle">
               {{ modelFormatsLabel }}
             </div>
-            <div v-if="!isPrinting" class="upload-subtitle">
+            <div class="upload-subtitle">
               Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
             </div>
           </template>
@@ -185,8 +174,7 @@ const handleDragOver = (event: DragEvent) => {
             @change="handleFileChange"
             style="display: none"
             ref="fileInput"
-            :multiple="!isPrinting"
-            :accept="isPrinting ? guestAccept : undefined"
+            :multiple="true"
             aria-label="Загрузка файлов для расчёта"
             :disabled="isDisabled() || isUploading"
           />
