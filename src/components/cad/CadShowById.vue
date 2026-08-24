@@ -6,6 +6,7 @@ import {
   ensureLocalStpCacheReady,
   getLocalStpFileById,
   isServerFileId,
+  localStpCacheVersion,
   saveFile3D,
 } from "../../helpers/local-stp-files";
 import { getFileExtension, resolveCadViewerType } from "../../helpers/model-file-types";
@@ -22,6 +23,7 @@ const props = defineProps({
 });
 
 const detectedType = ref(null);
+const viewerKey = ref(0);
 const isLoading = ref(true);
 const isDragOver = ref(false);
 const isSavingDrop = ref(false);
@@ -169,6 +171,14 @@ watch(
   },
   { immediate: true }
 );
+
+watch(localStpCacheVersion, () => {
+  const id = file_id.value;
+  if (id == null || id === "") return;
+  if (!getLocalStpFileById(id)) return;
+  detectFileType(id);
+  viewerKey.value += 1;
+});
 </script>
 
 <template>
@@ -194,7 +204,7 @@ watch(
       <p>{{ isSavingDrop ? "Загрузка STL-файла..." : "Определение типа файла..." }}</p>
     </div>
 
-    <STLViewer v-else-if="detectedType === 'stl'" v-model="file_id" />
+    <STLViewer v-else-if="detectedType === 'stl'" :key="viewerKey" v-model="file_id" />
 
     <div v-else-if="showStlDropZone" class="stl-drop-zone">
       <div class="stl-drop-content">
@@ -206,7 +216,7 @@ watch(
       </div>
     </div>
 
-    <STPViewer v-else-if="detectedType === 'stp' || !file_id" v-model="file_id" />
+    <STPViewer v-else-if="detectedType === 'stp' || !file_id" :key="viewerKey" v-model="file_id" />
 
     <div v-else class="file-type-placeholder">
       <p>Неподдерживаемый формат файла или файл не выбран</p>

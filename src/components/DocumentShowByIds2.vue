@@ -1,14 +1,20 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch, computed } from "vue";
-import { req_json_auth } from "../api";
+import { fileToBase64, req_json_auth } from "../api";
 import { ElMessage } from "element-plus";
 import { Download } from "@element-plus/icons-vue";
 import {
   getLocalStpFileById,
   localStpCacheVersion,
+  saveFile3D,
   type LocalStpFile,
 } from "../helpers/local-stp-files";
-import { DEFAULT_PRINTING_FILE_ID, DEFAULT_PRINTING_FILE_NAME } from "../helpers/model-file-types";
+import {
+  DEFAULT_PRINTING_FILE_ID,
+  DEFAULT_PRINTING_FILE_NAME,
+  getFileExtension,
+  isAllowedModelFile,
+} from "../helpers/model-file-types";
 
 type DocumentInfo = {
   id: number;
@@ -37,6 +43,24 @@ type ListItem =
 
 const document_ids = defineModel<number[]>();
 const stp_id = defineModel<number | null | undefined>("stp_id");
+const props = defineProps<{
+  service_id?: string;
+}>();
+
+const emit = defineEmits<{
+  (e: "calculate"): void;
+}>();
+
+function canCalculate(item: ListItem): boolean {
+  if (item.kind === "stp") return true;
+  return isAllowedModelFile(item.name, props.service_id);
+}
+
+function isCalculationModel(item: ListItem): boolean {
+  if (item.kind === "stp") return true;
+  const localName = localStpFile.value?.file_name;
+  return Boolean(localName) && item.name === localName;
+}
 
 const isLoading = ref<boolean>(false);
 const allDocuments = ref<DocumentInfo[]>([]);
@@ -198,7 +222,39 @@ function removeStp() {
   stp_id.value = undefined;
 }
 
-function handleMenuCommand(command: string, item: ListItem) {
+async function activateDocumentAsModel(item: Extract<ListItem, { kind: "document" }>): Promise<boolean> {
+  try {
+    const response = await req_json_auth(`/documents/${item.id}/download`, "GET");
+    if (!response?.ok) {
+      ElMessage.error("Не удалось загрузить модель для расчета");
+      return false;
+    }
+
+    const blob = await response.blob();
+    const file = new File([blob], item.name);
+    const base64Data = await fileToBase64(file);
+    const extension = getFileExtension(item.name);
+    const id = await saveFile3D(item.name, base64Data, extension);
+    stp_id.value = id;
+    return true;
+  } catch (error) {
+    console.error("Ошибка подготовки модели к расчету:", error);
+    ElMessage.error("Не удалось отправить модель на расчет");
+    return false;
+  }
+}
+
+async function handleMenuCommand(command: string, item: ListItem) {
+  if (command === "calculate") {
+    if (!canCalculate(item)) return;
+    if (item.kind === "document") {
+      const activated = await activateDocumentAsModel(item);
+      if (!activated) return;
+    }
+    emit("calculate");
+    return;
+  }
+
   if (command === "download") {
     if (item.kind === "stp") {
       if (item.localFile) downloadLocalStp(item.localFile);
@@ -208,6 +264,8 @@ function handleMenuCommand(command: string, item: ListItem) {
     downloadDoc(item.id);
     return;
   }
+
+  if (command !== "remove") return;
 
   if (item.kind === "stp") {
     removeStp();
@@ -296,7 +354,13 @@ watch(
       <template #default>
         <div v-if="listItems.length === 0" style="color: #577aad; font-size: 14px" />
         <div v-else class="doc-list">
-          <div v-for="item in listItems" :key="item.key" class="doc-row">
+          <div
+            v-for="item in listItems"
+            :key="item.key"
+            class="doc-row"
+            :class="{ 'is-calc-model': isCalculationModel(item) }"
+            :aria-current="isCalculationModel(item) ? 'true' : undefined"
+          >
             <div class="doc-row-left">
               <span class="doc-name">{{ item.name }}</span>
               <span class="doc-date doc-date--desktop">{{ formatItemDate(item) }}</span>
@@ -323,6 +387,9 @@ watch(
                 </button>
                 <template #dropdown>
                   <el-dropdown-menu>
+                    <el-dropdown-item v-if="canCalculate(item)" command="calculate">
+                      Расчет
+                    </el-dropdown-item>
                     <el-dropdown-item command="download">Скачать</el-dropdown-item>
                     <el-dropdown-item command="remove">Удалить</el-dropdown-item>
                   </el-dropdown-menu>
@@ -353,6 +420,11 @@ watch(
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.doc-row.is-calc-model {
+  background: #ffffff;
+  box-shadow: inset 0 0 0 2px #3d4146;
 }
 
 .doc-row-left {

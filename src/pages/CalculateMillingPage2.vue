@@ -449,6 +449,8 @@ watch(
                   <DocumentShowByIds2
                     v-model="document_ids"
                     v-model:stp_id="file_id"
+                    :service_id="service_id"
+                    @calculate="sendData(calculationPayload as unknown as IOrderPayload)"
                     class="calc-docs-list calc-docs-list--mobile"
                   />
                 </div>
@@ -482,6 +484,8 @@ watch(
                   <DocumentShowByIds2
                     v-model="document_ids"
                     v-model:stp_id="file_id"
+                    :service_id="service_id"
+                    @calculate="sendData(calculationPayload as unknown as IOrderPayload)"
                     class="calc-docs-list calc-docs-list--desktop"
                   />
                 </div>

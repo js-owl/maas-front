@@ -3,7 +3,7 @@ export const PRINTING_SERVICE_ID = 'printing'
 export const DEFAULT_PRINTING_FILE_ID = 1
 export const DEFAULT_PRINTING_FILE_NAME = 'demo_printing_default.stl'
 
-const DEFAULT_MODEL_EXTENSIONS = ['stp']
+const DEFAULT_MODEL_EXTENSIONS = ['stp', 'step']
 const PRINTING_MODEL_EXTENSIONS = ['stl']
 
 const DEFAULT_FORMATS_LABEL =

@@ -726,6 +726,11 @@
     gap: 8px;
   }
 
+  .calc-docs-list--mobile .doc-row.is-calc-model {
+    background: #ffffff;
+    box-shadow: inset 0 0 0 2px #3d4146;
+  }
+
   .calc-docs-list--mobile .doc-row-left {
     display: flex;
     flex-direction: row;
