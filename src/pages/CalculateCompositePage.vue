@@ -295,7 +295,7 @@ watch(file_id, () => {
             <h2 class="calc-page__title">Изделия из полимерно-композиционных материалов</h2>
             <div class="calc-page__main">
               <div class="calc-block calc-block--form">
-                <h2 class="calc-page__mobile-title">Композиты</h2>
+                <h2 class="calc-page__mobile-title">Изделия из полимерно-композиционных материалов</h2>
 
                 <div class="calc-quantity">
                   <div class="calc-title">Количество, шт</div>
