@@ -147,8 +147,14 @@ const technicalRestrictions = computed(() => {
   if (!selectedOperation.value) return []
 
   return [
-    `Макс. размер 1 ед. изделия, мм: ${selectedOperation.value.max_part_size_label}`,
-    `Макс. масса 1 ед. изделия, кг: ${selectedOperation.value.max_weight_kg}`,
+    {
+      label: 'Макс. размер 1 ед. изделия, мм:',
+      value: selectedOperation.value.max_part_size_label,
+    },
+    {
+      label: 'Макс. масса 1 ед. изделия, кг:',
+      value: String(selectedOperation.value.max_weight_kg),
+    },
   ]
 })
 
@@ -559,15 +565,19 @@ watch(file_id, () => {
                   />
                 </div>
 
-                <div v-if="technicalRestrictions.length" class="calc-field-block">
+                <div
+                  v-if="technicalRestrictions.length"
+                  class="calc-field-block calc-field-block--restrictions"
+                >
                   <div class="calc-title">Технические ограничения</div>
                   <div class="galvanic-restrictions">
                     <div
                       v-for="restriction in technicalRestrictions"
-                      :key="restriction"
+                      :key="restriction.label"
                       class="galvanic-restriction"
                     >
-                      {{ restriction }}
+                      <span class="galvanic-restriction__label">{{ restriction.label }}</span>
+                      <span class="galvanic-restriction__value">{{ restriction.value }}</span>
                     </div>
                   </div>
                 </div>
