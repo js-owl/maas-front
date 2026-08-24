@@ -207,9 +207,9 @@ const advantages = ref([
   margin: 0;
   flex: 1 1 0;
   min-width: 0;
-  font-family: 'Montserrat-Black', sans-serif;
+  font-family: 'Montserrat-Bold', sans-serif;
   font-size: 1.75em;
-  font-weight: 800;
+  font-weight: 700;
   line-height: normal;
   color: #ffffff;
   text-transform: none;
@@ -218,8 +218,8 @@ const advantages = ref([
 
 .item-title--back {
   color: #596269;
-  font-family: 'Montserrat-Black', sans-serif;
-  font-weight: 800;
+  font-family: 'Montserrat-Bold', sans-serif;
+  font-weight: 700;
 }
 
 /* Figma 440×280 cards — visual frames absolute, overflow clipped */
@@ -377,16 +377,16 @@ const advantages = ref([
   }
 
   .item-title {
-    font-family: 'Montserrat-Black', sans-serif;
+    font-family: 'Montserrat-Bold', sans-serif;
     font-size: 1.75em;
-    font-weight: 800;
+    font-weight: 700;
     line-height: normal;
     text-transform: none;
   }
 
   .item-title--back {
-    font-family: 'Montserrat-Black', sans-serif;
-    font-weight: 800;
+    font-family: 'Montserrat-Bold', sans-serif;
+    font-weight: 700;
   }
 
   /* Tablet card 430×280 — image frames from Figma instances */
@@ -496,8 +496,8 @@ const advantages = ref([
   .item-title,
   .item-title--back {
     font-size: 16px;
-    font-family: 'Montserrat-Black', sans-serif;
-    font-weight: 800;
+    font-family: 'Montserrat-Bold', sans-serif;
+    font-weight: 700;
     line-height: 1;
     letter-spacing: 0;
     text-transform: none;
