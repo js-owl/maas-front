@@ -433,6 +433,7 @@ const advantages = ref([
   }
 }
 
+/* Mobile — Figma 5067:2517 (360) */
 @media (max-width: 767px) {
   .home-advantages {
     margin-bottom: 0;
@@ -446,7 +447,10 @@ const advantages = ref([
   }
 
   .advantages-title {
+    font-family: 'Montserrat-SemiBold', sans-serif;
     font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
     color: #000000;
   }
 
@@ -461,12 +465,17 @@ const advantages = ref([
     min-height: 0;
     padding: 16px;
     border-radius: 8px;
-    background-color: #e84261;
+    background-color: #b82130;
     cursor: default;
   }
 
   .item-face--front {
     display: none;
+  }
+
+  .item-face,
+  .item-face--back {
+    height: auto;
   }
 
   .item-face--back {
@@ -489,15 +498,20 @@ const advantages = ref([
     font-size: 16px;
     font-family: 'Montserrat-Black', sans-serif;
     font-weight: 800;
-    line-height: normal;
+    line-height: 1;
+    letter-spacing: 0;
     text-transform: none;
     color: #ffffff;
   }
 
   .item-text {
     display: block;
+    flex: none;
+    font-family: 'Montserrat-Medium', sans-serif;
     font-size: 12px;
-    line-height: normal;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0;
     color: #ffffff;
   }
 }
