@@ -318,8 +318,8 @@ watch(file_id, () => {
                 <div class="calc-two-columns">
                   <div class="calc-field-block">
                     <div class="calc-title">Наличие оснастки</div>
-                    <CheckboxСalc v-model="is_need_special_equipment">
-                      Требуется изготовление
+                    <CheckboxСalc v-model="is_need_special_equipment" class="checkbox-item">
+                      <div class="coefficient-value">Требуется изготовление</div>
                     </CheckboxСalc>
                   </div>
                   <div class="calc-field-block">
