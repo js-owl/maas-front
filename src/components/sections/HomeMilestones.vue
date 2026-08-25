@@ -207,9 +207,9 @@ const steps: Step[] = [
   margin: 0;
   flex: none;
   width: 100%;
-  font-family: 'Montserrat-Black', sans-serif;
+  font-family: 'Montserrat-Bold', sans-serif;
   font-size: 1.75em;
-  font-weight: 800;
+  font-weight: 700;
   line-height: normal;
   color: var(--gray-footer, #55585b);
   text-transform: none;
@@ -368,9 +368,9 @@ const steps: Step[] = [
   }
 
   .step-title {
-    font-family: 'Montserrat-Black', sans-serif;
+    font-family: 'Montserrat-Bold', sans-serif;
     font-size: 1.75em;
-    font-weight: 800;
+    font-weight: 700;
     line-height: normal;
     color: var(--gray-footer, #55585b);
     text-transform: none;
@@ -460,7 +460,7 @@ const steps: Step[] = [
   }
 
   .step-title {
-    font-family: 'Montserrat-SemiBold', sans-serif;
+    font-family: 'Montserrat-Bold', sans-serif;
     font-weight: 700;
     font-size: 16px;
     text-transform: none;
