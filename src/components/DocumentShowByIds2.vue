@@ -56,18 +56,13 @@ function canCalculate(item: ListItem): boolean {
   return isAllowedModelFile(item.name, props.service_id);
 }
 
-function isCalculationModel(item: ListItem): boolean {
-  if (item.kind === "stp") return true;
-  const localName = localStpFile.value?.file_name;
-  return Boolean(localName) && item.name === localName;
-}
-
 const isLoading = ref<boolean>(false);
 const allDocuments = ref<DocumentInfo[]>([]);
 
 const filteredDocuments = computed<DocumentInfo[]>(() => {
-  const ids = new Set(document_ids.value ?? []);
-  return allDocuments.value.filter((d) => ids.has(d.id));
+  const ids = [...new Set(document_ids.value ?? [])];
+  const byId = new Map(allDocuments.value.map((d) => [d.id, d]));
+  return ids.map((id) => byId.get(id)).filter((d): d is DocumentInfo => d != null);
 });
 
 const localStpFile = computed(() => {
@@ -76,24 +71,46 @@ const localStpFile = computed(() => {
   return getLocalStpFileById(stp_id.value);
 });
 
+function getStpDisplayName(): string | null {
+  if (stp_id.value == null) return null;
+  if (localStpFile.value?.file_name) return localStpFile.value.file_name;
+  if (stp_id.value === DEFAULT_PRINTING_FILE_ID) return DEFAULT_PRINTING_FILE_NAME;
+  return null;
+}
+
+function isSameModelName(name: string, stpName: string | null): boolean {
+  return Boolean(stpName) && name === stpName;
+}
+
+function hasDocumentForCurrentModel(docs: DocumentInfo[] = filteredDocuments.value): boolean {
+  const stpName = getStpDisplayName();
+  return docs.some((d) => isSameModelName(d.original_filename, stpName));
+}
+
+function isCalculationModel(item: ListItem): boolean {
+  if (item.kind === "stp") return true;
+  return isSameModelName(item.name, getStpDisplayName());
+}
+
 const listItems = computed<ListItem[]>(() => {
   const items: ListItem[] = [];
+  const docs = filteredDocuments.value;
+  const local = localStpFile.value;
+  const stpName = getStpDisplayName();
 
-  if (stp_id.value != null) {
-    const local = localStpFile.value;
+  // Local STP is a working copy of a document already in the list — don't show it twice.
+  if (stp_id.value != null && !hasDocumentForCurrentModel(docs)) {
     items.push({
       key: `stp-${stp_id.value}`,
       kind: "stp",
       id: stp_id.value,
-      name:
-        local?.file_name ??
-        (stp_id.value === DEFAULT_PRINTING_FILE_ID ? DEFAULT_PRINTING_FILE_NAME : "3D-модель"),
+      name: stpName ?? "3D-модель",
       created_at: local?.created_at ?? null,
       localFile: local,
     });
   }
 
-  for (const doc of filteredDocuments.value) {
+  for (const doc of docs) {
     items.push({
       key: `doc-${doc.id}`,
       kind: "document",
@@ -110,7 +127,7 @@ const listItems = computed<ListItem[]>(() => {
 async function loadUserDocuments() {
   isLoading.value = true;
   try {
-    const ids = document_ids.value ?? [];
+    const ids = [...new Set(document_ids.value ?? [])];
     if (ids.length === 0) {
       allDocuments.value = [];
       isLoading.value = false;
@@ -208,13 +225,23 @@ async function downloadDoc(id: number) {
 function removeDocument(id: number) {
   if (!Array.isArray(document_ids.value)) return;
   const idx = document_ids.value.indexOf(id);
-  if (idx >= 0) {
-    document_ids.value.splice(idx, 1);
+  if (idx < 0) return;
 
-    const docIdx = allDocuments.value.findIndex((d) => d.id === id);
-    if (docIdx >= 0) {
-      allDocuments.value.splice(docIdx, 1);
-    }
+  const removed = allDocuments.value.find((d) => d.id === id);
+  document_ids.value.splice(idx, 1);
+
+  const docIdx = allDocuments.value.findIndex((d) => d.id === id);
+  if (docIdx >= 0) {
+    allDocuments.value.splice(docIdx, 1);
+  }
+
+  const stpName = getStpDisplayName();
+  if (
+    removed &&
+    isSameModelName(removed.original_filename, stpName) &&
+    !hasDocumentForCurrentModel()
+  ) {
+    stp_id.value = undefined;
   }
 }
 
