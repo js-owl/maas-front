@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { ArrowLeft, Download } from '@element-plus/icons-vue'
+import {
+  formatMoscowDate,
+  formatMoscowDateTime,
+  formatMoscowTime,
+} from '@/helpers/format-date'
 
 type UploadedDocument = {
   id: number
@@ -27,37 +32,11 @@ const handleMenuCommand = (command: string, document: UploadedDocument): void =>
   emit('remove-document', document)
 }
 
-const formatDocumentDate = (value?: string): string => {
-  if (!value) return ''
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ''
-  return date.toLocaleString('ru-RU', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
+const formatDocumentDate = (value?: string): string => formatMoscowDateTime(value)
 
-const formatDocumentDatePart = (value?: string): string => {
-  if (!value) return ''
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ''
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const year = date.getFullYear()
-  return `${day}.${month}.${year}`
-}
+const formatDocumentDatePart = (value?: string): string => formatMoscowDate(value)
 
-const formatDocumentTimePart = (value?: string): string => {
-  if (!value) return ''
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ''
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  return `${hours}:${minutes}`
-}
+const formatDocumentTimePart = (value?: string): string => formatMoscowTime(value)
 </script>
 
 <template>

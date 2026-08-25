@@ -15,6 +15,11 @@ import {
   getFileExtension,
   isAllowedModelFile,
 } from "../helpers/model-file-types";
+import {
+  formatMoscowDate,
+  formatMoscowDateTime,
+  formatMoscowTime,
+} from "../helpers/format-date";
 
 type DocumentInfo = {
   id: number;
@@ -304,52 +309,14 @@ async function handleMenuCommand(command: string, item: ListItem) {
 const getItemDateSource = (item: ListItem): string | null | undefined =>
   item.kind === "stp" ? item.created_at : item.created_at ?? item.uploaded_at;
 
-const formatItemDate = (item: ListItem): string => {
-  const sourceDate = getItemDateSource(item);
-  if (!sourceDate) return "";
+const formatItemDate = (item: ListItem): string =>
+  formatMoscowDateTime(getItemDateSource(item));
 
-  const date = new Date(sourceDate);
-  if (Number.isNaN(date.getTime())) return "";
+const formatItemDatePart = (item: ListItem): string =>
+  formatMoscowDate(getItemDateSource(item));
 
-  const datePart = new Intl.DateTimeFormat("ru-RU", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-
-  const timePart = new Intl.DateTimeFormat("ru-RU", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(date);
-
-  return `${datePart}   ${timePart}`;
-};
-
-const formatItemDatePart = (item: ListItem): string => {
-  const sourceDate = getItemDateSource(item);
-  if (!sourceDate) return "";
-
-  const date = new Date(sourceDate);
-  if (Number.isNaN(date.getTime())) return "";
-
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}.${month}.${year}`;
-};
-
-const formatItemTimePart = (item: ListItem): string => {
-  const sourceDate = getItemDateSource(item);
-  if (!sourceDate) return "";
-
-  const date = new Date(sourceDate);
-  if (Number.isNaN(date.getTime())) return "";
-
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${hours}:${minutes}`;
-};
+const formatItemTimePart = (item: ListItem): string =>
+  formatMoscowTime(getItemDateSource(item));
 
 function downloadItem(item: ListItem) {
   if (item.kind === "stp") {
