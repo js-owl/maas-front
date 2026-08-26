@@ -195,6 +195,17 @@ const orderStatus = computed(() => formatKitStatusLabel(order.value))
 
 const canConfirmOrder = computed(() => order.value?.status === 'AWAITING_CONFIRMATION')
 
+const hasDeliveryOption = computed(
+  () => Boolean(selectedPvzCode.value && pvzTariff.value?.tariff_code)
+)
+
+const confirmDisabled = computed(
+  () =>
+    confirmLoading.value ||
+    deliveryLoading.value ||
+    (!deliveryError.value && !hasDeliveryOption.value)
+)
+
 const deliveryQuoteReadiness = computed(() => kitDeliveryQuoteReadiness(calcRows.value))
 
 const selectedLocation = computed({
@@ -690,8 +701,11 @@ const saveOrder = async () => {
 
 const confirmOrder = async () => {
   if (!kitId.value) return
-  if (!selectedPvzCode.value || !pvzTariff.value?.tariff_code) {
-    ElMessage.warning(deliveryError.value || 'Выберите пункт выдачи СДЭК')
+  const tariff = pvzTariff.value
+  const pvzCode = selectedPvzCode.value
+  const withDelivery = Boolean(pvzCode && tariff?.tariff_code)
+  if (!withDelivery && !deliveryError.value) {
+    ElMessage.warning('Выберите пункт выдачи СДЭК')
     return
   }
   if (confirmLoading.value) return
@@ -701,25 +715,31 @@ const confirmOrder = async () => {
     const updateRes = await updateKit()
     if (!updateRes?.ok) throw new Error('Failed to save order before confirm')
 
-    const optionRes = await req_json_auth(`/delivery/kits/${kitId.value}/option`, 'PUT', {
-      tariff_code: pvzTariff.value.tariff_code,
-      delivery_mode: 'pvz',
-      delivery_point_code: selectedPvzCode.value,
-      delivery_sum: pvzTariff.value.delivery_sum,
-      period_min: pvzTariff.value.period_min,
-      period_max: pvzTariff.value.period_max,
-      to_location_code: cityCode.value,
-    })
-    if (!optionRes?.ok) {
-      const detail = await optionRes?.text()
-      throw new Error(detail || 'Failed to save delivery option')
+    if (withDelivery && tariff && pvzCode) {
+      const optionRes = await req_json_auth(`/delivery/kits/${kitId.value}/option`, 'PUT', {
+        tariff_code: tariff.tariff_code,
+        delivery_mode: 'pvz',
+        delivery_point_code: pvzCode,
+        delivery_sum: tariff.delivery_sum,
+        period_min: tariff.period_min,
+        period_max: tariff.period_max,
+        to_location_code: cityCode.value,
+      })
+      if (!optionRes?.ok) {
+        const detail = await optionRes?.text()
+        throw new Error(detail || 'Failed to save delivery option')
+      }
     }
 
     const res = await req_json_auth(`/kits/${kitId.value}/confirm`, 'PUT')
     if (!res?.ok) throw new Error('Failed to confirm order')
 
     await loadOrder()
-    ElMessage.success('Заказ подтверждён. Доставка в ПВЗ будет оформлена после изготовления.')
+    ElMessage.success(
+      withDelivery
+        ? 'Заказ подтверждён. Доставка в ПВЗ будет оформлена после изготовления.'
+        : 'Заказ подтверждён'
+    )
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e)
@@ -1141,7 +1161,7 @@ onMounted(() => {
             <Button
               v-if="canConfirmOrder"
               :loading="confirmLoading"
-              :disabled="confirmLoading || deliveryLoading || !selectedPvzCode || !pvzTariff"
+              :disabled="confirmDisabled"
               @click="confirmOrder"
               class="pay-order-button"
             >
@@ -1154,7 +1174,7 @@ onMounted(() => {
               v-if="canConfirmOrder"
               type="button"
               class="summary-confirm-mobile"
-              :disabled="confirmLoading || deliveryLoading || !selectedPvzCode || !pvzTariff"
+              :disabled="confirmDisabled"
               @click="confirmOrder"
             >
               Подтвердить заказ
