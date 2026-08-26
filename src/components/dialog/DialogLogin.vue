@@ -7,7 +7,7 @@ import DialogForgotPassword from './DialogForgotPassword.vue'
 import Button from '../ui/Button.vue'
 import Checkbox from '../ui/Checkbox.vue'
 import Input from '../ui/Input.vue'
-import { useWindowSize } from '@vueuse/core'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
@@ -113,8 +113,7 @@ watch(
   },
 )
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 
 const canResendEmail = computed(() => emailStore.canResend())
 
@@ -386,7 +385,7 @@ const onRestore = () => {
   --checkbox-check-color: #000;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   :deep(.el-dialog__header) {
     padding: 16px 16px 0;
   }

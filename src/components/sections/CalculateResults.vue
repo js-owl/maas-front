@@ -196,7 +196,7 @@ const formatNumber = (value: number | string | null | undefined) => {
   color: black;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .price-section {
     margin-bottom: 16px;
   }

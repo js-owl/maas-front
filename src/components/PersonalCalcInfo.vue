@@ -453,7 +453,7 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .calc-info-container {
     padding: 16px;
     border-radius: 16px;

@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { useWindowSize } from '@vueuse/core'
+import { ref } from 'vue'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import IconArrowDown from '@/icons/IconArrowDown.vue'
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 
 const isRubberTypesExpanded = ref(false)
 const isProductsExpanded = ref(false)

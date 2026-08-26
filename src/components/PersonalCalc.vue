@@ -968,7 +968,7 @@ watch(
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .personal-order {
     border-radius: 0;
   }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import {
   createPhoneNumberValidator,
   isRuPhoneOnlyPrefix,
@@ -7,7 +7,7 @@ import {
 } from '../../composables/usePhoneValidation'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { useWindowSize } from '@vueuse/core'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import { req_json_auth } from '../../api'
 
 const dialogFormVisible = defineModel<boolean>()
@@ -52,8 +52,7 @@ const form = ref<FormData>({
 const usernameError = ref('')
 const loading = ref(false)
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 
 const containsCyrillic = (value: string) => /[\u0400-\u04FF]/.test(value)
 

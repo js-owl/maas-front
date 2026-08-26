@@ -113,7 +113,7 @@ const isRequirementsExpanded = ref(false)
   text-align: left;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .technical-requirements {
     display: none;
   }

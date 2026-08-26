@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue'
-import { useWindowSize } from '@vueuse/core'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox, type TableInstance } from 'element-plus'
 import { req_json_auth } from '../api'
@@ -32,8 +32,7 @@ const deleteLoading = ref<number | null>(null)
 const repeatLoading = ref(false)
 const ordersTableRef = ref<TableInstance>()
 const isMobileSearchOpen = ref(false)
-const { width } = useWindowSize()
-const isMobileView = computed(() => width.value <= 767)
+const { isMobile: isMobileView } = usePageBreakpoints()
 
 const excludedStatuses = ['cancelled', 'C3:LOSE']
 
@@ -899,7 +898,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
 }
 
 /* Tablet — Figma node 5070:3859 */
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .orders-card {
     display: flex;
     flex-direction: column;
@@ -1035,7 +1034,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .personal-orders {
     min-height: auto;
   }

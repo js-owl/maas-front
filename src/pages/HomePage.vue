@@ -66,7 +66,7 @@ onMounted(() => {
   margin: 0 !important;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .home-page--mobile .home-page__sections {
     gap: 12px;
     width: 100%;

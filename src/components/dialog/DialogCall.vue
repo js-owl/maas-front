@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { req_json } from '../../api'
-import { useWindowSize } from '@vueuse/core'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import {
   createPhoneNumberValidator,
   formatPhoneDisplay,
@@ -16,8 +16,7 @@ import Checkbox from '../ui/Checkbox.vue'
 
 const dialogFormVisible = defineModel<boolean>()
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 
 interface FormData {
   name: string
@@ -308,7 +307,7 @@ const submitForm = async () => {
   opacity: 1;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   :deep(.el-dialog__body) {
     padding: 24px 0 0;
   }
@@ -335,7 +334,7 @@ const submitForm = async () => {
   overflow: hidden;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .dialog-call {
     padding: 16px;
   }

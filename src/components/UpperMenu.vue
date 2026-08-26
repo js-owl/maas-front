@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed, watch } from 'vue'
-import { useWindowSize } from '@vueuse/core'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import DialogLogin from './dialog/DialogLogin.vue'
 // import DialogCall from './dialog/DialogCall.vue'
 import DialogRegistration from './dialog/DialogRegistration.vue'
@@ -27,8 +27,7 @@ const router = useRouter()
 const route = useRoute()
 
 let color = ref('')
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { width, isMobile } = usePageBreakpoints()
 const isHomePage = computed(() => route.path === '/')
 const isCabinetMenuVisible = ref(false)
 const isGuestCabinetMenuVisible = ref(false)
@@ -703,7 +702,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   text-align: left;
 }
 
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .uppermenu-wrapper {
     padding: 2.5em 2.5em 0;
   }
@@ -719,7 +718,7 @@ const desktopCabinetPopoverAttrs = computed(() => ({
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .uppermenu-header,
   .uppermenu-header--mobile {
     height: 36px;

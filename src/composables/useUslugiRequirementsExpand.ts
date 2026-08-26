@@ -1,10 +1,9 @@
-import { computed, ref } from 'vue'
-import { useWindowSize } from '@vueuse/core'
+import { ref } from 'vue'
+import { usePageBreakpoints } from './usePageBreakpoints'
 
 export const useUslugiRequirementsExpand = () => {
   const isRequirementsExpanded = ref(false)
-  const { width } = useWindowSize()
-  const isMobile = computed(() => width.value < 768)
+  const { isMobile } = usePageBreakpoints()
 
   return { isRequirementsExpanded, isMobile }
 }

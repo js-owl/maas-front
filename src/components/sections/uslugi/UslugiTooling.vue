@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { useWindowSize } from '@vueuse/core'
+import { ref } from 'vue'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import UslugiRequirementsAccordion from '@/components/sections/uslugi/UslugiRequirementsAccordion.vue'
 
 const isRequirementsExpanded = ref(false)
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 </script>
 
 <template>

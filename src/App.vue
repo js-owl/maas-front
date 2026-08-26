@@ -153,7 +153,7 @@ onMounted(() => {
   padding-bottom: 96px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .main-content--consent-pad {
     padding-bottom: 140px;
   }
@@ -227,7 +227,7 @@ onMounted(() => {
   color: #fff;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .consent-banner__content {
     flex-direction: column;
     align-items: flex-start;

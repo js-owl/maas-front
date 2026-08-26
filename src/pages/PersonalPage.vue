@@ -97,7 +97,7 @@ onMounted(async () => {
   box-shadow: 0 12px 32px rgba(18, 24, 40, 0.12);
 }
 
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .personal-page {
     padding: 40px 40px;
   }
@@ -109,9 +109,15 @@ onMounted(async () => {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .personal-page {
     padding: 32px 10px 40px;
+  }
+
+  .personal-page > .el-col {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin-left: 0 !important;
   }
 }
 

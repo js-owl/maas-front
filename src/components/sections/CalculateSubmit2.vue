@@ -339,7 +339,7 @@ const cancel = () => {
   display: inline-flex;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .calculate-submit2 {
     justify-content: center;
   }

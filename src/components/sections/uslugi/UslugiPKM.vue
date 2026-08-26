@@ -119,7 +119,7 @@
   background-color: var(--bgcolor);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .pkm-info {
     gap: 40px;
   }

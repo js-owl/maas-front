@@ -122,7 +122,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .technical-requirements {
     display: none;
   }

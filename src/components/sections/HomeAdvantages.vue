@@ -341,7 +341,7 @@ const advantages = ref([
 }
 
 /* Tablet — Figma 5067:2727 (960), cards 430×280, 2 columns */
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .advantages-wrap {
     padding: 2.5em;
     gap: 1.25em;
@@ -434,7 +434,7 @@ const advantages = ref([
 }
 
 /* Mobile — Figma 5067:2517 (360) */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .home-advantages {
     margin-bottom: 0;
   }

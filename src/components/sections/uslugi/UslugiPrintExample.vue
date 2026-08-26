@@ -120,7 +120,7 @@ const applications = [
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .examples-grid {
     grid-template-columns: 1fr;
   }

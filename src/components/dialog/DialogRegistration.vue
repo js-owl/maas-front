@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import {
   createPhoneNumberValidator,
   formatPhoneDisplay,
@@ -10,7 +10,7 @@ import { useEmailStore } from '../../stores/email.store'
 import { UI_MESSAGES } from '../../helpers/email-verification'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { useWindowSize } from '@vueuse/core'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import Input from '../ui/Input.vue'
 import Button from '../ui/Button.vue'
 import Checkbox from '../ui/Checkbox.vue'
@@ -45,8 +45,7 @@ const loading = ref(false)
 const isAgreementAccepted = ref(false)
 const isPolicyAccepted = ref(false)
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 
 const containsCyrillic = (value: string) => /[\u0400-\u04FF]/.test(value)
 
@@ -400,7 +399,7 @@ const onHaveAccount = () => {
   opacity: 1;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   :deep(.el-dialog__header) {
     padding: 16px 16px 0;
   }

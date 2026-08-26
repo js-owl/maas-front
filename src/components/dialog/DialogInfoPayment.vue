@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import router from '../../router'
-import { useWindowSize } from '@vueuse/core'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 
 let dialogVisible = defineModel<boolean>()
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 
 const handleClose = () => {
   console.log('handleClose')

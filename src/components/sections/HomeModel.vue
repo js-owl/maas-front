@@ -77,7 +77,7 @@ let file_id = ref(4)
   /* padding: 10px; */
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .section-basic {
     padding: 24px 12px 24px 12px;
   }

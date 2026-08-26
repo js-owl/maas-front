@@ -447,7 +447,7 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .personal-calcs {
     padding: 0;
   }

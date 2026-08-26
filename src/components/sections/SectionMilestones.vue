@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useWindowSize } from "@vueuse/core";
+import { usePageBreakpoints } from "@/composables/usePageBreakpoints";
 
-const { width } = useWindowSize();
-const isMobile = computed(() => width.value < 768);
+const { isMobile } = usePageBreakpoints();
 </script>
 
 <template>
@@ -51,7 +49,7 @@ const isMobile = computed(() => width.value < 768);
   font-size: 20px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .milestones-row {
     padding-top: 16px;
     min-height: auto;

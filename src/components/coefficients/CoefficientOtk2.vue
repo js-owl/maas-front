@@ -46,7 +46,7 @@ const otks = [
   --radio-line-height: 1.25;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .otk-radio-group {
     grid-template-columns: 1fr;
     row-gap: 8px;

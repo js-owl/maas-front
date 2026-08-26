@@ -30,7 +30,7 @@
   color: var(--gray-footer);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .result-specialist__title {
     font-size: 18px;
   }

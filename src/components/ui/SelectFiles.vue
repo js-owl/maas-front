@@ -169,7 +169,7 @@ const formatDocumentTimePart = (value?: string): string => formatMoscowTime(valu
   user-select: none;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .files-section {
     margin-top: 0;
     display: flex;

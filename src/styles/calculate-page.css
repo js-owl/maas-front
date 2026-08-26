@@ -229,8 +229,8 @@
   white-space: nowrap;
 }
 
-/* Tablet: 768–1300px — same content width as UpperMenu / HomePage */
-@media (max-width: 1300px) and (min-width: 768px) {
+/* Tablet: 769–1300px — same content width as UpperMenu / HomePage */
+@media (max-width: 1300px) and (min-width: 769px) {
   .calc-page {
     padding: 2.5em;
   }
@@ -385,10 +385,17 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .calc-page {
     padding: 32px 10px 40px;
     background-color: var(--bgcolor);
+  }
+
+  .calc-page .el-col,
+  .main-container > .el-col {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin-left: 0 !important;
   }
 
   .calc-page__row {
@@ -992,7 +999,7 @@
   display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 769px) {
   .calc-page-select-dropdown.el-popper {
     padding: 12px !important;
     border-radius: 10px !important;

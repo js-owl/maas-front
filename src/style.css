@@ -189,7 +189,7 @@ html {
   border-radius: 10px;
 }
 
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .uslugi-wrapper {
     padding: 40px;
   }
@@ -559,7 +559,7 @@ html {
 }
 
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   html {
     font-size: 14px; /* для rem */
   }

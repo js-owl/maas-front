@@ -1761,7 +1761,7 @@ onMounted(() => {
 }
 
 /* Tablet (768–1300px) — Figma node 5070:5307 */
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .personal-order {
     --order-fs-number: 16px;
     --order-fs-title: 20px;
@@ -1956,7 +1956,7 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .personal-order {
     --order-fs-number: 12px;
     --order-fs-title: 16px;
@@ -2550,7 +2550,7 @@ onMounted(() => {
   display: none;
 }
 
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .order-type-select-dropdown .el-select-dropdown__item,
   .order-add-detail-dropdown .el-dropdown-menu__item {
     font-size: 16px !important;
@@ -2558,7 +2558,7 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .order-type-select-dropdown .el-select-dropdown__item,
   .order-add-detail-dropdown .el-dropdown-menu__item {
     font-size: 14px !important;

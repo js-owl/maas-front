@@ -333,7 +333,7 @@ const steps: Step[] = [
 }
 
 /* Tablet — Figma 5067:2735 (960), cards 430×336, 2 columns */
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .milestones-wrap {
     padding: 2.5em;
     gap: 1.25em;
@@ -409,7 +409,7 @@ const steps: Step[] = [
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .home-milestones {
     margin-bottom: 0;
   }

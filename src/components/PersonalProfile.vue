@@ -806,7 +806,7 @@ const contactFio = computed({
   align-items: flex-start;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .profile-page-title {
     display: none;
   }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, markRaw, computed } from 'vue'
-import { useWindowSize } from '@vueuse/core'
+import { TABLET_MAX_WIDTH, usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import IconMech from '@/icons/home/IconMech.vue'
 import Icon3DView from '@/icons/home/Icon3DView.vue'
 import IconPKM from '@/icons/home/IconPKM.vue'
@@ -70,9 +70,8 @@ const abilities = ref([
 
 ])
 
-const { width } = useWindowSize()
-const isMobileLayout = computed(() => width.value < 768)
-const isCompactLayout = computed(() => width.value <= 1300)
+const { width, isMobile: isMobileLayout } = usePageBreakpoints()
+const isCompactLayout = computed(() => width.value <= TABLET_MAX_WIDTH)
 
 const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(ability.link)
 </script>
@@ -264,7 +263,7 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   display: none;
 }
 
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .uslugi-section2.section-basic {
     margin-top: 0;
     margin-bottom: 0;
@@ -340,7 +339,7 @@ const isCardRouterLink = (ability: (typeof abilities.value)[number]) => Boolean(
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .uslugi-section2.section-basic {
     margin-top: 0;
     margin-bottom: 0;

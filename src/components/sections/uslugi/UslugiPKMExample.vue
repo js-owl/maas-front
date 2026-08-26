@@ -75,7 +75,7 @@ const applicationRows = [
   white-space: nowrap;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .pkm-applications {
     padding: 20px;
   }

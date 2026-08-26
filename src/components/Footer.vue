@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, ref } from 'vue'
-import { useWindowSize } from '@vueuse/core'
+import { defineAsyncComponent, ref } from 'vue'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import IconLogo from '../icons/IconLogo.vue'
 
 const DialogCall = defineAsyncComponent(() => import('./dialog/DialogCall.vue'))
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 
 const isCallDialogVisible = ref(false)
 
@@ -167,7 +166,7 @@ const openCallDialog = () => {
   color: #aeb2b5;
 }
 
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .footer {
     padding: 2.5em;
   }
@@ -222,7 +221,7 @@ const openCallDialog = () => {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .footer--mobile {
     padding: 40px;
   }

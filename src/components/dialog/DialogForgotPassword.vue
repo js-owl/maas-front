@@ -2,7 +2,7 @@
 
 import { computed, ref, watch } from 'vue'
 
-import { useWindowSize } from '@vueuse/core'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 
 import { ElMessage } from 'element-plus'
 
@@ -36,9 +36,7 @@ const successMessage = ref('')
 
 const passwordStore = usePasswordStore()
 
-const { width } = useWindowSize()
-
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 
 const canSend = computed(() => passwordStore.canResend() && email.value.trim().length > 0)
 
@@ -440,7 +438,7 @@ const onOpenLogin = () => {
 
 
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
 
   :deep(.el-dialog__body) {
 
@@ -478,7 +476,7 @@ const onOpenLogin = () => {
 
 
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
 
   .dialog-forgot-password {
 

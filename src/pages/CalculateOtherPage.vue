@@ -559,7 +559,7 @@ async function getOrder(id: number) {
   pointer-events: none;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .main-container {
     min-height: auto;
   }

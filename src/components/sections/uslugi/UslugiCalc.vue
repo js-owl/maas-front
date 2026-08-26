@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useWindowSize } from '@vueuse/core'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import Button from '@/components/ui/Button.vue'
 import UploadFiles from '@/components/UploadFiles.vue'
 import UploadFiles2 from '@/components/UploadFiles2.vue'
@@ -27,8 +27,7 @@ const isSubmitting = ref(false)
 const document_ids = ref<number[]>([])
 const stp_id = ref<number | null>(null)
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 
 const uploadServiceId = computed(() => props.service_id)
 const selectedRoutePath = computed(

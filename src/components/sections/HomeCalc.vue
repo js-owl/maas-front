@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useWindowSize } from '@vueuse/core'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import { ElMessage } from 'element-plus'
 import Select from '../ui/Select.vue'
 import HomeCalcOrderTypeMobile from '../ui/HomeCalcOrderTypeMobile.vue'
@@ -41,8 +41,7 @@ let document_ids = ref<number[]>([])
 const stp_id = ref<number | null>(null)
 const selectedOrderType = ref<string>('')
 
-const { width } = useWindowSize()
-const isMobile = computed(() => width.value < 768)
+const { isMobile } = usePageBreakpoints()
 const isAuthenticated = computed(() => Boolean(authStore.getToken))
 
 // const hasToken = computed(() => Boolean(authStore.getToken))
@@ -533,7 +532,7 @@ const submit = () => {
   transform: rotate(45deg);
 }
 
-@media (max-width: 1300px) and (min-width: 768px) {
+@media (max-width: 1300px) and (min-width: 769px) {
   .calc-wrap {
     gap: clamp(1.5rem, 4vw, 5.625rem);
   }
@@ -566,7 +565,7 @@ const submit = () => {
   }
 }
 
-@media (max-width: 959px) and (min-width: 768px) {
+@media (max-width: 959px) and (min-width: 769px) {
   .calc-wrap {
     flex-direction: column;
     gap: 1.5rem;
@@ -578,7 +577,7 @@ const submit = () => {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .calc-section.section-basic {
     margin-bottom: 0;
     border-radius: 16px;
