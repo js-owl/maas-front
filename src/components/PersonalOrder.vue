@@ -774,6 +774,15 @@ onMounted(() => {
           </button>
         </div>
 
+        <div class="order-toolbar-tablet">
+          <button type="button" class="order-tablet-back" @click="goBack">
+            <span class="order-tablet-back__icon" aria-hidden="true">
+              <IconArrowLeft color="#000" />
+            </span>
+            Заказы и расчеты
+          </button>
+        </div>
+
         <div class="order-content-block">
           <div class="order-header">
             <div class="order-title">
@@ -954,7 +963,7 @@ onMounted(() => {
         </div>
 
         <div class="order-footer order-footer--desktop">
-          <ButtonRound width="274px" @click="goBack">
+          <ButtonRound class="order-footer-back" width="274px" @click="goBack">
             <template #icon-left>
               <IconArrowLeft color="#333" />
             </template>
@@ -1773,6 +1782,7 @@ onMounted(() => {
 }
 
 .order-toolbar-mobile,
+.order-toolbar-tablet,
 .order-details-mobile,
 .order-details-mobile__empty,
 .order-add-detail-mobile,
@@ -1806,6 +1816,52 @@ onMounted(() => {
   .order-side {
     max-width: 300px;
     justify-self: end;
+  }
+
+  .order-toolbar-tablet {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .order-tablet-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 44px;
+    max-height: 44px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    background: var(--button-bg);
+    font-family: 'Montserrat-Medium', sans-serif;
+    font-size: var(--order-fs-btn);
+    font-weight: 500;
+    line-height: normal;
+    color: #000;
+    cursor: pointer;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  .order-tablet-back__icon {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: clip;
+  }
+
+  .order-tablet-back__icon :deep(svg) {
+    display: block;
+  }
+
+  .order-footer-back {
+    display: none !important;
   }
 
   .order-header {
@@ -1862,16 +1918,12 @@ onMounted(() => {
     padding: 10px 15px !important;
   }
 
-  .order-footer :deep(.btn-icon-left) {
-    display: none;
-  }
-
   .order-footer {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 20px;
-    margin-top: 80px;
+    margin-top: 40px;
   }
 
   .order-footer-actions {
