@@ -103,7 +103,7 @@ export const useAuthStore = defineStore("auth", () => {
           throw new Error(EMAIL_NOT_VERIFIED_ERROR);
         }
         if (res.status === 401 || /invalid|unauthorized|incorrect|неверн/i.test(detailStr)) {
-          throw new Error("Неверное имя пользователя или пароль");
+          throw new Error("Неправильный email или пароль");
         }
         if (detailStr) message = detailStr;
       } catch (e) {

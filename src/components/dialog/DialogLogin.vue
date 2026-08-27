@@ -159,7 +159,7 @@ const onSubmit = async () => {
     }
     const message = e instanceof Error ? e.message : 'Ошибка входа'
     console.log({ message })
-    loginError.value = 'Неправильное имя пользователя или пароль'
+    loginError.value = 'Неправильный email или пароль'
   }
 }
 
