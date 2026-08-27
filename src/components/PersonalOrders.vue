@@ -526,7 +526,14 @@ const handleDelete = async (row: IKit): Promise<void> => {
         empty-text="Нет данных"
       >
         <el-table-column type="selection" width="56" align="center" />
-        <el-table-column prop="kit_id" label="№" width="74" />
+        <el-table-column
+          prop="kit_id"
+          label="№"
+          width="74"
+          min-width="74"
+          class-name="orders-table__id"
+          label-class-name="orders-table__id"
+        />
 
         <el-table-column prop="kit_name" label="Наименование" min-width="180">
           <template #default="{ row }">
@@ -788,6 +795,13 @@ const handleDelete = async (row: IKit): Promise<void> => {
   color: #7d8083;
 }
 
+.orders-table :deep(th.orders-table__id .cell),
+.orders-table :deep(td.orders-table__id .cell) {
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow: visible;
+}
+
 .orders-table :deep(th.orders-table__status .cell),
 .orders-table :deep(td.orders-table__status .cell) {
   overflow: hidden;
@@ -1018,15 +1032,17 @@ const handleDelete = async (row: IKit): Promise<void> => {
     padding: 26px 10px;
   }
 
+  /* Колонка «№» — цифры в одну строку, не уже ширины колонки */
+  .orders-table :deep(.el-table__header colgroup col:nth-child(2)),
+  .orders-table :deep(.el-table__body colgroup col:nth-child(2)) {
+    width: 74px !important;
+    min-width: 74px !important;
+  }
+
   /* Колонка «Статус» — не уже минимальной ширины под длинный бейдж */
   .orders-table :deep(colgroup col:nth-child(5)) {
     width: 240px !important;
     min-width: 240px !important;
-  }
-
-  .orders-table :deep(.el-table__header colgroup col:nth-child(2)),
-  .orders-table :deep(.el-table__body colgroup col:nth-child(2)) {
-    width: 40px !important;
   }
 
   .orders-table :deep(.el-table-column--selection) {
