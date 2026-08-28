@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch, nextTick } from 'vue'
 import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox, type TableInstance } from 'element-plus'
@@ -32,7 +32,19 @@ const deleteLoading = ref<number | null>(null)
 const repeatLoading = ref(false)
 const ordersTableRef = ref<TableInstance>()
 const isMobileSearchOpen = ref(false)
-const { isMobile: isMobileView } = usePageBreakpoints()
+const { isMobile: isMobileView, isTablet } = usePageBreakpoints()
+
+const selectionColumnWidth = computed(() => (isTablet.value ? 44 : 56))
+const nameColumnMinWidth = computed(() => (isTablet.value ? 136 : 180))
+const dateColumnWidth = computed(() => (isTablet.value ? 118 : 150))
+const statusColumnMinWidth = computed(() => (isTablet.value ? 280 : 220))
+const priceColumnWidth = computed(() => (isTablet.value ? 96 : 120))
+const deleteColumnWidth = computed(() => (isTablet.value ? 52 : 70))
+
+watch(isTablet, async () => {
+  await nextTick()
+  ordersTableRef.value?.doLayout()
+})
 
 const excludedStatuses = ['cancelled', 'C3:LOSE']
 
@@ -525,7 +537,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
         row-key="kit_id"
         empty-text="Нет данных"
       >
-        <el-table-column type="selection" width="56" align="center" />
+        <el-table-column type="selection" :width="selectionColumnWidth" align="center" />
         <el-table-column
           prop="kit_id"
           label="№"
@@ -535,7 +547,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
           label-class-name="orders-table__id"
         />
 
-        <el-table-column prop="kit_name" label="Наименование" min-width="180">
+        <el-table-column prop="kit_name" label="Наименование" :min-width="nameColumnMinWidth">
           <template #default="{ row }">
             <span
               class="filename-text filename-text--link"
@@ -547,7 +559,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
           </template>
         </el-table-column>
 
-        <el-table-column label="Дата созд." width="150">
+        <el-table-column label="Дата созд." :width="dateColumnWidth">
           <template #default="{ row }">
             <span class="filename-text">{{ formatDate(row.created_at) }}</span>
           </template>
@@ -561,7 +573,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
         <el-table-column
           prop="status_name"
           label="Статус"
-          min-width="150"
+          :min-width="statusColumnMinWidth"
           align="left"
           class-name="orders-table__status"
           label-class-name="orders-table__status"
@@ -577,13 +589,13 @@ const handleDelete = async (row: IKit): Promise<void> => {
           </template>
         </el-table-column>
 
-        <el-table-column prop="total_kit_price" label="Цена" width="120" align="right">
+        <el-table-column prop="total_kit_price" label="Цена" :width="priceColumnWidth" align="right">
           <template #default="{ row }">
             <span class="filename-text">{{ formatPrice(row.total_kit_price, getOrderStatus(row)) }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="" width="70" align="center">
+        <el-table-column label="" :width="deleteColumnWidth" align="center">
           <template #default="{ row }">
             <el-button
               link
@@ -804,7 +816,12 @@ const handleDelete = async (row: IKit): Promise<void> => {
 
 .orders-table :deep(th.orders-table__status .cell),
 .orders-table :deep(td.orders-table__status .cell) {
-  overflow: hidden;
+  overflow: visible;
+  text-overflow: unset;
+  white-space: nowrap;
+  word-break: normal;
+  padding-left: 4px;
+  padding-right: 8px;
 }
 
 .orders-table :deep(.el-table__header-wrapper th.el-table-column--selection .cell) {
@@ -871,6 +888,7 @@ const handleDelete = async (row: IKit): Promise<void> => {
   justify-content: flex-start;
   width: fit-content;
   max-width: 100%;
+  flex-shrink: 0;
   padding: 6px 12px;
   border-radius: 10px;
   border: 1px solid transparent;
@@ -1039,10 +1057,21 @@ const handleDelete = async (row: IKit): Promise<void> => {
     min-width: 74px !important;
   }
 
-  /* Колонка «Статус» — не уже минимальной ширины под длинный бейдж */
-  .orders-table :deep(colgroup col:nth-child(5)) {
-    width: 240px !important;
-    min-width: 240px !important;
+  .orders-table :deep(th.orders-table__status .cell),
+  .orders-table :deep(td.orders-table__status .cell) {
+    overflow: visible;
+    text-overflow: unset;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
+  .orders-table .status-chip {
+    white-space: normal;
+    line-height: 1.25;
+    text-align: left;
+    max-width: 100%;
+    overflow-wrap: break-word;
   }
 
   .orders-table :deep(.el-table-column--selection) {
