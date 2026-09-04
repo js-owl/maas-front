@@ -1,6 +1,5 @@
-import { test, expect } from '@playwright/test'
-
-test.use({ viewport: { width: 375, height: 812 } })
+import { test } from '@playwright/test'
+import { screenshotForViewports, stubUnhandledApi } from './helpers'
 
 const KIT_ID = 16
 
@@ -210,6 +209,7 @@ const mockOrderDetails = [
 ]
 
 test.beforeEach(async ({ page }) => {
+  await stubUnhandledApi(page)
   await page.addInitScript(() => {
     localStorage.setItem('analytics_consent', 'false')
     localStorage.setItem('token-persistence', 'session')
@@ -268,16 +268,24 @@ test.beforeEach(async ({ page }) => {
   }
 })
 
-test('personal order mobile screenshot', async ({ page }) => {
+screenshotForViewports('personal order', 'personal-order-page', async (page, device) => {
   await page.goto(`/personal/order?kitId=${KIT_ID}`)
   await page.locator('.personal-order').waitFor({ state: 'visible' })
-  await page.locator('.order-toolbar-mobile').waitFor({ state: 'visible' })
-  await page.locator('.order-details-mobile').waitFor({ state: 'visible' })
-  await page.locator('.order-details-mobile__row').first().waitFor({ state: 'visible' })
   await page.locator('.summary-card').waitFor({ state: 'visible' })
-  await page.locator('.summary-actions-mobile').waitFor({ state: 'visible' })
-  await page.waitForLoadState('networkidle')
-  await page.evaluate(() => document.fonts.ready)
 
-  await expect(page).toHaveScreenshot('personal-order-page-mobile.png', { fullPage: true })
+  if (device === 'mobile') {
+    await page.locator('.order-toolbar-mobile').waitFor({ state: 'visible' })
+    await page.locator('.order-details-mobile').waitFor({ state: 'visible' })
+    await page.locator('.order-details-mobile__row').first().waitFor({ state: 'visible' })
+    return
+  }
+
+  if (device === 'tablet') {
+    await page.locator('.order-toolbar-tablet').waitFor({ state: 'visible' })
+    await page.locator('.order-table--desktop').waitFor({ state: 'visible' })
+    return
+  }
+
+  await page.locator('.order-table--desktop').waitFor({ state: 'visible' })
+  await page.locator('.order-footer--desktop').waitFor({ state: 'visible' })
 })

@@ -1,6 +1,5 @@
-import { test, expect } from '@playwright/test'
-
-test.use({ viewport: { width: 375, height: 812 } })
+import { test, type Page } from '@playwright/test'
+import { screenshotForViewports, stubUnhandledApi, type ScreenshotDevice } from './helpers'
 
 const mockMaterials = {
   materials: [
@@ -47,6 +46,7 @@ const mockIndividualProfile = {
 }
 
 test.beforeEach(async ({ page }) => {
+  await stubUnhandledApi(page)
   await page.addInitScript(() => {
     localStorage.setItem('analytics_consent', 'false')
     localStorage.setItem('token-persistence', 'session')
@@ -64,7 +64,7 @@ test.beforeEach(async ({ page }) => {
   )
 })
 
-test('personal profile legal mobile screenshot', async ({ page }) => {
+async function mockProfile(page: Page, body: typeof mockLegalProfile) {
   await page.route('**/api/v3/profile', (route) => {
     if (route.request().method() !== 'GET') {
       route.continue()
@@ -74,40 +74,42 @@ test('personal profile legal mobile screenshot', async ({ page }) => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(mockLegalProfile),
+      body: JSON.stringify(body),
     })
   })
+}
 
-  await page.goto('/personal/profile')
+async function waitForProfile(page: Page, device: ScreenshotDevice, variant: 'legal' | 'individual') {
   await page.locator('.personal-profile-page').waitFor({ state: 'visible' })
-  await page.locator('.profile-legal').waitFor({ state: 'visible' })
-  await page.locator('.profile-footer-mobile').waitFor({ state: 'visible' })
-  await page.waitForLoadState('networkidle')
-  await page.evaluate(() => document.fonts.ready)
+  if (variant === 'legal') {
+    await page.locator('.profile-legal').waitFor({ state: 'visible' })
+  } else {
+    await page.locator('.profile-card--individual').waitFor({ state: 'visible' })
+  }
+  if (device === 'mobile') {
+    await page.locator('.profile-footer-mobile').waitFor({ state: 'visible' })
+    return
+  }
+  await page.locator('.profile-footer--desktop').waitFor({ state: 'visible' })
+}
 
-  await expect(page).toHaveScreenshot('personal-profile-page-legal-mobile.png', { fullPage: true })
-})
+screenshotForViewports(
+  'personal profile legal',
+  'personal-profile-page-legal',
+  async (page, device) => {
+    await mockProfile(page, mockLegalProfile)
+    await page.goto('/personal/profile')
+    await waitForProfile(page, device, 'legal')
+  },
+)
 
-test('personal profile individual mobile screenshot', async ({ page }) => {
-  await page.route('**/api/v3/profile', (route) => {
-    if (route.request().method() !== 'GET') {
-      route.continue()
-      return
-    }
+screenshotForViewports(
+  'personal profile individual',
+  'personal-profile-page-individual',
+  async (page, device) => {
+    await mockProfile(page, mockIndividualProfile)
+    await page.goto('/personal/profile')
+    await waitForProfile(page, device, 'individual')
+  },
+)
 
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(mockIndividualProfile),
-    })
-  })
-
-  await page.goto('/personal/profile')
-  await page.locator('.personal-profile-page').waitFor({ state: 'visible' })
-  await page.locator('.profile-card--individual').waitFor({ state: 'visible' })
-  await page.locator('.profile-footer-mobile').waitFor({ state: 'visible' })
-  await page.waitForLoadState('networkidle')
-  await page.evaluate(() => document.fonts.ready)
-
-  await expect(page).toHaveScreenshot('personal-profile-page-individual-mobile.png', { fullPage: true })
-})
