@@ -26,6 +26,7 @@ import {
   type CdekTariff,
   type DeliveryShipment,
 } from '../helpers/cdek-delivery'
+import { orderLinePrice, unwrapApiData } from '../helpers/order-price'
 const CadPreview = defineAsyncComponent(() => import('./cad/CadPreview.vue'))
 // import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
 import Button from './ui/Button.vue'
@@ -100,11 +101,13 @@ const formatPrice = (value?: number | null): string => {
 }
 
 const manufacturingCost = computed(() => {
-  return formatPrice(order.value?.total_kit_price ?? 0)
+  const kitTotal = Number(order.value?.total_kit_price ?? 0)
+  const rowsTotal = calcRows.value.reduce((sum, row) => sum + orderLinePrice(row), 0)
+  return formatPrice(kitTotal > 0 ? kitTotal : rowsTotal)
 })
 
 const hasZeroDetailPrice = computed(() =>
-  calcRows.value.some((row) => Number(row.detail_price) === 0)
+  calcRows.value.some((row) => orderLinePrice(row) === 0)
 )
 
 const profileStore = useProfileStore()
@@ -129,7 +132,10 @@ const deliveryQuote = computed(() => {
 const deliveryCostLabel = computed(() => formatPrice(deliveryQuote.value))
 
 const totalWithDelivery = computed(() => {
-  const total = Number(order.value?.total_kit_price ?? 0) + Number(deliveryQuote.value || 0)
+  const kitTotal = Number(order.value?.total_kit_price ?? 0)
+  const rowsTotal = calcRows.value.reduce((sum, row) => sum + orderLinePrice(row), 0)
+  const manufacturing = kitTotal > 0 ? kitTotal : rowsTotal
+  const total = manufacturing + Number(deliveryQuote.value || 0)
   return formatPrice(total)
 })
 
@@ -259,7 +265,7 @@ const loadCalcs = async () => {
         if (!res?.ok) {
           throw new Error(`Failed to load calc order ${id}`)
         }
-        return (await res.json()) as any
+        return unwrapApiData<IOrderResponse>(await res.json())
       })
     )
 
@@ -299,7 +305,7 @@ const loadOrder = async () => {
   try {
     const res = await req_json_auth(`/kits/${kitId.value}`, 'GET')
     if (!res?.ok) throw new Error('Failed to load order')
-    const data = (await res.json()) as KitOrder
+    const data = unwrapApiData<KitOrder>(await res.json())
     order.value = data
     quantity.value = data.quantity ?? 0
     filename.value = data.kit_name ?? ''
@@ -833,7 +839,7 @@ onMounted(() => {
                 <span class="order-details-mobile__code">{{ row.order_code }}</span>
                 <span class="order-details-mobile__name">{{ row.order_name }}</span>
               </span>
-              <span class="order-details-mobile__price">{{ formatPrice(row.total_price) }}</span>
+              <span class="order-details-mobile__price">{{ formatPrice(orderLinePrice(row)) }}</span>
             </button>
           </div>
           <p v-else-if="!isLoading" class="order-details-mobile__empty">Нет данных по деталям</p>
@@ -935,7 +941,7 @@ onMounted(() => {
               label-class-name="order-col-price"
             >
               <template #default="{ row }">
-                {{ formatPrice(row.total_price) }}
+                {{ formatPrice(orderLinePrice(row)) }}
               </template>
             </el-table-column>
             <el-table-column

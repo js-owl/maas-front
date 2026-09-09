@@ -6,6 +6,7 @@ import { useProfileStore, type IProfile } from '../../stores/profile.store'
 import { useAuthStore } from '../../stores/auth.store'
 import { req_json, req_json_auth } from '../../api'
 import { ensureLocalStpCacheReady, getLocalStpFileById, toServerFileId } from '../../helpers/local-stp-files'
+import { pickNonZeroCalculation, unwrapApiData, orderLinePrice } from '../../helpers/order-price'
 import type {
   IKit,
   IOrderPayload,
@@ -23,10 +24,12 @@ const props = withDefaults(
     specialInstructions: string
     saveLabel?: string
     hideBackButton?: boolean
+    lastResult?: IOrderResponse | null
   }>(),
   {
     saveLabel: 'Сохранить изменения',
     hideBackButton: false,
+    lastResult: null,
   }
 )
 
@@ -162,7 +165,30 @@ const recalculatePayload = async (payload: IOrderPostPayload): Promise<IOrderRes
   const res = await req_json('/calculate-price', 'POST', payload)
   if (!res?.ok) throw new Error('Calculate price failed')
 
-  return (await res.json()) as IOrderResponse
+  return unwrapApiData<IOrderResponse>(await res.json())
+}
+
+const persistableCalculationFields = (calc: IOrderResponse | null): Record<string, unknown> => {
+  if (!calc) return {}
+
+  const fields: Record<string, unknown> = {}
+  if (calc.length) fields.length = calc.length
+  if (calc.width) fields.width = calc.width
+  if (calc.height) fields.height = calc.height
+  if (calc.mat_weight != null) fields.mat_weight = calc.mat_weight
+  if (calc.mat_volume != null) fields.mat_volume = calc.mat_volume
+  const linePrice = orderLinePrice(calc)
+  if (linePrice > 0) fields.total_price = linePrice
+  if (typeof calc.detail_price === 'number' && calc.detail_price > 0) {
+    fields.detail_price = calc.detail_price
+  } else if (linePrice > 0) {
+    fields.detail_price = linePrice
+  }
+  if (typeof calc.detail_price_one === 'number' && calc.detail_price_one > 0) {
+    fields.detail_price_one = calc.detail_price_one
+  }
+  if (calc.total_price_breakdown) fields.total_price_breakdown = calc.total_price_breakdown
+  return fields
 }
 
 const submitOrder = async () => {
@@ -188,27 +214,42 @@ const submitOrder = async () => {
     const savedFile = await uploadLocalModel(props.payload.file_id)
     const orderPayload = buildOrderPayload(savedFile.fileId)
     const originalFilename = stripFileExtension(savedFile.fileName)
-    const calculationResult = await recalculatePayload(orderPayload)
+    const recalculated = await recalculatePayload(orderPayload)
+    const calculationResult = pickNonZeroCalculation(recalculated, props.lastResult)
     if (calculationResult) emit('updateResult', calculationResult)
+    const persistPayload = {
+      ...orderPayload,
+      ...persistableCalculationFields(calculationResult),
+    }
 
     if (isNewOrder.value) {
       try {
         const postPayload: IOrderPostPayload = {
-          ...orderPayload,
+          ...persistPayload,
           order_name: originalFilename || props.payload.order_name || 'Деталь',
           special_instructions: props.specialInstructions,
         }
         const res = await req_json_auth('/orders', 'POST', postPayload)
-        const data = (await res?.json()) as IOrderResponse
-        emit('updateResult', data)
+        const data = unwrapApiData<IOrderResponse>(await res?.json())
+        emit('updateResult', pickNonZeroCalculation(data, calculationResult) ?? data)
+        const savedPrice =
+          orderLinePrice(data) || orderLinePrice(calculationResult ?? {}) || 0
 
         if (targetKitId > 0) {
           // Добавляем новый order_id в существующий kit
           const updatedIds = Array.from(new Set([...existingOrderIds.value, data.order_id]))
 
           try {
+            const kitRes = await req_json_auth(`/kits/${targetKitId}`, 'GET')
+            const currentKit = unwrapApiData<IKit>(await kitRes?.json())
+            if (!currentKit) throw new Error('Failed to load kit before update')
             await req_json_auth(`/kits/${targetKitId}`, 'PUT', {
+              kit_name: currentKit.kit_name,
+              quantity: currentKit.quantity,
               order_ids: updatedIds,
+              location: currentKit.location,
+              kit_price: Number(currentKit.kit_price || 0) + savedPrice,
+              total_kit_price: Number(currentKit.total_kit_price || 0) + savedPrice,
             })
           } catch (error) {
             // eslint-disable-next-line no-console
@@ -223,14 +264,14 @@ const submitOrder = async () => {
             quantity: 1,
             bitrix_deal_id: 1,
             location: data.total_price_breakdown?.location || 'location_1',
-            kit_price: 0,
+            kit_price: savedPrice,
             delivery_price: 0,
-            total_kit_price: 0,
+            total_kit_price: savedPrice,
           }
 
           try {
             const kitRes = await req_json_auth('/kits', 'POST', kitPayload)
-            const createdKit = (await kitRes?.json()) as IKit | { kit_id?: number }
+            const createdKit = unwrapApiData<IKit | { kit_id?: number }>(await kitRes?.json())
             targetKitId = Number(createdKit?.kit_id) || 0
           } catch (error) {
             // eslint-disable-next-line no-console
@@ -247,13 +288,13 @@ const submitOrder = async () => {
       const id = props.orderId
       try {
         const res = await req_json_auth(`/orders/${id}`, 'PUT', {
-          ...orderPayload,
+          ...persistPayload,
           // при обновлении оставляем имя заказа таким, как оно передано в payload
           order_name: props.payload.order_name || '',
           special_instructions: props.specialInstructions,
         })
-        const data = (await res?.json()) as IOrderResponse
-        emit('updateResult', data)
+        const data = unwrapApiData<IOrderResponse>(await res?.json())
+        emit('updateResult', pickNonZeroCalculation(data, calculationResult) ?? data)
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error({ error })

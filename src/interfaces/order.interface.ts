@@ -40,6 +40,10 @@ export interface IOrderBase {
   k_cert: string[]
   deadline?: string
   special_instructions?: string
+  location?: string
+  electroplating_family?: string
+  electroplating_process_id?: string
+  coating_thickness_microns?: number
   total_price_breakdown?: {
     location?: string
     mat_price?: number

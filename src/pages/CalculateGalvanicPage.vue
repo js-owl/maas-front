@@ -10,6 +10,7 @@ import {
   localStpCacheVersion,
 } from '../helpers/local-stp-files'
 import { parseFilesQueryToIds } from '../helpers/parse-files'
+import { unwrapApiData } from '../helpers/order-price'
 import { locations } from '../helpers/get-location'
 import Input from '../components/ui/Input.vue'
 import SelectCalc from '../components/ui/SelectCalc.vue'
@@ -92,6 +93,9 @@ const process_id = ref('')
 const electroplating_process_id = ref('')
 
 const coating_thickness_microns = ref(9)
+const length = ref(0)
+const width = ref(0)
+const height = ref(0)
 const coatingThicknessInput = computed({
   get: () => String(coating_thickness_microns.value),
   set: (value: string) => {
@@ -229,21 +233,28 @@ const calculationPayload = computed(() => {
   }
 })
 
-const submitPayload = computed(() => ({
-  service_id: payload.service_id,
-  order_name: payload.order_name,
-  order_code: payload.order_code,
-  location: payload.location,
-  file_id: payload.file_id,
-  document_ids: payload.document_ids,
-  quantity: payload.quantity,
-  electroplating_family: payload.electroplating_family,
-  electroplating_process_id: payload.electroplating_process_id,
-  k_otk: payload.k_otk,
-  ...(requiresCoatingThicknessInput.value
-    ? { coating_thickness_microns: payload.coating_thickness_microns }
-    : {}),
-}))
+const submitPayload = computed(() => {
+  const resultLength = result.value?.length || length.value
+  const resultWidth = result.value?.width || width.value
+  const resultHeight = result.value?.height || height.value
+
+  return {
+    service_id: payload.service_id,
+    order_name: payload.order_name,
+    order_code: payload.order_code,
+    location: payload.location,
+    file_id: payload.file_id,
+    document_ids: payload.document_ids,
+    quantity: payload.quantity,
+    electroplating_family: payload.electroplating_family,
+    electroplating_process_id: payload.electroplating_process_id,
+    coating_thickness_microns: payload.coating_thickness_microns,
+    k_otk: String(payload.k_otk),
+    ...(resultLength ? { length: resultLength } : {}),
+    ...(resultWidth ? { width: resultWidth } : {}),
+    ...(resultHeight ? { height: resultHeight } : {}),
+  }
+})
 
 watch(
   electroplating_process_id,
@@ -412,8 +423,11 @@ async function sendData(currentPayload: IOrderPayload) {
   startLoading()
   try {
     const res = await req_json('/calculate-price', 'POST', currentPayload)
-    const data = (await res?.json()) as IOrderResponse
+    const data = unwrapApiData<IOrderResponse>(await res?.json())
     result.value = data
+    if (data.length) length.value = data.length
+    if (data.width) width.value = data.width
+    if (data.height) height.value = data.height
   } catch (error) {
     console.error({ error })
   }
@@ -422,17 +436,23 @@ async function sendData(currentPayload: IOrderPayload) {
 
 const onUpdateResult = (d: IOrderResponse) => {
   result.value = d
+  if (d.length) length.value = d.length
+  if (d.width) width.value = d.width
+  if (d.height) height.value = d.height
 }
 
 async function getOrder(id: number) {
   startLoading()
   try {
     const res = await req_json_auth(`/orders/${id}`, 'GET')
-    const data = (await res?.json()) as IOrderResponse
+    const data = unwrapApiData<IOrderResponse>(await res?.json())
     result.value = data
 
     if (data.file_id) file_id.value = data.file_id
     if (data.document_ids) document_ids.value = data.document_ids
+    if (data.length) length.value = data.length
+    if (data.width) width.value = data.width
+    if (data.height) height.value = data.height
     if (data.quantity) quantity.value = data.quantity
 
     const galvanicOrder = data as {
@@ -442,10 +462,13 @@ async function getOrder(id: number) {
     }
     if (galvanicOrder.electroplating_family) {
       electroplating_family.value = galvanicOrder.electroplating_family
+    } else if (data.material_id) {
+      electroplating_family.value = data.material_id
     }
 
     const orderProcessId =
       galvanicOrder.electroplating_process_id ??
+      data.process_id ??
       (data.cover_id
         ? Array.isArray(data.cover_id)
           ? data.cover_id[0]
@@ -607,6 +630,7 @@ watch(file_id, () => {
                       :order-id="order_id"
                       :payload="submitPayload as unknown as IOrderPayload"
                       :special-instructions="special_instructions"
+                      :last-result="result"
                       @updateResult="onUpdateResult"
                       @showInfo="isInfoVisible = true"
                     />
@@ -616,6 +640,7 @@ watch(file_id, () => {
                       :order-id="order_id"
                       :payload="submitPayload as unknown as IOrderPayload"
                       :special-instructions="special_instructions"
+                      :last-result="result"
                       save-label="Сохранить"
                       hide-back-button
                       @updateResult="onUpdateResult"

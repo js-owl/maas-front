@@ -21,6 +21,7 @@ import {
   normalizeOtherServicesResponse,
   resolveOtherServiceLabel,
   resolveMaterialProcessForService,
+  isElectroplatingServiceId,
   type ElectroplatingOperation,
   type OtherServiceItem,
   type PersonalCalcPropertyValues,
@@ -103,13 +104,26 @@ type ElectroplatingLabels = {
 }
 
 const resolveElectroplatingLabels = async (
-  materialId?: string
+  order: IOrderResponse
 ): Promise<ElectroplatingLabels> => {
-  if (!materialId) return {}
+  const processId =
+    order.electroplating_process_id ||
+    (Array.isArray(order.cover_id) ? order.cover_id[0] : order.cover_id) ||
+    order.process_id ||
+    order.material_id
+
+  if (!processId && !order.electroplating_family) return {}
+
+  const serviceQuery = order.service_id === 'electroplating_auto' ? 'electroplating_auto' : 'electroplating'
 
   try {
-    const response = await req_json_auth('/operations_available?service_id=electroplating', 'GET')
-    if (!response?.ok) return { coatingTypeLabel: materialId }
+    const response = await req_json_auth(`/operations_available?service_id=${serviceQuery}`, 'GET')
+    if (!response?.ok) {
+      return {
+        coatingTypeLabel: processId,
+        blankMaterialLabel: order.electroplating_family,
+      }
+    }
 
     const payload = await response.json()
     const operations = (Array.isArray(payload?.values)
@@ -118,10 +132,17 @@ const resolveElectroplatingLabels = async (
         ? payload.data.values
         : []) as ElectroplatingOperation[]
 
-    const operation = operations.find((item) => item.id === materialId)
-    return resolveElectroplatingLabelsFromOperation(operation, materialId)
+    const operation = operations.find((item) => item.id === processId)
+    const labels = resolveElectroplatingLabelsFromOperation(operation, processId)
+    return {
+      ...labels,
+      blankMaterialLabel: order.electroplating_family || labels.blankMaterialLabel,
+    }
   } catch {
-    return { coatingTypeLabel: materialId }
+    return {
+      coatingTypeLabel: processId,
+      blankMaterialLabel: order.electroplating_family,
+    }
   }
 }
 
@@ -311,6 +332,7 @@ const handleEdit = () => {
       })
       break
     case 'electroplating':
+    case 'electroplating_auto':
       router.push({
         path: '/galvanic',
         query,
@@ -434,10 +456,9 @@ const fetchOrder = async (id: number) => {
       (option) => option.serviceId === fetchedOrderData.service_id
     )?.label
     const serviceTypeLabel = otherServiceLabel ?? orderTypeLabel
-    const electroplatingLabels =
-      fetchedOrderData.service_id === 'electroplating'
-        ? await resolveElectroplatingLabels(fetchedOrderData.material_id)
-        : {}
+    const electroplatingLabels = isElectroplatingServiceId(fetchedOrderData.service_id)
+      ? await resolveElectroplatingLabels(fetchedOrderData)
+      : {}
     const compositeLabels =
       fetchedOrderData.service_id === 'composite'
         ? resolveCompositeMaterialLabels(fetchedOrderData, materialStore.materials)

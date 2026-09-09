@@ -23,6 +23,9 @@ export const PRINTING_SERVICE_BASE_LABEL = '3D печать'
 
 export const ELECTROPLATING_SERVICE_LABEL = 'Гальваническое покрытие'
 
+export const isElectroplatingServiceId = (serviceId?: string): boolean =>
+  serviceId === 'electroplating' || serviceId === 'electroplating_auto'
+
 const PRINTING_TECHNOLOGY_LABELS: Record<string, string> = {
   sls: 'SLS',
 }
@@ -106,7 +109,7 @@ export const resolveMaterialProcessForService = (
   serviceId?: string,
   otherServices?: OtherServiceItem[]
 ): string | undefined => {
-  if (!serviceId || serviceId === 'electroplating') return undefined
+  if (!serviceId || isElectroplatingServiceId(serviceId)) return undefined
 
   if (MATERIAL_PROCESS_BY_SERVICE[serviceId]) {
     return MATERIAL_PROCESS_BY_SERVICE[serviceId]
@@ -196,6 +199,7 @@ const SERVICE_PROPERTY_FIELDS: Record<string, PersonalCalcPropertyField[]> = {
   printing: PRINTING_FIELDS,
   composite: COMPOSITE_FIELDS,
   electroplating: ELECTROPLATING_FIELDS,
+  electroplating_auto: ELECTROPLATING_FIELDS,
   other: OTHER_FIELDS,
 }
 
@@ -328,7 +332,7 @@ export const buildPersonalCalcPropertyValues = ({
 }: BuildPropertyValuesOptions): PersonalCalcPropertyValues => {
   const values: PersonalCalcPropertyValues = {}
   const isComposite = order.service_id === 'composite'
-  const isElectroplating = order.service_id === 'electroplating'
+  const isElectroplating = isElectroplatingServiceId(order.service_id)
 
   if (serviceLabel || order.service_id) {
     if (isComposite) {
