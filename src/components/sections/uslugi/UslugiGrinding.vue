@@ -1,28 +1,40 @@
 <script lang="ts" setup>
 import { useUslugiRequirementsExpand } from '@/composables/useUslugiRequirementsExpand'
 import UslugiRequirementsAccordion from '@/components/sections/uslugi/UslugiRequirementsAccordion.vue'
+import UslugiKeywords from '@/components/sections/uslugi/UslugiKeywords.vue'
 
 const { isRequirementsExpanded, isMobile } = useUslugiRequirementsExpand()
+
+const keywords = [
+  'Шлифовка металла',
+  'Шлифовальные работы',
+  'Шлифовка металла на заказ',
+  'Полировка металла',
+  'Полировка металлических деталей',
+  'Плоскошлифовальные работы',
+  'Шлифовка деталей',
+  'Расчет стоимости шлифовки',
+]
 
 const equipmentRows = [
   {
     equipment: 'Круглошлифовальный станок',
-    maxWeight: 'Макс. вес до 50 кг',
+    maxWeight: '50 кг',
     dimensions: ['диаметр: до 270', 'длина: до 500'],
   },
   {
     equipment: 'Внутришлифовальный станок',
-    maxWeight: 'Макс. вес до 60 кг',
+    maxWeight: '60 кг',
     dimensions: ['внутр. диаметр: до 240', 'глубина: до 600 мм'],
   },
   {
     equipment: 'Плоскошлифовальный станок',
-    maxWeight: 'Макс. вес до 1000 кг',
+    maxWeight: '1000 кг',
     dimensions: ['длина: до 2000 мм', 'ширина: до 600 мм', 'высота: до 380 мм'],
   },
   {
     equipment: 'Внутришлифовальный станок',
-    maxWeight: 'Макс. вес до 200 кг',
+    maxWeight: '200 кг',
     dimensions: ['диаметр: до 400', 'длина: до 2000'],
   },
 ]
@@ -36,17 +48,26 @@ const equipmentRows = [
 
       <div class="uslugi-section">
         <div class="uslugi-text">
-          Шлифовка металла - это процесс механической обработки поверхности металлических изделий с
-          целью придания им нужной шероховатости, формы и точности размеров.
-          <br /><br />
-          Данный метод широко применяется в машиностроении, приборостроении, авиастроении и других
-          отраслях, где важна высокая точность обработки деталей. Основной рабочий инструмент при
-          шлифовке - абразивный круг, выполненный из твёрдых частиц, способных снимать тонкий слой
-          металла с обрабатываемой поверхности.
+          <p>
+            Выполняем шлифовку и полировку металлических деталей для получения требуемой геометрии,
+            размеров и качества поверхности. Шлифование применяется как финишный этап механической
+            обработки, когда необходимо уменьшить шероховатость, обеспечить точность сопрягаемых
+            поверхностей или подготовить изделие к последующим технологическим операциям.
+          </p>
+          <p>
+            Доступны круглошлифовальная, внутришлифовальная и плоскошлифовальная обработка.
+            Технология и режим обработки подбираются с учётом материала детали, её геометрии и
+            требований конструкторской документации.
+          </p>
+          <p>
+            Услуга может использоваться как самостоятельная операция либо как часть комплексного
+            производственного маршрута — после токарной или фрезерной обработки и перед нанесением
+            защитных или функциональных покрытий.
+          </p>
         </div>
 
         <div class="uslugi-image-wrapper">
-          <img src="/uslugiPages/grinding.png" alt="Шлифовка" class="uslugi-image" />
+          <img src="/uslugiPages/grinding.png" alt="Шлифовка" class="uslugi-image" width="500" height="380" />
         </div>
       </div>
 
@@ -54,9 +75,9 @@ const equipmentRows = [
         <template #mobile>
           <div class="requirements-mobile">
             <div class="requirements-mobile__row requirements-mobile__row--head">
-              <div class="requirements-mobile__cell">Тип сварки</div>
+              <div class="requirements-mobile__cell">Оборудование</div>
               <div class="requirements-mobile__cell requirements-mobile__cell--narrow">
-                Рабочая зона, мм
+                Габариты, мм
               </div>
             </div>
 
@@ -67,7 +88,7 @@ const equipmentRows = [
             >
               <div class="requirements-mobile__cell">
                 <p class="requirements-mobile__line">{{ row.equipment }}</p>
-                <p class="requirements-mobile__line">{{ row.maxWeight }}</p>
+                <p class="requirements-mobile__line">Макс. вес {{ row.maxWeight }}</p>
               </div>
               <div class="requirements-mobile__cell requirements-mobile__cell--narrow">
                 <p
@@ -92,50 +113,28 @@ const equipmentRows = [
               </colgroup>
               <thead>
                 <tr>
-                  <th class="uslugi-table-thead">Тип сварки</th>
-                  <th class="uslugi-table-thead">Рабочая зона, мм</th>
+                  <th class="uslugi-table-thead">Оборудование</th>
+                  <th class="uslugi-table-thead">Габариты, мм</th>
                   <th class="uslugi-table-thead">Макс. вес</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Круглошлифовальный станок</td>
+                <tr v-for="row in equipmentRows" :key="`${row.equipment}-${row.maxWeight}`">
+                  <td>{{ row.equipment }}</td>
                   <td>
-                    диаметр: до 270,<br />
-                    длина: до 500
+                    <template v-for="(line, index) in row.dimensions" :key="line">
+                      <br v-if="index > 0" />{{ line }}
+                    </template>
                   </td>
-                  <td>50 кг</td>
-                </tr>
-                <tr>
-                  <td>Внутришлифовальный станок</td>
-                  <td>
-                    внутр. диаметр: до 240<br />
-                    глубина: до 600 мм
-                  </td>
-                  <td>60 кг</td>
-                </tr>
-                <tr>
-                  <td>Плоскошлифовальный станок</td>
-                  <td>
-                    длина: до 2000 мм<br />
-                    ширина: до 600 мм<br />
-                    высота: до 380 мм
-                  </td>
-                  <td>1000 кг</td>
-                </tr>
-                <tr>
-                  <td>Внутришлифовальный станок</td>
-                  <td>
-                    диаметр: до 400<br />
-                    длина: до 2000
-                  </td>
-                  <td>200 кг</td>
+                  <td>{{ row.maxWeight }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </template>
       </UslugiRequirementsAccordion>
+
+      <UslugiKeywords :tags="keywords" />
     </div>
   </el-col>
 </template>

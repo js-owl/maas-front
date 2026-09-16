@@ -1,10 +1,21 @@
 <script lang="ts" setup>
 import { useUslugiRequirementsExpand } from '@/composables/useUslugiRequirementsExpand'
 import UslugiRequirementsAccordion from '@/components/sections/uslugi/UslugiRequirementsAccordion.vue'
+import UslugiKeywords from '@/components/sections/uslugi/UslugiKeywords.vue'
 
 const { isRequirementsExpanded, isMobile } = useUslugiRequirementsExpand()
 
-const materials = ['Алюминиевые сплавы', 'Сталь', 'Дерево']
+const keywords = [
+  'Фрезерная обработка металла',
+  'Фрезерные работы',
+  'Детали по чертежам',
+  'Фрезеровка ЧПУ',
+  'Фрезерная обработка по чертежам',
+  'Изготовление деталей на ЧПУ',
+  'Расчет стоимости деталей на ЧПУ',
+]
+
+const materialsLabel = 'Алюминиевые сплавы, сталь, дерево'
 
 const equipmentRows = [
   {
@@ -37,17 +48,27 @@ const equipmentRows = [
 
       <div class="uslugi-section">
         <div class="uslugi-text">
-          Фрезерная обработка представляет собой технологический процесс, при котором специальный
-          режущий инструмент (фреза) вращается и удаляет материал, создавая изделия заданной
-          конфигурации.
-          <br /><br />
-          Методика эффективна как для изготовления плоских элементов, так и для формирования
-          трёхмерных объектов. Она обеспечивает прецизионную точность и широко применяется при
-          работе с различными материалами: металлами, полимерами, древесиной.
+          <p>
+            Выполняем фрезерную обработку деталей на заказ по конструкторской документации и
+            3D-моделям. Доступно универсальное оборудование, а также 3- и 5-координатные станки с
+            ЧПУ, позволяющие изготавливать детали сложной формы и обрабатывать несколько
+            поверхностей заготовки.
+          </p>
+          <p>
+            Производственные ресурсы позволяют работать с алюминиевыми сплавами, сталями и другими
+            материалами в зависимости от требований проекта. После загрузки чертежа или 3D-модели
+            специалисты определяют технологию, оборудование и последовательность операций,
+            необходимую для изготовления детали.
+          </p>
+          <p>
+            Фрезерные работы применяются при производстве корпусов, плит, кронштейнов, элементов
+            оснастки и других деталей с пазами, карманами, отверстиями и сложными пространственными
+            поверхностями.
+          </p>
         </div>
 
         <div class="uslugi-image-wrapper">
-          <img src="/uslugiPages/milling.png" alt="Фрезерная обработка" class="uslugi-image" />
+          <img src="/uslugiPages/milling.png" alt="Фрезерная обработка" class="uslugi-image" width="500" height="380" />
         </div>
       </div>
 
@@ -78,9 +99,7 @@ const equipmentRows = [
 
             <div class="requirements-mobile__row requirements-mobile__row--materials">
               <div class="requirements-mobile__cell requirements-mobile__cell--full">
-                <ul class="requirements-mobile__materials-list">
-                  <li v-for="material in materials" :key="material">{{ material }}</li>
-                </ul>
+                {{ materialsLabel }}
               </div>
             </div>
           </div>
@@ -102,38 +121,22 @@ const equipmentRows = [
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Универсальные станки</td>
-                  <td>до 1 400 (Д х Ш х В)</td>
-                  <td rowspan="4">
-                    <ul class="materials-list">
-                      <li v-for="material in materials" :key="material">{{ material }}</li>
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Станки ЧПУ, 5-осевой</td>
+                <tr v-for="row in equipmentRows" :key="row.equipment">
+                  <td>{{ row.equipment }}</td>
                   <td>
-                    max: 13 866 × 1 571 × 1 150 (дерево)<br />
-                    max: 4 200 × 3 200 × 1 250 (металл)
+                    <template v-for="(line, index) in row.dimensions" :key="line">
+                      <br v-if="index > 0" />{{ line }}
+                    </template>
                   </td>
-                </tr>
-                <tr>
-                  <td>Станки ЧПУ, 3-осевой</td>
-                  <td>max: 4 200 × 3 200 × 1 250 (металл)</td>
-                </tr>
-                <tr>
-                  <td>Фрезерно-гравировальный станок</td>
-                  <td>
-                    max: 2 200 × 1 610 (металл)<br />
-                    max: 4 000 × 2 070 (дерево)
-                  </td>
+                  <td>{{ materialsLabel }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </template>
       </UslugiRequirementsAccordion>
+
+      <UslugiKeywords :tags="keywords" />
     </div>
   </el-col>
 </template>

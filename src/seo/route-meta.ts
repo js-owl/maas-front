@@ -26,7 +26,7 @@ const defaultPublicSeo: RouteSeo = {
     'Manufacturing as a Service: услуги производства на заказ, онлайн-расчёт и сопровождение заказов.',
 }
 
-const pagesWithOwnH1 = new Set(['/', '/license', '/offer-client', '/policy'])
+const pagesWithOwnH1 = new Set(['/', '/license', '/offer-client', '/policy', '/mechanical'])
 
 export function pageHasOwnH1(path: string): boolean {
   return pagesWithOwnH1.has(normalizePath(path))

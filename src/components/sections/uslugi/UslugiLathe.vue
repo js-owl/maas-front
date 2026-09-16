@@ -1,8 +1,18 @@
 <script lang="ts" setup>
 import { useUslugiRequirementsExpand } from '@/composables/useUslugiRequirementsExpand'
 import UslugiRequirementsAccordion from '@/components/sections/uslugi/UslugiRequirementsAccordion.vue'
+import UslugiKeywords from '@/components/sections/uslugi/UslugiKeywords.vue'
 
 const { isRequirementsExpanded, isMobile } = useUslugiRequirementsExpand()
+
+const keywords = [
+  'Токарная обработка металла',
+  'Токарные работы',
+  'Детали по чертежам',
+  'Токарная обработка ЧПУ',
+  'Изготовление деталей на токарном станке',
+  'Расчет стоимости токарной обработки',
+]
 
 const materials = [
   'Нержавеющие, легированные стали',
@@ -37,16 +47,26 @@ const equipmentRows = [
 
       <div class="uslugi-section">
         <div class="uslugi-text">
-          Токарная обработка представляет собой механическую операцию, при которой вращающаяся
-          деталь обрабатывается режущим инструментом, последовательно снимающим слои материала.
-          <br /><br />
-          Технология позволяет создавать цилиндрические, конические и сложные профилированные
-          поверхности с высокой степенью точности. Применяется в производстве металлических,
-          пластиковых и других изделий, обеспечивая превосходное качество финишной обработки.
+          <p>
+            Выполняем токарную обработку металла на заказ по чертежам и 3D-моделям заказчика.
+            Производственные возможности платформы позволяют выполнять обработку деталей на
+            универсальных токарных станках и оборудовании с ЧПУ, включая крупногабаритные заготовки.
+          </p>
+          <p>
+            Токарные работы применяются для изготовления валов, втулок, осей, колец, фланцев и
+            других тел вращения с заданными геометрическими параметрами. Доступна обработка сталей,
+            нержавеющих и легированных сталей, титановых, алюминиевых, медных сплавов и ряда
+            инженерных полимеров.
+          </p>
+          <p>
+            Максимальные доступные габариты на отдельных типах оборудования — до 1600 мм по
+            диаметру и до 5000 мм по длине. Конкретная технология обработки, оборудование и
+            производственный маршрут подбираются после анализа конструкторской документации.
+          </p>
         </div>
 
         <div class="uslugi-image-wrapper">
-          <img src="/uslugiPages/lathe.png" alt="Токарная обработка" class="uslugi-image" />
+          <img src="/uslugiPages/lathe.png" alt="Токарная обработка" class="uslugi-image" width="500" height="391" />
         </div>
       </div>
 
@@ -55,7 +75,7 @@ const equipmentRows = [
           <div class="requirements-mobile">
             <div class="requirements-mobile__row requirements-mobile__row--head">
               <div class="requirements-mobile__cell">Оборудование</div>
-              <div class="requirements-mobile__cell">Габариты</div>
+              <div class="requirements-mobile__cell">Габариты, мм</div>
             </div>
 
             <div
@@ -97,33 +117,31 @@ const equipmentRows = [
               <thead>
                 <tr>
                   <th class="uslugi-table-thead">Оборудование</th>
-                  <th class="uslugi-table-thead">Габариты</th>
+                  <th class="uslugi-table-thead">Габариты, мм</th>
                   <th class="uslugi-table-thead">Материалы</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Токарно-винторезные станки</td>
-                  <td>диаметр: до 1600<br />длина: до 5000</td>
-                  <td rowspan="3">
+                <tr v-for="row in equipmentRows" :key="row.equipment">
+                  <td>{{ row.equipment }}</td>
+                  <td>
+                    <template v-for="(line, index) in row.dimensions" :key="line">
+                      <br v-if="index > 0" />{{ line }}
+                    </template>
+                  </td>
+                  <td>
                     <ul class="materials-list">
                       <li v-for="material in materials" :key="material">{{ material }}</li>
                     </ul>
                   </td>
-                </tr>
-                <tr>
-                  <td>Станок с ЧПУ</td>
-                  <td>Диаметр до 600 мм</td>
-                </tr>
-                <tr>
-                  <td>Тяжёлый токарный станок с ЧПУ</td>
-                  <td>диаметр: до 880<br />длина: до 1500</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </template>
       </UslugiRequirementsAccordion>
+
+      <UslugiKeywords :tags="keywords" />
     </div>
   </el-col>
 </template>
