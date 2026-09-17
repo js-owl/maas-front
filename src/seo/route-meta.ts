@@ -34,6 +34,7 @@ const pagesWithOwnH1 = new Set([
   '/mechanical',
   '/print',
   '/galv',
+  '/weld',
 ])
 
 export function pageHasOwnH1(path: string): boolean {
