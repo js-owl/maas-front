@@ -7,7 +7,7 @@ const { isMobile, isTablet } = usePageBreakpoints()
 </script>
 
 <template>
-  <!-- https://www.figma.com/design/0JRYgu37H4xKjqliiJLvI1/MaaS-Frontend--Copy-?node-id=4510-3516 -->
+  <!-- https://www.figma.com/design/e96iy6upXth5rfRtLTi3j6/MaaS--Copy-?node-id=5650-15125 -->
   <div
     class="uslugi-page uslugi-galv-page content-page"
     :class="{
@@ -38,44 +38,153 @@ const { isMobile, isTablet } = usePageBreakpoints()
 </template>
 
 <style scoped>
-.uslugi-galv-page--mobile :deep(.uslugi-galv-cards) {
+.uslugi-galv-page :deep(.uslugi-wrapper) {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 40px;
+  margin-bottom: 40px;
+  padding: 40px;
+  border-radius: 40px;
+  box-shadow: 0 6px 7.5px rgba(224, 227, 237, 0.5);
 }
 
-.uslugi-galv-page--mobile :deep(.uslugi-wrapper--galv-intro) {
-  gap: 0;
+.uslugi-galv-page :deep(.uslugi-title) {
+  margin: 0;
+  font-family: 'Montserrat-Black', sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
 }
 
-.uslugi-galv-page--mobile :deep(.uslugi-wrapper--galv-services) {
+.uslugi-galv-page :deep(.uslugi-section) {
+  gap: 40px;
+  margin-bottom: 0;
+  align-items: flex-start;
+}
+
+.uslugi-galv-page :deep(.uslugi-text) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.uslugi-galv-page :deep(.uslugi-text p) {
+  margin: 0;
+}
+
+.uslugi-galv-page :deep(.uslugi-image-wrapper) {
+  flex: 0 0 500px;
+  width: 500px;
+  max-width: 500px;
+  min-width: 0;
+  min-height: 374px;
+  height: 374px;
+  border-radius: 20px;
+  background-color: var(--bgcolor);
+  overflow: hidden;
+}
+
+.uslugi-galv-page :deep(.uslugi-image) {
+  display: block;
+  width: 500px;
+  height: 374px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.uslugi-galv-page :deep(.uslugi-table-title) {
+  margin: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.uslugi-galv-page :deep(.requirements-table-wrapper) {
+  margin: 0;
+}
+
+@media (max-width: 1300px) and (min-width: 769px) {
+  .uslugi-galv-page :deep(.uslugi-image-wrapper) {
+    flex-basis: 360px;
+    width: 360px;
+    max-width: 360px;
+    height: 269px;
+    min-height: 269px;
+  }
+
+  .uslugi-galv-page :deep(.uslugi-image) {
+    width: 360px;
+    height: 269px;
+  }
+}
+
+.uslugi-galv-page--mobile :deep(.uslugi-wrapper) {
   gap: 16px;
-  box-shadow: none;
+  margin-bottom: 0;
+  padding: 16px;
+  border-radius: 20px;
+  box-shadow: 0 0 5px #c8cfe3;
 }
 
-.uslugi-galv-page--mobile :deep(.uslugi-galv-intro) {
+.uslugi-galv-page--mobile :deep(.uslugi-section) {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 20px;
+  margin-bottom: 0;
+  width: 100%;
+  min-width: 0;
 }
 
-.uslugi-galv-page--mobile :deep(.uslugi-galv-content) {
+.uslugi-galv-page--mobile :deep(.uslugi-title) {
+  margin: 0;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.uslugi-galv-page--mobile :deep(.uslugi-text) {
+  flex: none;
+  width: 100%;
+  min-width: 0;
+  gap: 8px;
+  font-size: 12px;
+  line-height: normal;
+  overflow-wrap: break-word;
+}
+
+.uslugi-galv-page--mobile :deep(.uslugi-image-wrapper) {
+  flex: none;
+  width: 100%;
+  max-width: 100%;
+  height: 200px;
+  min-height: 200px;
+  border-radius: 10px;
+}
+
+.uslugi-galv-page--mobile :deep(.uslugi-image) {
+  width: 100%;
+  max-width: 100%;
+  height: 200px;
+  min-height: 200px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.uslugi-galv-page--mobile :deep(.technical-requirements) {
+  margin: 0;
+}
+
+.uslugi-galv-page--mobile :deep(.technical-requirements--expanded) {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.uslugi-galv-page--mobile :deep(.uslugi-text) {
-  margin: 0;
-}
-
-.uslugi-galv-page--mobile :deep(.galv-mobile-card__title) {
-  margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: normal;
-  color: #000000;
+.uslugi-galv-page--mobile :deep(.requirements-header .uslugi-table-title) {
+  font-size: 16px;
 }
 
 .uslugi-galv-page--mobile :deep(.galv-mobile-list) {

@@ -1,15 +1,25 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
-import IconArrowDown from '@/icons/IconArrowDown.vue'
+import { useUslugiRequirementsExpand } from '@/composables/useUslugiRequirementsExpand'
+import UslugiRequirementsAccordion from '@/components/sections/uslugi/UslugiRequirementsAccordion.vue'
+import UslugiKeywords from '@/components/sections/uslugi/UslugiKeywords.vue'
 
-const { isMobile } = usePageBreakpoints()
+const { isRequirementsExpanded, isMobile } = useUslugiRequirementsExpand()
 
-const isRequirementsExpanded = ref(false)
+const keywords = [
+  'Гальванические покрытия на заказ',
+  'Анодирование алюминия',
+  'Твёрдое анодирование',
+  'Хромирование',
+  'Никелирование',
+  'Цинкование',
+  'Кадмирование',
+  'Серебрение',
+  'Химическая обработка титана',
+]
 
 type GalvanicService = {
   name: string
-  thickness?: string
+  thickness: string
   maxSize: string
 }
 
@@ -46,14 +56,17 @@ const galvanicServices: GalvanicService[] = [
   },
   {
     name: 'Оксидирование магниевых сплавов',
+    thickness: '-',
     maxSize: '1700 х 600 х 900',
   },
   {
     name: 'Химическая обработка нержавеющих сталей',
+    thickness: '-',
     maxSize: '2800 х 850 х 950',
   },
   {
     name: 'Фосфатирование сталей',
+    thickness: '-',
     maxSize: '1800 х 600 х 750',
   },
   {
@@ -83,10 +96,12 @@ const galvanicServices: GalvanicService[] = [
   },
   {
     name: 'Химическая обработка титановых сплавов',
+    thickness: '-',
     maxSize: '2800 х 800 х 850',
   },
   {
     name: 'Химическая обработка нержавеющих сталей (трубы)',
+    thickness: '-',
     maxSize: 'тр.8х1 х 3900',
   },
   {
@@ -104,41 +119,61 @@ const galvanicServices: GalvanicService[] = [
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <template v-if="isMobile">
-      <div class="uslugi-galv-cards">
-        <div class="uslugi-wrapper uslugi-wrapper--galv-intro">
-          <div class="uslugi-galv-intro">
-            <div class="uslugi-image-wrapper">
-              <img src="/uslugiPages/galv.png" alt="Гальваническая обработка" class="uslugi-image" />
-            </div>
+    <div class="uslugi-wrapper uslugi-wrapper--galv">
+      <h1 class="uslugi-title">Гальванические покрытия и химическая обработка металлов</h1>
 
-            <div class="uslugi-galv-content">
-              <div class="uslugi-title">Гальваническая обработка</div>
-              <p class="uslugi-text">
-                Гальваническое покрытие металла — это один из самых эффективных способов повысить
-                эксплуатационные характеристики металлических изделий. Метод основан на
-                электролитическом нанесении тонкого слоя металла, который не только защищает изделие
-                от коррозии, но и улучшает его внешний вид, повышает прочность, устойчивость к
-                износу и придаёт дополнительные функциональные свойства. Благодаря сочетанию
-                доступности и высокой эффективности гальваника активно применяется в промышленности,
-                строительстве, электронике, автомобилестроении и в производстве декоративных
-                элементов.
-              </p>
-            </div>
-          </div>
+      <div class="uslugi-section">
+        <div class="uslugi-text">
+          <p>
+            Выполняем нанесение гальванических покрытий и химическую обработку металлических деталей
+            на заказ. Производственные возможности включают защитные и функциональные покрытия для
+            изделий из сталей, алюминиевых, магниевых и титановых сплавов.
+          </p>
+          <p>
+            Покрытия применяются для защиты металла от коррозии, повышения износостойкости и
+            улучшения эксплуатационных характеристик изделия. Конкретная технология выбирается с
+            учётом материала детали, условий эксплуатации, требований к толщине и функциональным
+            свойствам покрытия.
+          </p>
+          <p>
+            Производственные ресурсы позволяют работать в том числе с крупногабаритными изделиями. В
+            зависимости от технологического процесса максимальные габариты обрабатываемых деталей
+            достигают 5800 × 700 × 1450 мм.
+          </p>
+          <p>
+            Для расчёта заказа передайте чертёж, 3D-модель или техническую документацию. Специалисты
+            определят возможность обработки, подходящую технологию и производственный маршрут.
+          </p>
         </div>
 
-        <div class="uslugi-wrapper uslugi-wrapper--galv-services">
-          <div class="galv-mobile-card__title">Услуги</div>
+        <div class="uslugi-image-wrapper">
+          <img
+            src="/uslugiPages/galv.png"
+            alt="Гальванические покрытия и химическая обработка металлов"
+            class="uslugi-image"
+            width="500"
+            height="374"
+          />
+        </div>
+      </div>
 
+      <UslugiKeywords :tags="keywords" />
+
+      <UslugiRequirementsAccordion
+        v-if="isMobile"
+        v-model:expanded="isRequirementsExpanded"
+        title="Виды гальванического покрытия"
+        :is-mobile="isMobile"
+      >
+        <template #mobile>
           <div class="galv-mobile-list">
             <div
-              v-for="service in galvanicServices"
-              :key="service.name"
+              v-for="(service, index) in galvanicServices"
+              :key="`${service.name}-${service.thickness}-${index}`"
               class="galv-mobile-list__item"
             >
               <p class="galv-mobile-list__name">{{ service.name }}</p>
-              <div v-if="service.thickness" class="galv-mobile-list__row">
+              <div class="galv-mobile-list__row">
                 <p class="galv-mobile-list__label">Толщина покрытия, мкм:</p>
                 <p class="galv-mobile-list__value">{{ service.thickness }}</p>
               </div>
@@ -148,45 +183,17 @@ const galvanicServices: GalvanicService[] = [
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </template>
+        </template>
+      </UslugiRequirementsAccordion>
 
-    <div v-else class="uslugi-wrapper">
-      <div class="uslugi-title">Гальваническая обработка</div>
-
-      <div class="uslugi-section">
-        <div class="uslugi-text">
-          Гальваническое покрытие металла - один из самых эффективных способов повысить
-          эксплуатационные характеристики металлических изделий. Метод основан на электролитическом
-          нанесении тонкого слоя металла, который не только защищает изделие от коррозии, но и
-          улучшает его внешний вид, повышает прочность, устойчивость к износу и придает
-          дополнительные функциональные свойства.
-          <br />
-          Благодаря сочетанию доступности и высокой эффективности гальваника активно применяется в
-          промышленности, строительстве, электронике, автомобилестроении и в производстве
-          декоративных элементов.
-        </div>
-
-        <div class="uslugi-image-wrapper">
-          <img src="/uslugiPages/galv.png" alt="Гальваническая обработка" class="uslugi-image" />
-        </div>
-      </div>
-
-      <div class="technical-requirements">
-        <div class="requirements-header" @click="isRequirementsExpanded = !isRequirementsExpanded">
-          <div class="uslugi-table-title">Технические требования</div>
-          <el-icon class="requirements-arrow" :class="{ expanded: isRequirementsExpanded }">
-            <IconArrowDown />
-          </el-icon>
-        </div>
-
-        <div v-if="isRequirementsExpanded" class="requirements-table-wrapper">
-          <table class="requirements-table">
+      <div v-else class="uslugi-galv-table">
+        <div class="uslugi-table-title">Виды гальванического покрытия</div>
+        <div class="requirements-table-wrapper">
+          <table class="requirements-table requirements-table--middle">
             <colgroup>
-              <col class="col-type" />
-              <col class="col-thickness" />
-              <col class="col-size" />
+              <col style="width: 42%" />
+              <col style="width: 29%" />
+              <col style="width: 29%" />
             </colgroup>
             <thead>
               <tr>
@@ -196,95 +203,13 @@ const galvanicServices: GalvanicService[] = [
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Оксидирование анодное алюминиевых сплавов</td>
-                <td>5 ... 8</td>
-                <td>5800 x 600 x 1350</td>
-              </tr>
-              <tr>
-                <td>Оксидирование химическое алюминиевых сплавов</td>
-                <td>5 ... 8</td>
-                <td>5800 x 700 x 1450</td>
-              </tr>
-              <tr>
-                <td>Оксидирование твердое анодное алюминиевых сплавов</td>
-                <td>10 ... 40</td>
-                <td>5800 x 600 x 1350</td>
-              </tr>
-              <tr>
-                <td>Фосфатирование сталей</td>
-                <td>10 ... 40</td>
-                <td>1800 x 600 x 750</td>
-              </tr>
-              <tr>
-                <td>Цинкование</td>
-                <td>1 ... 12</td>
-                <td>2800 x 300 x 850</td>
-              </tr>
-              <tr>
-                <td>Кадмирование хлористоаммонийное</td>
-                <td>1 ... 15</td>
-                <td>2800 x 300 x 850</td>
-              </tr>
-              <tr>
-                <td>Оксидирование магниевых сплавов</td>
-                <td>-</td>
-                <td>1700 x 600 x 900</td>
-              </tr>
-              <tr>
-                <td>Химическая обработка нержавеющих сталей</td>
-                <td>-</td>
-                <td>2800 x 850 x 950</td>
-              </tr>
-              <tr>
-                <td>Фосфатирование сталей</td>
-                <td>-</td>
-                <td>1800 x 600 x 750</td>
-              </tr>
-              <tr>
-                <td>Кадмирование сернокислое</td>
-                <td>1 ... 15</td>
-                <td>1000 x 190 x 350</td>
-              </tr>
-              <tr>
-                <td>Никелирование сернокислое</td>
-                <td>2 ... 3</td>
-                <td>1000 x 190 x 350</td>
-              </tr>
-              <tr>
-                <td>Никелирование хлористое</td>
-                <td>5 ... 15</td>
-                <td>1000 x 190 x 350</td>
-              </tr>
-              <tr>
-                <td>Покрытие гальвано термический никель-кадмий</td>
-                <td>1 ... 18</td>
-                <td>1000 x 190 x 350</td>
-              </tr>
-              <tr>
-                <td>Олово-висмут</td>
-                <td>1 ... 20</td>
-                <td>1000 x 190 x 350</td>
-              </tr>
-              <tr>
-                <td>Химическая обработка титановых сплавов</td>
-                <td>-</td>
-                <td>2800 x 800 x 850</td>
-              </tr>
-              <tr>
-                <td>Химическая обработка нержавеющих сталей (трубы)</td>
-                <td>-</td>
-                <td>тр.8x1 x 3900</td>
-              </tr>
-              <tr>
-                <td>Хромирование</td>
-                <td>10 ... 60</td>
-                <td>1400 x 200 x 550</td>
-              </tr>
-              <tr>
-                <td>Серебрение</td>
-                <td>0,5 .. 15</td>
-                <td>1500 x 150 x 30</td>
+              <tr
+                v-for="(service, index) in galvanicServices"
+                :key="`${service.name}-${service.thickness}-${index}`"
+              >
+                <td>{{ service.name }}</td>
+                <td>{{ service.thickness }}</td>
+                <td>{{ service.maxSize }}</td>
               </tr>
             </tbody>
           </table>
@@ -295,88 +220,14 @@ const galvanicServices: GalvanicService[] = [
 </template>
 
 <style scoped>
-.technical-requirements {
-  margin-top: 20px;
-}
-
-.requirements-header {
+.uslugi-galv-table {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  min-height: 32px;
-  padding-top: 4px;
-  user-select: none;
-}
-
-.requirements-arrow {
-  color: var(--gray-footer);
-  font-size: 16px;
-  transition: transform 0.2s ease;
-  transform: rotate(0deg);
-}
-
-.requirements-arrow.expanded {
-  transform: rotate(-180deg);
-}
-
-.requirements-table-wrapper {
-  margin-top: 16px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid var(--button-bg);
-  background-color: var(--whity);
-}
-
-.requirements-table {
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
 }
 
-.requirements-table th,
-.requirements-table td {
-  border: 1px solid var(--button-bg);
-  color: var(--blacky);
-  font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1;
-  padding: 12px 20px;
-  text-align: left;
-  vertical-align: middle;
-}
-
-.requirements-table thead th {
-  background-color: var(--bgcolor);
-  min-height: 74px;
-  padding: 12px 20px;
-}
-
-.requirements-table tbody td {
-  background-color: var(--whity);
-}
-
-.requirements-table tr {
-  height: 57px;
-}
-
-.col-type {
-  width: 600px;
-}
-
-.col-thickness {
-  width: 239px;
-}
-
-.col-size {
-  width: 363px;
-}
-
-.uslugi-table-title {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
-  line-height: 1;
-  margin-bottom: 0;
+.uslugi-galv-table .uslugi-table-title {
+  margin: 0;
 }
 </style>
