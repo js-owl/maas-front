@@ -103,12 +103,6 @@ const applications = [
   margin-top: 4px;
 }
 
-@media (max-width: 1200px) {
-  .application-panel {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (max-width: 768px) {
   .print-examples .uslugi-table-title {
     font-family: 'Montserrat-SemiBold', sans-serif;

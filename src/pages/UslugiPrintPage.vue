@@ -8,13 +8,14 @@ const { isMobile, isTablet } = usePageBreakpoints()
 </script>
 
 <template>
-  <!-- https://www.figma.com/design/e96iy6upXth5rfRtLTi3j6/MaaS--Copy-?node-id=5653-18418 -->
+  <!-- https://www.figma.com/design/i3nw5hviaUA3ssmMQiXijG/MaaS?node-id=5653-18559 -->
   <div
     class="uslugi-page uslugi-print-page content-page"
     :class="{
       'content-page--mobile': isMobile,
       'content-page--tablet': isTablet,
       'uslugi-page--mobile': isMobile,
+      'uslugi-print-page--tablet': isTablet,
       'uslugi-print-page--mobile': isMobile,
     }"
   >
@@ -76,14 +77,19 @@ const { isMobile, isTablet } = usePageBreakpoints()
 }
 
 .uslugi-print-page :deep(.uslugi-section) {
-  gap: 80px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 500px);
+  grid-template-rows: auto auto;
+  gap: 40px 80px;
   margin-bottom: 0;
-  align-items: flex-start;
+  align-items: start;
 }
 
 .uslugi-print-page :deep(.uslugi-text) {
   display: flex;
   flex-direction: column;
+  grid-column: 1;
+  grid-row: 1;
   gap: 8px;
   line-height: 1.4;
 }
@@ -93,7 +99,11 @@ const { isMobile, isTablet } = usePageBreakpoints()
 }
 
 .uslugi-print-page :deep(.uslugi-image-wrapper) {
-  flex: 1 1 0;
+  display: block;
+  flex: none;
+  grid-column: 2;
+  grid-row: 1 / 3;
+  width: 100%;
   max-width: 500px;
   min-width: 0;
   min-height: 433px;
@@ -101,6 +111,11 @@ const { isMobile, isTablet } = usePageBreakpoints()
   border-radius: 20px;
   background-color: var(--bgcolor);
   overflow: hidden;
+}
+
+.uslugi-print-page :deep(.uslugi-keywords) {
+  grid-column: 1;
+  grid-row: 2;
 }
 
 .uslugi-print-page :deep(.uslugi-image) {
@@ -128,24 +143,93 @@ const { isMobile, isTablet } = usePageBreakpoints()
   margin: 0;
 }
 
-@media (max-width: 1300px) and (min-width: 769px) {
-  .uslugi-print-page__title {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
+.uslugi-print-page--tablet :deep(.uslugi-calc-section) {
+  padding: 40px;
+  border-radius: 40px;
+  box-shadow: 0 6px 7.5px rgba(224, 227, 237, 0.5);
+}
 
-  .uslugi-print-page :deep(.uslugi-image-wrapper) {
-    max-width: 360px;
-    height: 341px;
-    min-height: 341px;
-  }
+.uslugi-print-page--tablet :deep(.uslugi-calc-wrap) {
+  gap: 80px;
+  align-items: center;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-calc-left) {
+  gap: 40px;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-calc-title) {
+  font-family: 'Montserrat-Black', sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-calc-description) {
+  padding-right: 20px;
+  font-size: 18px;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-calc-upload-files .upload) {
+  padding: 30px;
+  border: 2px dashed #e84261;
+  border-radius: 20px;
+  background-color: transparent !important;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-calc-upload-files .upload:hover:not(.is-disabled)) {
+  border-color: #e84261;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-calc-upload-files .custom) {
+  gap: 20px;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-calc-upload-files .el-upload__text) {
+  font-size: 20px !important;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-calc-upload-files .upload-subtitle) {
+  font-size: 16px;
+  color: #e84261;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-calc-upload-files .upload-subtitle + .upload-subtitle) {
+  margin-top: -12px;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-section) {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 40px 80px;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-image-wrapper) {
+  grid-column: 2;
+  grid-row: 1;
+  max-width: none;
+  height: 369px;
+  min-height: 369px;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-keywords) {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.uslugi-print-page--tablet :deep(.uslugi-table-thead),
+.uslugi-print-page--tablet :deep(.requirements-table td) {
+  padding: 10px 12px;
+  font-size: 16px;
+}
+
+.uslugi-print-page--tablet :deep(.requirements-table-wrapper) {
+  border-radius: 8px;
+  border-color: var(--button-bg);
+  background-color: #f2f3f7;
+}
+
+.uslugi-print-page--tablet :deep(.application-panel) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .uslugi-print-page--mobile .uslugi-print-page__title {
