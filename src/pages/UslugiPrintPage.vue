@@ -24,7 +24,6 @@ const { isMobile, isTablet } = usePageBreakpoints()
         <el-col :span="24">
           <div class="uslugi-page__sections">
             <UslugiCalc service_id="printing" />
-            <h1 class="uslugi-print-page__title">3D-печать</h1>
             <UslugiPrint />
             <UslugiPrintExample />
           </div>
@@ -232,18 +231,6 @@ const { isMobile, isTablet } = usePageBreakpoints()
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.uslugi-print-page--mobile .uslugi-print-page__title {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 .uslugi-print-page--mobile :deep(.uslugi-print-cards) {
   display: flex;
   flex-direction: column;
@@ -254,8 +241,12 @@ const { isMobile, isTablet } = usePageBreakpoints()
   gap: 16px;
   margin-bottom: 0;
   padding: 16px;
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: 0 0 5px #c8cfe3;
+}
+
+.uslugi-print-page--mobile :deep(.uslugi-wrapper--print) {
+  gap: 24px;
 }
 
 .uslugi-print-page--mobile :deep(.uslugi-wrapper--print-materials) {
@@ -264,6 +255,13 @@ const { isMobile, isTablet } = usePageBreakpoints()
 
 .uslugi-print-page--mobile :deep(.uslugi-wrapper--application) {
   gap: 16px;
+}
+
+.uslugi-print-page--mobile :deep(.uslugi-print-intro) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
 }
 
 .uslugi-print-page--mobile :deep(.uslugi-section) {
@@ -275,10 +273,11 @@ const { isMobile, isTablet } = usePageBreakpoints()
 
 .uslugi-print-page--mobile :deep(.uslugi-title) {
   margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
+  font-family: 'Montserrat-Black', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
   line-height: normal;
+  text-transform: none;
 }
 
 .uslugi-print-page--mobile :deep(.uslugi-text) {
@@ -318,6 +317,23 @@ const { isMobile, isTablet } = usePageBreakpoints()
   font-size: 16px;
 }
 
+.uslugi-print-page--mobile :deep(.requirements-mobile) {
+  border-color: var(--button-bg);
+}
+
+.uslugi-print-page--mobile :deep(.requirements-mobile__row:not(:last-child)) {
+  border-bottom-color: var(--button-bg);
+}
+
+.uslugi-print-page--mobile :deep(.requirements-mobile__row:not(.requirements-mobile__row--materials)
+  .requirements-mobile__cell:first-child) {
+  border-right-color: var(--button-bg);
+}
+
+.uslugi-print-page--mobile :deep(.requirements-mobile__row--head .requirements-mobile__cell) {
+  background-color: var(--bgcolor);
+}
+
 .uslugi-print-page--mobile :deep(.materials-mobile__item) {
   display: flex;
   flex-direction: column;
@@ -351,6 +367,12 @@ const { isMobile, isTablet } = usePageBreakpoints()
   color: #000000;
 }
 
+.uslugi-print-page--mobile :deep(.materials-mobile__texts) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .uslugi-print-page--mobile :deep(.materials-mobile__text) {
   margin: 0;
   font-family: 'Montserrat-Medium', sans-serif;
@@ -362,9 +384,9 @@ const { isMobile, isTablet } = usePageBreakpoints()
 
 .uslugi-print-page--mobile :deep(.print-examples .uslugi-table-title) {
   margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
+  font-family: 'Montserrat-Black', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
   line-height: normal;
   color: #000000;
 }
@@ -372,33 +394,36 @@ const { isMobile, isTablet } = usePageBreakpoints()
 .uslugi-print-page--mobile :deep(.application-panel) {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 0;
-  background: none;
-  border-radius: 0;
+  gap: 20px;
+  padding: 16px;
+  background-color: var(--bgcolor);
+  border-radius: 10px;
 }
 
 .uslugi-print-page--mobile :deep(.application-card) {
-  padding: 16px;
-  border-radius: 8px;
-  background-color: var(--bgcolor);
+  padding: 0;
+  background: none;
 }
 
 .uslugi-print-page--mobile :deep(.application-title) {
   margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-family: 'Montserrat-Bold', sans-serif;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: normal;
   color: #000000;
 }
 
 .uslugi-print-page--mobile :deep(.application-list) {
-  padding-left: 18px;
+  padding-left: 21px;
   font-family: 'Montserrat-Medium', sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   line-height: normal;
   color: #000000;
+}
+
+.uslugi-print-page--mobile :deep(.application-list li + li) {
+  margin-top: 0;
 }
 </style>

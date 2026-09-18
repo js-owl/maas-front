@@ -105,36 +105,41 @@ const applications = [
 
 @media (max-width: 768px) {
   .print-examples .uslugi-table-title {
-    font-family: 'Montserrat-SemiBold', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
+    font-family: 'Montserrat-Black', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
     line-height: normal;
   }
 
   .application-panel {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 0;
-    background: none;
-    border-radius: 0;
-  }
-
-  .application-card {
+    gap: 20px;
     padding: 16px;
-    border-radius: 8px;
+    border-radius: 10px;
     background-color: var(--bgcolor);
   }
 
+  .application-card {
+    padding: 0;
+    background: none;
+  }
+
   .application-title {
+    font-family: 'Montserrat-Bold', sans-serif;
     font-size: 16px;
+    font-weight: 700;
     line-height: normal;
   }
 
   .application-list {
-    padding-left: 18px;
-    font-size: 12px;
+    padding-left: 21px;
+    font-size: 14px;
     line-height: normal;
+  }
+
+  .application-list li + li {
+    margin-top: 0;
   }
 }
 </style>

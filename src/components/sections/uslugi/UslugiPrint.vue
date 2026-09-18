@@ -63,29 +63,31 @@ const materials = [
     <template v-if="isMobile">
       <div class="uslugi-print-cards">
         <div class="uslugi-wrapper uslugi-wrapper--print">
-          <div class="uslugi-title">SLS-печать</div>
+          <div class="uslugi-print-intro">
+            <h1 class="uslugi-title">3D-печать</h1>
 
-          <div class="uslugi-text">
-            <p>
-              SLS - технология наращивания модели из полимерного материала при помощи лазера (метод
-              селективного лазерного спекания). Идеально подходит для массового производства, изделия
-              обладают механической прочностью, особенно при использовании пластиков инженерного класса.
-            </p>
-            <p>
-              Удобен для изготовления сложных прототипов, так как в отличие от большинства других метод не
-              требует использования поддерживающих элементов. Это упрощает процесс печати и позволяет
-              реализовать сложную геометрию.
-            </p>
-            <p>
-              Мы используем принтеры с увеличенным объемом печати и многозонной системой стабилизации
-              температуры, что позволяет добиться высокого качества изделий.
-            </p>
+            <div class="uslugi-text">
+              <p>
+                SLS - технология наращивания модели из полимерного материала при помощи лазера (метод
+                селективного лазерного спекания). Идеально подходит для массового производства, изделия
+                обладают механической прочностью, особенно при использовании пластиков инженерного класса.
+              </p>
+              <p>
+                Удобен для изготовления сложных прототипов, так как в отличие от большинства других метод не
+                требует использования поддерживающих элементов. Это упрощает процесс печати и позволяет
+                реализовать сложную геометрию.
+              </p>
+              <p>
+                Мы используем принтеры с увеличенным объемом печати и многозонной системой стабилизации
+                температуры, что позволяет добиться высокого качества изделий.
+              </p>
+            </div>
           </div>
 
           <div class="uslugi-image-wrapper">
             <img
               src="/uslugiPages/print-main.png"
-              alt="SLS-печать"
+              alt="3D-печать"
               class="uslugi-image"
               width="500"
               height="433"
@@ -115,20 +117,22 @@ const materials = [
         <div class="uslugi-wrapper uslugi-wrapper--print-materials">
           <UslugiRequirementsAccordion
             v-model:expanded="isMaterialsExpanded"
-            title="Материалы"
+            title="Виды материалов"
             :is-mobile="isMobile"
           >
             <template #mobile>
               <div class="materials-mobile">
                 <div v-for="material in materials" :key="material.name" class="materials-mobile__item">
                   <div class="materials-mobile__title">{{ material.name }}</div>
-                  <p
-                    v-for="(paragraph, index) in material.description"
-                    :key="index"
-                    class="materials-mobile__text"
-                  >
-                    {{ paragraph }}
-                  </p>
+                  <div class="materials-mobile__texts">
+                    <p
+                      v-for="(paragraph, index) in material.description"
+                      :key="index"
+                      class="materials-mobile__text"
+                    >
+                      {{ paragraph }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </template>
