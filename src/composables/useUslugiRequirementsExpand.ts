@@ -3,7 +3,7 @@ import { usePageBreakpoints } from './usePageBreakpoints'
 
 export const useUslugiRequirementsExpand = () => {
   const isRequirementsExpanded = ref(false)
-  const { isMobile } = usePageBreakpoints()
+  const { isMobile, isTablet } = usePageBreakpoints()
 
-  return { isRequirementsExpanded, isMobile }
+  return { isRequirementsExpanded, isMobile, isTablet }
 }
