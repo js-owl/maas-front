@@ -7,7 +7,6 @@ import {
   getGuestAcceptAttribute,
   getGuestModelOnlyMessage,
   getGuestSingleModelMessage,
-  getIncompatibleModelMessage,
   getModelFormatsLabel,
   isAllowedModelFile,
   isPrintingService,
@@ -100,7 +99,6 @@ const uploadMainText = computed(() => {
 const guestOnlyMessage = computed(() => getGuestModelOnlyMessage(props.service_id))
 const modelFormatsLabel = computed(() => getModelFormatsLabel(props.service_id))
 const guestAccept = computed(() => getGuestAcceptAttribute(props.service_id))
-const showDocsFormats = computed(() => !isPrintingService(props.service_id))
 
 async function loadDocumentsByIds(ids: number[]) {
   if (ids.length === 0) {
@@ -149,19 +147,7 @@ const rejectGuestFile = (file: File): boolean => {
 }
 
 const processUploadedFile = async (file: File): Promise<boolean> => {
-  const extension = getFileExtension(file.name) || 'stp'
-
-  if (isPrintingService(props.service_id)) {
-    if (!isAllowedModelFile(file.name, props.service_id)) {
-      ElMessage.warning(getIncompatibleModelMessage(props.service_id))
-      return false
-    }
-
-    const base64Data = await fileToBase64(file)
-    const id = await saveFile3D(file.name, base64Data, extension)
-    emit('update:stp_id', id)
-    return true
-  }
+  const extension = getFileExtension(file.name) || (isPrintingService(props.service_id) ? 'stl' : 'stp')
 
   if (!isAuthenticated.value) {
     if (rejectGuestFile(file)) return false
@@ -316,7 +302,7 @@ const handleDragOver = (event: DragEvent) => {
             <div class="upload-subtitle">
               {{ modelFormatsLabel }}
             </div>
-            <div v-if="showDocsFormats" class="upload-subtitle">
+            <div class="upload-subtitle">
               Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
             </div>
           </template>
@@ -328,8 +314,8 @@ const handleDragOver = (event: DragEvent) => {
           @change="handleFileChange"
           style="display: none"
           ref="fileInput"
-          :multiple="isAuthenticated && showDocsFormats"
-          :accept="isAuthenticated && showDocsFormats ? undefined : guestAccept"
+          :multiple="isAuthenticated"
+          :accept="isAuthenticated ? undefined : guestAccept"
           aria-label="Загрузка файлов для расчёта"
           :disabled="isDisabled() || isUploading"
         />

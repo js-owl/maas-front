@@ -14,7 +14,6 @@ import {
   getIncompatibleModelMessage,
   getModelFormatsLabel,
   isAllowedModelFile,
-  isPrintingService,
 } from '@/helpers/model-file-types'
 import { useAuthStore } from '@/stores/auth.store'
 // import { useAuthStore } from '../../stores/auth.store'
@@ -54,7 +53,6 @@ const uploadServiceId = computed(() => props.service_id || selectedServiceId.val
 const hasModel = computed(() => stp_id.value != null)
 const modelFormatsLabel = computed(() => getModelFormatsLabel(uploadServiceId.value))
 const guestOnlyMessage = computed(() => getGuestModelOnlyMessage(uploadServiceId.value))
-const showDocsFormats = computed(() => !isPrintingService(uploadServiceId.value))
 const selectedRoutePath = computed(() => {
   if (selectedOrderType.value) {
     return orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.routePath ?? ''
@@ -137,7 +135,7 @@ const submit = () => {
                 <p class="calc-format-text">
                   {{ modelFormatsLabel }}
                 </p>
-                <div v-if="showDocsFormats" class="calc-format-docs">
+                <div class="calc-format-docs">
                   <p class="calc-format-text"> Форматы тех. документации: </p>
                   <p class="calc-format-text">DWG, DXF, PDF, SVG, AI, EPS</p>
                 </div>

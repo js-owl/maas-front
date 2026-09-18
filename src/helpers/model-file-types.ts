@@ -8,7 +8,6 @@ const PRINTING_MODEL_EXTENSIONS = ['stl']
 
 const DEFAULT_FORMATS_LABEL =
   'Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND'
-const PRINTING_FORMATS_LABEL = 'Допустимые форматы файлов: STL'
 
 export function getFileExtension(fileName: string): string {
   return fileName.split('.').pop()?.toLowerCase() ?? ''
@@ -53,8 +52,8 @@ export function getGuestSingleModelMessage(serviceId?: string | null): string {
     : 'Без авторизации можно загрузить только один STP-файл.'
 }
 
-export function getModelFormatsLabel(serviceId?: string | null): string {
-  return isPrintingService(serviceId) ? PRINTING_FORMATS_LABEL : DEFAULT_FORMATS_LABEL
+export function getModelFormatsLabel(_serviceId?: string | null): string {
+  return DEFAULT_FORMATS_LABEL
 }
 
 export function getGuestAcceptAttribute(serviceId?: string | null): string {
