@@ -17,7 +17,7 @@ const props = withDefaults(
     service_id: '',
     title: 'Производство под вашу потребность',
     description:
-      'Проведем расчет стоимости детали по 3D-модели или чертежу в течение 5 рабочих дней, а также вы получите анализ и рекомендации по оптимизации процесса изготовления',
+      'Проведем расчет стоимости детали по 3D-модели \nили чертежу в течение 5 рабочих дней, а также вы получите анализ и рекомендации по оптимизации процесса изготовления',
   }
 )
 
@@ -120,8 +120,8 @@ watch(
   margin: 0 0 40px;
   padding: 40px;
   background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 11px 7.5px #cbd1d5;
+  border-radius: 40px;
+  box-shadow: 0 6px 7.5px rgba(224, 227, 237, 0.5);
   box-sizing: border-box;
 }
 
@@ -136,16 +136,19 @@ watch(
   display: flex;
   flex: 1 1 0;
   flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
   gap: 40px;
   min-width: 0;
 }
 
 .uslugi-calc-title {
   margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 32px;
-  font-weight: 600;
-  line-height: normal;
+  width: 100%;
+  font-family: 'Montserrat-Black', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
   color: #000000;
   word-break: break-word;
 }
@@ -166,7 +169,12 @@ watch(
   display: flex;
   flex: 1 1 0;
   flex-direction: column;
+  align-items: flex-end;
+  align-self: stretch;
+  justify-content: center;
   gap: 20px;
+  width: 100%;
+  max-width: 500px;
   min-width: 0;
 }
 
@@ -180,29 +188,30 @@ watch(
 
 .uslugi-calc-upload-files :deep(.upload) {
   box-sizing: border-box;
+  width: 100%;
   height: auto;
-  min-height: 144px;
-  padding: 20px;
-  border: 2px dashed #7d8083;
-  border-radius: 10px;
-  background-color: #e1e4e6 !important;
+  min-height: 0;
+  padding: 30px;
+  border: 2px dashed #e84261;
+  border-radius: 20px;
+  background-color: transparent !important;
   overflow: visible;
 }
 
 .uslugi-calc-upload-files :deep(.upload.has-files) {
   height: auto;
-  min-height: 144px;
+  min-height: 0;
   overflow: visible;
 }
 
 .uslugi-calc-upload-files :deep(.upload:hover:not(.is-disabled)) {
-  border-color: #7d8083;
+  border-color: #e84261;
 }
 
 .uslugi-calc-upload-files :deep(.custom) {
   flex-direction: column;
   flex-wrap: nowrap;
-  gap: 12px;
+  gap: 20px;
   align-items: center;
   width: 100%;
   min-width: 0;
@@ -213,7 +222,7 @@ watch(
   font-family: 'Montserrat-SemiBold', sans-serif !important;
   font-size: 20px !important;
   font-weight: 600 !important;
-  line-height: 1.25 !important;
+  line-height: 1 !important;
 }
 
 .uslugi-calc-upload-files :deep(.upload-subtitle) {
@@ -222,11 +231,12 @@ watch(
   font-size: 16px;
   font-weight: 500;
   line-height: 1.35;
-  color: #7d8083;
+  text-align: center;
+  color: #e84261;
 }
 
 .uslugi-calc-upload-files :deep(.upload-subtitle + .upload-subtitle) {
-  margin-top: 0;
+  margin-top: -12px;
 }
 
 .uslugi-calc-action {
@@ -280,34 +290,12 @@ watch(
 }
 
 @media (max-width: 1300px) and (min-width: 769px) {
-  .uslugi-calc-section {
-    padding: 32px;
-  }
-
   .uslugi-calc-wrap {
     gap: 40px;
-    align-items: flex-start;
-  }
-
-  .uslugi-calc-left {
-    gap: 24px;
-  }
-
-  .uslugi-calc-title {
-    font-size: 28px;
   }
 
   .uslugi-calc-description {
     padding-right: 0;
-    font-size: 16px;
-  }
-
-  .uslugi-calc-upload-files :deep(.el-upload__text) {
-    font-size: 18px !important;
-  }
-
-  .uslugi-calc-upload-files :deep(.upload-subtitle) {
-    font-size: 14px;
   }
 }
 
