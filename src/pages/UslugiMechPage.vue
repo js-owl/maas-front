@@ -170,25 +170,37 @@ const { isMobile, isTablet } = usePageBreakpoints()
 }
 
 .uslugi-mech-page--mobile :deep(.uslugi-wrapper) {
-  gap: 16px;
+  gap: 24px;
   margin-bottom: 0;
   padding: 16px;
   border-radius: 20px;
   box-shadow: 0 0 5px #c8cfe3;
 }
 
-.uslugi-mech-page--mobile :deep(.uslugi-section) {
+.uslugi-mech-page--mobile :deep(.uslugi-mech-content) {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-bottom: 0;
+  width: 100%;
+}
+
+.uslugi-mech-page--mobile :deep(.uslugi-mech-intro) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.uslugi-mech-page--mobile :deep(.uslugi-wrapper--milling .uslugi-mech-intro),
+.uslugi-mech-page--mobile :deep(.uslugi-wrapper--grinding .uslugi-mech-intro) {
+  gap: 10px;
 }
 
 .uslugi-mech-page--mobile :deep(.uslugi-title) {
   margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
+  font-family: 'Montserrat-Black', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
   line-height: normal;
 }
 
@@ -200,12 +212,15 @@ const { isMobile, isTablet } = usePageBreakpoints()
 
 .uslugi-mech-page--mobile :deep(.uslugi-image-wrapper),
 .uslugi-mech-page--mobile :deep(.uslugi-wrapper--lathe .uslugi-image-wrapper) {
+  display: block;
   flex: none;
   width: 100%;
   max-width: none;
   height: 200px;
   min-height: 200px;
   border-radius: 10px;
+  background-color: var(--bgcolor);
+  overflow: hidden;
 }
 
 .uslugi-mech-page--mobile :deep(.uslugi-image) {
@@ -226,8 +241,10 @@ const { isMobile, isTablet } = usePageBreakpoints()
   gap: 8px;
 }
 
-.uslugi-mech-page--mobile :deep(.uslugi-table-title) {
+.uslugi-mech-page--mobile :deep(.requirements-header .uslugi-table-title) {
+  font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 14px;
+  font-weight: 600;
   line-height: normal;
 }
 </style>
