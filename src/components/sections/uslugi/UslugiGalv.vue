@@ -146,18 +146,20 @@ const galvanicServices: GalvanicService[] = [
           </p>
         </div>
 
-        <div class="uslugi-image-wrapper">
-          <img
-            src="/uslugiPages/galv.png"
-            alt="Гальванические покрытия и химическая обработка металлов"
-            class="uslugi-image"
-            width="500"
-            height="374"
-          />
+        <div class="uslugi-media">
+          <div class="uslugi-image-wrapper">
+            <img
+              src="/uslugiPages/galv.png"
+              alt="Гальванические покрытия и химическая обработка металлов"
+              class="uslugi-image"
+              width="500"
+              height="374"
+            />
+          </div>
+
+          <UslugiKeywords :tags="keywords" />
         </div>
       </div>
-
-      <UslugiKeywords :tags="keywords" />
 
       <UslugiRequirementsAccordion
         v-if="isMobile"

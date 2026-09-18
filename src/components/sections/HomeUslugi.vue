@@ -48,14 +48,14 @@ const abilities = ref([
   },
   {
     id: 6,
-    title: 'Гальваника',
+    title: 'Гальванические покрытия и химическая обработка металлов',
     link: '/galv',
     isDevelopment: true,
     icon: markRaw(IconGalv),
   },
   {
     id: 7,
-    title: 'Сварка',
+    title: 'Сварочные работы',
     link: '/weld',
     isDevelopment: true,
     icon: markRaw(IconWelding),
