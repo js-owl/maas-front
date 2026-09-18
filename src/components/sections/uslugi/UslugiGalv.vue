@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-import { useUslugiRequirementsExpand } from '@/composables/useUslugiRequirementsExpand'
-import UslugiRequirementsAccordion from '@/components/sections/uslugi/UslugiRequirementsAccordion.vue'
 import UslugiKeywords from '@/components/sections/uslugi/UslugiKeywords.vue'
+import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
 
-const { isRequirementsExpanded, isMobile } = useUslugiRequirementsExpand()
+const { isMobile } = usePageBreakpoints()
 
 const keywords = [
   'Гальванические покрытия на заказ',
   'Анодирование алюминия',
+  'Никелирование',
   'Твёрдое анодирование',
   'Хромирование',
-  'Никелирование',
   'Цинкование',
   'Кадмирование',
   'Серебрение',
@@ -115,11 +114,80 @@ const galvanicServices: GalvanicService[] = [
     maxSize: '1500 х 150 х 30',
   },
 ]
+
+const hasThickness = (thickness: string) => thickness !== '-'
 </script>
 
 <template>
   <el-col :offset="3" :span="18" :xs="{ span: 24, offset: 0 }">
-    <div class="uslugi-wrapper uslugi-wrapper--galv">
+    <template v-if="isMobile">
+      <div class="uslugi-galv-cards">
+        <div class="uslugi-wrapper uslugi-wrapper--galv-intro">
+          <div class="uslugi-image-wrapper">
+            <img
+              src="/uslugiPages/galv.png"
+              alt="Гальванические покрытия и химическая обработка металлов"
+              class="uslugi-image"
+              width="308"
+              height="200"
+            />
+          </div>
+
+          <div class="uslugi-galv-intro">
+            <h1 class="uslugi-title">Гальванические покрытия и химическая обработка металлов</h1>
+
+            <div class="uslugi-text">
+              <p>
+                Выполняем нанесение гальванических покрытий и химическую обработку металлических деталей
+                на заказ. Производственные возможности включают защитные и функциональные покрытия для
+                изделий из сталей, алюминиевых, магниевых и титановых сплавов.
+              </p>
+              <p>
+                Покрытия применяются для защиты металла от коррозии, повышения износостойкости и
+                улучшения эксплуатационных характеристик изделия. Конкретная технология выбирается с
+                учётом материала детали, условий эксплуатации, требований к толщине и функциональным
+                свойствам покрытия.
+              </p>
+              <p>
+                Производственные ресурсы позволяют работать в том числе с крупногабаритными изделиями. В
+                зависимости от технологического процесса максимальные габариты обрабатываемых деталей
+                достигают 5800 × 700 × 1450 мм.
+              </p>
+              <p>
+                Для расчёта заказа передайте чертёж, 3D-модель или техническую документацию. Специалисты
+                определят возможность обработки, подходящую технологию и производственный маршрут.
+              </p>
+            </div>
+          </div>
+
+          <UslugiKeywords :tags="keywords" />
+        </div>
+
+        <div class="uslugi-wrapper uslugi-wrapper--galv-services">
+          <div class="galv-mobile-card__title">Услуги</div>
+
+          <div class="galv-mobile-list">
+            <div
+              v-for="(service, index) in galvanicServices"
+              :key="`${service.name}-${service.thickness}-${index}`"
+              class="galv-mobile-list__item"
+            >
+              <p class="galv-mobile-list__name">{{ service.name }}</p>
+              <div v-if="hasThickness(service.thickness)" class="galv-mobile-list__row">
+                <p class="galv-mobile-list__label">Толщина покрытия, мкм:</p>
+                <p class="galv-mobile-list__value">{{ service.thickness }}</p>
+              </div>
+              <div class="galv-mobile-list__row">
+                <p class="galv-mobile-list__label">Макс. габ. деталей, мм:</p>
+                <p class="galv-mobile-list__value">{{ service.maxSize }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <div v-else class="uslugi-wrapper uslugi-wrapper--galv">
       <h1 class="uslugi-title">Гальванические покрытия и химическая обработка металлов</h1>
 
       <div class="uslugi-section">
@@ -161,34 +229,7 @@ const galvanicServices: GalvanicService[] = [
         </div>
       </div>
 
-      <UslugiRequirementsAccordion
-        v-if="isMobile"
-        v-model:expanded="isRequirementsExpanded"
-        title="Виды гальванического покрытия"
-        :is-mobile="isMobile"
-      >
-        <template #mobile>
-          <div class="galv-mobile-list">
-            <div
-              v-for="(service, index) in galvanicServices"
-              :key="`${service.name}-${service.thickness}-${index}`"
-              class="galv-mobile-list__item"
-            >
-              <p class="galv-mobile-list__name">{{ service.name }}</p>
-              <div class="galv-mobile-list__row">
-                <p class="galv-mobile-list__label">Толщина покрытия, мкм:</p>
-                <p class="galv-mobile-list__value">{{ service.thickness }}</p>
-              </div>
-              <div class="galv-mobile-list__row">
-                <p class="galv-mobile-list__label">Макс. габ. деталей, мм:</p>
-                <p class="galv-mobile-list__value">{{ service.maxSize }}</p>
-              </div>
-            </div>
-          </div>
-        </template>
-      </UslugiRequirementsAccordion>
-
-      <div v-else class="uslugi-galv-table">
+      <div class="uslugi-galv-table">
         <div class="uslugi-table-title">Виды гальванического покрытия</div>
         <div class="requirements-table-wrapper">
           <table class="requirements-table requirements-table--middle">

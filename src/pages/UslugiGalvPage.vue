@@ -7,7 +7,7 @@ const { isMobile, isTablet } = usePageBreakpoints()
 </script>
 
 <template>
-  <!-- https://www.figma.com/design/igpM43koIC6EeepqFK9FW4/MaaS--Copy-?node-id=5650-15185 -->
+  <!-- https://www.figma.com/design/igpM43koIC6EeepqFK9FW4/MaaS--Copy-?node-id=5650-15238 -->
   <div
     class="uslugi-page uslugi-galv-page content-page"
     :class="{
@@ -177,36 +177,46 @@ const { isMobile, isTablet } = usePageBreakpoints()
   width: 33.333%;
 }
 
+.uslugi-galv-page--mobile :deep(.uslugi-galv-cards) {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .uslugi-galv-page--mobile :deep(.uslugi-wrapper) {
   gap: 16px;
   margin-bottom: 0;
   padding: 16px;
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: 0 0 5px #c8cfe3;
 }
 
-.uslugi-galv-page--mobile :deep(.uslugi-section) {
+.uslugi-galv-page--mobile :deep(.uslugi-wrapper--galv-intro) {
+  gap: 32px;
+}
+
+.uslugi-galv-page--mobile :deep(.uslugi-wrapper--galv-services) {
+  gap: 16px;
+}
+
+.uslugi-galv-page--mobile :deep(.uslugi-galv-intro) {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-bottom: 0;
   width: 100%;
-  min-width: 0;
-}
-
-.uslugi-galv-page--mobile :deep(.uslugi-media) {
-  display: contents;
 }
 
 .uslugi-galv-page--mobile :deep(.uslugi-title) {
   margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
+  font-family: 'Montserrat-Black', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
   line-height: normal;
 }
 
 .uslugi-galv-page--mobile :deep(.uslugi-text) {
+  display: flex;
+  flex-direction: column;
   flex: none;
   width: 100%;
   min-width: 0;
@@ -216,6 +226,10 @@ const { isMobile, isTablet } = usePageBreakpoints()
   overflow-wrap: break-word;
 }
 
+.uslugi-galv-page--mobile :deep(.uslugi-text p) {
+  margin: 0;
+}
+
 .uslugi-galv-page--mobile :deep(.uslugi-image-wrapper) {
   flex: none;
   width: 100%;
@@ -223,6 +237,7 @@ const { isMobile, isTablet } = usePageBreakpoints()
   height: 200px;
   min-height: 200px;
   border-radius: 10px;
+  background-color: var(--bgcolor);
 }
 
 .uslugi-galv-page--mobile :deep(.uslugi-image) {
@@ -231,21 +246,29 @@ const { isMobile, isTablet } = usePageBreakpoints()
   height: 200px;
   min-height: 200px;
   border-radius: 10px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
-.uslugi-galv-page--mobile :deep(.technical-requirements) {
-  margin: 0;
-}
-
-.uslugi-galv-page--mobile :deep(.technical-requirements--expanded) {
+.uslugi-galv-page--mobile :deep(.uslugi-keywords) {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+  width: 100%;
 }
 
-.uslugi-galv-page--mobile :deep(.requirements-header .uslugi-table-title) {
-  font-size: 16px;
+.uslugi-galv-page--mobile :deep(.uslugi-keyword) {
+  padding: 6px 12px;
+  font-size: 10px;
+}
+
+.uslugi-galv-page--mobile :deep(.galv-mobile-card__title) {
+  margin: 0;
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+  color: #000000;
 }
 
 .uslugi-galv-page--mobile :deep(.galv-mobile-list) {
@@ -280,9 +303,9 @@ const { isMobile, isTablet } = usePageBreakpoints()
 
 .uslugi-galv-page--mobile :deep(.galv-mobile-list__name) {
   margin: 0;
-  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-family: 'Montserrat-Bold', sans-serif;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: normal;
   color: #000000;
 }
