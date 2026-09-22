@@ -34,14 +34,17 @@ const mockOrder = {
   },
   total_price_breakdown: {
     mat_price: 3000,
+    mat_price_full: 3000,
     price_per_kg: 6000,
     dop_mat_price: 0,
+    sum_costs_labor: 12000,
     price_of_hour_with_others: 4800,
     work_price: 12000,
     dop_salary: 0,
     insurance_price: 0,
     overhead_expenses: 0,
     administrative_expenses: 0,
+    price_special_equipment_to_quantity: 0,
   },
 }
 

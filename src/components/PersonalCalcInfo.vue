@@ -58,12 +58,24 @@ const formatPrice = (value?: number | string | null) => {
   return num.toFixed(2)
 }
 
-const costRows = computed(() => [
-  { number: '1', label: 'Затраты на материалы', value: materialCosts.value.matPriceFull },
-  { number: '2', label: 'Затраты на оплату труда', value: laborCosts.value.sumCostsLabor },
-  { number: '3', label: 'Затраты на специальную технологическую оснастку', value: toolingCosts.value },
-  { number: '4', label: 'Цена без НДС', value: priceWithoutVat.value },
-  { number: '5', label: 'НДС', value: vatCosts.value },
+const materialRows = computed(() => [
+  { number: '1', label: 'Сырье и основные материалы', value: materialCosts.value.rawMaterials.matPrice },
+  { number: '1.1', label: 'Информация о заготовке', value: '-' },
+  { number: '1.2', label: 'Извлеченные габариты детали', value: materialCosts.value.rawMaterials.blankInfo.extractedDimensions },
+  { number: '1.3', label: 'Объем заготовки', value: materialCosts.value.rawMaterials.blankInfo.matVolume },
+  { number: '1.4', label: 'Норма расхода', value: materialCosts.value.rawMaterials.blankInfo.matWeight },
+  { number: '1.5', label: 'Основной материал', value: materialCosts.value.rawMaterials.pricePerKg },
+  { number: '2', label: 'Вспомогательные материалы', value: materialCosts.value.dopMatPrice },
+])
+
+const laborRows = computed(() => [
+  { number: '1', label: 'Трудоемкость', value: laborCosts.value.totalTime },
+  { number: '2', label: 'ФОТ', value: laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers },
+  { number: '2.1', label: 'Основная заработная плата', value: laborCosts.value.priceOfHourWithOthers.workPrice },
+  { number: '2.2', label: 'Дополнительная заработная плата', value: laborCosts.value.priceOfHourWithOthers.dopSalary },
+  { number: '2.3', label: 'Страховые взносы', value: laborCosts.value.priceOfHourWithOthers.insurancePrice },
+  { number: '2.4', label: 'Общепроизводственные затраты', value: laborCosts.value.priceOfHourWithOthers.overheadExpenses },
+  { number: '2.5', label: 'Общехозяйственные затраты', value: laborCosts.value.priceOfHourWithOthers.administrativeExpenses },
 ])
 
 const fetchOrder = async (id: number) => {
@@ -86,8 +98,13 @@ const fetchOrder = async (id: number) => {
       orderName.value = orderData.order_name
     }
 
-    if (orderData.total_price_breakdown?.mat_price != null) {
-      materialCosts.value.rawMaterials.matPrice = `${orderData.total_price_breakdown.mat_price.toFixed(2)} руб`
+    const breakdown = orderData.total_price_breakdown
+
+    if (breakdown?.mat_price_full != null) {
+      materialCosts.value.matPriceFull = formatPrice(breakdown.mat_price_full)
+    }
+    if (breakdown?.mat_price != null) {
+      materialCosts.value.rawMaterials.matPrice = formatPrice(breakdown.mat_price)
     }
     if (orderData.length && orderData.width && orderData.height) {
       materialCosts.value.rawMaterials.blankInfo.extractedDimensions = `${orderData.length} × ${orderData.width} × ${orderData.height}`
@@ -99,42 +116,54 @@ const fetchOrder = async (id: number) => {
     if (orderData.mat_weight != null) {
       materialCosts.value.rawMaterials.blankInfo.matWeight = `${orderData.mat_weight.toFixed(2)} кг`
     }
-    if (orderData.total_price_breakdown?.price_per_kg != null) {
-      materialCosts.value.rawMaterials.pricePerKg = `${orderData.total_price_breakdown.price_per_kg.toFixed(2)} руб/кг`
+    if (breakdown?.price_per_kg != null) {
+      materialCosts.value.rawMaterials.pricePerKg = `${formatPrice(breakdown.price_per_kg)} руб/кг`
     }
-    if (orderData.total_price_breakdown?.dop_mat_price != null) {
-      materialCosts.value.dopMatPrice = `${orderData.total_price_breakdown.dop_mat_price.toFixed(2)} руб`
+    if (breakdown?.dop_mat_price != null) {
+      materialCosts.value.dopMatPrice = formatPrice(breakdown.dop_mat_price)
     }
 
+    if (breakdown?.sum_costs_labor != null) {
+      laborCosts.value.sumCostsLabor = formatPrice(breakdown.sum_costs_labor)
+    }
     if (orderData.total_time != null) {
       laborCosts.value.totalTime = `${orderData.total_time.toFixed(2)} ч`
     }
-    if (orderData.total_price_breakdown?.price_of_hour_with_others != null) {
-      laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers = `${orderData.total_price_breakdown.price_of_hour_with_others.toFixed(2)} руб/ч`
+    if (breakdown?.price_of_hour_with_others != null) {
+      laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers = `${formatPrice(breakdown.price_of_hour_with_others)} руб/ч`
     }
-    if (orderData.total_price_breakdown?.work_price != null) {
-      laborCosts.value.priceOfHourWithOthers.workPrice = `${orderData.total_price_breakdown.work_price.toFixed(2)} руб`
+    if (breakdown?.work_price != null) {
+      laborCosts.value.priceOfHourWithOthers.workPrice = formatPrice(breakdown.work_price)
     }
-    if (orderData.total_price_breakdown?.dop_salary != null) {
-      laborCosts.value.priceOfHourWithOthers.dopSalary = `${orderData.total_price_breakdown.dop_salary.toFixed(2)} руб`
+    if (breakdown?.dop_salary != null) {
+      laborCosts.value.priceOfHourWithOthers.dopSalary = formatPrice(breakdown.dop_salary)
     }
-    if (orderData.total_price_breakdown?.insurance_price != null) {
-      laborCosts.value.priceOfHourWithOthers.insurancePrice = `${orderData.total_price_breakdown.insurance_price.toFixed(2)} руб`
+    if (breakdown?.insurance_price != null) {
+      laborCosts.value.priceOfHourWithOthers.insurancePrice = formatPrice(breakdown.insurance_price)
     }
-    if (orderData.total_price_breakdown?.overhead_expenses != null) {
-      laborCosts.value.priceOfHourWithOthers.overheadExpenses = `${orderData.total_price_breakdown.overhead_expenses.toFixed(2)} руб`
+    if (breakdown?.overhead_expenses != null) {
+      laborCosts.value.priceOfHourWithOthers.overheadExpenses = formatPrice(breakdown.overhead_expenses)
     }
-    if (orderData.total_price_breakdown?.administrative_expenses != null) {
-      laborCosts.value.priceOfHourWithOthers.administrativeExpenses = `${orderData.total_price_breakdown.administrative_expenses.toFixed(2)} руб`
+    if (breakdown?.administrative_expenses != null) {
+      laborCosts.value.priceOfHourWithOthers.administrativeExpenses = formatPrice(breakdown.administrative_expenses)
+    }
+    if (breakdown?.price_special_equipment_to_quantity != null) {
+      toolingCosts.value = formatPrice(breakdown.price_special_equipment_to_quantity)
     }
 
     const detailPriceCalculation = orderData.detail_price_calculation
-    materialCosts.value.matPriceFull = formatPrice(detailPriceCalculation?.material_price)
-    laborCosts.value.sumCostsLabor = formatPrice(detailPriceCalculation?.salary_fund_with_taxes)
-    toolingCosts.value = formatPrice(detailPriceCalculation?.price_special_equipment)
-    priceWithoutVat.value = formatPrice(detailPriceCalculation?.detail_price_one)
-    vatCosts.value = formatPrice(detailPriceCalculation?.taxes)
-    totalCosts.value = formatPrice(detailPriceCalculation?.detail_price_one_with_taxes)
+    if (detailPriceCalculation?.material_price != null && detailPriceCalculation.material_price !== '') {
+      materialCosts.value.matPriceFull = formatPrice(detailPriceCalculation.material_price)
+    }
+    if (detailPriceCalculation?.salary_fund_with_taxes != null && detailPriceCalculation.salary_fund_with_taxes !== '') {
+      laborCosts.value.sumCostsLabor = formatPrice(detailPriceCalculation.salary_fund_with_taxes)
+    }
+    if (detailPriceCalculation?.price_special_equipment != null && detailPriceCalculation.price_special_equipment !== '') {
+      toolingCosts.value = formatPrice(detailPriceCalculation.price_special_equipment)
+    }
+    priceWithoutVat.value = formatPrice(detailPriceCalculation?.detail_price_one ?? orderData.total_price)
+    vatCosts.value = formatPrice(detailPriceCalculation?.taxes ?? breakdown?.taxes)
+    totalCosts.value = formatPrice(detailPriceCalculation?.detail_price_one_with_taxes ?? breakdown?.total_price_with_taxes)
   } catch (error) {
     console.error('Error fetching order:', error)
     ElMessage.error('Ошибка при загрузке заказа')
@@ -188,11 +217,51 @@ onMounted(() => {
       </header>
 
       <div class="cost-section">
-        <div v-for="row in costRows" :key="`${row.number}-${row.label}`" class="cost-line">
+        <div class="section-head">
+          <span class="section-name">Материальные затраты</span>
+          <span class="section-line" aria-hidden="true"></span>
+          <span class="section-value">{{ materialCosts.matPriceFull }}</span>
+        </div>
+        <div v-for="row in materialRows" :key="`${row.number}-${row.label}`" class="cost-line">
           <span class="line-number">{{ row.number }}</span>
           <span class="line-label">{{ row.label }}</span>
           <span class="line-dash" aria-hidden="true"></span>
           <span class="line-value">{{ row.value || '-' }}</span>
+        </div>
+      </div>
+
+      <div class="cost-section">
+        <div class="section-head">
+          <span class="section-name">Затраты на оплату труда</span>
+          <span class="section-line" aria-hidden="true"></span>
+          <span class="section-value">{{ laborCosts.sumCostsLabor }}</span>
+        </div>
+        <div v-for="row in laborRows" :key="`${row.number}-${row.label}`" class="cost-line">
+          <span class="line-number">{{ row.number }}</span>
+          <span class="line-label">{{ row.label }}</span>
+          <span class="line-dash" aria-hidden="true"></span>
+          <span class="line-value">{{ row.value || '-' }}</span>
+        </div>
+      </div>
+
+      <div class="cost-section">
+        <div class="section-head">
+          <span class="section-name">Затраты на оснастку</span>
+          <span class="section-line" aria-hidden="true"></span>
+          <span class="section-value">{{ toolingCosts }}</span>
+        </div>
+      </div>
+
+      <div class="cost-section">
+        <div class="section-head">
+          <span class="section-name">Цена без НДС</span>
+          <span class="section-line" aria-hidden="true"></span>
+          <span class="section-value">{{ priceWithoutVat }}</span>
+        </div>
+        <div class="section-head">
+          <span class="section-name">НДС</span>
+          <span class="section-line" aria-hidden="true"></span>
+          <span class="section-value">{{ vatCosts }}</span>
         </div>
       </div>
 
@@ -490,9 +559,21 @@ onMounted(() => {
     margin-bottom: 24px;
   }
 
+  .section-head {
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .section-name {
+    font-size: 16px;
+    line-height: normal;
+  }
+
   .cost-line {
     display: grid;
-    grid-template-columns: 24px minmax(0, 1fr) max-content;
+    grid-template-columns: 32px minmax(0, 1fr) max-content;
     grid-template-areas: 'number label value';
     align-items: start;
     column-gap: 8px;
