@@ -2,12 +2,11 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Download, Edit } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
-import ButtonRound from './ui/ButtonRound.vue'
 import InputEdit from './ui/InputEdit.vue'
-import IconArrowLeft from '@/icons/IconArrowLeft.vue'
+import arrowLeftIcon from '@/assets/calc-info/arrow-left.svg'
+import downloadIcon from '@/assets/calc-info/download.svg'
 
 const route = useRoute()
 const router = useRouter()
@@ -16,7 +15,6 @@ const orderId = computed(() => Number(route.query.orderId) || 0)
 const kitId = computed(() => Number(route.query.kitId) || 0)
 
 const isLoading = ref(false)
-const documentNumber = ref('ФР-159783')
 const orderName = ref('Наименование заказа')
 
 const materialCosts = ref({
@@ -47,8 +45,11 @@ const laborCosts = ref({
 })
 
 const toolingCosts = ref('-')
+const netCost = ref('-')
+const profit = ref('-')
 const priceWithoutVat = ref('-')
 const vatCosts = ref('-')
+const priceWithVat = ref('-')
 const totalCosts = ref('-')
 
 const formatPrice = (value?: number | string | null) => {
@@ -58,24 +59,22 @@ const formatPrice = (value?: number | string | null) => {
   return num.toFixed(2)
 }
 
-const materialRows = computed(() => [
-  { number: '1', label: 'Сырье и основные материалы', value: materialCosts.value.rawMaterials.matPrice },
-  { number: '1.1', label: 'Информация о заготовке', value: '-' },
-  { number: '1.2', label: 'Извлеченные габариты детали', value: materialCosts.value.rawMaterials.blankInfo.extractedDimensions },
-  { number: '1.3', label: 'Объем заготовки', value: materialCosts.value.rawMaterials.blankInfo.matVolume },
-  { number: '1.4', label: 'Норма расхода', value: materialCosts.value.rawMaterials.blankInfo.matWeight },
-  { number: '1.5', label: 'Основной материал', value: materialCosts.value.rawMaterials.pricePerKg },
-  { number: '2', label: 'Вспомогательные материалы', value: materialCosts.value.dopMatPrice },
-])
-
-const laborRows = computed(() => [
-  { number: '1', label: 'Трудоемкость', value: laborCosts.value.totalTime },
-  { number: '2', label: 'ФОТ', value: laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers },
-  { number: '2.1', label: 'Основная заработная плата', value: laborCosts.value.priceOfHourWithOthers.workPrice },
-  { number: '2.2', label: 'Дополнительная заработная плата', value: laborCosts.value.priceOfHourWithOthers.dopSalary },
-  { number: '2.3', label: 'Страховые взносы', value: laborCosts.value.priceOfHourWithOthers.insurancePrice },
-  { number: '2.4', label: 'Общепроизводственные затраты', value: laborCosts.value.priceOfHourWithOthers.overheadExpenses },
-  { number: '2.5', label: 'Общехозяйственные затраты', value: laborCosts.value.priceOfHourWithOthers.administrativeExpenses },
+const costRows = computed(() => [
+  { number: '1', label: 'Затраты на материалы', value: materialCosts.value.matPriceFull, nested: false },
+  { number: '2', label: 'Затраты на оплату труда', value: laborCosts.value.sumCostsLabor, nested: false },
+  { number: '2.1', label: 'Основная заработная плата', value: laborCosts.value.priceOfHourWithOthers.workPrice, nested: true },
+  { number: '2.2', label: 'Дополнительная заработная плата', value: laborCosts.value.priceOfHourWithOthers.dopSalary, nested: true },
+  { number: '2.3', label: 'Трудоёмкость', value: laborCosts.value.totalTime, nested: true },
+  { number: '2.4', label: 'Стоимость нормочаса', value: laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers, nested: true },
+  { number: '3', label: 'Страховые взносы', value: laborCosts.value.priceOfHourWithOthers.insurancePrice, nested: false },
+  { number: '4', label: 'Затраты на специальную технологическую оснастку', value: toolingCosts.value, nested: false },
+  { number: '5', label: 'Общепроизводственные затраты', value: laborCosts.value.priceOfHourWithOthers.overheadExpenses, nested: false },
+  { number: '6', label: 'Общехозяйственные затраты', value: laborCosts.value.priceOfHourWithOthers.administrativeExpenses, nested: false },
+  { number: '7', label: 'Себестоимость', value: netCost.value, nested: false },
+  { number: '8', label: 'Прибыль', value: profit.value, nested: false },
+  { number: '9', label: 'Цена (без НДС)', value: priceWithoutVat.value, nested: false },
+  { number: '10', label: 'НДС', value: vatCosts.value, nested: false },
+  { number: '11', label: 'Цена (с НДС)', value: priceWithVat.value, nested: false },
 ])
 
 const fetchOrder = async (id: number) => {
@@ -91,9 +90,6 @@ const fetchOrder = async (id: number) => {
 
     const orderData = (await response.json()) as IOrderResponse
 
-    if (orderData.order_id) {
-      documentNumber.value = `ФР-${orderData.order_id}`
-    }
     if (orderData.order_name) {
       orderName.value = orderData.order_name
     }
@@ -147,6 +143,12 @@ const fetchOrder = async (id: number) => {
     if (breakdown?.administrative_expenses != null) {
       laborCosts.value.priceOfHourWithOthers.administrativeExpenses = formatPrice(breakdown.administrative_expenses)
     }
+    if (breakdown?.net_cost != null) {
+      netCost.value = formatPrice(breakdown.net_cost)
+    }
+    if (breakdown?.profit != null) {
+      profit.value = formatPrice(breakdown.profit)
+    }
     if (breakdown?.price_special_equipment_to_quantity != null) {
       toolingCosts.value = formatPrice(breakdown.price_special_equipment_to_quantity)
     }
@@ -163,7 +165,8 @@ const fetchOrder = async (id: number) => {
     }
     priceWithoutVat.value = formatPrice(detailPriceCalculation?.detail_price_one ?? orderData.total_price)
     vatCosts.value = formatPrice(detailPriceCalculation?.taxes ?? breakdown?.taxes)
-    totalCosts.value = formatPrice(detailPriceCalculation?.detail_price_one_with_taxes ?? breakdown?.total_price_with_taxes)
+    priceWithVat.value = formatPrice(detailPriceCalculation?.detail_price_one_with_taxes ?? breakdown?.total_price_with_taxes)
+    totalCosts.value = priceWithVat.value
   } catch (error) {
     console.error('Error fetching order:', error)
     ElMessage.error('Ошибка при загрузке заказа')
@@ -177,17 +180,6 @@ const handleOrderNameUpdate = (value: string) => {
 }
 
 const handleGoBack = () => {
-  router.push({
-    name: 'personal-calc',
-    query: {
-      kitId: kitId.value?.toString() ?? '',
-      orderId: orderId.value.toString(),
-    },
-  })
-}
-
-const handleEdit = () => {
-  if (!orderId.value) return
   router.push({
     name: 'personal-calc',
     query: {
@@ -211,88 +203,47 @@ onMounted(() => {
 <template>
   <div class="calc-info-page" v-loading="isLoading">
     <section class="calc-info-container">
-      <header class="calc-header">
-        <div class="document-number">Заказ №{{ kitId }}</div>
-        <InputEdit v-model="orderName" @update:model-value="handleOrderNameUpdate" />
-      </header>
+      <div class="calc-info-body">
+        <div class="calc-info-main">
+          <header class="calc-header">
+            <div class="document-number">Заказ №{{ kitId }}</div>
+            <InputEdit v-model="orderName" @update:model-value="handleOrderNameUpdate" />
+          </header>
 
-      <div class="cost-section">
-        <div class="section-head">
-          <span class="section-name">Материальные затраты</span>
-          <span class="section-line" aria-hidden="true"></span>
-          <span class="section-value">{{ materialCosts.matPriceFull }}</span>
-        </div>
-        <div v-for="row in materialRows" :key="`${row.number}-${row.label}`" class="cost-line">
-          <span class="line-number">{{ row.number }}</span>
-          <span class="line-label">{{ row.label }}</span>
-          <span class="line-dash" aria-hidden="true"></span>
-          <span class="line-value">{{ row.value || '-' }}</span>
-        </div>
-      </div>
+          <div class="cost-block">
+            <div class="cost-list">
+              <div
+                v-for="row in costRows"
+                :key="row.number"
+                class="cost-line"
+                :class="{ 'cost-line--nested': row.nested }"
+              >
+                <span class="line-number">{{ row.number }}</span>
+                <span class="line-label">{{ row.label }}</span>
+                <span class="line-dash" aria-hidden="true"></span>
+                <span class="line-value">{{ row.value || '-' }}</span>
+              </div>
+            </div>
 
-      <div class="cost-section">
-        <div class="section-head">
-          <span class="section-name">Затраты на оплату труда</span>
-          <span class="section-line" aria-hidden="true"></span>
-          <span class="section-value">{{ laborCosts.sumCostsLabor }}</span>
+            <div class="total-section">
+              <span class="total-label">Итого</span>
+              <span class="line-dash" aria-hidden="true"></span>
+              <span class="total-value">{{ totalCosts }}</span>
+            </div>
+          </div>
         </div>
-        <div v-for="row in laborRows" :key="`${row.number}-${row.label}`" class="cost-line">
-          <span class="line-number">{{ row.number }}</span>
-          <span class="line-label">{{ row.label }}</span>
-          <span class="line-dash" aria-hidden="true"></span>
-          <span class="line-value">{{ row.value || '-' }}</span>
-        </div>
-      </div>
 
-      <div class="cost-section">
-        <div class="section-head">
-          <span class="section-name">Затраты на оснастку</span>
-          <span class="section-line" aria-hidden="true"></span>
-          <span class="section-value">{{ toolingCosts }}</span>
-        </div>
-      </div>
-
-      <div class="cost-section">
-        <div class="section-head">
-          <span class="section-name">Цена без НДС</span>
-          <span class="section-line" aria-hidden="true"></span>
-          <span class="section-value">{{ priceWithoutVat }}</span>
-        </div>
-        <div class="section-head">
-          <span class="section-name">НДС</span>
-          <span class="section-line" aria-hidden="true"></span>
-          <span class="section-value">{{ vatCosts }}</span>
-        </div>
-      </div>
-
-      <div class="total-section">
-        <span class="total-label">Итого</span>
-        <span class="section-line" aria-hidden="true"></span>
-        <span class="section-value">{{ totalCosts }}</span>
-      </div>
-
-      <footer class="action-section">
-        <ButtonRound width="175px" @click="handleGoBack">
-          <template #icon-left>
-            <IconArrowLeft color="#2f3133" />
-          </template>
-          Назад
-        </ButtonRound>
-        <div class="right-actions">
-          <ButtonRound width="220px" @click="handleEdit">
-            <template #icon-left>
-              <el-icon><Edit /></el-icon>
-            </template>
-            Редактировать
-          </ButtonRound>
-          <ButtonRound width="170px" @click="handleDownload">
-            <template #icon-left>
-              <el-icon><Download /></el-icon>
-            </template>
+        <footer class="action-section">
+          <button type="button" class="action-btn" @click="handleGoBack">
+            <img :src="arrowLeftIcon" width="20" height="20" alt="" />
+            Вернуться в Заказ
+          </button>
+          <button type="button" class="action-btn" @click="handleDownload">
             Скачать
-          </ButtonRound>
-        </div>
-      </footer>
+            <img :src="downloadIcon" width="20" height="20" alt="" />
+          </button>
+        </footer>
+      </div>
     </section>
   </div>
 </template>
@@ -307,8 +258,8 @@ onMounted(() => {
 .calc-info-container {
   background: #fff;
   padding: 40px;
-  border-radius: 20px;
-  min-height: 620px;
+  border-radius: 40px;
+  box-shadow: 0 6px 7.5px rgba(224, 227, 237, 0.5);
   font-family: 'Montserrat-Medium', sans-serif;
   letter-spacing: 0;
   width: 100%;
@@ -316,12 +267,26 @@ onMounted(() => {
   overflow-x: hidden;
 }
 
+.calc-info-body {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  width: 100%;
+}
+
+.calc-info-main {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  min-width: 0;
+}
+
 .calc-header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
-  margin-bottom: 40px;
   min-width: 0;
   width: 100%;
 }
@@ -330,16 +295,44 @@ onMounted(() => {
 .calc-header :deep(.input-edit-edit) {
   width: 100%;
   min-width: 0;
+  gap: 10px;
 }
 
 .calc-header :deep(.input-edit-value) {
+  font-family: 'Montserrat-Medium', sans-serif;
   font-size: 24px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #000;
   word-break: break-word;
 }
 
 .calc-header :deep(.input-edit-input) {
   min-width: 0;
   width: 100%;
+}
+
+.calc-header :deep(.input-edit-btn) {
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  line-height: 0;
+}
+
+.calc-header :deep(.input-edit-btn .el-icon) {
+  display: none;
+}
+
+.calc-header :deep(.input-edit-btn)::before {
+  content: url('@/assets/calc-info/edit.svg');
+}
+
+.calc-header :deep(.input-edit-btn:hover) {
+  opacity: 0.85;
 }
 
 .document-number {
@@ -351,79 +344,41 @@ onMounted(() => {
   letter-spacing: 0;
 }
 
-.cost-section {
-  margin-bottom: 40px;
+.cost-block {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
   min-width: 0;
 }
 
+.cost-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.cost-line,
 .total-section {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  margin-bottom: 60px;
-  min-width: 0;
-}
-
-.total-label {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1;
-  color: #000;
-  letter-spacing: 0;
-  flex-shrink: 0;
-}
-
-.section-head {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.section-name {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1;
-  color: #000;
-  letter-spacing: 0;
-}
-
-.section-line {
-  flex: 1;
-  min-width: 12px;
-  border-bottom: 1px dashed #cbd1d5;
-  transform: translateY(-4px);
-}
-
-.section-value {
-  font-family: 'Montserrat-SemiBold', sans-serif;
-  min-width: 70px;
-  text-align: right;
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1;
-  color: #000;
-  white-space: nowrap;
-  letter-spacing: 0;
-  flex-shrink: 0;
-}
-
-.cost-line {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 28px;
-  margin-bottom: 0;
+  width: 100%;
   min-width: 0;
+}
+
+.cost-line--nested {
+  padding-left: 30px;
+  box-sizing: border-box;
 }
 
 .line-number {
   font-family: 'Montserrat-Medium', sans-serif;
-  width: 40px;
+  width: 30px;
   flex-shrink: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1;
   color: #000;
@@ -433,7 +388,7 @@ onMounted(() => {
 .line-label {
   font-family: 'Montserrat-Medium', sans-serif;
   white-space: nowrap;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1;
   color: #000;
@@ -443,96 +398,87 @@ onMounted(() => {
 
 .line-dash {
   flex: 1;
-  min-width: 40px;
-  border-bottom: 1px dashed #cbd1d5;
-  transform: translateY(8px);
+  min-width: 12px;
+  height: 0;
+  border-bottom: 2px dashed #cbd1d5;
 }
 
 .line-value {
   font-family: 'Montserrat-Medium', sans-serif;
-  min-width: 90px;
   text-align: right;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1;
   color: #000;
-  word-break: break-word;
   white-space: nowrap;
   letter-spacing: 0;
   flex-shrink: 0;
 }
 
+.total-label,
+.total-value {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  color: #000;
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+
+.total-value {
+  text-align: right;
+}
+
 .action-section {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
+  align-items: flex-end;
   gap: 12px;
 }
 
-.right-actions {
-  display: flex;
-  gap: 20px;
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-height: 44px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  background: #cbd1d5;
+  color: #000;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+  cursor: pointer;
 }
 
-.action-section :deep(.btn) {
-  background: #cbd1d5 !important;
-  background-size: 100% 100% !important;
-  border-radius: 30px !important;
-  box-shadow: none !important;
-  color: #000 !important;
-  font-family: 'Montserrat-SemiBold', sans-serif !important;
-  font-size: 20px !important;
-  font-weight: 600 !important;
-  letter-spacing: 0 !important;
-}
-
-.action-section :deep(.btn:hover),
-.action-section :deep(.btn:active) {
-  transform: none !important;
-  box-shadow: none !important;
-  animation: none !important;
-}
-
-.action-section :deep(.btn::before) {
-  display: none !important;
-}
-
-.action-section :deep(.el-icon) {
-  font-size: 18px;
-}
-
-.action-section :deep(.btn-icon-left) {
-  transform: translateY(-1px);
-}
-
-@media (max-width: 1200px) {
-  .calc-info-container {
-    padding: 24px;
-  }
-
-  .action-section {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .right-actions {
-    justify-content: space-between;
-  }
+.action-btn img {
+  display: block;
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
   .calc-info-container {
     padding: 16px;
     border-radius: 16px;
-    min-height: 0;
     box-shadow: 0 0 5px #c8cfe3;
+  }
+
+  .calc-info-body {
+    gap: 24px;
+  }
+
+  .calc-info-main,
+  .cost-block {
+    gap: 24px;
   }
 
   .calc-header {
     gap: 8px;
-    margin-bottom: 24px;
   }
 
   .document-number {
@@ -545,56 +491,30 @@ onMounted(() => {
     line-height: normal;
   }
 
-  .calc-header :deep(.input-edit-btn) {
-    width: 24px;
-    height: 24px;
-    min-height: 24px;
-    padding: 0;
-    border-radius: 4px;
-    background: var(--button-bg, #e1e4e6);
-    color: #7d8083;
-  }
-
-  .cost-section {
-    margin-bottom: 24px;
-  }
-
-  .section-head {
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-
-  .section-name {
-    font-size: 16px;
-    line-height: normal;
+  .cost-list {
+    gap: 0;
   }
 
   .cost-line {
     display: grid;
     grid-template-columns: 32px minmax(0, 1fr) max-content;
-    grid-template-areas: 'number label value';
     align-items: start;
     column-gap: 8px;
     padding: 12px 0;
     border-bottom: 1px solid #e8ecef;
-    min-height: 0;
   }
 
-  .cost-line:last-child {
-    border-bottom: none;
+  .cost-line--nested {
+    padding-left: 16px;
   }
 
   .line-number {
-    grid-area: number;
     width: auto;
     font-size: 14px;
     line-height: 1.35;
   }
 
   .line-label {
-    grid-area: label;
     white-space: normal;
     font-size: 14px;
     line-height: 1.35;
@@ -606,69 +526,30 @@ onMounted(() => {
   }
 
   .line-value {
-    grid-area: value;
-    justify-self: end;
-    min-width: 0;
-    max-width: none;
     font-size: 14px;
     line-height: 1.35;
-    white-space: nowrap;
-    word-break: normal;
-    text-align: right;
   }
 
   .total-section {
-    flex-wrap: nowrap;
-    align-items: baseline;
     justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 24px;
     padding-top: 8px;
   }
 
   .total-label,
-  .section-value {
+  .total-value {
     font-size: 16px;
     line-height: normal;
   }
 
-  .section-line {
-    display: none;
-  }
-
-  .section-value {
-    margin-left: 0;
-    min-width: 0;
-    white-space: nowrap;
-    text-align: right;
-  }
-
   .action-section {
-    margin-top: 8px;
-    gap: 10px;
-  }
-
-  .right-actions {
     flex-direction: column;
+    align-items: stretch;
     gap: 10px;
+  }
+
+  .action-btn {
     width: 100%;
-  }
-
-  .action-section :deep(.btn) {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 44px !important;
-    max-height: 44px !important;
-    padding: 10px 15px !important;
-    border-radius: 10px !important;
-    font-family: 'Montserrat-Medium', sans-serif !important;
-    font-size: 16px !important;
-    font-weight: 500 !important;
-    justify-content: center;
-  }
-
-  .action-section :deep(.btn-icon-left) {
-    transform: none;
+    max-height: 44px;
   }
 }
 </style>
