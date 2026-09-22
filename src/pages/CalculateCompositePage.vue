@@ -54,7 +54,7 @@ const quantityInput = computed({
 })
 
 const material_id = ref('')
-const material_form = ref('')
+const material_form = ref('other')
 type BackendMaterial = { id: string; label: string; family?: string | null }
 type MaterialOption = { value: string; label: string }
 type MaterialOptionGroup = { label: string; options: MaterialOption[] }
