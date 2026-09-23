@@ -54,7 +54,6 @@ const quantityInput = computed({
 })
 
 const material_id = ref('')
-const material_form = ref('other')
 type BackendMaterial = { id: string; label: string; family?: string | null }
 type MaterialOption = { value: string; label: string }
 type MaterialOptionGroup = { label: string; options: MaterialOption[] }
@@ -81,7 +80,6 @@ const payload = reactive({
   width,
   height,
   material_id,
-  material_form,
   cover_id,
   is_need_special_equipment,
   n_dimensions,
@@ -238,7 +236,6 @@ async function getOrder(id: number) {
     if (data.height) height.value = data.height
     if (data.quantity) quantity.value = data.quantity
     if (data.material_id) material_id.value = data.material_id
-    if (data.material_form) material_form.value = data.material_form
     if (data.cover_id) cover_id.value = Array.isArray(data.cover_id) ? data.cover_id : [data.cover_id]
     if (data.is_need_special_equipment !== undefined) {
       is_need_special_equipment.value = Boolean(data.is_need_special_equipment)
@@ -262,7 +259,6 @@ async function getOrder(id: number) {
       width: width.value,
       height: height.value,
       material_id: material_id.value,
-      material_form: material_form.value,
       cover_id: cover_id.value,
       is_need_special_equipment: is_need_special_equipment.value,
       n_dimensions: n_dimensions.value,
