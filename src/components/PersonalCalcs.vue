@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Edit } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
+import { useProfileStore } from '../stores/profile.store'
 import ButtonRound from './ui/ButtonRound.vue'
 import IconCalculate from '../icons/IconCalculate.vue'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
@@ -30,6 +31,12 @@ type CalculationSummary = {
 
 const route = useRoute()
 const router = useRouter()
+const profileStore = useProfileStore()
+
+const canOpenCalculation = computed(() => {
+  const role = profileStore.profile?.role?.trim().toLowerCase()
+  return role === 'administrator' || role === 'manager'
+})
 
 const isLoading = ref(false)
 const summary = ref<CalculationSummary | null>(null)
@@ -137,6 +144,9 @@ const handleDownload = () => {
 }
 
 onMounted(() => {
+  if (!profileStore.profile?.role) {
+    void profileStore.getProfile()
+  }
   void loadSummary()
 })
 </script>
@@ -176,7 +186,7 @@ onMounted(() => {
             {{ row.quantity || 1 }}
           </template>
         </el-table-column>
-        <el-table-column label="Калькуляция" width="110" align="center">
+        <el-table-column v-if="canOpenCalculation" label="Калькуляция" width="110" align="center">
           <template #default="{ row }">
             <button type="button" class="calc-icon-button" @click="handleOpenCalcInfo(row)">
               <IconCalculate class="calc-icon" />
