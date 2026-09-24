@@ -631,6 +631,7 @@ watch(file_id, () => {
                       :payload="submitPayload as unknown as IOrderPayload"
                       :special-instructions="special_instructions"
                       :last-result="result"
+                      detailing-for-manager
                       @updateResult="onUpdateResult"
                       @showInfo="isInfoVisible = true"
                     />
@@ -643,6 +644,7 @@ watch(file_id, () => {
                       :last-result="result"
                       save-label="Сохранить"
                       hide-back-button
+                      detailing-for-manager
                       @updateResult="onUpdateResult"
                       @showInfo="isInfoVisible = true"
                     />

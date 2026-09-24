@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, type HistoryState } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useProfileStore, type IProfile } from '../../stores/profile.store'
 import { useAuthStore } from '../../stores/auth.store'
 import { req_json, req_json_auth } from '../../api'
 import { ensureLocalStpCacheReady, getLocalStpFileById, toServerFileId } from '../../helpers/local-stp-files'
 import { pickNonZeroCalculation, unwrapApiData, orderLinePrice } from '../../helpers/order-price'
+import { orderTypeOptions } from '../../helpers/order-type-options'
 import type {
   IKit,
   IOrderPayload,
@@ -112,13 +113,23 @@ const openDetailing = () => {
     }
   }
 
+  const serviceId =
+    orderTypeOptions.find((option) => option.routePath === route.path)?.serviceId ||
+    calculation?.service_id ||
+    props.payload.service_id ||
+    ''
+
+  if (calculation && serviceId) {
+    calculation.service_id = serviceId
+  }
+
   router.push({
     name: 'personal-calc-info',
     query,
     state: {
       ...(calculation ? { calculation } : {}),
-      serviceId: calculation?.service_id || props.payload.service_id || '',
-    },
+      serviceId,
+    } as unknown as HistoryState,
   })
 }
 
