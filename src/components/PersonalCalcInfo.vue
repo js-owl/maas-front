@@ -77,22 +77,10 @@ const costRows = computed(() => [
   { number: '11', label: 'Цена (с НДС)', value: priceWithVat.value, nested: false },
 ])
 
-const fetchOrder = async (id: number) => {
-  if (!id) return
-
-  isLoading.value = true
-  try {
-    const response = await req_json_auth(`/orders/${id}`, 'GET')
-    if (!response?.ok) {
-      ElMessage.error('Не удалось загрузить данные заказа')
-      return
-    }
-
-    const orderData = (await response.json()) as IOrderResponse
-
-    if (orderData.order_name) {
-      orderName.value = orderData.order_name
-    }
+const applyOrder = (orderData: IOrderResponse) => {
+  if (orderData.order_name) {
+    orderName.value = orderData.order_name
+  }
 
     const breakdown = orderData.total_price_breakdown
 
@@ -167,6 +155,20 @@ const fetchOrder = async (id: number) => {
     vatCosts.value = formatPrice(detailPriceCalculation?.taxes ?? breakdown?.taxes)
     priceWithVat.value = formatPrice(detailPriceCalculation?.detail_price_one_with_taxes ?? breakdown?.total_price_with_taxes)
     totalCosts.value = priceWithVat.value
+}
+
+const fetchOrder = async (id: number) => {
+  if (!id) return
+
+  isLoading.value = true
+  try {
+    const response = await req_json_auth(`/orders/${id}`, 'GET')
+    if (!response?.ok) {
+      ElMessage.error('Не удалось загрузить данные заказа')
+      return
+    }
+
+    applyOrder((await response.json()) as IOrderResponse)
   } catch (error) {
     console.error('Error fetching order:', error)
     ElMessage.error('Ошибка при загрузке заказа')
@@ -179,7 +181,18 @@ const handleOrderNameUpdate = (value: string) => {
   orderName.value = value
 }
 
+const calculationFromState = (): IOrderResponse | null => {
+  const calculation = history.state?.calculation
+  if (!calculation || typeof calculation !== 'object') return null
+  return calculation as IOrderResponse
+}
+
 const handleGoBack = () => {
+  if (calculationFromState() || (!kitId.value && !orderId.value)) {
+    router.back()
+    return
+  }
+
   router.push({
     name: 'personal-calc',
     query: {
@@ -194,6 +207,12 @@ const handleDownload = () => {
 }
 
 onMounted(() => {
+  const calculation = calculationFromState()
+  if (calculation) {
+    applyOrder(calculation)
+    return
+  }
+
   if (orderId.value > 0) {
     void fetchOrder(orderId.value)
   }
@@ -206,7 +225,7 @@ onMounted(() => {
       <div class="calc-info-body">
         <div class="calc-info-main">
           <header class="calc-header">
-            <div class="document-number">Заказ №{{ kitId }}</div>
+            <div v-if="kitId" class="document-number">Заказ №{{ kitId }}</div>
             <InputEdit v-model="orderName" @update:model-value="handleOrderNameUpdate" />
           </header>
 

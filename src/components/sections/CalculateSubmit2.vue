@@ -24,11 +24,13 @@ const props = withDefaults(
     specialInstructions: string
     saveLabel?: string
     hideBackButton?: boolean
+    detailingForManager?: boolean
     lastResult?: IOrderResponse | null
   }>(),
   {
     saveLabel: 'Сохранить изменения',
     hideBackButton: false,
+    detailingForManager: false,
     lastResult: null,
   }
 )
@@ -68,7 +70,54 @@ const existingOrderIds = computed<number[]>(() => {
 const isLoginDialogVisible = ref(false)
 const isSubmitting = ref(false)
 
+const readAccessTokenRole = (token?: string): string => {
+  if (!token) return ''
+  const segment = token.split('.')[1]
+  if (!segment) return ''
+
+  try {
+    const normalized = segment.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4)
+    const payload = JSON.parse(atob(padded)) as { role?: unknown }
+    return typeof payload.role === 'string' ? payload.role.trim().toLowerCase() : ''
+  } catch {
+    return ''
+  }
+}
+
 const isDisabled = computed(() => !authStore.getToken)
+const showDetailing = computed(() => {
+  if (!props.detailingForManager) return false
+  const profileRole = profileStore.profile?.role
+  const role =
+    readAccessTokenRole(authStore.getToken) ||
+    (typeof profileRole === 'string' ? profileRole.trim().toLowerCase() : '')
+  return role === 'manager'
+})
+
+const openDetailing = () => {
+  const query: Record<string, string> = {}
+  if (kitId.value > 0) query.kitId = String(kitId.value)
+  if (props.orderId > 0) query.orderId = String(props.orderId)
+
+  let calculation: IOrderResponse | undefined
+  if (props.lastResult) {
+    try {
+      calculation = JSON.parse(JSON.stringify(props.lastResult)) as IOrderResponse
+      if (!calculation.order_name && props.payload.order_name) {
+        calculation.order_name = props.payload.order_name
+      }
+    } catch {
+      calculation = undefined
+    }
+  }
+
+  router.push({
+    name: 'personal-calc-info',
+    query,
+    state: calculation ? { calculation } : {},
+  })
+}
 
 const isProfileComplete = (profile?: IProfile): boolean => {
   if (!profile) return false
@@ -344,7 +393,13 @@ const cancel = () => {
       Назад
     </ButtonRound>
 
+    <span v-if="showDetailing" class="auth-tooltip-trigger">
+      <ButtonRound width="300px" @click="openDetailing">
+        Детализация
+      </ButtonRound>
+    </span>
     <el-tooltip
+      v-else
       content="Необходимо авторизоваться"
       placement="top"
       :disabled="!isDisabled"
