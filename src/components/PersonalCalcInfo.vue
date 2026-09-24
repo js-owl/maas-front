@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { req_json_auth } from '../api'
 import type { IOrderResponse } from '../interfaces/order.interface'
-import InputEdit from './ui/InputEdit.vue'
+import { orderTypeOptions } from '../helpers/order-type-options'
 import arrowLeftIcon from '@/assets/calc-info/arrow-left.svg'
 import downloadIcon from '@/assets/calc-info/download.svg'
 
@@ -15,7 +15,21 @@ const orderId = computed(() => Number(route.query.orderId) || 0)
 const kitId = computed(() => Number(route.query.kitId) || 0)
 
 const isLoading = ref(false)
-const orderName = ref('Наименование заказа')
+const serviceId = ref('')
+
+const processingType = computed(() => {
+  const id = serviceId.value
+  if (!id) return ''
+
+  const match = orderTypeOptions.find((option) => option.serviceId === id)
+  if (match) return match.label
+
+  if (id.startsWith('electroplating')) {
+    return orderTypeOptions.find((option) => option.value === 'galvanic')?.label ?? ''
+  }
+
+  return ''
+})
 
 const materialCosts = ref({
   matPriceFull: '-',
@@ -78,8 +92,8 @@ const costRows = computed(() => [
 ])
 
 const applyOrder = (orderData: IOrderResponse) => {
-  if (orderData.order_name) {
-    orderName.value = orderData.order_name
+  if (orderData.service_id) {
+    serviceId.value = orderData.service_id
   }
 
     const breakdown = orderData.total_price_breakdown
@@ -177,10 +191,6 @@ const fetchOrder = async (id: number) => {
   }
 }
 
-const handleOrderNameUpdate = (value: string) => {
-  orderName.value = value
-}
-
 const calculationFromState = (): IOrderResponse | null => {
   const calculation = history.state?.calculation
   if (!calculation || typeof calculation !== 'object') return null
@@ -207,6 +217,11 @@ const handleDownload = () => {
 }
 
 onMounted(() => {
+  const stateServiceId = history.state?.serviceId
+  if (typeof stateServiceId === 'string' && stateServiceId) {
+    serviceId.value = stateServiceId
+  }
+
   const calculation = calculationFromState()
   if (calculation) {
     applyOrder(calculation)
@@ -226,7 +241,7 @@ onMounted(() => {
         <div class="calc-info-main">
           <header class="calc-header">
             <div v-if="kitId" class="document-number">Заказ №{{ kitId }}</div>
-            <InputEdit v-model="orderName" @update:model-value="handleOrderNameUpdate" />
+            <div v-if="processingType" class="processing-type">{{ processingType }}</div>
           </header>
 
           <div class="cost-block">
@@ -310,48 +325,13 @@ onMounted(() => {
   width: 100%;
 }
 
-.calc-header :deep(.input-edit-view),
-.calc-header :deep(.input-edit-edit) {
-  width: 100%;
-  min-width: 0;
-  gap: 10px;
-}
-
-.calc-header :deep(.input-edit-value) {
+.processing-type {
   font-family: 'Montserrat-Medium', sans-serif;
   font-size: 24px;
   font-weight: 500;
   line-height: 1.4;
   color: #000;
   word-break: break-word;
-}
-
-.calc-header :deep(.input-edit-input) {
-  min-width: 0;
-  width: 100%;
-}
-
-.calc-header :deep(.input-edit-btn) {
-  width: auto;
-  height: auto;
-  min-width: 0;
-  min-height: 0;
-  padding: 0;
-  border: none;
-  background: transparent;
-  line-height: 0;
-}
-
-.calc-header :deep(.input-edit-btn .el-icon) {
-  display: none;
-}
-
-.calc-header :deep(.input-edit-btn)::before {
-  content: url('@/assets/calc-info/edit.svg');
-}
-
-.calc-header :deep(.input-edit-btn:hover) {
-  opacity: 0.85;
 }
 
 .document-number {
@@ -505,8 +485,8 @@ onMounted(() => {
     line-height: normal;
   }
 
-  .calc-header :deep(.input-edit-value) {
-    font-size: 16px !important;
+  .processing-type {
+    font-size: 16px;
     line-height: normal;
   }
 

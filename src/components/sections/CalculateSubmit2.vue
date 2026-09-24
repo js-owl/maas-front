@@ -104,8 +104,8 @@ const openDetailing = () => {
   if (props.lastResult) {
     try {
       calculation = JSON.parse(JSON.stringify(props.lastResult)) as IOrderResponse
-      if (!calculation.order_name && props.payload.order_name) {
-        calculation.order_name = props.payload.order_name
+      if (!calculation.service_id && props.payload.service_id) {
+        calculation.service_id = props.payload.service_id
       }
     } catch {
       calculation = undefined
@@ -115,7 +115,10 @@ const openDetailing = () => {
   router.push({
     name: 'personal-calc-info',
     query,
-    state: calculation ? { calculation } : {},
+    state: {
+      ...(calculation ? { calculation } : {}),
+      serviceId: calculation?.service_id || props.payload.service_id || '',
+    },
   })
 }
 
