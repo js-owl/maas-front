@@ -70,7 +70,10 @@ const formatPrice = (value?: number | string | null) => {
   if (value == null || value === '') return '-'
   const num = Number(value)
   if (Number.isNaN(num)) return '-'
-  return num.toFixed(2)
+  return new Intl.NumberFormat('ru-RU', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(num)
 }
 
 const costRows = computed(() => [
@@ -125,7 +128,7 @@ const applyOrder = (orderData: IOrderResponse) => {
       laborCosts.value.sumCostsLabor = formatPrice(breakdown.sum_costs_labor)
     }
     if (orderData.total_time != null) {
-      laborCosts.value.totalTime = orderData.total_time.toFixed(2)
+      laborCosts.value.totalTime = formatPrice(orderData.total_time)
     }
     if (breakdown?.price_of_hour != null) {
       laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers = formatPrice(breakdown.price_of_hour)
