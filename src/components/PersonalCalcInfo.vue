@@ -273,7 +273,7 @@ onMounted(() => {
         <footer class="action-section">
           <button type="button" class="action-btn" @click="handleGoBack">
             <img :src="arrowLeftIcon" width="20" height="20" alt="" />
-            Вернуться в Заказ
+            Вернуться к Расчету
           </button>
           <button type="button" class="action-btn" @click="handleDownload">
             Скачать
