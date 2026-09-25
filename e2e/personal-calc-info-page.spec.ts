@@ -38,7 +38,7 @@ const mockOrder = {
     price_per_kg: 6000,
     dop_mat_price: 0,
     sum_costs_labor: 12000,
-    price_of_hour_with_others: 4800,
+    price_of_hour: 4800,
     work_price: 12000,
     dop_salary: 0,
     insurance_price: 0,

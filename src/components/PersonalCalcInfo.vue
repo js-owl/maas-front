@@ -127,8 +127,8 @@ const applyOrder = (orderData: IOrderResponse) => {
     if (orderData.total_time != null) {
       laborCosts.value.totalTime = `${orderData.total_time.toFixed(2)} ч`
     }
-    if (breakdown?.price_of_hour_with_others != null) {
-      laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers = `${formatPrice(breakdown.price_of_hour_with_others)} руб/ч`
+    if (breakdown?.price_of_hour != null) {
+      laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers = `${formatPrice(breakdown.price_of_hour)} руб/ч`
     }
     if (breakdown?.work_price != null) {
       laborCosts.value.priceOfHourWithOthers.workPrice = formatPrice(breakdown.work_price)
