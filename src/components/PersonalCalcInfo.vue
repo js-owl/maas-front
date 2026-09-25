@@ -74,21 +74,21 @@ const formatPrice = (value?: number | string | null) => {
 }
 
 const costRows = computed(() => [
-  { number: '1', label: 'Затраты на материалы', value: materialCosts.value.matPriceFull, nested: false },
-  { number: '2', label: 'Затраты на оплату труда', value: laborCosts.value.sumCostsLabor, nested: false },
-  { number: '2.1', label: 'Основная заработная плата', value: laborCosts.value.priceOfHourWithOthers.workPrice, nested: true },
-  { number: '2.2', label: 'Дополнительная заработная плата', value: laborCosts.value.priceOfHourWithOthers.dopSalary, nested: true },
-  { number: '2.3', label: 'Трудоёмкость', value: laborCosts.value.totalTime, nested: true },
-  { number: '2.4', label: 'Стоимость нормочаса', value: laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers, nested: true },
-  { number: '3', label: 'Страховые взносы', value: laborCosts.value.priceOfHourWithOthers.insurancePrice, nested: false },
-  { number: '4', label: 'Затраты на специальную технологическую оснастку', value: toolingCosts.value, nested: false },
-  { number: '5', label: 'Общепроизводственные затраты', value: laborCosts.value.priceOfHourWithOthers.overheadExpenses, nested: false },
-  { number: '6', label: 'Общехозяйственные затраты', value: laborCosts.value.priceOfHourWithOthers.administrativeExpenses, nested: false },
-  { number: '7', label: 'Себестоимость', value: netCost.value, nested: false },
-  { number: '8', label: 'Прибыль', value: profit.value, nested: false },
-  { number: '9', label: 'Цена (без НДС)', value: priceWithoutVat.value, nested: false },
-  { number: '10', label: 'НДС', value: vatCosts.value, nested: false },
-  { number: '11', label: 'Цена (с НДС)', value: priceWithVat.value, nested: false },
+  { number: '1', label: 'Затраты на материалы, руб', value: materialCosts.value.matPriceFull, nested: false },
+  { number: '2', label: 'Затраты на оплату труда, руб', value: laborCosts.value.sumCostsLabor, nested: false },
+  { number: '2.1', label: 'Основная заработная плата, руб', value: laborCosts.value.priceOfHourWithOthers.workPrice, nested: true },
+  { number: '2.2', label: 'Дополнительная заработная плата, руб', value: laborCosts.value.priceOfHourWithOthers.dopSalary, nested: true },
+  { number: '2.3', label: 'Трудоёмкость, ч', value: laborCosts.value.totalTime, nested: true },
+  { number: '2.4', label: 'Стоимость нормочаса, руб/ч', value: laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers, nested: true },
+  { number: '3', label: 'Страховые взносы, руб', value: laborCosts.value.priceOfHourWithOthers.insurancePrice, nested: false },
+  { number: '4', label: 'Затраты на специальную технологическую оснастку, руб', value: toolingCosts.value, nested: false },
+  { number: '5', label: 'Общепроизводственные затраты, руб', value: laborCosts.value.priceOfHourWithOthers.overheadExpenses, nested: false },
+  { number: '6', label: 'Общехозяйственные затраты, руб', value: laborCosts.value.priceOfHourWithOthers.administrativeExpenses, nested: false },
+  { number: '7', label: 'Себестоимость, руб', value: netCost.value, nested: false },
+  { number: '8', label: 'Прибыль, руб', value: profit.value, nested: false },
+  { number: '9', label: 'Цена (без НДС), руб', value: priceWithoutVat.value, nested: false },
+  { number: '10', label: 'НДС, руб', value: vatCosts.value, nested: false },
+  { number: '11', label: 'Цена (с НДС), руб', value: priceWithVat.value, nested: false },
 ])
 
 const applyOrder = (orderData: IOrderResponse) => {
@@ -125,10 +125,10 @@ const applyOrder = (orderData: IOrderResponse) => {
       laborCosts.value.sumCostsLabor = formatPrice(breakdown.sum_costs_labor)
     }
     if (orderData.total_time != null) {
-      laborCosts.value.totalTime = `${orderData.total_time.toFixed(2)} ч`
+      laborCosts.value.totalTime = orderData.total_time.toFixed(2)
     }
     if (breakdown?.price_of_hour != null) {
-      laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers = `${formatPrice(breakdown.price_of_hour)} руб/ч`
+      laborCosts.value.priceOfHourWithOthers.priceOfHourWithOthers = formatPrice(breakdown.price_of_hour)
     }
     if (breakdown?.work_price != null) {
       laborCosts.value.priceOfHourWithOthers.workPrice = formatPrice(breakdown.work_price)
@@ -260,7 +260,7 @@ onMounted(() => {
             </div>
 
             <div class="total-section">
-              <span class="total-label">Итого</span>
+              <span class="total-label">Итого, руб</span>
               <span class="line-dash" aria-hidden="true"></span>
               <span class="total-value">{{ totalCosts }}</span>
             </div>
