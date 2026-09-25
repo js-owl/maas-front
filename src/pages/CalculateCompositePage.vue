@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+defineOptions({ name: 'CalculateCompositePage' })
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { req_json, req_json_auth } from '../api'

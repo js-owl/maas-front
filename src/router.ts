@@ -3,6 +3,12 @@ import { createWebHistory, createRouter, type RouteRecordRaw } from 'vue-router'
 import HomePage from './pages/HomePage.vue'
 import NotFoundPage from './pages/NotFoundPage.vue'
 import { useAuthStore } from './stores/auth.store'
+import {
+  clearCalcPageCache,
+  forgetCalcPage,
+  isCalcRouteName,
+  rememberCalcPage,
+} from './helpers/calc-page-cache'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: HomePage, name: 'home' },
@@ -175,8 +181,18 @@ const router = createRouter({
   },
 })
 
-router.beforeEach((to) => {
+router.beforeEach((to, from) => {
   console.log('router', to.fullPath)
+
+  if (isCalcRouteName(from.name) && to.name === 'personal-calc-info') {
+    rememberCalcPage(from.name)
+  } else if (isCalcRouteName(from.name)) {
+    forgetCalcPage(from.name)
+  }
+
+  if (from.name === 'personal-calc-info' && !isCalcRouteName(to.name)) {
+    clearCalcPageCache()
+  }
 
   if (!to.path.startsWith('/personal')) return
 

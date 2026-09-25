@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+defineOptions({ name: 'CalculatePrintingPage2' })
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { req_json, req_json_auth } from '../api'
 import {

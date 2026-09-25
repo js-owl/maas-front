@@ -7,6 +7,7 @@ import Footer from './components/Footer.vue'
 import SeoMainHeading from './components/SeoMainHeading.vue'
 import { canonicalForPath, resolveRouteSeo } from './seo/route-meta'
 import { SITE_ORIGIN } from './seo/public-routes'
+import { cachedCalcPages } from './helpers/calc-page-cache'
 
 const route = useRoute()
 const consentBannerVisible = ref(false)
@@ -118,7 +119,11 @@ onMounted(() => {
     :class="{ 'main-content--consent-pad': showConsentBanner }"
   >
     <SeoMainHeading />
-    <RouterView />
+    <RouterView v-slot="{ Component }">
+      <KeepAlive :include="cachedCalcPages">
+        <component :is="Component" />
+      </KeepAlive>
+    </RouterView>
   </main>
   <Footer />
   <div

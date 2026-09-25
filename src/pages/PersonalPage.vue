@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { cachedCalcPages } from '../helpers/calc-page-cache'
 // import { useRoute } from 'vue-router'
 import { useMaterialStore } from '../stores/material.store'
 // import { useProfileStore } from '../stores/profile.store'
@@ -46,7 +47,11 @@ onMounted(async () => {
           </el-menu>
         </aside> -->
         <main>
-          <RouterView />
+          <RouterView v-slot="{ Component }">
+            <KeepAlive :include="cachedCalcPages">
+              <component :is="Component" />
+            </KeepAlive>
+          </RouterView>
         </main>
       </div>
     </el-col>

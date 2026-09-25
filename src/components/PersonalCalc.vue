@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+defineOptions({ name: 'PersonalCalc' })
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
