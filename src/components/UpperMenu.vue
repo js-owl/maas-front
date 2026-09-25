@@ -5,6 +5,7 @@ import DialogLogin from './dialog/DialogLogin.vue'
 // import DialogCall from './dialog/DialogCall.vue'
 import DialogRegistration from './dialog/DialogRegistration.vue'
 import { useAuthStore } from '../stores/auth.store'
+import { useProfileStore } from '../stores/profile.store'
 import { useRouter, useRoute } from 'vue-router'
 import IconLogoHeader2 from '../icons/IconLogoHeader2.vue'
 import IconLogoMark from '../icons/IconLogoMark.vue'
@@ -23,8 +24,32 @@ const isLoginVisible = ref(false)
 const isRegistrationVisible = ref(false)
 
 const authStore = useAuthStore()
+const profileStore = useProfileStore()
 const router = useRouter()
 const route = useRoute()
+
+const readAccessTokenRole = (token?: string): string => {
+  if (!token) return ''
+  const segment = token.split('.')[1]
+  if (!segment) return ''
+
+  try {
+    const normalized = segment.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4)
+    const payload = JSON.parse(atob(padded)) as { role?: unknown }
+    return typeof payload.role === 'string' ? payload.role.trim().toLowerCase() : ''
+  } catch {
+    return ''
+  }
+}
+
+const isManager = computed(() => {
+  const profileRole = profileStore.profile?.role
+  const role =
+    readAccessTokenRole(authStore.getToken) ||
+    (typeof profileRole === 'string' ? profileRole.trim().toLowerCase() : '')
+  return role === 'manager'
+})
 
 let color = ref('')
 const { width, isMobile } = usePageBreakpoints()
@@ -224,11 +249,11 @@ const desktopCabinetPopoverAttrs = computed(() => ({
                   </button>
                 </template>
                 <div class="cabinet-menu">
-                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="openCabinetPage">
+                  <button v-if="!isManager" type="button" class="cabinet-menu-item montserrat-medium" @click="openCabinetPage">
                     <el-icon :size="22" class="cabinet-menu-icon"><IconProfile /></el-icon>
                     <span>Профиль</span>
                   </button>
-                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="openOrdersPage">
+                  <button v-if="!isManager" type="button" class="cabinet-menu-item montserrat-medium" @click="openOrdersPage">
                     <el-icon :size="22" class="cabinet-menu-icon"><IconCalculate color="#7в8083" /></el-icon>
                     <span>Расчеты и заказы</span>
                   </button>
@@ -334,11 +359,11 @@ const desktopCabinetPopoverAttrs = computed(() => ({
                   </el-button>
                 </template>
                 <div class="cabinet-menu">
-                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="openCabinetPage">
+                  <button v-if="!isManager" type="button" class="cabinet-menu-item montserrat-medium" @click="openCabinetPage">
                     <el-icon :size="22" class="cabinet-menu-icon"><IconProfile /></el-icon>
                     <span>Профиль</span>
                   </button>
-                  <button type="button" class="cabinet-menu-item montserrat-medium" @click="openOrdersPage">
+                  <button v-if="!isManager" type="button" class="cabinet-menu-item montserrat-medium" @click="openOrdersPage">
                     <el-icon :size="22" class="cabinet-menu-icon"><IconCalculate color="#7в8083" /></el-icon>
                     <span>Расчеты и заказы</span>
                   </button>
