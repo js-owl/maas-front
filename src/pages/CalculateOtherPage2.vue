@@ -34,8 +34,10 @@ import UploadFiles2 from '@/components/UploadFiles2.vue'
 import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
 import Loader from '../components/ui/Loader.vue'
+import { useIsManager } from '../composables/useIsManager'
 
 const profileStore = useProfileStore()
+const isManager = useIsManager()
 
 const route = useRoute()
 const order_id = computed(() => Number(route.query.orderId) || 0)
@@ -383,7 +385,7 @@ async function getOrder(id: number) {
               </div>
 
               <div class="calc-block calc-block--comment calc-block--comment--push">
-                <div class="calc-field-block">
+                <div v-if="!isManager" class="calc-field-block">
                   <div class="calc-title">
                     <span class="calc-title__desktop">Описание заказа</span>
                     <span class="calc-title__mobile">Комментарий</span>

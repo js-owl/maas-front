@@ -27,8 +27,10 @@ import Loader from '../components/ui/Loader.vue'
 import { toElectroplatingFamilyOptions } from '../helpers/material-family'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
+import { useIsManager } from '../composables/useIsManager'
 
 const profileStore = useProfileStore()
+const isManager = useIsManager()
 
 const route = useRoute()
 const order_id = computed(() => Number(route.query.orderId) || 0)
@@ -617,7 +619,7 @@ watch(file_id, () => {
               </div>
 
               <div class="calc-block calc-block--comment">
-                <div class="calc-field-block">
+                <div v-if="!isManager" class="calc-field-block">
                   <div class="calc-title">
                     <span class="calc-title__desktop">Описание заказа</span>
                     <span class="calc-title__mobile">Комментарий</span>

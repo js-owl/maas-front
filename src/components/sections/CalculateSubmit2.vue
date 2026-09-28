@@ -17,6 +17,7 @@ import type {
 import DialogLogin from '../dialog/DialogLogin.vue'
 import ButtonRound from '../ui/ButtonRound.vue'
 import IconArrowLeft from '@/icons/IconArrowLeft.vue'
+import { useIsManager } from '../../composables/useIsManager'
 
 const props = withDefaults(
   defineProps<{
@@ -70,30 +71,9 @@ const existingOrderIds = computed<number[]>(() => {
 
 const isLoginDialogVisible = ref(false)
 const isSubmitting = ref(false)
-
-const readAccessTokenRole = (token?: string): string => {
-  if (!token) return ''
-  const segment = token.split('.')[1]
-  if (!segment) return ''
-
-  try {
-    const normalized = segment.replace(/-/g, '+').replace(/_/g, '/')
-    const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4)
-    const payload = JSON.parse(atob(padded)) as { role?: unknown }
-    return typeof payload.role === 'string' ? payload.role.trim().toLowerCase() : ''
-  } catch {
-    return ''
-  }
-}
+const isManager = useIsManager()
 
 const isDisabled = computed(() => !authStore.getToken)
-const isManager = computed(() => {
-  const profileRole = profileStore.profile?.role
-  const role =
-    readAccessTokenRole(authStore.getToken) ||
-    (typeof profileRole === 'string' ? profileRole.trim().toLowerCase() : '')
-  return role === 'manager'
-})
 const showDetailing = computed(() => props.detailingForManager && isManager.value)
 const hideBack = computed(() => props.hideBackButton || isManager.value)
 
