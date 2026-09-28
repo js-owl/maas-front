@@ -87,14 +87,15 @@ const readAccessTokenRole = (token?: string): string => {
 }
 
 const isDisabled = computed(() => !authStore.getToken)
-const showDetailing = computed(() => {
-  if (!props.detailingForManager) return false
+const isManager = computed(() => {
   const profileRole = profileStore.profile?.role
   const role =
     readAccessTokenRole(authStore.getToken) ||
     (typeof profileRole === 'string' ? profileRole.trim().toLowerCase() : '')
   return role === 'manager'
 })
+const showDetailing = computed(() => props.detailingForManager && isManager.value)
+const hideBack = computed(() => props.hideBackButton || isManager.value)
 
 const openDetailing = () => {
   const query: Record<string, string> = {}
@@ -399,8 +400,8 @@ const cancel = () => {
 </script>
 
 <template>
-  <div class="calculate-submit2" :class="{ 'calculate-submit2--no-back': hideBackButton }">
-    <ButtonRound v-if="!hideBackButton" width="250px" :disabled="isDisabled" @click="cancel">
+  <div class="calculate-submit2" :class="{ 'calculate-submit2--no-back': hideBack }">
+    <ButtonRound v-if="!hideBack" width="250px" :disabled="isDisabled" @click="cancel">
       <template #icon-left>
         <IconArrowLeft color="#333" />
       </template>
