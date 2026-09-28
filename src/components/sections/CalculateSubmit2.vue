@@ -445,6 +445,10 @@ const cancel = () => {
   gap: 12px 20px;
 }
 
+.calculate-submit2--no-back {
+  justify-content: flex-end;
+}
+
 .auth-tooltip-trigger {
   display: inline-flex;
 }

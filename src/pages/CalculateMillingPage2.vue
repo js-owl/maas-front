@@ -30,6 +30,7 @@ import { getCoefficients } from '../components/coefficients/api-coefficients'
 // import DocumentShowByIds from '../components/DocumentShowByIds.vue'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
+import { useAuthStore } from '../stores/auth.store'
 import { useProfileStore } from '../stores/profile.store'
 // import DialogInfoPayment from '../components/dialog/DialogInfoPayment.vue'
 import SuitableMachines from '../components/SuitableMachines.vue'
@@ -43,6 +44,30 @@ import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
 import Loader from '../components/ui/Loader.vue'
 
 const profileStore = useProfileStore()
+const authStore = useAuthStore()
+
+const readAccessTokenRole = (token?: string): string => {
+  if (!token) return ''
+  const segment = token.split('.')[1]
+  if (!segment) return ''
+
+  try {
+    const normalized = segment.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4)
+    const payload = JSON.parse(atob(padded)) as { role?: unknown }
+    return typeof payload.role === 'string' ? payload.role.trim().toLowerCase() : ''
+  } catch {
+    return ''
+  }
+}
+
+const isManager = computed(() => {
+  const profileRole = profileStore.profile?.role
+  const role =
+    readAccessTokenRole(authStore.getToken) ||
+    (typeof profileRole === 'string' ? profileRole.trim().toLowerCase() : '')
+  return role === 'manager'
+})
 
 const route = useRoute()
 const order_id = computed(() => Number(route.query.orderId) || 0)
@@ -421,6 +446,7 @@ watch(
                       } as unknown as IOrderPayload"
                       :special-instructions="special_instructions"
                       :last-result="result"
+                      :hide-back-button="isManager"
                       detailing-for-manager
                       @updateResult="onUpdateResult"
                       @showInfo="isInfoVisible = true"
