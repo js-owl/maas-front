@@ -5,7 +5,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { /* Edit, */ Delete, Plus /*, Notebook, Minus */ } from '@element-plus/icons-vue'
 import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
-import { formatKitStatusLabel } from '../helpers/status-text'
+import { formatKitStatusLabel, kitStatusTail } from '../helpers/status-text'
 import { orderLinePrice, unwrapApiData } from '../helpers/order-price'
 const CadPreview = defineAsyncComponent(() => import('./cad/CadPreview.vue'))
 // import CoefficientQuantity from './coefficients/CoefficientQuantity.vue'
@@ -103,7 +103,19 @@ const createdDate = computed(() => formatDate(order.value?.created_at))
 
 const orderStatus = computed(() => formatKitStatusLabel(order.value))
 
-const canConfirmOrder = computed(() => order.value?.status === 'AWAITING_CONFIRMATION')
+const orderStatusTail = computed(() => kitStatusTail(order.value?.status))
+
+const justConfirmed = ref(false)
+
+const canConfirmOrder = computed(() => orderStatusTail.value === 'AWAITING_CONFIRMATION')
+
+const canCheckoutOrder = computed(() => {
+  if (justConfirmed.value) return true
+  const tail = orderStatusTail.value
+  if (!tail || tail === 'AWAITING_CONFIRMATION') return false
+  return tail !== 'LOSE' && tail !== 'APOLOGY' && tail !== 'CANCELLED'
+})
+
 const confirmLoading = ref(false)
 
 const selectedLocation = computed({
@@ -454,6 +466,16 @@ const confirmOrder = async () => {
     const res = await req_json_auth(`/kits/${kitId.value}/confirm`, 'PUT')
     if (!res?.ok) throw new Error('Failed to confirm order')
 
+    try {
+      const confirmed = unwrapApiData<Partial<KitOrder>>(await res.json())
+      if (confirmed && typeof confirmed === 'object' && order.value) {
+        order.value = { ...order.value, ...confirmed }
+      }
+    } catch {
+      // Confirm may return an empty body.
+    }
+    justConfirmed.value = true
+
     await loadOrder()
     ElMessage.success('Заказ подтверждён')
   } catch (e) {
@@ -802,7 +824,12 @@ onMounted(() => {
             >
               Подтвердить заказ
             </button>
-            <button type="button" class="checkout-order-button" @click="goToDelivery">
+            <button
+              v-if="canCheckoutOrder"
+              type="button"
+              class="checkout-order-button"
+              @click="goToDelivery"
+            >
               Оформить заказ
             </button>
           </div>
@@ -817,7 +844,12 @@ onMounted(() => {
             >
               Подтвердить заказ
             </button>
-            <button type="button" class="summary-confirm-mobile" @click="goToDelivery">
+            <button
+              v-if="canCheckoutOrder"
+              type="button"
+              class="summary-confirm-mobile"
+              @click="goToDelivery"
+            >
               Оформить заказ
             </button>
           </div>
