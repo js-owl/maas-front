@@ -99,6 +99,7 @@ declare module 'vue' {
     PersonalCalcInfo: typeof import('./src/components/PersonalCalcInfo.vue')['default']
     PersonalCalcs: typeof import('./src/components/PersonalCalcs.vue')['default']
     PersonalOrder: typeof import('./src/components/PersonalOrder.vue')['default']
+    PersonalOrderDelivery: typeof import('./src/components/PersonalOrderDelivery.vue')['default']
     PersonalOrders: typeof import('./src/components/PersonalOrders.vue')['default']
     PersonalProfile: typeof import('./src/components/PersonalProfile.vue')['default']
     PersonalUsers: typeof import('./src/components/PersonalUsers.vue')['default']
