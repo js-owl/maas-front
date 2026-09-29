@@ -191,10 +191,9 @@ onMounted(() => {
             >
               <img class="delivery-option__icon" :src="iconTransport" alt="" />
               <span class="delivery-option__text">
-                <span class="delivery-option__label">СДЭК</span>
+                <span class="delivery-option__label">Транспортная компания</span>
                 <span class="delivery-option__hint">
-                  Доставка по всей России.<br />
-                  Срок уточняется
+                  Доставка по всей России. Срок уточняется
                 </span>
               </span>
             </button>
@@ -777,22 +776,49 @@ onMounted(() => {
   cursor: default;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1300px) and (min-width: 769px) {
+  .order-delivery__main {
+    padding: 40px 20px;
+    border-radius: 20px;
+  }
+
+  .order-delivery__side {
+    flex: 0 0 340px;
+    width: 340px;
+    padding: 40px 20px;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 0 6px rgba(85, 88, 91, 0.25);
+  }
+
+  .delivery-fields {
+    flex-direction: column;
+  }
+
+  .delivery-field--date {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .summary-item__preview {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
   .order-delivery {
     flex-direction: column;
+  }
+
+  .order-delivery__main,
+  .order-delivery__side {
+    padding: 20px;
+    border-radius: 24px;
   }
 
   .order-delivery__side {
     flex-basis: auto;
     width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .order-delivery__main,
-  .order-delivery__side {
-    padding: 20px;
-    border-radius: 24px;
   }
 
   .delivery-options,
