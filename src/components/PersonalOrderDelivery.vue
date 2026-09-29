@@ -191,7 +191,7 @@ onMounted(() => {
             >
               <img class="delivery-option__icon" :src="iconTransport" alt="" />
               <span class="delivery-option__text">
-                <span class="delivery-option__label">Транспортная компания</span>
+                <span class="delivery-option__label">СДЭК</span>
                 <span class="delivery-option__hint">
                   Доставка по всей России.<br />
                   Срок уточняется
