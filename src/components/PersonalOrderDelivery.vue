@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
+import { computed, defineAsyncComponent, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import ru from 'element-plus/es/locale/lang/ru'
@@ -7,6 +7,25 @@ import { req_json_auth } from '../api'
 import type { IKit, IOrderResponse } from '../interfaces/order.interface'
 import { kitStatusTail } from '../helpers/status-text'
 import { orderLinePrice, unwrapApiData } from '../helpers/order-price'
+import { useProfileStore } from '../stores/profile.store'
+import {
+  buildDeliveryPointByCodeQuery,
+  buildDeliveryPointsQuery,
+  filterPvzPoints,
+  kitDeliveryQuoteReadiness,
+  normalizePostalCode,
+  pickCheapestPvzTariff,
+  pickCityCode,
+  pickDefaultPvzCode,
+  pvzCodeLabel,
+  pvzStreetLabel,
+  unwrapList,
+  type CdekCity,
+  type CdekPvz,
+  type CdekTariff,
+  type DeliveryShipment,
+} from '../helpers/cdek-delivery'
+import PvzMapPreview from './delivery/PvzMapPreview.vue'
 import iconTransport from '@/assets/delivery/icon-transport.svg'
 import iconPickup from '@/assets/delivery/icon-pickup.svg'
 import iconChevron from '@/assets/delivery/icon-chevron.svg'
@@ -22,15 +41,25 @@ type DeliveryType = 'transport' | 'pickup'
 
 const route = useRoute()
 const router = useRouter()
+const profileStore = useProfileStore()
 
 const order = ref<KitOrder | null>(null)
 const calcRows = ref<IOrderResponse[]>([])
 const isLoading = ref(false)
 const confirmLoading = ref(false)
 const deliveryType = ref<DeliveryType>('transport')
-const deliveryAddress = ref('')
 const deliveryDate = ref<Date | null>(null)
 const deliveryComment = ref('')
+const shipment = ref<DeliveryShipment | null>(null)
+const pvzPoints = ref<CdekPvz[]>([])
+const resolvedPvz = ref<CdekPvz | null>(null)
+const pvzSearchQuery = ref('')
+const pvzDropdownOpen = ref(false)
+const selectedPvzCode = ref('')
+const pvzTariff = ref<CdekTariff | null>(null)
+const cityCode = ref<number | null>(null)
+const deliveryLoading = ref(false)
+const deliveryError = ref('')
 
 const kitId = computed(() => {
   const fromQuery = route.query.kitId
@@ -85,6 +114,31 @@ const canCheckoutOrder = computed(() => {
   return tail !== 'LOSE' && tail !== 'APOLOGY' && tail !== 'CANCELLED'
 })
 
+const deliveryQuoteReadiness = computed(() => kitDeliveryQuoteReadiness(calcRows.value))
+
+const displayPvz = computed(() => {
+  const code = (selectedPvzCode.value || shipment.value?.delivery_point_code || '').trim()
+  if (!code) return null
+  const fromList = pvzPoints.value.find((point) => point.code === code)
+  if (fromList) return fromList
+  if (resolvedPvz.value?.code === code) return resolvedPvz.value
+  return null
+})
+
+const displayPvzPoints = computed(() => filterPvzPoints(pvzPoints.value, pvzSearchQuery.value))
+
+const hasDeliveryOption = computed(
+  () => Boolean(selectedPvzCode.value && pvzTariff.value?.tariff_code && cityCode.value != null)
+)
+
+const pvzPopperOptions = {
+  modifiers: [
+    { name: 'flip', enabled: false },
+    { name: 'offset', options: { offset: [0, 8] } },
+    { name: 'preventOverflow', options: { padding: 8, altAxis: false } },
+  ],
+}
+
 const isPastDate = (date: Date) => {
   const start = new Date(date.getFullYear(), date.getMonth(), date.getDate())
   const today = new Date()
@@ -119,6 +173,10 @@ const loadOrder = async () => {
     if (!res?.ok) throw new Error('Failed to load order')
     order.value = unwrapApiData<KitOrder>(await res.json())
     await loadCalcs()
+    if (deliveryType.value === 'transport') {
+      await loadShipment()
+      await loadDeliveryQuote()
+    }
   } catch (error) {
     console.error(error)
     ElMessage.error('Не удалось загрузить данные доставки')
@@ -134,9 +192,183 @@ const goBack = () => {
   })
 }
 
+const onPvzFilter = (query: string) => {
+  pvzSearchQuery.value = query
+}
+
+const onPvzVisibleChange = (visible: boolean) => {
+  pvzDropdownOpen.value = visible
+  if (!visible) {
+    pvzSearchQuery.value = ''
+    return
+  }
+  nextTick(() => {
+    const input = document.querySelector<HTMLInputElement>('.delivery-pvz-select .el-select__input')
+    input?.focus()
+    input?.select()
+  })
+}
+
+const loadPvzDetails = async (code: string) => {
+  const pointCode = code.trim()
+  if (!pointCode) {
+    resolvedPvz.value = null
+    return
+  }
+  const fromList = pvzPoints.value.find((point) => point.code === pointCode)
+  if (fromList) {
+    resolvedPvz.value = fromList
+    return
+  }
+  if (resolvedPvz.value?.code === pointCode) return
+  try {
+    const res = await req_json_auth(buildDeliveryPointByCodeQuery(pointCode), 'GET', undefined, [404])
+    if (!res?.ok) return
+    const points = unwrapList<CdekPvz>(await res.json())
+    resolvedPvz.value = points.find((point) => point.code === pointCode) || points[0] || null
+  } catch {
+    resolvedPvz.value = null
+  }
+}
+
+const loadShipment = async () => {
+  if (!kitId.value) return
+  try {
+    const res = await req_json_auth(`/delivery/kits/${kitId.value}/shipment`, 'GET', undefined, [404])
+    if (!res?.ok) {
+      shipment.value = null
+      return
+    }
+    const data = await res.json()
+    shipment.value = data && typeof data === 'object' ? (data as DeliveryShipment) : null
+    if (shipment.value?.delivery_point_code) {
+      selectedPvzCode.value = shipment.value.delivery_point_code
+      await loadPvzDetails(shipment.value.delivery_point_code)
+    }
+  } catch {
+    shipment.value = null
+  }
+}
+
+const loadDeliveryQuote = async () => {
+  if (!kitId.value || deliveryType.value !== 'transport') return
+  const readiness = deliveryQuoteReadiness.value
+  if (!readiness.ready) {
+    deliveryLoading.value = false
+    deliveryError.value = readiness.reason
+    pvzPoints.value = []
+    pvzTariff.value = null
+    return
+  }
+
+  deliveryLoading.value = true
+  deliveryError.value = ''
+  pvzSearchQuery.value = ''
+  pvzTariff.value = null
+  try {
+    if (!profileStore.profile) {
+      await profileStore.getProfile()
+    }
+    const profile = profileStore.profile
+    const cityName = (profile?.city_name || profile?.city || '').trim()
+    const postal = normalizePostalCode(profile?.postal)
+    const phone = (profile?.personal_phone_number || profile?.phone_number || '').trim()
+    if (!cityName) {
+      deliveryError.value = 'Укажите город в профиле, чтобы рассчитать доставку в ПВЗ'
+      return
+    }
+    if (!phone) {
+      deliveryError.value = 'Укажите телефон в профиле для оформления доставки'
+      return
+    }
+
+    const citiesRes = await req_json_auth(
+      `/delivery/cdek/cities?q=${encodeURIComponent(cityName)}&size=5`,
+      'GET',
+      undefined,
+      [400, 404, 422]
+    )
+    if (!citiesRes?.ok) throw new Error('cities')
+    const cities = unwrapList<CdekCity>(await citiesRes.json())
+    const code = pickCityCode(cities, cityName)
+    if (!code) {
+      deliveryError.value = 'Не удалось определить город СДЭК по адресу профиля'
+      return
+    }
+    cityCode.value = code
+
+    let pointsRes = await req_json_auth(buildDeliveryPointsQuery(code, postal), 'GET', undefined, [
+      400, 404, 422,
+    ])
+    if (!pointsRes?.ok) throw new Error('pvz')
+    let points = unwrapList<CdekPvz>(await pointsRes.json()).filter((point) => Boolean(point.code))
+    if (!points.length && postal) {
+      pointsRes = await req_json_auth(buildDeliveryPointsQuery(code), 'GET', undefined, [400, 404, 422])
+      if (!pointsRes?.ok) throw new Error('pvz')
+      points = unwrapList<CdekPvz>(await pointsRes.json()).filter((point) => Boolean(point.code))
+    }
+    pvzPoints.value = points
+    if (!pvzPoints.value.length) {
+      deliveryError.value = postal
+        ? 'Рядом с индексом из профиля нет пунктов выдачи СДЭК'
+        : 'Рядом с адресом нет пунктов выдачи СДЭК'
+      return
+    }
+    if (!selectedPvzCode.value || !pvzPoints.value.some((point) => point.code === selectedPvzCode.value)) {
+      selectedPvzCode.value = pickDefaultPvzCode(pvzPoints.value, postal)
+    }
+    await loadPvzDetails(selectedPvzCode.value)
+
+    const calcRes = await req_json_auth(
+      '/delivery/cdek/calculate',
+      'POST',
+      {
+        kit_id: kitId.value,
+        to_location_code: code,
+      },
+      [400, 404, 422]
+    )
+    if (!calcRes?.ok) throw new Error('calculate')
+    const calcBody = await calcRes.json()
+    const tariffs = unwrapList<CdekTariff>(
+      (calcBody as { tariff_codes?: CdekTariff[] })?.tariff_codes ?? calcBody
+    )
+    const cheapest = pickCheapestPvzTariff(tariffs)
+    if (!cheapest) {
+      deliveryError.value = 'Нет тарифа СДЭК до пункта выдачи для этого заказа'
+      return
+    }
+    pvzTariff.value = cheapest
+  } catch (error) {
+    console.error(error)
+    deliveryError.value = 'Не удалось рассчитать доставку. Проверьте вес деталей и адрес профиля.'
+  } finally {
+    deliveryLoading.value = false
+  }
+}
+
+const readApiMessage = async (res: Response): Promise<string> => {
+  try {
+    const data = await res.json()
+    const message = data?.message ?? data?.detail
+    return typeof message === 'string' ? message : ''
+  } catch {
+    return ''
+  }
+}
+
+const confirmErrorText = (message: string): string => {
+  if (/select a cdek pickup point/i.test(message)) {
+    return 'Выберите пункт выдачи СДЭК, чтобы подтвердить заказ'
+  }
+  return message || 'Не удалось подтвердить заказ'
+}
+
 const ensureDeliveryReady = (): boolean => {
-  if (deliveryType.value === 'transport' && !deliveryAddress.value.trim()) {
-    ElMessage.warning('Введите адрес доставки')
+  if (deliveryType.value !== 'transport') return true
+  if (deliveryLoading.value) return false
+  if (!hasDeliveryOption.value) {
+    ElMessage.warning(deliveryError.value || 'Выберите пункт выдачи СДЭК')
     return false
   }
   return true
@@ -154,10 +386,35 @@ const confirmOrder = async () => {
       order_ids: order.value.order_ids,
       location: order.value.location || 'location_1',
     })
-    if (!updateRes?.ok) throw new Error('Failed to save order before confirm')
+    if (!updateRes?.ok) throw new Error('Не удалось сохранить заказ')
 
-    const res = await req_json_auth(`/kits/${kitId.value}/confirm`, 'PUT')
-    if (!res?.ok) throw new Error('Failed to confirm order')
+    if (deliveryType.value === 'transport' && pvzTariff.value && selectedPvzCode.value) {
+      const tariff = pvzTariff.value
+      const optionRes = await req_json_auth(
+        `/delivery/kits/${kitId.value}/option`,
+        'PUT',
+        {
+          tariff_code: tariff.tariff_code,
+          delivery_mode: 'pvz',
+          delivery_point_code: selectedPvzCode.value,
+          delivery_sum: tariff.delivery_sum,
+          period_min: tariff.period_min,
+          period_max: tariff.period_max,
+          to_location_code: cityCode.value,
+        },
+        [400, 409, 422]
+      )
+      if (!optionRes?.ok) {
+        const message = optionRes ? await readApiMessage(optionRes) : ''
+        throw new Error(message || 'Не удалось сохранить пункт выдачи СДЭК')
+      }
+    }
+
+    const res = await req_json_auth(`/kits/${kitId.value}/confirm`, 'PUT', undefined, [400, 409, 422])
+    if (!res?.ok) {
+      const message = res ? await readApiMessage(res) : ''
+      throw new Error(confirmErrorText(message))
+    }
 
     try {
       const confirmed = unwrapApiData<Partial<KitOrder>>(await res.json())
@@ -173,7 +430,7 @@ const confirmOrder = async () => {
     ElMessage.success('Заказ подтверждён')
   } catch (error) {
     console.error(error)
-    ElMessage.error('Не удалось подтвердить заказ')
+    ElMessage.error(error instanceof Error ? error.message : 'Не удалось подтвердить заказ')
   } finally {
     confirmLoading.value = false
   }
@@ -189,6 +446,10 @@ const checkoutOrder = () => {
       : 'Параметры доставки указаны'
   )
 }
+
+watch(deliveryType, (type) => {
+  if (type === 'transport' && order.value) void loadDeliveryQuote()
+})
 
 onMounted(() => {
   void loadOrder()
@@ -242,16 +503,52 @@ onMounted(() => {
 
         <div v-if="deliveryType === 'transport'" class="delivery-panel">
           <div class="delivery-fields">
-            <label class="delivery-field delivery-field--address">
-              <span class="delivery-field__label">Адрес доставки</span>
-              <input
-                v-model="deliveryAddress"
-                class="delivery-field__control"
-                type="text"
-                placeholder="Введите адрес"
-                autocomplete="street-address"
-              />
-            </label>
+            <div class="delivery-field delivery-field--address">
+              <span class="delivery-field__label">Пункт выдачи СДЭК</span>
+              <p v-if="deliveryLoading" class="delivery-pvz__hint">Расчёт доставки…</p>
+              <p v-else-if="deliveryError" class="delivery-pvz__error">{{ deliveryError }}</p>
+              <template v-else>
+                <p v-if="pvzPoints.length" class="delivery-pvz__hint">
+                  Введите код ПВЗ или улицу. Список строится по городу из профиля.
+                </p>
+                <el-select
+                  v-if="pvzPoints.length"
+                  v-model="selectedPvzCode"
+                  class="delivery-pvz-select"
+                  placeholder="Найти ПВЗ: код или улица"
+                  filterable
+                  clearable
+                  fit-input-width
+                  placement="bottom-start"
+                  :popper-options="pvzPopperOptions"
+                  :filter-method="onPvzFilter"
+                  no-match-text="Пункт не найден"
+                  popper-class="delivery-pvz-select-dropdown"
+                  @visible-change="onPvzVisibleChange"
+                >
+                  <el-option
+                    v-for="point in displayPvzPoints"
+                    :key="point.code"
+                    :label="pvzCodeLabel(point)"
+                    :value="point.code || ''"
+                  >
+                    <div class="delivery-pvz-option">
+                      <span class="delivery-pvz-option__code">{{ pvzCodeLabel(point) }}</span>
+                      <span class="delivery-pvz-option__addr">{{ pvzStreetLabel(point) }}</span>
+                    </div>
+                  </el-option>
+                </el-select>
+                <div v-if="displayPvz && !pvzDropdownOpen" class="delivery-pvz__selected">
+                  <span class="delivery-pvz__code">{{ pvzCodeLabel(displayPvz) }}</span>
+                  <span class="delivery-pvz__addr">{{ pvzStreetLabel(displayPvz) }}</span>
+                </div>
+                <PvzMapPreview v-if="displayPvz && !pvzDropdownOpen" :point="displayPvz" />
+                <p v-if="pvzTariff?.period_min" class="delivery-pvz__hint">
+                  Срок {{ pvzTariff.period_min }}–{{ pvzTariff.period_max }} дн. после отгрузки.
+                  Стоимость {{ formatPrice(pvzTariff.delivery_sum) }} руб.
+                </p>
+              </template>
+            </div>
             <label class="delivery-field delivery-field--date">
               <span class="delivery-field__label">Желаемая дата доставки</span>
               <span class="delivery-date">
@@ -280,6 +577,12 @@ onMounted(() => {
               placeholder="Например, пропускной режим, время для разгрузки, контакты на месте"
             />
           </label>
+        </div>
+
+        <div v-else class="delivery-panel">
+          <p class="delivery-pvz__hint">
+            Чтобы подтвердить заказ, выберите доставку СДЭК и пункт выдачи.
+          </p>
         </div>
 
         <div class="order-delivery__back-row">
@@ -342,7 +645,7 @@ onMounted(() => {
           v-if="canConfirmOrder"
           type="button"
           class="order-delivery__continue"
-          :disabled="confirmLoading || isLoading"
+          :disabled="confirmLoading || isLoading || deliveryType !== 'transport' || deliveryLoading || !hasDeliveryOption"
           @click="confirmOrder"
         >
           Подтвердить заказ
@@ -522,6 +825,84 @@ onMounted(() => {
 .delivery-field--date {
   flex: 0 0 252px;
   width: 252px;
+}
+
+.delivery-pvz__hint,
+.delivery-pvz__error {
+  margin: 0;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.delivery-pvz__hint {
+  color: #55585b;
+}
+
+.delivery-pvz__error {
+  color: #c2410c;
+}
+
+.delivery-pvz-select {
+  width: 100%;
+}
+
+.delivery-pvz-select :deep(.el-select__wrapper) {
+  min-height: 54px;
+  height: 54px;
+  padding: 0 20px;
+  border: 1px solid #cbd1d5;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: none;
+}
+
+.delivery-pvz-select :deep(.el-select__wrapper.is-focused),
+.delivery-pvz-select :deep(.el-select__wrapper.is-hovering) {
+  box-shadow: none;
+}
+
+.delivery-pvz-select :deep(.el-select__wrapper.is-focused) {
+  border-color: #1e61c7;
+}
+
+.delivery-pvz-select :deep(.el-select__placeholder),
+.delivery-pvz-select :deep(.el-select__selected-item),
+.delivery-pvz-select :deep(.el-select__input) {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+}
+
+.delivery-pvz-select :deep(.el-select__placeholder) {
+  color: #7d8083;
+}
+
+.delivery-pvz__selected {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid #cbd1d5;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.delivery-pvz__code {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 14px;
+  line-height: 1.2;
+  color: #000;
+}
+
+.delivery-pvz__addr {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #55585b;
+  word-break: break-word;
 }
 
 .delivery-field__label {
@@ -935,5 +1316,45 @@ onMounted(() => {
     flex-basis: auto;
     width: 100%;
   }
+}
+</style>
+
+<style>
+.delivery-pvz-select-dropdown.el-popper {
+  box-sizing: border-box;
+  padding: 8px !important;
+  background: #fff !important;
+  border: 1px solid #cbd1d5 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.12) !important;
+}
+
+.delivery-pvz-select-dropdown .el-select-dropdown__item {
+  height: auto;
+  min-height: 52px;
+  padding: 10px 12px;
+  line-height: 1.2;
+}
+
+.delivery-pvz-option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.delivery-pvz-option__code {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 14px;
+  color: #000;
+}
+
+.delivery-pvz-option__addr {
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #55585b;
+  white-space: normal;
+  word-break: break-word;
 }
 </style>
