@@ -72,9 +72,18 @@ const goodsSum = computed(() => {
 const vatAmount = computed(() => Math.round(goodsSum.value * 0.2))
 const grandTotal = computed(() => goodsSum.value + vatAmount.value)
 
-const canConfirmOrder = computed(
-  () => kitStatusTail(order.value?.status) === 'AWAITING_CONFIRMATION'
-)
+const justConfirmed = ref(false)
+
+const orderStatusTail = computed(() => kitStatusTail(order.value?.status))
+
+const canConfirmOrder = computed(() => orderStatusTail.value === 'AWAITING_CONFIRMATION')
+
+const canCheckoutOrder = computed(() => {
+  if (justConfirmed.value) return true
+  const tail = orderStatusTail.value
+  if (!tail || tail === 'AWAITING_CONFIRMATION') return false
+  return tail !== 'LOSE' && tail !== 'APOLOGY' && tail !== 'CANCELLED'
+})
 
 const isPastDate = (date: Date) => {
   const start = new Date(date.getFullYear(), date.getMonth(), date.getDate())
@@ -125,21 +134,17 @@ const goBack = () => {
   })
 }
 
-const continueDelivery = async () => {
+const ensureDeliveryReady = (): boolean => {
   if (deliveryType.value === 'transport' && !deliveryAddress.value.trim()) {
     ElMessage.warning('Введите адрес доставки')
-    return
+    return false
   }
-  if (!kitId.value || !order.value || confirmLoading.value) return
+  return true
+}
 
-  if (!canConfirmOrder.value) {
-    ElMessage.success(
-      deliveryType.value === 'pickup'
-        ? 'Выбран самовывоз со склада в Москве'
-        : 'Параметры доставки указаны'
-    )
-    return
-  }
+const confirmOrder = async () => {
+  if (!ensureDeliveryReady()) return
+  if (!kitId.value || !order.value || confirmLoading.value) return
 
   confirmLoading.value = true
   try {
@@ -154,6 +159,16 @@ const continueDelivery = async () => {
     const res = await req_json_auth(`/kits/${kitId.value}/confirm`, 'PUT')
     if (!res?.ok) throw new Error('Failed to confirm order')
 
+    try {
+      const confirmed = unwrapApiData<Partial<KitOrder>>(await res.json())
+      if (confirmed && typeof confirmed === 'object' && order.value) {
+        order.value = { ...order.value, ...confirmed }
+      }
+    } catch {
+      // Confirm may return an empty body.
+    }
+    justConfirmed.value = true
+
     await loadOrder()
     ElMessage.success('Заказ подтверждён')
   } catch (error) {
@@ -162,6 +177,17 @@ const continueDelivery = async () => {
   } finally {
     confirmLoading.value = false
   }
+}
+
+const checkoutOrder = () => {
+  if (!ensureDeliveryReady()) return
+  if (!kitId.value || !order.value || confirmLoading.value) return
+
+  ElMessage.success(
+    deliveryType.value === 'pickup'
+      ? 'Выбран самовывоз со склада в Москве'
+      : 'Параметры доставки указаны'
+  )
 }
 
 onMounted(() => {
@@ -311,14 +337,26 @@ onMounted(() => {
         </div>
       </div>
 
-      <button
-        type="button"
-        class="order-delivery__continue"
-        :disabled="confirmLoading || isLoading"
-        @click="continueDelivery"
-      >
-        Продолжить &gt;
-      </button>
+      <div class="order-delivery__actions">
+        <button
+          v-if="canConfirmOrder"
+          type="button"
+          class="order-delivery__continue"
+          :disabled="confirmLoading || isLoading"
+          @click="confirmOrder"
+        >
+          Подтвердить заказ
+        </button>
+        <button
+          v-if="canCheckoutOrder"
+          type="button"
+          class="order-delivery__continue"
+          :disabled="confirmLoading || isLoading"
+          @click="checkoutOrder"
+        >
+          Оформить заказ
+        </button>
+      </div>
     </aside>
   </section>
 </template>
@@ -755,6 +793,13 @@ onMounted(() => {
   font-family: 'Montserrat-SemiBold', sans-serif;
   font-size: 24px;
   font-weight: 600;
+}
+
+.order-delivery__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
 }
 
 .order-delivery__continue {

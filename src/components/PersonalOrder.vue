@@ -105,18 +105,11 @@ const orderStatus = computed(() => formatKitStatusLabel(order.value))
 
 const orderStatusTail = computed(() => kitStatusTail(order.value?.status))
 
-const justConfirmed = ref(false)
-
-const canConfirmOrder = computed(() => orderStatusTail.value === 'AWAITING_CONFIRMATION')
-
-const canCheckoutOrder = computed(() => {
-  if (justConfirmed.value) return true
+const canOpenDelivery = computed(() => {
   const tail = orderStatusTail.value
-  if (!tail || tail === 'AWAITING_CONFIRMATION') return false
+  if (!tail) return false
   return tail !== 'LOSE' && tail !== 'APOLOGY' && tail !== 'CANCELLED'
 })
-
-const confirmLoading = ref(false)
 
 const selectedLocation = computed({
   get: () => order.value?.location || 'location_1',
@@ -456,36 +449,6 @@ const saveOrder = async () => {
   }
 }
 
-const confirmOrder = async () => {
-  if (!kitId.value || confirmLoading.value) return
-  confirmLoading.value = true
-  try {
-    const updateRes = await updateKit()
-    if (!updateRes?.ok) throw new Error('Failed to save order before confirm')
-
-    const res = await req_json_auth(`/kits/${kitId.value}/confirm`, 'PUT')
-    if (!res?.ok) throw new Error('Failed to confirm order')
-
-    try {
-      const confirmed = unwrapApiData<Partial<KitOrder>>(await res.json())
-      if (confirmed && typeof confirmed === 'object' && order.value) {
-        order.value = { ...order.value, ...confirmed }
-      }
-    } catch {
-      // Confirm may return an empty body.
-    }
-    justConfirmed.value = true
-
-    await loadOrder()
-    ElMessage.success('Заказ подтверждён')
-  } catch (e) {
-    console.error(e)
-    ElMessage.error('Не удалось подтвердить заказ')
-  } finally {
-    confirmLoading.value = false
-  }
-}
-
 const goToDelivery = () => {
   if (!kitId.value) return
   router.push({
@@ -816,41 +779,23 @@ onMounted(() => {
 
           <div class="summary-actions summary-actions--desktop">
             <button
-              v-if="canConfirmOrder"
-              type="button"
-              class="checkout-order-button"
-              :disabled="confirmLoading"
-              @click="confirmOrder"
-            >
-              Подтвердить заказ
-            </button>
-            <button
-              v-if="canCheckoutOrder"
+              v-if="canOpenDelivery"
               type="button"
               class="checkout-order-button"
               @click="goToDelivery"
             >
-              Оформить заказ
+              Перейти на страницу доставки
             </button>
           </div>
 
           <div class="summary-actions-mobile">
             <button
-              v-if="canConfirmOrder"
-              type="button"
-              class="summary-confirm-mobile"
-              :disabled="confirmLoading"
-              @click="confirmOrder"
-            >
-              Подтвердить заказ
-            </button>
-            <button
-              v-if="canCheckoutOrder"
+              v-if="canOpenDelivery"
               type="button"
               class="summary-confirm-mobile"
               @click="goToDelivery"
             >
-              Оформить заказ
+              Перейти на страницу доставки
             </button>
           </div>
         </div>
@@ -1217,8 +1162,8 @@ onMounted(() => {
 
 .checkout-order-button {
   width: 100%;
-  height: 44px;
-  max-height: 44px;
+  min-height: 44px;
+  height: auto;
   padding: 12px 24px;
   border: none;
   border-radius: 10px;
@@ -1233,7 +1178,8 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  white-space: nowrap;
+  text-align: center;
+  white-space: normal;
 }
 
 .checkout-order-button:disabled {
