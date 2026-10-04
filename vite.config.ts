@@ -142,10 +142,10 @@ export default defineConfig(({ mode }) => {
         // Ratchet set to the current measured floor: coverage can go up but
         // not down. Raise these as each phase of the coverage plan lands.
         thresholds: {
-          statements: 31.0,
-          branches: 31.0,
-          functions: 29.0,
-          lines: 31.5,
+          statements: 38.0,
+          branches: 34.0,
+          functions: 31.5,
+          lines: 39.0,
           'src/helpers/**': {
             statements: 97,
             branches: 90,
@@ -223,6 +223,12 @@ export default defineConfig(({ mode }) => {
             branches: 45,
             functions: 50,
             lines: 60,
+          },
+          'src/components/cad/**': {
+            statements: 70,
+            branches: 50,
+            functions: 60,
+            lines: 70,
           },
         },
       }

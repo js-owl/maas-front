@@ -78,6 +78,9 @@ vi.stubGlobal('matchMedia', matchMediaStub)
 window.matchMedia = matchMediaStub
 Element.prototype.scrollIntoView = () => {}
 
+// CadPreview / viewers call canvas.toDataURL(); jsdom throws without the native canvas package.
+HTMLCanvasElement.prototype.toDataURL = () => 'data:image/png;base64,stub'
+
 /**
  * Element Plus teleports overlays to body. Rendering them inline keeps
  * `wrapper.find` working without manual document queries in every test.

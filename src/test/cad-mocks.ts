@@ -82,8 +82,12 @@ export class WebGLRendererStub {
 export class PMREMGeneratorStub {
   disposed = false
 
-  fromScene(): { texture: Record<string, unknown> } {
-    return { texture: {} }
+  fromScene(): { texture: { dispose: () => void } } {
+    return {
+      texture: {
+        dispose() {},
+      },
+    }
   }
 
   dispose(): void {
