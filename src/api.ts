@@ -230,13 +230,13 @@ export async function req_json_auth(
       body,
     })
     console.log('req_json_auth', { res })
+    if (allowErrorStatuses.includes(res.status)) {
+      return res
+    }
     if (res.status >= 500 && res.status < 600) {
       console.log('req_urlencoded', res.status)
       ElMessage.error('Ошибка сервера 500')
       throw new Error('Server error')
-    }
-    if (allowErrorStatuses.includes(res.status)) {
-      return res
     }
     if (!res.ok) {
       throw new Error('http error')
@@ -267,13 +267,13 @@ export async function req_json(
       body,
     })
     console.log('req_json', { res })
+    if (allowErrorStatuses.includes(res.status)) {
+      return res
+    }
     if (res.status >= 500 && res.status < 600) {
       console.log('req_urlencoded', res.status)
       ElMessage.error('Ошибка сервера 500')
       throw new Error('Server error')
-    }
-    if (allowErrorStatuses.includes(res.status)) {
-      return res
     }
     if (!res.ok) {
       throw new Error('http error')
