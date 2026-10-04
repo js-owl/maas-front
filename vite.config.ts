@@ -142,10 +142,10 @@ export default defineConfig(({ mode }) => {
         // Ratchet set to the current measured floor: coverage can go up but
         // not down. Raise these as each phase of the coverage plan lands.
         thresholds: {
-          statements: 38.0,
-          branches: 34.0,
-          functions: 31.5,
-          lines: 39.0,
+          statements: 52.0,
+          branches: 45.0,
+          functions: 47.0,
+          lines: 54.0,
           'src/helpers/**': {
             statements: 97,
             branches: 90,
@@ -229,6 +229,27 @@ export default defineConfig(({ mode }) => {
             branches: 50,
             functions: 60,
             lines: 70,
+          },
+          // Phase 6 ЛК: smoke/mount coverage across all 21 root components.
+          // Deep interaction branches remain for follow-up; keep the floor
+          // just under the measured ~49% statements so regressions fail CI.
+          'src/components/Personal*.vue': {
+            statements: 40,
+            branches: 25,
+            functions: 25,
+            lines: 40,
+          },
+          'src/components/Upload*.vue': {
+            statements: 20,
+            branches: 15,
+            functions: 15,
+            lines: 20,
+          },
+          'src/components/Document*.vue': {
+            statements: 30,
+            branches: 20,
+            functions: 20,
+            lines: 30,
           },
         },
       }
