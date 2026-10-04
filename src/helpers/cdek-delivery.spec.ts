@@ -71,6 +71,16 @@ describe('pvzSearchScore', () => {
     expect(pvzSearchScore(points[1], 'динамов')).toBeGreaterThan(0)
     expect(pvzSearchScore(points[0], 'динамов')).toBe(-1)
   })
+
+  it('does not fuzzy-match a code-like query against another point', () => {
+    // 'msk1' must not reach MSK65 through the "1" in "Динамовская, 1А"
+    expect(pvzSearchScore(points[0], 'msk1')).toBe(90)
+    expect(pvzSearchScore(points[1], 'msk1')).toBe(-1)
+  })
+
+  it('still fuzzy-matches typos in street names', () => {
+    expect(pvzSearchScore(points[1], 'динмовская')).toBeGreaterThan(0)
+  })
 })
 
 describe('filterPvzPoints', () => {

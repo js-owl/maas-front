@@ -22,8 +22,33 @@ variables:
   CI_BASE_IMAGE_TAG: bookworm-chromium
 
 stages:
+  - test
   - build
   - deploy
+
+# Unit tests + coverage. Thresholds live in vite.config.ts (test.coverage.thresholds)
+# and are raised as each phase of the coverage plan lands, so coverage cannot regress.
+test:unit:
+  stage: test
+  image: ${NEXUS_BUILD_REGISTRY}/maas-proxy/${NODE_IMAGE}
+  before_script:
+    - npm ci --prefer-offline --no-audit --fund=false
+  script:
+    - npm run test:coverage
+  coverage: '/^Statements\s*:\s*([\d.]+)%/'
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - coverage/
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+  tags:
+    - maas
 
 # Publish pre-baked node+chromium base (run manually when Debian/Chromium updates)
 build:ci-base:

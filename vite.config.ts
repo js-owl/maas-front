@@ -99,7 +99,49 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: 'jsdom',
       globals: true,
-      include: ['src/**/*.{test,spec}.{ts,vue}']
+      include: ['src/**/*.{test,spec}.{ts,vue}'],
+      setupFiles: ['src/test/setup.ts'],
+      server: {
+        deps: {
+          // element-plus ships bare .css imports that Node cannot load natively
+          inline: [/element-plus/],
+        },
+      },
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'json-summary', 'html'],
+        reportsDirectory: 'coverage',
+        reportOnFailure: true,
+        include: ['src/**/*.{ts,vue}'],
+        exclude: [
+          'src/**/*.spec.ts',
+          'src/**/*.test.ts',
+          'src/**/*.d.ts',
+          'src/main.ts',
+          'src/icons/**',
+          'src/test/**',
+        ],
+        // Ratchet set to the current measured floor: coverage can go up but
+        // not down. Raise these as each phase of the coverage plan lands.
+        thresholds: {
+          statements: 4.3,
+          branches: 3.6,
+          functions: 2.7,
+          lines: 4.4,
+          'src/helpers/**': {
+            statements: 31,
+            branches: 25,
+            functions: 27,
+            lines: 33,
+          },
+          'src/stores/**': {
+            statements: 29,
+            branches: 16,
+            functions: 26,
+            lines: 29,
+          },
+        },
+      }
     }
   }
 })

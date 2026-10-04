@@ -237,6 +237,9 @@ function normalizePvzQuery(query: string): string {
   return query.trim().toLowerCase().replace(/\s+/g, ' ')
 }
 
+/** CDEK codes look like `MSK16`: a city prefix followed by a number. */
+const PVZ_CODE_LIKE_QUERY = /^[a-z]{2,4}\d+$/
+
 function fuzzySubsequence(needle: string, haystack: string): boolean {
   if (!needle) return true
   let i = 0
@@ -264,6 +267,11 @@ export function pvzSearchScore(point: CdekPvz, query: string): number {
 
   const tokens = q.split(/\s+/).filter(Boolean)
   if (tokens.length > 1 && tokens.every((token) => full.includes(token))) return 60
+
+  // A code-like query is an explicit code lookup, already handled above.
+  // Falling through to the fuzzy pass would match unrelated points whose
+  // address merely contains the query's digits (e.g. "msk1" vs "MSK65, д. 1А").
+  if (PVZ_CODE_LIKE_QUERY.test(q)) return -1
 
   const compact = q.replace(/\s/g, '')
   if (compact && fuzzySubsequence(compact, full.replace(/\s/g, ''))) return 40

@@ -94,24 +94,25 @@ export const useAuthStore = defineStore("auth", () => {
       }),
     });
     if (!res.ok) {
-      let message = `Login failed: ${res.status} ${res.statusText}`;
+      // Only the parsing is guarded: an error response is not guaranteed to
+      // carry a JSON body. Deciding the message must stay outside the catch,
+      // otherwise the thrown message is swallowed by it.
+      let detailStr = "";
       try {
         const errorData = await res.json();
         const detail = (errorData && (errorData.detail || errorData.message)) || "";
-        const detailStr = typeof detail === "string" ? detail : JSON.stringify(detail);
-        if (res.status === 403 && isEmailVerificationDetail(detailStr)) {
-          throw new Error(EMAIL_NOT_VERIFIED_ERROR);
-        }
-        if (res.status === 401 || /invalid|unauthorized|incorrect|неверн/i.test(detailStr)) {
-          throw new Error("Неправильный email или пароль");
-        }
-        if (detailStr) message = detailStr;
-      } catch (e) {
-        if (e instanceof Error && e.message === EMAIL_NOT_VERIFIED_ERROR) {
-          throw e;
-        }
+        detailStr = typeof detail === "string" ? detail : JSON.stringify(detail);
+      } catch {
+        detailStr = "";
       }
-      throw new Error(message);
+
+      if (res.status === 403 && isEmailVerificationDetail(detailStr)) {
+        throw new Error(EMAIL_NOT_VERIFIED_ERROR);
+      }
+      if (res.status === 401 || /invalid|unauthorized|incorrect|неверн/i.test(detailStr)) {
+        throw new Error("Неправильный email или пароль");
+      }
+      throw new Error(detailStr || `Login failed: ${res.status} ${res.statusText}`);
     }
 
     const data = (await res.json()) as AuthResponse;

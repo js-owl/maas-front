@@ -42,6 +42,9 @@ dist-ssr
 /.lighthouse-results/
 /.lighthouse-results-prod/
 
+# Vitest coverage reports
+/coverage/
+
 # Playwright artifacts (snapshots are committed)
 /test-results/
 /playwright-report/
