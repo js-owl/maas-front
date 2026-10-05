@@ -9,6 +9,8 @@ variables:
   # Enable BuildKit for faster builds and caching
   DOCKER_BUILDKIT: 1
   BUILDKIT_PROGRESS: plain
+  # Auth for job/service image pulls (runner needs this BEFORE before_script docker login)
+  DOCKER_AUTH_CONFIG: '{"auths":{"${NEXUS_BUILD_REGISTRY}":{"username":"${NEXUS_BUILD_USER}","password":"${NEXUS_BUILD_PASSWORD}"},"${NEXUS_PUSH_REGISTRY}":{"username":"${NEXUS_PUSH_USER}","password":"${NEXUS_PUSH_PASSWORD}"}}}'
   # Image registry - separate repos for pulling base images vs pushing built images
   IMAGE_NAME: maas-front
   IMAGE_TAG: ${CI_COMMIT_TAG}
