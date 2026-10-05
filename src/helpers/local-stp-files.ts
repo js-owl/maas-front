@@ -108,8 +108,10 @@ export const ensureLocalStpCacheReady = (): Promise<void> => {
   return cacheReadyPromise
 }
 
-// Start hydration as soon as the module is imported.
-ensureLocalStpCacheReady()
+// Start hydration as soon as the module is imported. The failure is already
+// logged inside ensureLocalStpCacheReady and callers retry through it, so the
+// eager call must not surface as an unhandled rejection.
+ensureLocalStpCacheReady().catch(() => {})
 
 export const getLocalStpFiles = (): LocalStpFile[] => Array.from(fileCache.values())
 

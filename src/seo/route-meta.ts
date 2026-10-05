@@ -1,7 +1,6 @@
 import {
   SITE_ORIGIN,
   getRouteSeoForPath,
-  isNoindexPath,
   normalizePath,
   type RouteSeo,
 } from './public-routes'
@@ -58,10 +57,6 @@ export function resolveRouteSeo(path: string, routeName: string | symbol | undef
 
   if (import.meta.env.DEV) {
     console.warn(`[seo] No metadata for path: ${normalized}`)
-  }
-
-  if (isNoindexPath(normalized)) {
-    return notFoundSeo
   }
 
   return defaultPublicSeo

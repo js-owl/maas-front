@@ -10,7 +10,8 @@ const DEFAULT_FORMATS_LABEL =
   'Допустимые форматы файлов: STEP, STP, IGES, IGS, SAT, SLDPRT, SLDASM, STL, OBJ, PLY, 3DS, DAE, FBX, BLEND'
 
 export function getFileExtension(fileName: string): string {
-  return fileName.split('.').pop()?.toLowerCase() ?? ''
+  // split() always yields at least one element, so pop() is never undefined.
+  return (fileName.split('.').pop() as string).toLowerCase()
 }
 
 export type CadViewerType = 'stl' | 'stp' | null

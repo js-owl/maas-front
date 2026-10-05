@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   formatMoscowDate,
   formatMoscowDateTime,
@@ -26,5 +26,16 @@ describe('format-date Moscow timezone', () => {
     expect(formatMoscowDateTime()).toBe('')
     expect(formatMoscowDate(null)).toBe('')
     expect(formatMoscowTime('not-a-date')).toBe('')
+  })
+
+  it('leaves a date segment empty when Intl omits that part', () => {
+    const spy = vi
+      .spyOn(Intl.DateTimeFormat.prototype, 'formatToParts')
+      .mockReturnValue([{ type: 'day', value: '25' }])
+    try {
+      expect(formatMoscowDate('2026-08-25T09:28:00.000Z')).toBe('25..')
+    } finally {
+      spy.mockRestore()
+    }
   })
 })

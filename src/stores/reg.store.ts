@@ -49,7 +49,6 @@ export const useRegStore = defineStore("reg", () => {
         const detailStr =
           typeof detail === "string" ? detail : JSON.stringify(detail);
         if (
-          res.status === 400 ||
           res.status === 409 ||
           /personal email already registered|exist|already|уже существует|already registered/i.test(
             detailStr,

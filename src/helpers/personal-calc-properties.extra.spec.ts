@@ -196,12 +196,113 @@ describe('buildPersonalCalcPropertyValues', () => {
         cover_id: ['missing'],
         k_otk: 'custom',
         is_need_special_equipment: false,
-      } as IOrderResponse,
+      } as unknown as IOrderResponse,
       coefficients,
     })
     expect(values.billableWeight).toBe('0.25 кг')
     expect(values.finishTreatment).toBe('missing')
     expect(values.controlType).toBe('custom')
     expect(values.specialEquipment).toBe('Не требуется')
+  })
+
+  it('falls back to raw order ids when labels are not provided', () => {
+    const values = buildPersonalCalcPropertyValues({
+      order: {
+        ...baseOrder,
+        service_id: 'cnc-lathe',
+        material_id: 'mat-7',
+        finish_id: 'unknown-finish',
+        is_need_special_equipment: true,
+      } as IOrderResponse,
+      coefficients,
+    })
+    expect(values.service).toBe('cnc-lathe')
+    expect(values.material).toBe('mat-7')
+    expect(values.roughness).toBe('unknown-finish')
+    expect(values.specialEquipment).toBe('Требуется изготовление')
+  })
+
+  it('omits every property that the order does not carry', () => {
+    const values = buildPersonalCalcPropertyValues({
+      order: { order_id: 2, cover_id: [] } as unknown as IOrderResponse,
+      coefficients,
+    })
+    expect(values).toEqual({})
+  })
+
+  it('uses the composite material id as base and handles missing tooling info', () => {
+    const composite = buildPersonalCalcPropertyValues({
+      order: { ...baseOrder, service_id: 'composite', material_id: 'carbon' } as IOrderResponse,
+      coefficients,
+    })
+    expect(composite.base).toBe('carbon')
+    expect(composite.impregnation).toBeUndefined()
+    expect(composite.tooling).toBeUndefined()
+    expect(composite.specialEquipment).toBeUndefined()
+
+    const noMaterial = buildPersonalCalcPropertyValues({
+      order: {
+        ...baseOrder,
+        service_id: 'composite',
+        material_id: undefined,
+        is_need_special_equipment: 0,
+      } as unknown as IOrderResponse,
+      coefficients,
+    })
+    expect(noMaterial.base).toBeUndefined()
+    expect(noMaterial.tooling).toBe('Не требуется')
+  })
+
+  it('leaves the electroplating blank material empty without a label', () => {
+    const values = buildPersonalCalcPropertyValues({
+      order: { ...baseOrder, service_id: 'electroplating', material_id: 'raw-id' } as IOrderResponse,
+      coefficients,
+    })
+    expect(values.service).toBe(ELECTROPLATING_SERVICE_LABEL)
+    expect(values.material).toBeUndefined()
+  })
+})
+
+describe('electroplating / composite label fallbacks', () => {
+  it('returns no labels without an operation or material id', () => {
+    expect(resolveElectroplatingLabelsFromOperation(undefined)).toEqual({})
+  })
+
+  it('falls back to material id when the operation has no path or label', () => {
+    expect(
+      resolveElectroplatingLabelsFromOperation(
+        { id: '1', group: '', path: [], label: undefined } as unknown as Parameters<
+          typeof resolveElectroplatingLabelsFromOperation
+        >[0],
+        'mat-1'
+      )
+    ).toEqual({ coatingTypeLabel: 'mat-1', blankMaterialLabel: undefined })
+  })
+
+  it('uses the order material id when an impregnation label exists but the material is unknown', () => {
+    expect(
+      resolveCompositeMaterialLabels(
+        { ...baseOrder, material_id: 'ghost', impregnation_label: 'Эпоксид' } as IOrderResponse,
+        []
+      )
+    ).toEqual({ base: 'ghost', impregnation: 'Эпоксид' })
+  })
+
+  it('falls back to the raw impregnation code and to plain labels', () => {
+    expect(
+      resolveCompositeMaterialLabels({ ...baseOrder, material_id: 'm1' } as IOrderResponse, [
+        { value: 'm1', label: 'Карбон', impregnation: 'epoxy' },
+      ])
+    ).toEqual({ base: 'Карбон', impregnation: 'epoxy' })
+
+    expect(
+      resolveCompositeMaterialLabels({ ...baseOrder, material_id: 'm2' } as IOrderResponse, [
+        { value: 'm2', label: 'Стекловолокно' },
+      ])
+    ).toEqual({ base: 'Стекловолокно' })
+
+    expect(
+      resolveCompositeMaterialLabels({ ...baseOrder, material_id: 'm3' } as IOrderResponse, [])
+    ).toEqual({ base: 'm3' })
   })
 })

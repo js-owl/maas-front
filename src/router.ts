@@ -54,24 +54,9 @@ const routes: RouteRecordRaw[] = [
     name: 'other',
   },
   {
-    path: '/other2',
-    component: () => import('./pages/CalculateOtherPage.vue'),
-    name: 'other2',
-  },
-  {
-    path: '/machining2',
-    component: () => import('./pages/CalculateOtherPage.vue'),
-    name: 'machining2',
-  },
-  {
     path: '/milling',
     component: () => import('./pages/CalculateMillingPage2.vue'),
     name: 'milling',
-  },
-  {
-    path: '/milling2',
-    component: () => import('./pages/CalculateMillingPage.vue'),
-    name: 'milling2',
   },
   {
     path: '/composite',
@@ -83,21 +68,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('./pages/CalculateGalvanicPage.vue'),
     name: 'galvanic',
   },
-  // {
-  //   path: '/milling2',
-  //   component: () => import('./pages/CalculateMillingPage.vue'),
-  //   name: 'milling2',
-  // },
   {
     path: '/printing',
     component: () => import('./pages/CalculatePrintingPage2.vue'),
     name: 'printing',
   },
-  {
-    path: '/printing2',
-    component: () => import('./pages/CalculatePrintingPage.vue'),
-    name: 'printing2',
-  },
+  // Legacy calculator URLs are still indexed by search engines.
+  { path: '/other2', redirect: '/other' },
+  { path: '/machining2', redirect: '/other' },
+  { path: '/milling2', redirect: '/milling' },
+  { path: '/printing2', redirect: '/printing' },
 
   {
     path: '/personal',

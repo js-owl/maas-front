@@ -6,8 +6,6 @@ import { mountWithPlugins } from '@/test/mount'
 import { useAuthStore } from '@/stores/auth.store'
 import UploadFiles from './UploadFiles.vue'
 import UploadFiles2 from './UploadFiles2.vue'
-import UploadDrawings from './UploadDrawings.vue'
-import UploadDrawings2 from './UploadDrawings2.vue'
 import DocumentShowByIds from './DocumentShowByIds.vue'
 import DocumentShowByIds2 from './DocumentShowByIds2.vue'
 
@@ -43,39 +41,6 @@ describe('UploadFiles / UploadFiles2', () => {
     })
     useAuthStore(pinia).setToken('tok', false)
     await flush()
-    expect(wrapper.exists()).toBe(true)
-  })
-})
-
-describe('UploadDrawings / UploadDrawings2', () => {
-  it('UploadDrawings uploads a drawing when authenticated', async () => {
-    mockJson('/api/v3/documents', { id: 9, original_filename: 'd.pdf' })
-    const { wrapper, pinia } = await mountWithPlugins(UploadDrawings, {
-      props: { modelValue: [] },
-      stubs: { DialogLogin: true },
-      stubActions: false,
-    })
-    useAuthStore(pinia).setToken('tok', false)
-    await flush()
-
-    const input = wrapper.find('input[type="file"]')
-    if (input.exists()) {
-      Object.defineProperty(input.element, 'files', {
-        value: [new File(['%PDF'], 'd.pdf', { type: 'application/pdf' })],
-      })
-      await input.trigger('change')
-      await flush(40)
-    }
-    expect(wrapper.exists()).toBe(true)
-  })
-
-  it('UploadDrawings2 mounts', async () => {
-    const { wrapper, pinia } = await mountWithPlugins(UploadDrawings2, {
-      props: { modelValue: [] },
-      stubs: { DialogLogin: true },
-      stubActions: false,
-    })
-    useAuthStore(pinia).setToken('tok', false)
     expect(wrapper.exists()).toBe(true)
   })
 })

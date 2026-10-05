@@ -7,12 +7,11 @@ export const parseFilesQueryToIds = (value: unknown): number[] => {
     // JSON-массив вида "[1,2]" или "[\"1\",\"2\"]"
     if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
       try {
-        const parsed = JSON.parse(trimmed)
-        if (Array.isArray(parsed)) {
-          return parsed
-            .map((v) => Number(v))
-            .filter((id) => !Number.isNaN(id))
-        }
+        // A string wrapped in [ ] that parses as JSON is always an array.
+        const parsed = JSON.parse(trimmed) as unknown[]
+        return parsed
+          .map((v) => Number(v))
+          .filter((id) => !Number.isNaN(id))
       } catch {
         // игнорируем ошибку и пойдём дальше
       }

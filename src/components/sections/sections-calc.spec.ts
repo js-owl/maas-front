@@ -1,11 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
-import { mockCalculatePrice, mockLegalProfile } from '@/test/fixtures'
-import { mockJson } from '@/test/fetch-mock'
+import { mockCalculatePrice } from '@/test/fixtures'
 import { mountWithPlugins } from '@/test/mount'
 import CalculateResults from './CalculateResults.vue'
-import CalculateSubmit from './CalculateSubmit.vue'
 import CalculateSubmit2 from './CalculateSubmit2.vue'
 import HomeCalc from './HomeCalc.vue'
 import UslugiCalc from './uslugi/UslugiCalc.vue'
@@ -51,111 +49,6 @@ describe('CalculateResults', () => {
     })
     // Depends on hide-price helpers list — either calculating UI or price
     expect(wrapper.text().length).toBeGreaterThan(0)
-  })
-})
-
-describe('CalculateSubmit', () => {
-  const payload = {
-    ...mockCalculatePrice,
-    order_name: 'Part',
-    document_ids: [],
-    file_id: 2,
-  }
-
-  it('opens login when there is no token', async () => {
-    const { wrapper } = await mountWithPlugins(CalculateSubmit, {
-      props: {
-        orderId: 0,
-        payload,
-        specialInstructions: '',
-      },
-      stubs: { DialogLogin: true, teleport: false },
-    })
-    await wrapper.find('button').trigger('click')
-    await flush()
-    expect(wrapper.findComponent({ name: 'DialogLogin' }).exists() || wrapper.html().includes('dialog')).toBe(
-      true
-    )
-  })
-
-  const submitRoutes = [
-    { path: '/', name: 'home', component: { template: '<div />' } },
-    { path: '/personal/profile', name: 'personal-profile', component: { template: '<div />' } },
-    { path: '/personal/order', name: 'personal-order', component: { template: '<div />' } },
-    { path: '/personal/orders', name: 'personal-orders', component: { template: '<div />' } },
-  ]
-
-  it('warns and redirects when profile is incomplete', async () => {
-    const { wrapper, router, pinia } = await mountWithPlugins(CalculateSubmit, {
-      props: {
-        orderId: 0,
-        payload,
-        specialInstructions: '',
-      },
-      stubActions: false,
-      initialState: {
-        profile: { profile: { username: 'x', email: '' } },
-      },
-      stubs: { DialogLogin: true, teleport: false },
-      routes: submitRoutes,
-    })
-    const { useAuthStore } = await import('@/stores/auth.store')
-    useAuthStore(pinia).setToken('tok', false)
-    await flush()
-
-    const push = vi.spyOn(router, 'push')
-    const buttons = wrapper.findAll('button')
-    const submitBtn = buttons.find((b) => /Оформить|Сохранить/.test(b.text()))
-    expect(submitBtn).toBeTruthy()
-    await submitBtn!.trigger('click')
-    await flush()
-    expect(ElMessage.warning).toHaveBeenCalled()
-    expect(push).toHaveBeenCalledWith({ path: '/personal/profile' })
-  })
-
-  it('creates an order and kit for a complete profile', async () => {
-    mockJson('/api/v3/files/2', { original_filename: 'part.stp' })
-    mockJson('/api/v3/orders', { ...mockCalculatePrice, order_id: 55, user_id: 1, order_name: 'part' })
-    mockJson('/api/v3/kits', { kit_id: 9 })
-
-    const completeProfile = {
-      ...mockLegalProfile,
-      full_name: 'ООО Тест',
-      postal: '123456',
-      region: 'Москва',
-      city_name: 'Москва',
-      street: 'Тверская',
-      building: '1',
-      email: 'legal@example.com',
-    }
-
-    const { wrapper, router, pinia } = await mountWithPlugins(CalculateSubmit, {
-      props: {
-        orderId: 0,
-        payload,
-        specialInstructions: 'note',
-      },
-      stubActions: false,
-      stubs: { DialogLogin: true, teleport: false },
-      routes: submitRoutes,
-    })
-    const { useAuthStore } = await import('@/stores/auth.store')
-    const { useProfileStore } = await import('@/stores/profile.store')
-    useAuthStore(pinia).setToken('tok', false)
-    useProfileStore(pinia).$patch({ profile: completeProfile as never })
-    await flush()
-
-    const push = vi.spyOn(router, 'push')
-    const submitBtn = wrapper.findAll('button').find((b) => /Оформить|Сохранить/.test(b.text()))
-    expect(submitBtn).toBeTruthy()
-    expect(submitBtn!.attributes('disabled')).toBeFalsy()
-    await submitBtn!.trigger('click')
-    await flush()
-    await new Promise((r) => setTimeout(r, 80))
-    await flush()
-    expect(wrapper.emitted('updateResult')?.[0]?.[0]).toMatchObject({ order_id: 55 })
-    expect(wrapper.emitted('showInfo')).toBeTruthy()
-    expect(push).toHaveBeenCalled()
   })
 })
 

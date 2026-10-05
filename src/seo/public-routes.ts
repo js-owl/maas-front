@@ -24,7 +24,7 @@ const byPath = Object.fromEntries(routes.map((entry) => [entry.path, entry])) as
 export const NOINDEX_PATH_PREFIXES = ['/personal'] as const
 
 export function normalizePath(path: string): string {
-  const withoutHash = path.split('#')[0] ?? path
+  const withoutHash = path.split('#')[0] as string
   if (withoutHash.length > 1 && withoutHash.endsWith('/')) {
     return withoutHash.slice(0, -1)
   }

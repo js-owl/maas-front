@@ -36,6 +36,11 @@ describe('formatKitStatusLabel', () => {
     expect(formatKitStatusLabel(null)).toBe('')
     expect(formatKitStatusLabel({})).toBe('')
   })
+
+  it('resolves a prefixed status_name by its tail, else shows it verbatim', () => {
+    expect(formatKitStatusLabel({ status_name: 'C7:EXECUTING' })).toBe('В производстве')
+    expect(formatKitStatusLabel({ status_name: ' Свой статус ' })).toBe('Свой статус')
+  })
 })
 
 describe('getKitStatusCode', () => {
@@ -43,6 +48,8 @@ describe('getKitStatusCode', () => {
     expect(getKitStatusCode({ status_name: 'pending', status: 'C3:NEW' })).toBe('pending')
     expect(getKitStatusCode({ status: 'C3:NEW' })).toBe('C3:NEW')
     expect(getKitStatusCode(null)).toBe('')
+    expect(getKitStatusCode({})).toBe('')
+    expect(getKitStatusCode({ status_name: '', status: ' C3:NEW ' })).toBe('C3:NEW')
   })
 })
 

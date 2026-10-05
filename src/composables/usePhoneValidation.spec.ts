@@ -61,6 +61,20 @@ describe('createPhoneNumberValidator', () => {
   it('rejects numbers that are not 7 + 10 digits', () => {
     expect(collect('7123')?.message).toMatch(/формате 7XXXXXXXXXX/)
   })
+
+  it('treats the field as mandatory when called without options', () => {
+    const results: Array<Error | undefined> = []
+    const validate = createPhoneNumberValidator()
+    validate({}, '', (err) => results.push(err))
+    validate({}, '+7 (900) 123-45-67', (err) => results.push(err))
+    expect(results[0]?.message).toBe('Введите телефон')
+    expect(results[1]).toBeUndefined()
+  })
+
+  it('still validates a non-empty optional field', () => {
+    expect(collect('7900', true)?.message).toMatch(/формате 7XXXXXXXXXX/)
+    expect(collect('8 (900) 123-45-67', true)).toBeUndefined()
+  })
 })
 
 describe('display helpers', () => {
@@ -70,6 +84,11 @@ describe('display helpers', () => {
     expect(formatPhoneDisplay('7900123')).toBe('+7 (900) 123')
     expect(formatPhoneDisplay('790012345')).toBe('+7 (900) 123-45')
     expect(formatPhoneDisplay('79001234567')).toBe('+7 (900) 123-45-67')
+  })
+
+  it('formats an empty or non-digit value as the bare prefix', () => {
+    expect(formatPhoneDisplay('')).toBe('+7')
+    expect(formatPhoneDisplay('abc')).toBe('+7')
   })
 
   it('parses display values back to digits with a fixed prefix', () => {

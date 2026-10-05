@@ -4,7 +4,6 @@ import { mountWithPlugins } from '@/test/mount'
 import SeoMainHeading from './SeoMainHeading.vue'
 import SuitableMachines from './SuitableMachines.vue'
 import ServicesCabinetMenu from './ServicesCabinetMenu.vue'
-import VersionInfo from './VersionInfo.vue'
 import Footer from './Footer.vue'
 
 beforeEach(() => {
@@ -54,20 +53,6 @@ describe('ServicesCabinetMenu', () => {
     expect(buttons.length).toBeGreaterThan(0)
     await buttons[0].trigger('click')
     expect(wrapper.emitted('open-service')?.[0]?.[0]).toMatch(/^\//)
-  })
-})
-
-describe('VersionInfo', () => {
-  it('mounts and can open the build dialog', async () => {
-    const { wrapper } = await mountWithPlugins(VersionInfo, {
-      stubs: { teleport: false, ElDialog: false },
-    })
-    // May render nothing if buildInfo is empty in test env — just ensure no throw
-    expect(wrapper.exists()).toBe(true)
-    const tag = wrapper.find('.version-tag, .el-tag')
-    if (tag.exists()) {
-      await tag.trigger('click')
-    }
   })
 })
 

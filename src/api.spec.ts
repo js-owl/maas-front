@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { ElMessage } from 'element-plus'
 import {
@@ -14,7 +14,14 @@ import {
 } from '@/api'
 import { useAuthStore } from '@/stores/auth.store'
 import { EMAIL_VERIFICATION_DETAIL } from '@/helpers/email-verification'
-import { fetchCalls, lastFetchCall, mockJson, mockNetworkError, mockStatus } from '@/test/fetch-mock'
+import {
+  fetchCalls,
+  lastFetchCall,
+  mockJson,
+  mockNetworkError,
+  mockRoute,
+  mockStatus,
+} from '@/test/fetch-mock'
 import router from '@/router'
 
 vi.spyOn(ElMessage, 'error').mockImplementation(() => undefined as never)
@@ -45,6 +52,85 @@ describe('handleEmailVerificationBlocked', () => {
     const res = new Response(JSON.stringify({ detail: 'Forbidden' }), { status: 403 })
     expect(await handleEmailVerificationBlocked(res)).toBe(false)
     expect(router.push).not.toHaveBeenCalled()
+  })
+
+  it('falls back to the message field when detail is absent', async () => {
+    const res = new Response(JSON.stringify({ message: EMAIL_VERIFICATION_DETAIL }), {
+      status: 403,
+    })
+    expect(await handleEmailVerificationBlocked(res)).toBe(true)
+  })
+
+  it('serializes a non-string detail before matching', async () => {
+    const res = new Response(JSON.stringify({ detail: { code: 'x' } }), { status: 403 })
+    expect(await handleEmailVerificationBlocked(res)).toBe(false)
+    expect(router.push).not.toHaveBeenCalled()
+  })
+
+  it('treats empty, null and non-JSON 403 bodies as unrelated', async () => {
+    expect(await handleEmailVerificationBlocked(new Response('{}', { status: 403 }))).toBe(false)
+    expect(await handleEmailVerificationBlocked(new Response('null', { status: 403 }))).toBe(false)
+    expect(await handleEmailVerificationBlocked(new Response('<html>', { status: 403 }))).toBe(
+      false
+    )
+    expect(router.push).not.toHaveBeenCalled()
+  })
+
+  it('leaves the response body readable for the caller', async () => {
+    const res = new Response(JSON.stringify({ detail: 'Forbidden' }), { status: 403 })
+    await handleEmailVerificationBlocked(res)
+    expect(await res.json()).toEqual({ detail: 'Forbidden' })
+  })
+})
+
+describe('redirectToLogin target deduplication', () => {
+  const original = router.currentRoute.value
+  const verifiedBody = () =>
+    new Response(JSON.stringify({ detail: EMAIL_VERIFICATION_DETAIL }), { status: 403 })
+
+  const setCurrent = (name: string, query: Record<string, string>) => {
+    router.currentRoute.value = { ...original, name, query }
+  }
+
+  afterEach(() => {
+    router.currentRoute.value = original
+  })
+
+  it('does not navigate again when already on home with login=1 and verify=1', async () => {
+    setCurrent('home', { login: '1', verify: '1' })
+    expect(await handleEmailVerificationBlocked(verifiedBody())).toBe(true)
+    expect(router.push).not.toHaveBeenCalled()
+  })
+
+  it('navigates when home has login=1 but verify is missing', async () => {
+    setCurrent('home', { login: '1' })
+    await handleEmailVerificationBlocked(verifiedBody())
+    expect(router.push).toHaveBeenCalledWith({
+      name: 'home',
+      query: { login: '1', verify: '1' },
+    })
+  })
+
+  it('navigates when on home without the login query', async () => {
+    setCurrent('home', {})
+    await handleEmailVerificationBlocked(verifiedBody())
+    expect(router.push).toHaveBeenCalledTimes(1)
+  })
+
+  it('skips the plain login redirect when the login dialog is already open', async () => {
+    setCurrent('home', { login: '1' })
+    useAuthStore().setToken('expired', false)
+    mockStatus('/api/v3/profile', 401)
+    mockStatus('/api/v3/refresh', 401)
+    await expect(fetchWithAuth('/profile')).rejects.toThrow('Authentification failed')
+    expect(router.push).not.toHaveBeenCalled()
+    expect(useAuthStore().getToken).toBeUndefined()
+  })
+
+  it('swallows navigation failures', async () => {
+    vi.mocked(router.push).mockRejectedValueOnce(new Error('navigation aborted'))
+    expect(await handleEmailVerificationBlocked(verifiedBody())).toBe(true)
+    expect(router.push).toHaveBeenCalledTimes(1)
   })
 })
 
@@ -125,6 +211,65 @@ describe('fetchWithAuth', () => {
     mockStatus('/api/v3/profile', 401, {}, { once: true })
     mockJson('/api/v3/refresh', { token_type: 'bearer', must_change_password: false })
     await expect(fetchWithAuth('/profile')).rejects.toThrow('Authentification failed')
+  })
+
+  it('omits Authorization without a token and respects explicit credentials', async () => {
+    mockJson('/api/v3/public', { ok: true })
+    await fetchWithAuth('/public', { credentials: 'omit' })
+    expect(lastFetchCall('/public')?.headers.authorization).toBeUndefined()
+    expect(vi.mocked(fetch).mock.calls.at(-1)?.[1]?.credentials).toBe('omit')
+  })
+
+  it('redirects with verify=1 when the refresh endpoint reports an unverified email', async () => {
+    useAuthStore().setToken('expired', false)
+    mockStatus('/api/v3/profile', 401)
+    mockStatus('/api/v3/refresh', 403, { detail: EMAIL_VERIFICATION_DETAIL })
+
+    await expect(fetchWithAuth('/profile')).rejects.toThrow('Authentification failed')
+    expect(fetchCalls('/profile')).toHaveLength(1)
+    expect(router.push).toHaveBeenNthCalledWith(1, {
+      name: 'home',
+      query: { login: '1', verify: '1' },
+    })
+    // The generic failure path then issues a second, plain login redirect.
+    expect(router.push).toHaveBeenNthCalledWith(2, { name: 'home', query: { login: '1' } })
+  })
+
+  it('treats an unrelated 403 from refresh as a failed refresh', async () => {
+    useAuthStore().setToken('expired', false)
+    mockStatus('/api/v3/profile', 401)
+    mockStatus('/api/v3/refresh', 403, { detail: 'Forbidden' })
+
+    await expect(fetchWithAuth('/profile')).rejects.toThrow('Authentification failed')
+    expect(router.push).toHaveBeenCalledTimes(1)
+    expect(router.push).toHaveBeenCalledWith({ name: 'home', query: { login: '1' } })
+  })
+
+  it('retries without Authorization if the store holds no token after refresh', async () => {
+    const authStore = useAuthStore()
+    vi.spyOn(authStore, 'setToken').mockImplementation(() => undefined)
+    mockJson('/api/v3/profile', { id: 1 })
+    mockStatus('/api/v3/profile', 401, {}, { once: true })
+    mockJson('/api/v3/refresh', {
+      access_token: 'fresh',
+      token_type: 'bearer',
+      must_change_password: false,
+    })
+
+    const res = await fetchWithAuth('/profile')
+    expect(res.ok).toBe(true)
+    expect(authStore.setToken).toHaveBeenCalledWith('fresh')
+    expect(fetchCalls('/profile').map((call) => call.headers.authorization)).toEqual([
+      undefined,
+      undefined,
+    ])
+  })
+
+  it('passes through a 403 that is not about email verification', async () => {
+    mockStatus('/api/v3/admin', 403, { detail: 'Forbidden' })
+    const res = await fetchWithAuth('/admin')
+    expect(res.status).toBe(403)
+    expect(router.push).not.toHaveBeenCalled()
   })
 })
 
@@ -216,6 +361,66 @@ describe('req_urlencoded helpers', () => {
 
     mockNetworkError('/api/v3/secure')
     expect(await req_json_auth('/secure', 'GET')).toBeUndefined()
+    expect(ElMessage.error).toHaveBeenCalledWith('Ошибка сервера')
+  })
+
+  it('maps authenticated JSON 5xx to a server error message', async () => {
+    mockStatus('/api/v3/secure', 502)
+    expect(await req_json_auth('/secure', 'GET')).toBeUndefined()
+    expect(ElMessage.error).toHaveBeenCalledWith('Ошибка сервера 500')
+  })
+
+  it('sends urlencoded requests without a body when no data is given', async () => {
+    mockJson('/api/v3/form', { ok: true })
+    const res = await req_urlencoded('/form')
+    expect(res?.ok).toBe(true)
+    expect(lastFetchCall('/form')?.method).toBe('POST')
+    expect(lastFetchCall('/form')?.body).toBeUndefined()
+
+    mockJson('/api/v3/form-auth', { ok: true })
+    await req_urlencoded_auth('/form-auth', 'DELETE')
+    expect(lastFetchCall('/form-auth')?.method).toBe('DELETE')
+    expect(lastFetchCall('/form-auth')?.body).toBeUndefined()
+    expect(lastFetchCall('/form-auth')?.headers.authorization).toBeUndefined()
+  })
+
+  it('swallows urlencoded 4xx without a user-facing message', async () => {
+    mockStatus('/api/v3/form', 404)
+    expect(await req_urlencoded('/form', 'POST', { a: 1 })).toBeUndefined()
+    expect(ElMessage.error).not.toHaveBeenCalled()
+  })
+
+  it('shows a network message for authenticated urlencoded transport errors', async () => {
+    mockNetworkError('/api/v3/form-auth')
+    expect(await req_urlencoded_auth('/form-auth', 'POST', { q: 1 })).toBeUndefined()
+    expect(ElMessage.error).toHaveBeenCalledWith('Ошибка сервера')
+  })
+
+  it('stays silent for TypeErrors unrelated to fetch', async () => {
+    const unrelated = () => {
+      throw new TypeError('x is not a function')
+    }
+    mockRoute('/api/v3/json', unrelated)
+    mockRoute('/api/v3/json-auth', unrelated)
+    mockRoute('/api/v3/form', unrelated)
+    mockRoute('/api/v3/form-auth', unrelated)
+
+    expect(await req_json('/json')).toBeUndefined()
+    expect(await req_json_auth('/json-auth')).toBeUndefined()
+    expect(await req_urlencoded('/form')).toBeUndefined()
+    expect(await req_urlencoded_auth('/form-auth')).toBeUndefined()
+    expect(ElMessage.error).not.toHaveBeenCalled()
+  })
+
+  it('sends JSON requests without a body when no data is given', async () => {
+    mockJson('/api/v3/json', { ok: true })
+    await req_json('/json')
+    expect(lastFetchCall('/json')?.body).toBeUndefined()
+
+    mockJson('/api/v3/json-auth', { ok: true })
+    await req_json_auth('/json-auth')
+    expect(lastFetchCall('/json-auth')?.body).toBeUndefined()
+    expect(lastFetchCall('/json-auth')?.headers.authorization).toBeUndefined()
   })
 })
 

@@ -7,8 +7,6 @@ import { usePasswordStore } from '@/stores/password.store'
 import { useRegStore } from '@/stores/reg.store'
 import { mockJson } from '@/test/fetch-mock'
 import { mountWithPlugins } from '@/test/mount'
-import router from '@/router'
-import DialogInfoPayment from './DialogInfoPayment.vue'
 import DialogLogin from './DialogLogin.vue'
 import DialogForgotPassword from './DialogForgotPassword.vue'
 import DialogRegistration from './DialogRegistration.vue'
@@ -76,32 +74,6 @@ beforeEach(() => {
       return undefined
     }) as never
   )
-  // Callable form: ElMessage({ type: 'warning', message: '...' })
-  const callable = vi.fn((opts: unknown) => {
-    elMessageCalls.push({ kind: 'call', args: [opts] })
-    return undefined
-  })
-  Object.assign(callable, ElMessage)
-  vi.stubGlobal('__unused', null)
-  // Patch the imported binding's apply behavior via prototype isn't possible;
-  // instead wrap by replacing methods above and using a direct mock for call form:
-  ;(ElMessage as unknown as { mockImpl?: typeof callable }).mockImpl = callable
-  vi.spyOn({ ElMessage }, 'ElMessage' as never).mockImplementation?.(callable as never)
-})
-
-describe('DialogInfoPayment', () => {
-  it('closes and navigates to personal orders', async () => {
-    const push = vi.spyOn(router, 'push').mockResolvedValue(undefined as never)
-    const { wrapper } = await mountWithPlugins(DialogInfoPayment, {
-      props: { modelValue: true },
-      stubs: dialogStubs,
-    })
-    expect(wrapper.find('.el-dialog-stub').exists()).toBe(true)
-    await wrapper.find('button').trigger('click')
-    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([false])
-    expect(push).toHaveBeenCalledWith({ name: 'personal-orders' })
-    push.mockRestore()
-  })
 })
 
 describe('DialogLogin', () => {

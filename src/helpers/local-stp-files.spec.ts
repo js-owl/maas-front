@@ -64,6 +64,177 @@ describe('local STP cache', () => {
   })
 })
 
+describe('legacy localStorage with nothing to migrate', () => {
+  beforeEach(() => {
+    globalThis.indexedDB = new IDBFactory()
+    vi.resetModules()
+  })
+
+  it.each(['[]', '{"id":-1}'])('drops the legacy key %s and keeps the cache empty', async (raw) => {
+    localStorage.setItem('uploaded_stp_files', raw)
+    const mod = await import('./local-stp-files')
+    await mod.ensureLocalStpCacheReady()
+
+    expect(localStorage.getItem('uploaded_stp_files')).toBeNull()
+    expect(mod.getLocalStpFiles()).toEqual([])
+  })
+})
+
+type FakeRequest = {
+  result: unknown
+  error: DOMException | null
+  onsuccess: (() => void) | null
+  onerror: (() => void) | null
+  onupgradeneeded: ((event: unknown) => void) | null
+}
+
+const fakeRequest = (result: unknown, error: DOMException | null = null): FakeRequest => ({
+  result,
+  error,
+  onsuccess: null,
+  onerror: null,
+  onupgradeneeded: null,
+})
+
+describe('IndexedDB failures', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    vi.resetModules()
+  })
+
+  it('rejects and allows a retry when the database cannot be opened', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const openError = new DOMException('blocked', 'InvalidStateError')
+    const openRequests: FakeRequest[] = []
+    globalThis.indexedDB = {
+      open: () => {
+        const request = fakeRequest(undefined, openError)
+        openRequests.push(request)
+        return request
+      },
+    } as unknown as IDBFactory
+
+    const mod = await import('./local-stp-files')
+    // Same pending promise the module started on import, so the rejection is observed here.
+    const ready = mod.ensureLocalStpCacheReady()
+    expect(openRequests).toHaveLength(1)
+    openRequests[0].onerror?.()
+
+    await expect(ready).rejects.toBe(openError)
+    expect(consoleError).toHaveBeenCalledWith('Failed to initialize STP files cache:', openError)
+    expect(mod.localStpCacheVersion.value).toBe(0)
+
+    globalThis.indexedDB = new IDBFactory()
+    await expect(mod.ensureLocalStpCacheReady()).resolves.toBeUndefined()
+    expect(mod.localStpCacheVersion.value).toBe(1)
+    consoleError.mockRestore()
+  })
+
+  const installFakeDb = (saveOutcome: 'request-error' | 'tx-error') => {
+    const close = vi.fn()
+    const requestError = new DOMException('put failed', 'DataError')
+    const txError = new DOMException('tx aborted', 'AbortError')
+    let transactions = 0
+
+    const db = {
+      close,
+      transaction: () => {
+        const isSave = transactions++ > 0
+        const request = fakeRequest([], requestError)
+        const tx = {
+          error: txError,
+          onerror: null as (() => void) | null,
+          oncomplete: null as (() => void) | null,
+          objectStore: () => ({ clear: () => {}, put: () => request, getAll: () => request }),
+        }
+        queueMicrotask(() => {
+          if (!isSave) tx.oncomplete?.()
+          else if (saveOutcome === 'request-error') request.onerror?.()
+          else tx.onerror?.()
+        })
+        return tx
+      },
+    }
+
+    globalThis.indexedDB = {
+      open: () => {
+        const request = fakeRequest(db)
+        queueMicrotask(() => request.onsuccess?.())
+        return request
+      },
+    } as unknown as IDBFactory
+
+    return { close, requestError, txError }
+  }
+
+  it('rejects saveFile3D when the put request fails and still closes the db', async () => {
+    const { close, requestError } = installFakeDb('request-error')
+    const mod = await import('./local-stp-files')
+    await mod.ensureLocalStpCacheReady()
+    expect(close).toHaveBeenCalledTimes(1)
+
+    await expect(mod.saveFile3D('part.stp', 'AAA', 'stp')).rejects.toBe(requestError)
+    expect(close).toHaveBeenCalledTimes(2)
+    expect(mod.getLocalStpFiles()).toEqual([])
+  })
+
+  it('rejects saveFile3D when the transaction fails', async () => {
+    const { close, txError } = installFakeDb('tx-error')
+    const mod = await import('./local-stp-files')
+    await mod.ensureLocalStpCacheReady()
+    const version = mod.localStpCacheVersion.value
+
+    await expect(mod.saveFile3D('part.stp', 'AAA', 'stp')).rejects.toBe(txError)
+    expect(close).toHaveBeenCalledTimes(2)
+    expect(mod.localStpCacheVersion.value).toBe(version)
+    expect(mod.getLocalStpFileById(mod.LOCAL_STP_FILE_ID)).toBeNull()
+  })
+})
+
+describe('IndexedDB schema upgrade', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    vi.resetModules()
+  })
+
+  it.each([
+    [false, 1],
+    [true, 0],
+  ])('store already present = %s → createObjectStore called %i times', async (exists, calls) => {
+    const createObjectStore = vi.fn()
+    const upgradeDb = { objectStoreNames: { contains: () => exists }, createObjectStore }
+    const db = {
+      close: vi.fn(),
+      transaction: () => {
+        const request = fakeRequest([])
+        const tx = {
+          oncomplete: null as (() => void) | null,
+          objectStore: () => ({ getAll: () => request }),
+        }
+        queueMicrotask(() => tx.oncomplete?.())
+        return tx
+      },
+    }
+    globalThis.indexedDB = {
+      open: () => {
+        const request = fakeRequest(db)
+        queueMicrotask(() => {
+          request.onupgradeneeded?.({ target: { result: upgradeDb } })
+          request.onsuccess?.()
+        })
+        return request
+      },
+    } as unknown as IDBFactory
+
+    const mod = await import('./local-stp-files')
+    await mod.ensureLocalStpCacheReady()
+
+    expect(createObjectStore).toHaveBeenCalledTimes(calls)
+    if (calls) expect(createObjectStore).toHaveBeenCalledWith('stp_files', { keyPath: 'id' })
+    expect(mod.getLocalStpFiles()).toEqual([])
+  })
+})
+
 describe('file id classification', () => {
   beforeEach(() => {
     globalThis.indexedDB = new IDBFactory()

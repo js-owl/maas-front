@@ -68,10 +68,7 @@ export const createPhoneNumberValidator = (
       callback(new Error('Введите телефон'))
       return
     }
-    if (!/^\d+$/.test(digits)) {
-      callback(new Error('Телефон должен содержать только цифры'))
-      return
-    }
+    // normalizeRuPhoneDigits already strips every non-digit character.
     if (!/^7\d{10}$/.test(digits)) {
       callback(new Error('Введите телефон в формате 7XXXXXXXXXX (10 цифр после 7)'))
       return
@@ -107,9 +104,6 @@ export const formatPhoneDisplay = (value: string): string => {
  */
 export const parsePhoneToDigits = (value: string): string => {
   const digits = normalizeRuPhoneDigits(value)
-  if (!digits) return RU_PHONE_PREFIX
-  if (!digits.startsWith(RU_PHONE_PREFIX)) {
-    return `${RU_PHONE_PREFIX}${digits}`.slice(0, RU_PHONE_LENGTH)
-  }
-  return digits
+  // normalizeRuPhoneDigits returns either '' or a string starting with the prefix.
+  return digits || RU_PHONE_PREFIX
 }

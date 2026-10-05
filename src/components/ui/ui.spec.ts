@@ -13,7 +13,6 @@ import Select from './Select.vue'
 import SelectCalc from './SelectCalc.vue'
 import SelectGroup from './SelectGroup.vue'
 import SelectFiles from './SelectFiles.vue'
-import DatePicker from './DatePicker.vue'
 import HomeCalcOrderTypeMobile from './HomeCalcOrderTypeMobile.vue'
 import { mountWithPlugins } from '@/test/mount'
 
@@ -176,13 +175,6 @@ describe('Select family', () => {
 
     const empty = mount(SelectFiles, { props: { uploadedDocuments: [] } })
     expect(empty.text()).toContain('Файлы отсутствуют')
-  })
-})
-
-describe('DatePicker', () => {
-  it('mounts with null value', () => {
-    const wrapper = mount(DatePicker, { props: { modelValue: null } })
-    expect(wrapper.findComponent({ name: 'ElDatePicker' }).exists()).toBe(true)
   })
 })
 

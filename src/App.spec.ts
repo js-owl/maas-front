@@ -39,6 +39,33 @@ describe('App.vue', () => {
     delete window.__grantAnalyticsConsent
   })
 
+  it('shows the banner and still handles clicks when storage is unavailable', async () => {
+    const blocked = () => {
+      throw new DOMException('denied', 'SecurityError')
+    }
+    const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(blocked)
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(blocked)
+
+    try {
+      const { wrapper } = await mountWithPlugins(App, { stubs })
+      expect(getItem).toHaveBeenCalled()
+      // jsdom caches computed style, so a second isVisible() on the same node can be stale.
+      expect(wrapper.find('.consent-banner').attributes('style') ?? '').not.toContain('none')
+
+      await wrapper.find('.consent-banner__btn--ghost').trigger('click')
+      expect(setItem).toHaveBeenCalledWith('analytics_consent', 'false')
+      expect(wrapper.find('.consent-banner').isVisible()).toBe(false)
+
+      const second = await mountWithPlugins(App, { stubs })
+      await second.wrapper.find('.consent-banner__btn--primary').trigger('click')
+      expect(setItem).toHaveBeenCalledWith('analytics_consent', 'true')
+      expect(second.wrapper.find('.consent-banner').isVisible()).toBe(false)
+    } finally {
+      getItem.mockRestore()
+      setItem.mockRestore()
+    }
+  })
+
   it('reject stores a negative decision', async () => {
     const { wrapper } = await mountWithPlugins(App, { stubs })
     await wrapper.find('.consent-banner__btn--ghost').trigger('click')

@@ -4,7 +4,7 @@ import { useMaterialStore } from '@/stores/material.store'
 import { useCoefficientsStore } from '@/stores/coefficients.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { mockCoefficients, mockMaterials } from '@/test/fixtures'
-import { mockJson, mockStatus } from '@/test/fetch-mock'
+import { fetchCalls, mockJson, mockRoute, mockStatus } from '@/test/fetch-mock'
 
 beforeEach(() => {
   localStorage.clear()
@@ -69,6 +69,68 @@ describe('material store', () => {
     store.selectedMaterialId = '1'
     expect(store.selectedMaterial).toEqual({ value: '1', label: 'A' })
   })
+
+  it('returns null for selectedMaterial when the id is not in the list', () => {
+    const store = useMaterialStore()
+    store.setMaterials([{ value: '1', label: 'A' }])
+    store.selectedMaterialId = 'missing'
+    expect(store.selectedMaterial).toBeNull()
+  })
+
+  it('requests /materials without a process filter by default', async () => {
+    mockJson('/api/v3/materials', mockMaterials)
+    const store = useMaterialStore()
+    expect(await store.loadMaterials()).toBe(true)
+    expect(fetchCalls('/materials').map((c) => c.url)).toEqual(['/api/v3/materials'])
+    expect(store.materials).toHaveLength(2)
+  })
+
+  it('treats a payload without materials as an empty list', async () => {
+    mockJson('/api/v3/materials?process=printing', {})
+    const store = useMaterialStore()
+    expect(await store.loadMaterials('printing')).toBe(true)
+    expect(store.materials).toEqual([])
+    expect(store.hasError).toBe(false)
+  })
+
+  it('falls back to static materials when the response body is not JSON', async () => {
+    mockRoute('/api/v3/materials', () => new Response('<html>', { status: 200 }))
+    const store = useMaterialStore()
+    expect(await store.loadMaterials('printing')).toBe(false)
+    expect(store.hasError).toBe(true)
+    expect(store.isLoading).toBe(false)
+    expect(store.materials.map((m) => m.value)).toEqual(['alum_D16T', 'steel_12X18H10T'])
+  })
+
+  it('uses the cnc-lathe fallback only for that process when parsing fails', async () => {
+    mockRoute('/api/v3/materials', () => new Response('<html>', { status: 200 }))
+    const store = useMaterialStore()
+    await store.setAllMaterials()
+    expect(store.hasError).toBe(false)
+    expect(store.materials.map((m) => m.value)).toEqual(['alum_D16T', 'steel_12X18H10T'])
+    expect(store.allMaterials).toEqual(store.materials)
+  })
+
+  it('keeps the other process when one request fails', async () => {
+    mockStatus('/api/v3/materials?process=cnc-lathe', 500)
+    mockJson('/api/v3/materials?process=printing', {
+      materials: [{ id: '3', label: 'PLA' }],
+    })
+    const store = useMaterialStore()
+    await store.setAllMaterials()
+    expect(store.hasError).toBe(false)
+    expect(store.materials).toEqual([{ value: '3', label: 'PLA' }])
+    expect(store.isLoading).toBe(false)
+  })
+
+  it('sets hasError when both process requests fail', async () => {
+    mockStatus('/api/v3/materials', 500)
+    const store = useMaterialStore()
+    await store.setAllMaterials()
+    expect(store.hasError).toBe(true)
+    expect(store.materials).toEqual([])
+    expect(store.allMaterials).toEqual([])
+  })
 })
 
 describe('coefficients store', () => {
@@ -103,6 +165,45 @@ describe('coefficients store', () => {
     const store = useCoefficientsStore()
     await store.setAllCoefficients()
     expect(store.coefficients.tolerance.length).toBeGreaterThan(0)
+  })
+
+  it('treats missing coefficient groups as empty lists', async () => {
+    mockJson('/api/v3/coefficients', { finish: [{ id: 'f', label: 'F' }] })
+    const store = useCoefficientsStore()
+    expect(await store.loadCoefficients()).toBe(true)
+    expect(store.coefficients).toEqual({
+      finish: [{ value: 'f', label: 'F' }],
+      cover: [],
+      tolerance: [],
+    })
+  })
+
+  it('handles a null payload', async () => {
+    mockJson('/api/v3/coefficients', null)
+    const store = useCoefficientsStore()
+    expect(await store.loadCoefficients()).toBe(true)
+    expect(store.coefficients).toEqual({ finish: [], cover: [], tolerance: [] })
+  })
+
+  it('marks an error when the response body is not JSON', async () => {
+    mockRoute('/api/v3/coefficients', () => new Response('<html>', { status: 200 }))
+    const store = useCoefficientsStore()
+    expect(await store.loadCoefficients()).toBe(false)
+    expect(store.hasError).toBe(true)
+    expect(store.isLoading).toBe(false)
+    expect(store.allCoefficients).toEqual({ finish: [], cover: [], tolerance: [] })
+  })
+
+  it('reuses cached coefficients when only cover or tolerance is filled', async () => {
+    const store = useCoefficientsStore()
+    store.allCoefficients = { finish: [], cover: [{ value: 'c', label: 'C' }], tolerance: [] }
+    await store.setAllCoefficients()
+    expect(store.coefficients.cover[0].value).toBe('c')
+
+    store.allCoefficients = { finish: [], cover: [], tolerance: [{ value: 't', label: 'T' }] }
+    await store.setAllCoefficients()
+    expect(store.coefficients.tolerance[0].value).toBe('t')
+    expect(fetchCalls('/coefficients')).toHaveLength(0)
   })
 
   it('allows manual setCoefficients', () => {

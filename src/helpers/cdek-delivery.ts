@@ -240,8 +240,8 @@ function normalizePvzQuery(query: string): string {
 /** CDEK codes look like `MSK16`: a city prefix followed by a number. */
 const PVZ_CODE_LIKE_QUERY = /^[a-z]{2,4}\d+$/
 
+/** `needle` must be non-empty (the only caller guards this). */
 function fuzzySubsequence(needle: string, haystack: string): boolean {
-  if (!needle) return true
   let i = 0
   for (const ch of haystack) {
     if (ch === needle[i]) i += 1

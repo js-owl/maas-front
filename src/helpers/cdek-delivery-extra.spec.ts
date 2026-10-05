@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildDeliveryPointByCodeQuery,
   buildDeliveryPointsQuery,
+  filterPvzPoints,
   formatCarrierReference,
   formatDeliveryTracking,
   isFinalInvoiceKitStatus,
@@ -9,10 +10,16 @@ import {
   pickCheapestPvzTariff,
   pickCityCode,
   pickDefaultPvzCode,
+  pvzCodeLabel,
+  pvzFullLabel,
+  pvzSearchScore,
+  pvzStreetLabel,
+  pvzYandexMapsUrl,
   shouldRefreshShipmentOnLoad,
   unwrapList,
   pvzLabel,
   pvzSearchText,
+  type CdekCity,
   type CdekPvz,
   type CdekTariff,
 } from './cdek-delivery'
@@ -142,5 +149,95 @@ describe('shipment tracking helpers', () => {
         'EXECUTING'
       )
     ).toBe(false)
+  })
+
+  it('does not refresh shipments without an id or a non-blank carrier uuid', () => {
+    expect(shouldRefreshShipmentOnLoad({ external_uuid: 'u' }, 'FINAL_INVOICE')).toBe(false)
+    expect(shouldRefreshShipmentOnLoad({ id: 1, external_uuid: '   ' }, 'FINAL_INVOICE')).toBe(false)
+  })
+
+  it('keeps unknown carrier statuses verbatim and maps lowercase known ones', () => {
+    expect(formatDeliveryTracking({ status_code: 'IN_TRANSIT' })).toBe('IN_TRANSIT')
+    expect(formatDeliveryTracking({ status_code: ' delivered ' })).toBe('Доставлен')
+    expect(formatDeliveryTracking({ status_code: null, status: 'CREATED' })).toBe('Создан')
+    expect(formatDeliveryTracking({ external_number: '  ', status: '  ' })).toBe('')
+    expect(formatDeliveryTracking({})).toBe('')
+  })
+})
+
+describe('pickCityCode edge cases', () => {
+  it('tolerates cities without a name and rejects non-numeric codes', () => {
+    expect(pickCityCode([{ code: 5 }], 'Москва')).toBe(5)
+    expect(pickCityCode([{ city: 'Москва' }, { code: 7, city: 'Тверь' }], 'москва')).toBeNull()
+    expect(pickCityCode([{ code: '44', city: 'Москва' } as unknown as CdekCity], 'Москва')).toBeNull()
+  })
+})
+
+describe('pickDefaultPvzCode edge cases', () => {
+  it('returns empty when the chosen point has no code', () => {
+    expect(pickDefaultPvzCode([{ name: 'Без кода' }], null)).toBe('')
+    expect(
+      pickDefaultPvzCode([{ name: 'Без кода', location: { postal_code: '101000' } }], '101000')
+    ).toBe('')
+  })
+
+  it('ranks a same-region (first two digits) index above unrelated and unknown ones', () => {
+    const points: CdekPvz[] = [
+      { code: 'NOPOSTAL' },
+      { code: 'FAR', location: { postal_code: '690000' } },
+      { code: 'REGION', location: { postal_code: '105000' } },
+    ]
+    expect(pickDefaultPvzCode(points, '101000')).toBe('REGION')
+  })
+})
+
+describe('PVZ label fallbacks', () => {
+  it('falls back from code to name to a generic label', () => {
+    expect(pvzCodeLabel({ name: ' Пункт ' })).toBe('Пункт')
+    expect(pvzCodeLabel({})).toBe('ПВЗ')
+  })
+
+  it('falls back from street to full address, name and code', () => {
+    expect(pvzStreetLabel({ location: { address_full: ' г. Москва ' } })).toBe('г. Москва')
+    expect(pvzStreetLabel({ name: 'Склад' })).toBe('Склад')
+    expect(pvzStreetLabel({ code: 'MSK1' })).toBe('MSK1')
+    expect(pvzStreetLabel({})).toBe('')
+  })
+
+  it('builds the full label from whichever address field is present', () => {
+    expect(pvzFullLabel({ code: 'C', location: { address: 'ул. А' } })).toBe('C — ул. А')
+    expect(pvzFullLabel({ code: 'C', name: 'Склад' })).toBe('C — Склад')
+    expect(pvzFullLabel({ code: '   ', location: { address_full: 'г. Москва' } })).toBe('г. Москва')
+    expect(pvzFullLabel({ code: '   ' })).toBe('')
+  })
+
+  it('returns no Yandex link without coordinates', () => {
+    expect(pvzYandexMapsUrl({ code: 'X' })).toBeNull()
+    expect(pvzYandexMapsUrl(null)).toBeNull()
+  })
+})
+
+describe('PVZ search scoring edge cases', () => {
+  it('scores blank queries as neutral', () => {
+    expect(pvzSearchScore({ code: 'MSK1' }, '   ')).toBe(0)
+  })
+
+  it('matches points without a code by street, postal index and multiple tokens', () => {
+    const point: CdekPvz = {
+      name: 'Склад',
+      location: { address: 'ул. Ленина, 5', postal_code: '101000' },
+    }
+    expect(pvzSearchScore(point, 'ленина')).toBe(80)
+    expect(pvzSearchScore(point, '101000')).toBe(70)
+    expect(pvzSearchScore(point, 'склад 101000')).toBe(60)
+  })
+
+  it('orders several matches by score', () => {
+    const points: CdekPvz[] = [
+      { code: 'X1', name: 'Рядом с msk65' },
+      { code: 'Y2', name: 'Другой' },
+      { code: 'MSK65' },
+    ]
+    expect(filterPvzPoints(points, 'MSK65').map((p) => p.code)).toEqual(['MSK65', 'X1'])
   })
 })

@@ -77,6 +77,7 @@ vi.stubGlobal('IntersectionObserver', IntersectionObserverStub)
 vi.stubGlobal('matchMedia', matchMediaStub)
 window.matchMedia = matchMediaStub
 Element.prototype.scrollIntoView = () => {}
+window.scrollTo = () => {}
 
 // CadPreview / viewers call canvas.toDataURL(); jsdom throws without the native canvas package.
 HTMLCanvasElement.prototype.toDataURL = () => 'data:image/png;base64,stub'

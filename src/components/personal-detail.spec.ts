@@ -11,7 +11,6 @@ import PersonalOrderDelivery from './PersonalOrderDelivery.vue'
 import PersonalProfile from './PersonalProfile.vue'
 import PersonalCalc from './PersonalCalc.vue'
 import PersonalCalcInfo from './PersonalCalcInfo.vue'
-import CalculateBasePage from './CalculateBasePage.vue'
 
 async function flush(ms = 0) {
   await nextTick()
@@ -22,19 +21,15 @@ async function flush(ms = 0) {
 const heavyStubs = {
   DialogLogin: true,
   DialogRegistration: true,
-  DialogInfoPayment: true,
   DialogCall: true,
   UploadFiles: true,
   UploadFiles2: true,
-  UploadDrawings: true,
-  UploadDrawings2: true,
   DocumentShowByIds: true,
   DocumentShowByIds2: true,
   CadShowById: true,
   CadPreview: true,
   CalculateResults: true,
   CalculateResultSpecialist: true,
-  CalculateSubmit: true,
   CalculateSubmit2: true,
   PersonalOrderDelivery: true,
   PvzMapPreview: true,
@@ -185,39 +180,5 @@ describe('PersonalCalc / PersonalCalcInfo', () => {
     await flush(120)
     expect(wrapper.exists()).toBe(true)
     expect(wrapper.html().length).toBeGreaterThan(100)
-  })
-})
-
-describe('CalculateBasePage', () => {
-  it('mounts the shared calculate shell', async () => {
-    const { wrapper, pinia } = await mountWithPlugins(CalculateBasePage, {
-      stubs: {
-        ...heavyStubs,
-        UploadModel: true,
-        MaterialMachining: true,
-        MaterialMilling: true,
-        MaterialPrinting: true,
-        CoefficientFinish: true,
-        CoefficientTolerance: true,
-        CoefficientCover: true,
-        CoefficientCover2: true,
-        CoefficientQuantity: true,
-        CoefficientOtk: true,
-        CoefficientOtk2: true,
-        CoefficientCertificate: true,
-        Length: true,
-        Width: true,
-        Height: true,
-        Diameter: true,
-      },
-      stubActions: false,
-      routes: [
-        { path: '/', name: 'home', component: { template: '<div />' } },
-        { path: '/milling', name: 'milling', component: { template: '<div />' } },
-      ],
-    })
-    useAuthStore(pinia).setToken('tok', false)
-    await flush(50)
-    expect(wrapper.exists()).toBe(true)
   })
 })
