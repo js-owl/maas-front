@@ -13,6 +13,11 @@ export default defineConfig(({ mode }) => {
     mode === 'test' ||
     process.env.VITEST === 'true' ||
     process.argv.some((arg) => arg.includes('vitest'))
+  // Unit tests assert relative /api/v3 URLs; CI may export a production
+  // VITE_API_BASE (GitLab deploy var) that would otherwise leak into import.meta.env.
+  if (isVitest) {
+    process.env.VITE_API_BASE = '/api/v3'
+  }
   console.log(env.VITE_BASE_PATH)
   
   // Get git information for build (with better error handling)
@@ -120,6 +125,9 @@ export default defineConfig(({ mode }) => {
       // Lazy-loaded SFCs (PersonalOrder, CAD viewers) are transformed on first
       // use, which can exceed the 5s default on a cold cache or a busy machine.
       testTimeout: 20000,
+      env: {
+        VITE_API_BASE: '/api/v3',
+      },
       include: ['src/**/*.{test,spec}.{ts,vue}'],
       setupFiles: ['src/test/setup.ts'],
       server: {
