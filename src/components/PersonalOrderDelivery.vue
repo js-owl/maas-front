@@ -101,18 +101,9 @@ const goodsSum = computed(() => {
 const vatAmount = computed(() => Math.round(goodsSum.value * 0.2))
 const grandTotal = computed(() => goodsSum.value + vatAmount.value)
 
-const justConfirmed = ref(false)
-
 const orderStatusTail = computed(() => kitStatusTail(order.value?.status))
 
 const canConfirmOrder = computed(() => orderStatusTail.value === 'AWAITING_CONFIRMATION')
-
-const canCheckoutOrder = computed(() => {
-  if (justConfirmed.value) return true
-  const tail = orderStatusTail.value
-  if (!tail || tail === 'AWAITING_CONFIRMATION') return false
-  return tail !== 'LOSE' && tail !== 'APOLOGY' && tail !== 'CANCELLED'
-})
 
 const deliveryQuoteReadiness = computed(() => kitDeliveryQuoteReadiness(calcRows.value))
 
@@ -424,7 +415,6 @@ const confirmOrder = async () => {
     } catch {
       // Confirm may return an empty body.
     }
-    justConfirmed.value = true
 
     await loadOrder()
     ElMessage.success('Заказ подтверждён')
@@ -434,17 +424,6 @@ const confirmOrder = async () => {
   } finally {
     confirmLoading.value = false
   }
-}
-
-const checkoutOrder = () => {
-  if (!ensureDeliveryReady()) return
-  if (!kitId.value || !order.value || confirmLoading.value) return
-
-  ElMessage.success(
-    deliveryType.value === 'pickup'
-      ? 'Выбран самовывоз со склада в Москве'
-      : 'Параметры доставки указаны'
-  )
 }
 
 watch(deliveryType, (type) => {
@@ -649,15 +628,6 @@ onMounted(() => {
           @click="confirmOrder"
         >
           Подтвердить заказ
-        </button>
-        <button
-          v-if="canCheckoutOrder"
-          type="button"
-          class="order-delivery__continue"
-          :disabled="confirmLoading || isLoading"
-          @click="checkoutOrder"
-        >
-          Оформить заказ
         </button>
       </div>
     </aside>

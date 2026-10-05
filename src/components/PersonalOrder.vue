@@ -111,6 +111,8 @@ const canOpenDelivery = computed(() => {
   return tail !== 'LOSE' && tail !== 'APOLOGY' && tail !== 'CANCELLED'
 })
 
+const canAddDetail = computed(() => orderStatusTail.value === 'AWAITING_CONFIRMATION')
+
 const selectedLocation = computed({
   get: () => order.value?.location || 'location_1',
   set: (value: string) => {
@@ -432,23 +434,6 @@ const handleOrderTypeChange = (value: string | number | boolean | object) => {
   selectedOrderType.value = ''
 }
 
-const saveOrder = async () => {
-  if (!order.value) return
-
-  try {
-    const res = await updateKit()
-    if (!res?.ok) throw new Error('Failed to save order')
-
-    await loadOrder()
-
-    ElMessage.success('Заказ сохранен')
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error(e)
-    ElMessage.error('Не удалось сохранить заказ')
-  }
-}
-
 const goToDelivery = () => {
   if (!kitId.value) return
   router.push({
@@ -546,7 +531,7 @@ onMounted(() => {
           </div>
           <p v-else-if="!isLoading" class="order-details-mobile__empty">Нет данных по деталям</p>
 
-          <div class="order-add-detail-mobile">
+          <div v-if="canAddDetail" class="order-add-detail-mobile">
             <el-dropdown
               trigger="click"
               placement="bottom"
@@ -679,6 +664,7 @@ onMounted(() => {
           </ButtonRound>
           <div class="order-footer-actions">
             <Select
+              v-if="canAddDetail"
               v-model="selectedOrderType"
               placeholder="Добавить деталь"
               width="266px"
@@ -697,6 +683,7 @@ onMounted(() => {
               </el-option>
             </Select>
             <el-dropdown
+              v-if="canAddDetail"
               trigger="click"
               placement="bottom"
               popper-class="order-add-detail-dropdown"
@@ -721,7 +708,6 @@ onMounted(() => {
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <ButtonRound width="162px" @click="saveOrder"> Сохранить </ButtonRound>
           </div>
         </div>
         <!-- </el-card> -->
