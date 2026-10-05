@@ -219,11 +219,7 @@ describe('CalculatePrintingPage2 bootstrap', () => {
     expect(calcCalls()).toHaveLength(0)
   })
 
-  // BUG (CalculatePrintingPage2.vue onMounted/sendData): when the page starts without a model the
-  // early return in sendData never calls stopLoading(), so the initial `isLoading = true` from
-  // useMinLoading is never cleared and the loader overlay stays up forever.
-  // `it.fails` documents the defect: remove `.fails` once the page is fixed.
-  it.fails('hides the loader after bootstrapping without a model', async () => {
+  it('hides the loader after bootstrapping without a model', async () => {
     const wrapper = await mountSettled({ query: '?files=5' })
 
     expect(isLoading(wrapper)).toBe(false)
@@ -335,9 +331,7 @@ describe('CalculatePrintingPage2 order loading', () => {
     expect(lastFetchBody<{ deadline: string }>(CALC_URL)?.deadline).toBe(expected.toISOString())
   })
 
-  // BUG: getOrder() stores the whole order as `result`; the `result.manufacturing_cycle` watcher then
-  // replaces the saved order deadline with "today + cycle", so editing an order silently moves its deadline.
-  it.fails('keeps the saved order deadline when the order also has a manufacturing_cycle', async () => {
+  it('keeps the saved order deadline when the order also has a manufacturing_cycle', async () => {
     mockJson('/api/v3/orders/7', { ...order, manufacturing_cycle: 5 })
     await mountSettled({ query: '?orderId=7' })
 

@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { ElMessage } from 'element-plus'
 import {
+  API_BASE,
   fetchWithAuth,
   fileToBase64,
   handleEmailVerificationBlocked,
@@ -30,6 +31,31 @@ vi.spyOn(router, 'push').mockResolvedValue(undefined as never)
 beforeEach(() => {
   setActivePinia(createPinia())
   vi.clearAllMocks()
+})
+
+describe('API_BASE', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.resetModules()
+  })
+
+  it('uses VITE_API_BASE when it is set', async () => {
+    vi.stubEnv('VITE_API_BASE', 'https://example.test/api')
+    vi.resetModules()
+    const api = await import('@/api')
+    expect(api.API_BASE).toBe('https://example.test/api')
+  })
+
+  it('falls back to /api/v3 when VITE_API_BASE is empty', async () => {
+    vi.stubEnv('VITE_API_BASE', '')
+    vi.resetModules()
+    const api = await import('@/api')
+    expect(api.API_BASE).toBe('/api/v3')
+  })
+
+  it('reads the configured base in the already loaded module', () => {
+    expect(API_BASE).toBe('/api/v3')
+  })
 })
 
 describe('handleEmailVerificationBlocked', () => {

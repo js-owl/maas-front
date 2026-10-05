@@ -69,6 +69,8 @@ COPY . .
 # .env.production otherwise embeds the public production URL at build time.
 ENV VITE_API_BASE=/api/v3
 ENV VITE_BASE_PATH=/
+# Coverage is for `npm run build` on the host, not the image build.
+ENV SKIP_COVERAGE=1
 
 # Build the application for production
 # This  creates the /app/dist folder

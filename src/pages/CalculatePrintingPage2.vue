@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineOptions({ name: 'CalculatePrintingPage2' })
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import { req_json, req_json_auth } from '../api'
 import {
   buildCalculateFileFields,
@@ -169,6 +169,7 @@ async function loadMaterials() {
 async function sendData(payload: IOrderPayload) {
   if (!hasCalculateModel(payload)) {
     result.value = buildEmptyCalcResult(result.value, quantity.value)
+    await stopLoading()
     return
   }
   startLoading()
@@ -200,8 +201,13 @@ const onUpdateResult = (d: IOrderResponse) => {
   result.value = d
 }
 
+// getOrder writes the saved order into `result`, which also carries manufacturing_cycle.
+// Ignore that assignment in the cycle watcher so a stored deadline is not replaced by "today + cycle".
+let applyingOrder = false
+
 async function getOrder(id: number) {
   startLoading()
+  applyingOrder = true
   try {
     const res = await req_json_auth(`/orders/${id}`, 'GET')
     const data = (await res?.json()) as IOrderResponse
@@ -243,6 +249,8 @@ async function getOrder(id: number) {
   } catch (error) {
     console.error({ error })
   }
+  await nextTick()
+  applyingOrder = false
   await stopLoading()
 }
 
@@ -259,9 +267,8 @@ watch(localStpCacheVersion, () => {
 watch(
   () => result.value?.manufacturing_cycle,
   (cycle) => {
-    if (cycle) {
-      deadline.value = parseDeadline({ manufacturing_cycle: cycle })
-    }
+    if (applyingOrder || !cycle) return
+    deadline.value = parseDeadline({ manufacturing_cycle: cycle })
   }
 )
 </script>

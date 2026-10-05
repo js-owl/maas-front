@@ -96,6 +96,8 @@ ENV GIT_TAG=${GIT_TAG}
 ENV GIT_HASH=${GIT_HASH}
 ENV GIT_BRANCH=${GIT_BRANCH}
 ENV PRERENDER_CONCURRENCY=1
+# Coverage runs in the CI test job; do not repeat it inside the image build.
+ENV SKIP_COVERAGE=1
 
 RUN npm run build -- --mode production
 
