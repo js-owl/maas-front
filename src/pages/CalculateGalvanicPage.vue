@@ -10,7 +10,7 @@ import {
   hasCalculateModel,
   localStpCacheVersion,
 } from '../helpers/local-stp-files'
-import { parseFilesQueryToIds } from '../helpers/parse-files'
+import { buildEmptyCalcResult, resolveCalcQueryFiles } from '../helpers/calc-page'
 import { unwrapApiData } from '../helpers/order-price'
 import { locations } from '../helpers/get-location'
 import Input from '../components/ui/Input.vue'
@@ -28,6 +28,8 @@ import { toElectroplatingFamilyOptions } from '../helpers/material-family'
 // @ts-ignore
 import CadShowById from '../components/cad/CadShowById.vue'
 import { useIsManager } from '../composables/useIsManager'
+import { useMinLoading } from '../composables/useMinLoading'
+import { useQuantityInput } from '../composables/useQuantityInput'
 
 const profileStore = useProfileStore()
 const isManager = useIsManager()
@@ -42,13 +44,7 @@ const cadViewerKey = ref(0)
 const document_ids = ref<number[]>([])
 
 const quantity = ref(1)
-const quantityInput = computed({
-  get: () => String(quantity.value),
-  set: (value: string) => {
-    const parsedValue = Number(value)
-    quantity.value = Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 1
-  },
-})
+const quantityInput = useQuantityInput(quantity)
 
 const electroplating_family = ref('')
 
@@ -193,7 +189,6 @@ const payload = reactive({
 const result = ref<IOrderResponse | null>(null)
 
 const isInfoVisible = ref(false)
-const isLoading = ref<boolean>(true)
 const isBootstrapping = ref(true)
 const isMaterialsLoading = ref(false)
 
@@ -201,18 +196,8 @@ const isFamilyInList = computed(() =>
   materialFamilies.value.some((item) => item.value === electroplating_family.value)
 )
 
-const MIN_LOADING_MS = 1000
-let loadingStartedAt = 0
-const startLoading = () => {
-  loadingStartedAt = Date.now()
-  isLoading.value = true
-}
-const stopLoading = async () => {
-  const elapsed = Date.now() - loadingStartedAt
-  const remaining = Math.max(0, MIN_LOADING_MS - elapsed)
-  if (remaining > 0) await new Promise((r) => setTimeout(r, remaining))
-  isLoading.value = false
-}
+// Keeps the loader visible for a minimum time so it does not flash
+const { isLoading, startLoading, stopLoading } = useMinLoading()
 
 const localStpFile = computed(() => {
   localStpCacheVersion.value
@@ -291,25 +276,9 @@ onMounted(async () => {
   try {
     await Promise.all([loadOperationsAvailable(), ensureLocalStpCacheReady()])
     if (order_id.value === 0) {
-      const filesQuery = route.query.files
-      const stpParam = route.query.stp
-
-      const ids = parseFilesQueryToIds(filesQuery)
-      if (ids.length > 0) {
-        document_ids.value = ids
-      }
-
-      if (filesQuery) {
-        if (stpParam) {
-          const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
-          const parsedStpId = Number(stpId)
-          if (!Number.isNaN(parsedStpId)) {
-            file_id.value = parsedStpId
-          }
-        }
-      } else {
-        file_id.value = 2
-      }
+      const { documentIds, fileId } = resolveCalcQueryFiles(route.query, 2)
+      if (documentIds.length > 0) document_ids.value = documentIds
+      if (fileId !== undefined) file_id.value = fileId
     } else {
       await getOrder(order_id.value)
     }
@@ -414,13 +383,7 @@ function syncSelectedProcess() {
 
 async function sendData(currentPayload: IOrderPayload) {
   if (!hasCalculateModel(currentPayload)) {
-    result.value = {
-      ...result.value,
-      total_price: 0,
-      detail_price: 0,
-      detail_price_one: 0,
-      quantity: quantity.value,
-    } as IOrderResponse
+    result.value = buildEmptyCalcResult(result.value, quantity.value)
     return
   }
   startLoading()

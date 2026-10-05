@@ -10,7 +10,7 @@ import {
   hasCalculateModel,
   localStpCacheVersion,
 } from '../helpers/local-stp-files'
-import { parseFilesQueryToIds } from '../helpers/parse-files'
+import { buildEmptyCalcResult, resolveCalcQueryFiles } from '../helpers/calc-page'
 import { formatDeadline, parseDeadline } from '../helpers/deadline'
 import { toMaterialOptionGroupsByFamily } from '../helpers/material-family'
 
@@ -42,6 +42,8 @@ import DocumentShowByIds2 from '@/components/DocumentShowByIds2.vue'
 import CalculateSubmit2 from '@/components/sections/CalculateSubmit2.vue'
 import Loader from '../components/ui/Loader.vue'
 import { useIsManager } from '../composables/useIsManager'
+import { useMinLoading } from '../composables/useMinLoading'
+import { useQuantityInput } from '../composables/useQuantityInput'
 
 const profileStore = useProfileStore()
 const isManager = useIsManager()
@@ -59,13 +61,7 @@ let length = ref(120)
 let width = ref(30)
 let height = ref(30)
 let quantity = ref(1)
-const quantityInput = computed({
-  get: () => String(quantity.value),
-  set: (value: string) => {
-    const parsedValue = Number(value)
-    quantity.value = Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 1
-  },
-})
+const quantityInput = useQuantityInput(quantity)
 
 let material_id = ref('')
 let material_form = ref('sheet')
@@ -109,22 +105,10 @@ const payload = reactive({
 const result = ref<IOrderResponse | null>(null)
 
 let isInfoVisible = ref(false)
-const isLoading = ref<boolean>(true)
 const isBootstrapping = ref(true)
 
-// Ensure minimum loading indicator duration
-const MIN_LOADING_MS = 1000
-let loadingStartedAt = 0
-const startLoading = () => {
-  loadingStartedAt = Date.now()
-  isLoading.value = true
-}
-const stopLoading = async () => {
-  const elapsed = Date.now() - loadingStartedAt
-  const remaining = Math.max(0, MIN_LOADING_MS - elapsed)
-  if (remaining > 0) await new Promise((r) => setTimeout(r, remaining))
-  isLoading.value = false
-}
+// Keeps the loader visible for a minimum time so it does not flash
+const { isLoading, startLoading, stopLoading } = useMinLoading()
 
 const localStpFile = computed(() => {
   localStpCacheVersion.value
@@ -169,25 +153,9 @@ onMounted(async () => {
     await Promise.all([loadMaterials(), loadFinishAndTolerance(), ensureLocalStpCacheReady()])
     deadline.value = new Date()
     if (order_id.value === 0) {
-      const filesQuery = route.query.files
-      const stpParam = route.query.stp
-
-      const ids = parseFilesQueryToIds(filesQuery)
-      if (ids.length > 0) {
-        document_ids.value = ids
-      }
-
-      if (filesQuery) {
-        if (stpParam) {
-          const stpId = Array.isArray(stpParam) ? stpParam[0] : stpParam
-          const parsedStpId = Number(stpId)
-          if (!Number.isNaN(parsedStpId)) {
-            file_id.value = parsedStpId
-          }
-        }
-      } else {
-        file_id.value = 2
-      }
+      const { documentIds, fileId } = resolveCalcQueryFiles(route.query, 2)
+      if (documentIds.length > 0) document_ids.value = documentIds
+      if (fileId !== undefined) file_id.value = fileId
     } else {
       await getOrder(order_id.value)
     }
@@ -240,13 +208,7 @@ async function loadFinishAndTolerance() {
 
 async function sendData(payload: IOrderPayload) {
   if (!hasCalculateModel(payload)) {
-    result.value = {
-      ...result.value,
-      total_price: 0,
-      detail_price: 0,
-      detail_price_one: 0,
-      quantity: quantity.value,
-    } as IOrderResponse
+    result.value = buildEmptyCalcResult(result.value, quantity.value)
     return
   }
   startLoading()

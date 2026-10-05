@@ -145,10 +145,10 @@ export default defineConfig(({ mode }) => {
         // Ratchet set to the current measured floor: coverage can go up but
         // not down. Raise these as each phase of the coverage plan lands.
         thresholds: {
-          statements: 68.0,
-          branches: 54.0,
-          functions: 63.0,
-          lines: 70.0,
+          statements: 74.0,
+          branches: 68.0,
+          functions: 70.0,
+          lines: 75.0,
           'src/router.ts': {
             statements: 100,
             branches: 100,
@@ -254,11 +254,17 @@ export default defineConfig(({ mode }) => {
             functions: 20,
             lines: 30,
           },
+          'src/pages/Calculate*.vue': {
+            statements: 100,
+            branches: 100,
+            functions: 100,
+            lines: 100,
+          },
           'src/pages/**': {
-            statements: 50,
-            branches: 21,
-            functions: 30,
-            lines: 50,
+            statements: 85,
+            branches: 80,
+            functions: 85,
+            lines: 85,
           },
         },
       }
