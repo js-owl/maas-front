@@ -1,6 +1,19 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { mountWithPlugins } from '@/test/mount'
+
+// Footer loads DialogCall through defineAsyncComponent. The wrapper's name is
+// AsyncComponentWrapper, so stubs: { DialogCall: true } does not stop the
+// import. The real SFC pulls element-plus CSS, which rejects after Vitest
+// tears the environment down (EnvironmentTeardownError).
+vi.mock('./dialog/DialogCall.vue', () => ({
+  default: {
+    name: 'DialogCall',
+    props: ['modelValue'],
+    template: '<div class="stub-dialog-call" />',
+  },
+}))
+
 import SeoMainHeading from './SeoMainHeading.vue'
 import SuitableMachines from './SuitableMachines.vue'
 import ServicesCabinetMenu from './ServicesCabinetMenu.vue'
