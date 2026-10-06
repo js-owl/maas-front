@@ -328,7 +328,11 @@ async function getOrder(id: number) {
 
                 <div class="calc-field-group">
                   <div class="calc-title">Материал</div>
-                  <SelectCalc v-model="material_id" :input-data="materials" />
+                  <SelectCalc
+                    v-model="material_id"
+                    :input-data="materials"
+                    dropdown-class="calc-page-select-dropdown calc-material-select-dropdown"
+                  />
                 </div>
 
                 <div class="calc-field-group">

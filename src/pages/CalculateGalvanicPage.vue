@@ -542,6 +542,7 @@ watch(file_id, () => {
                   <SelectCalc
                     v-model="electroplating_family"
                     :input-data="materialFamilies"
+                    dropdown-class="calc-page-select-dropdown calc-material-select-dropdown"
                   />
                 </div>
 
