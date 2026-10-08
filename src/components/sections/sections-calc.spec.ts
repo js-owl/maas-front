@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
+import { saveFile3D } from '@/helpers/local-stp-files'
 import { mockCalculatePrice } from '@/test/fixtures'
 import { mountWithPlugins } from '@/test/mount'
 import UploadFiles from '../UploadFiles.vue'
@@ -127,7 +128,7 @@ describe('HomeCalc / UslugiCalc', () => {
     )
   })
 
-  it('UslugiCalc navigates when a model/docs path is ready', async () => {
+  it('UslugiCalc блокирует Отправить без STP и переходит после загрузки модели', async () => {
     const { wrapper, router } = await mountWithPlugins(UslugiCalc, {
       props: { service_id: 'cnc-milling' },
       stubs: { UploadFiles: true, UploadFiles2: true, teleport: false },
@@ -137,11 +138,78 @@ describe('HomeCalc / UslugiCalc', () => {
       ],
     })
     expect(wrapper.text()).toContain('Производство')
+
+    const submitButton = () => wrapper.find('.uslugi-calc-submit-button')
+    expect(submitButton().attributes('disabled')).toBeDefined()
+    expect(wrapper.text()).toContain('Для отправки необходимо загрузить STP-модель')
+
     const push = vi.spyOn(router, 'push')
-    // Without model, submit may no-op — still covered mount + computed route
-    await wrapper.find('button')?.trigger('click').catch(() => undefined)
+    await submitButton().trigger('click')
     await flush()
-    expect(wrapper.exists()).toBe(true)
-    push.mockRestore()
+    expect(push).not.toHaveBeenCalled()
+
+    const upload = wrapper.findComponent(UploadFiles)
+    upload.vm.$emit('update:modelValue', [11])
+    await flush()
+    expect(submitButton().attributes('disabled')).toBeDefined()
+
+    upload.vm.$emit('update:stp_id', 7)
+    await flush()
+    expect(submitButton().attributes('disabled')).toBeUndefined()
+    expect(wrapper.text()).not.toContain('Для отправки необходимо загрузить STP-модель')
+
+    await submitButton().trigger('click')
+    await flush()
+    expect(push).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/milling',
+        query: expect.objectContaining({
+          stp: '7',
+        }),
+      })
+    )
+  })
+
+  it('UslugiCalc для 3D-печати блокирует Отправить без STL', async () => {
+    const { wrapper, router } = await mountWithPlugins(UslugiCalc, {
+      props: { service_id: 'printing' },
+      stubs: { UploadFiles: true, UploadFiles2: true, teleport: false },
+      routes: [
+        { path: '/', name: 'home', component: { template: '<div />' } },
+        { path: '/printing', name: 'printing', component: { template: '<div />' } },
+      ],
+    })
+
+    const submitButton = () => wrapper.find('.uslugi-calc-submit-button')
+    expect(submitButton().attributes('disabled')).toBeDefined()
+    expect(wrapper.text()).toContain('Для отправки необходимо загрузить STL-модель')
+
+    const push = vi.spyOn(router, 'push')
+    const upload = wrapper.findComponent(UploadFiles)
+    upload.vm.$emit('update:modelValue', [11])
+    await flush()
+    expect(submitButton().attributes('disabled')).toBeDefined()
+
+    const modelId = await saveFile3D('part.stp', 'U1RQ', 'stp')
+    upload.vm.$emit('update:stp_id', modelId)
+    await flush()
+    expect(submitButton().attributes('disabled')).toBeDefined()
+    expect(push).not.toHaveBeenCalled()
+
+    await saveFile3D('part.stl', 'U1RM', 'stl')
+    await flush()
+    expect(submitButton().attributes('disabled')).toBeUndefined()
+    expect(wrapper.text()).not.toContain('Для отправки необходимо загрузить STL-модель')
+
+    await submitButton().trigger('click')
+    await flush()
+    expect(push).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/printing',
+        query: expect.objectContaining({
+          stp: String(modelId),
+        }),
+      })
+    )
   })
 })

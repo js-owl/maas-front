@@ -2,9 +2,12 @@
 import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePageBreakpoints } from '@/composables/usePageBreakpoints'
+import { ElMessage } from 'element-plus'
 import Button from '@/components/ui/Button.vue'
 import UploadFiles from '@/components/UploadFiles.vue'
 import UploadFiles2 from '@/components/UploadFiles2.vue'
+import { getLocalStpFileById, localStpCacheVersion } from '@/helpers/local-stp-files'
+import { isAllowedModelFile, isPrintingService } from '@/helpers/model-file-types'
 import { orderTypeOptions } from '@/helpers/order-type-options'
 
 const props = withDefaults(
@@ -33,8 +36,35 @@ const uploadServiceId = computed(() => props.service_id)
 const selectedRoutePath = computed(
   () => orderTypeOptions.find((option) => option.serviceId === props.service_id)?.routePath ?? ''
 )
+const hasRequiredModel = computed(() => {
+  if (stp_id.value == null) return false
+  if (!isPrintingService(props.service_id)) return true
+
+  void localStpCacheVersion.value
+  const file = getLocalStpFileById(stp_id.value)
+  if (!file) return false
+  return file.file_type === 'stl' || isAllowedModelFile(file.file_name, props.service_id)
+})
+const submitBlocked = computed(
+  () =>
+    (props.service_id === 'cnc-milling' || isPrintingService(props.service_id)) &&
+    !hasRequiredModel.value
+)
+const submitWarning = computed(() =>
+  isPrintingService(props.service_id)
+    ? 'Для отправки необходимо загрузить STL-модель'
+    : 'Для отправки необходимо загрузить STP-модель'
+)
 
 const submit = () => {
+  if (submitBlocked.value) {
+    ElMessage.warning(
+      isPrintingService(props.service_id)
+        ? 'Загрузите STL-модель для расчёта стоимости'
+        : 'Загрузите STP-модель для расчёта стоимости'
+    )
+    return
+  }
   if (!selectedRoutePath.value) return
 
   isSubmitting.value = true
@@ -56,12 +86,12 @@ let mobileSubmitTimer: ReturnType<typeof setTimeout> | null = null
 watch(
   [document_ids, stp_id],
   () => {
-    if (!isMobile.value || isSubmitting.value) return
+    if (!isMobile.value || isSubmitting.value || submitBlocked.value) return
     if (stp_id.value == null && !(document_ids.value?.length > 0)) return
 
     if (mobileSubmitTimer) clearTimeout(mobileSubmitTimer)
     mobileSubmitTimer = setTimeout(() => {
-      if (!isMobile.value || isSubmitting.value) return
+      if (!isMobile.value || isSubmitting.value || submitBlocked.value) return
       if (stp_id.value == null && !(document_ids.value?.length > 0)) return
       submit()
     }, 400)
@@ -101,8 +131,12 @@ watch(
           />
         </div>
         <div class="uslugi-calc-action">
+          <p v-if="submitBlocked" class="uslugi-calc-submit-warning" role="alert">
+            {{ submitWarning }}
+          </p>
           <Button
             :loading="isSubmitting"
+            :disabled="submitBlocked"
             width="auto"
             class="uslugi-calc-submit-button"
             @click="submit"
@@ -241,8 +275,21 @@ watch(
 
 .uslugi-calc-action {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
   width: 100%;
+}
+
+.uslugi-calc-submit-warning {
+  margin: 0;
+  width: 100%;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  color: #e84261;
+  text-align: right;
 }
 
 .uslugi-calc-submit-button {
@@ -266,6 +313,12 @@ watch(
 .uslugi-calc-submit-button:active:not(.is-disabled) {
   transform: none;
   box-shadow: none !important;
+}
+
+.uslugi-calc-submit-button.is-disabled,
+.uslugi-calc-submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .uslugi-calc-upload-files-mobile {
