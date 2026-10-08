@@ -31,6 +31,16 @@ describe('UploadFiles / UploadFiles2', () => {
     })
     expect(wrapper.exists()).toBe(true)
     expect(wrapper.html().length).toBeGreaterThan(50)
+    expect(wrapper.find('input[type="file"]').attributes('accept')).toBe('.stp')
+  })
+
+  it('UploadFiles accepts any file type when allowAnyFileType is set', async () => {
+    const { wrapper } = await mountWithPlugins(UploadFiles, {
+      props: { modelValue: [], service_id: 'other', allowAnyFileType: true },
+      stubs: { DialogLogin: true },
+    })
+    expect(wrapper.find('input[type="file"]').attributes('accept')).toBeUndefined()
+    expect(wrapper.text()).toContain('любого формата')
   })
 
   it('UploadFiles2 mounts for authenticated user', async () => {

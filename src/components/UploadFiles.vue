@@ -35,9 +35,12 @@ const props = withDefaults(
     stp_id?: number | null
     service_id?: string
     hideFormatsText?: boolean
+    /** Прочее: любой тип файла, без фильтра STP/STL. */
+    allowAnyFileType?: boolean
   }>(),
   {
     hideFormatsText: false,
+    allowAnyFileType: false,
   }
 )
 
@@ -96,9 +99,19 @@ const uploadMainText = computed(() => {
   if (!isAuthenticated.value && uploadedStpFileName.value) return uploadedStpFileName.value
   return 'Перетащите или выберите файл'
 })
-const guestOnlyMessage = computed(() => getGuestModelOnlyMessage(props.service_id))
-const modelFormatsLabel = computed(() => getModelFormatsLabel(props.service_id))
-const guestAccept = computed(() => getGuestAcceptAttribute(props.service_id))
+const guestOnlyMessage = computed(() =>
+  props.allowAnyFileType
+    ? 'Без авторизации можно загрузить один файл любого формата.'
+    : getGuestModelOnlyMessage(props.service_id)
+)
+const modelFormatsLabel = computed(() =>
+  props.allowAnyFileType
+    ? 'Можно загрузить файл любого формата'
+    : getModelFormatsLabel(props.service_id)
+)
+const guestAccept = computed(() =>
+  props.allowAnyFileType ? undefined : getGuestAcceptAttribute(props.service_id)
+)
 
 async function loadDocumentsByIds(ids: number[]) {
   if (ids.length === 0) {
@@ -135,19 +148,25 @@ const isDisabled = () => {
 }
 
 const rejectGuestFile = (file: File): boolean => {
-  if (!isAllowedModelFile(file.name, props.service_id)) {
+  if (!props.allowAnyFileType && !isAllowedModelFile(file.name, props.service_id)) {
     ElMessage.warning(guestOnlyMessage.value)
     return true
   }
   if (props.stp_id != null) {
-    ElMessage.warning(getGuestSingleModelMessage(props.service_id))
+    ElMessage.warning(
+      props.allowAnyFileType
+        ? 'Без авторизации можно загрузить только один файл.'
+        : getGuestSingleModelMessage(props.service_id)
+    )
     return true
   }
   return false
 }
 
 const processUploadedFile = async (file: File): Promise<boolean> => {
-  const extension = getFileExtension(file.name) || (isPrintingService(props.service_id) ? 'stl' : 'stp')
+  const extension =
+    getFileExtension(file.name) ||
+    (props.allowAnyFileType ? 'file' : isPrintingService(props.service_id) ? 'stl' : 'stp')
 
   if (!isAuthenticated.value) {
     if (rejectGuestFile(file)) return false
@@ -298,11 +317,11 @@ const handleDragOver = (event: DragEvent) => {
         >
           {{ uploadMainText }}
         </div>
-        <template v-if="isAuthenticated && !hasUploadedFiles && !props.hideFormatsText">
+          <template v-if="isAuthenticated && !hasUploadedFiles && !props.hideFormatsText">
             <div class="upload-subtitle">
               {{ modelFormatsLabel }}
             </div>
-            <div class="upload-subtitle">
+            <div v-if="!allowAnyFileType" class="upload-subtitle">
               Форматы тех. документации: DWG, DXF, PDF, SVG, AI, EPS
             </div>
           </template>
@@ -315,7 +334,7 @@ const handleDragOver = (event: DragEvent) => {
           style="display: none"
           ref="fileInput"
           :multiple="isAuthenticated"
-          :accept="isAuthenticated ? undefined : guestAccept"
+          :accept="isAuthenticated || allowAnyFileType ? undefined : guestAccept"
           aria-label="Загрузка файлов для расчёта"
           :disabled="isDisabled() || isUploading"
         />

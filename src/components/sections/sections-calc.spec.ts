@@ -3,6 +3,8 @@ import { nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { mockCalculatePrice } from '@/test/fixtures'
 import { mountWithPlugins } from '@/test/mount'
+import UploadFiles from '../UploadFiles.vue'
+import Select from '../ui/Select.vue'
 import CalculateResults from './CalculateResults.vue'
 import CalculateSubmit2 from './CalculateSubmit2.vue'
 import HomeCalc from './HomeCalc.vue'
@@ -85,6 +87,44 @@ describe('HomeCalc / UslugiCalc', () => {
     })
     expect(wrapper.exists()).toBe(true)
     expect(wrapper.html().length).toBeGreaterThan(100)
+  })
+
+  it('Прочее принимает любые файлы и не блокирует Отправить', async () => {
+    const { wrapper, router } = await mountWithPlugins(HomeCalc, {
+      stubs: {
+        UploadFiles: true,
+        UploadFiles2: true,
+        teleport: false,
+        HomeCalcOrderTypeMobile: true,
+      },
+      routes: [
+        { path: '/', name: 'home', component: { template: '<div />' } },
+        { path: '/other', name: 'other', component: { template: '<div />' } },
+      ],
+    })
+
+    const submitButton = () => wrapper.find('.calc-submit-button')
+    expect(submitButton().attributes('disabled')).toBeDefined()
+    expect(wrapper.text()).toContain('Для отправки необходимо загрузить 3D-модель')
+
+    const select = wrapper.findComponent(Select)
+    select.vm.$emit('update:modelValue', 'other')
+    select.vm.$emit('change', 'other')
+    await flush()
+
+    expect(submitButton().attributes('disabled')).toBeUndefined()
+    expect(wrapper.text()).not.toContain('Для отправки необходимо загрузить 3D-модель')
+    expect(wrapper.text()).toContain('любого формата')
+    expect(wrapper.findComponent(UploadFiles).props('allowAnyFileType')).toBe(true)
+
+    const push = vi.spyOn(router, 'push')
+    await submitButton().trigger('click')
+    await flush()
+    expect(push).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/other',
+      })
+    )
   })
 
   it('UslugiCalc navigates when a model/docs path is ready', async () => {

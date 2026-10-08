@@ -51,8 +51,18 @@ const selectedServiceId = computed(
 )
 const uploadServiceId = computed(() => props.service_id || selectedServiceId.value)
 const hasModel = computed(() => stp_id.value != null)
-const modelFormatsLabel = computed(() => getModelFormatsLabel(uploadServiceId.value))
-const guestOnlyMessage = computed(() => getGuestModelOnlyMessage(uploadServiceId.value))
+const isOtherOrder = computed(() => uploadServiceId.value === 'other')
+const submitBlocked = computed(() => !isOtherOrder.value && !hasModel.value)
+const modelFormatsLabel = computed(() =>
+  isOtherOrder.value
+    ? 'Можно загрузить файл любого формата'
+    : getModelFormatsLabel(uploadServiceId.value)
+)
+const guestOnlyMessage = computed(() =>
+  isOtherOrder.value
+    ? 'Без авторизации можно загрузить один файл любого формата.'
+    : getGuestModelOnlyMessage(uploadServiceId.value)
+)
 const selectedRoutePath = computed(() => {
   if (selectedOrderType.value) {
     return orderTypeOptions.find((option) => option.value === selectedOrderType.value)?.routePath ?? ''
@@ -67,6 +77,7 @@ const handleOrderTypeChange = (value: string | number | boolean | object) => {
 }
 
 watch(uploadServiceId, (serviceId) => {
+  if (serviceId === 'other') return
   if (stp_id.value == null) return
 
   const localFile = getLocalStpFileById(stp_id.value)
@@ -84,7 +95,7 @@ watch(uploadServiceId, (serviceId) => {
 // }
 
 const submit = () => {
-  if (!hasModel.value) {
+  if (submitBlocked.value) {
     ElMessage.warning('Загрузите 3D-модель для расчёта стоимости')
     return
   }
@@ -135,7 +146,7 @@ const submit = () => {
                 <p class="calc-format-text">
                   {{ modelFormatsLabel }}
                 </p>
-                <div class="calc-format-docs">
+                <div v-if="!isOtherOrder" class="calc-format-docs">
                   <p class="calc-format-text"> Форматы тех. документации: </p>
                   <p class="calc-format-text">DWG, DXF, PDF, SVG, AI, EPS</p>
                 </div>
@@ -153,12 +164,13 @@ const submit = () => {
               color="#e84261"
               v-model:stp_id="stp_id"
               :service_id="uploadServiceId"
+              :allow-any-file-type="isOtherOrder"
               :hide-formats-text="true"
               class="calc-upload-files"
             />
           </div>
           <div class="action-row">
-            <p v-if="!hasModel" class="calc-submit-warning" role="alert">
+            <p v-if="submitBlocked" class="calc-submit-warning" role="alert">
               Для отправки необходимо загрузить 3D-модель
             </p>
             <div class="action-controls">
@@ -191,7 +203,7 @@ const submit = () => {
               <Button
                 flat
                 :width="isMobile ? '100%' : 'auto'"
-                :disabled="!hasModel"
+                :disabled="submitBlocked"
                 :loading="isSubmitting"
                 @click="submit"
                 class="calc-submit-button"
