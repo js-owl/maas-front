@@ -21,10 +21,13 @@ const props = withDefaults(
     hideFormatsText?: boolean
     uploadText?: string
     service_id?: string
+    /** Прочее: любой тип файла, без фильтра STP/STL. */
+    allowAnyFileType?: boolean
   }>(),
   {
     hideFormatsText: false,
     uploadText: 'Перетащите или выберите файл',
+    allowAnyFileType: false,
   }
 )
 
@@ -65,11 +68,11 @@ const processUploadedFile = async (file: File): Promise<boolean> => {
     return true
   }
 
-  if (isAllowedModelFile(file.name, props.service_id)) {
+  if (props.allowAnyFileType || isAllowedModelFile(file.name, props.service_id)) {
     const id = await saveFile3D(
       file.name,
       base64Data,
-      extension || (isPrinting.value ? 'stl' : 'stp')
+      extension || (props.allowAnyFileType ? 'file' : isPrinting.value ? 'stl' : 'stp')
     )
     emit('update:stp_id', id)
     return true

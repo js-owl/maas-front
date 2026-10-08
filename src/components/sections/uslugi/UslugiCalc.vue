@@ -36,22 +36,24 @@ const uploadServiceId = computed(() => props.service_id)
 const selectedRoutePath = computed(
   () => orderTypeOptions.find((option) => option.serviceId === props.service_id)?.routePath ?? ''
 )
+const isOtherOrder = computed(() => props.service_id === 'other')
+const modelKind = computed<'stl' | 'stp' | null>(() => {
+  if (!props.service_id || isOtherOrder.value) return null
+  return isPrintingService(props.service_id) ? 'stl' : 'stp'
+})
 const hasRequiredModel = computed(() => {
+  if (modelKind.value == null) return true
   if (stp_id.value == null) return false
-  if (!isPrintingService(props.service_id)) return true
+  if (modelKind.value !== 'stl') return true
 
   void localStpCacheVersion.value
   const file = getLocalStpFileById(stp_id.value)
   if (!file) return false
   return file.file_type === 'stl' || isAllowedModelFile(file.file_name, props.service_id)
 })
-const submitBlocked = computed(
-  () =>
-    (props.service_id === 'cnc-milling' || isPrintingService(props.service_id)) &&
-    !hasRequiredModel.value
-)
+const submitBlocked = computed(() => modelKind.value != null && !hasRequiredModel.value)
 const submitWarning = computed(() =>
-  isPrintingService(props.service_id)
+  modelKind.value === 'stl'
     ? 'Для отправки необходимо загрузить STL-модель'
     : 'Для отправки необходимо загрузить STP-модель'
 )
@@ -59,7 +61,7 @@ const submitWarning = computed(() =>
 const submit = () => {
   if (submitBlocked.value) {
     ElMessage.warning(
-      isPrintingService(props.service_id)
+      modelKind.value === 'stl'
         ? 'Загрузите STL-модель для расчёта стоимости'
         : 'Загрузите STP-модель для расчёта стоимости'
     )
@@ -109,6 +111,7 @@ watch(
         :hide-formats-text="true"
         upload-text="Загрузите файлы"
         :service_id="uploadServiceId"
+        :allow-any-file-type="isOtherOrder"
         v-model:stp_id="stp_id"
         class="uslugi-calc-upload-files-mobile"
       />
@@ -127,6 +130,7 @@ watch(
             v-model:stp_id="stp_id"
             color="#000000"
             :service_id="uploadServiceId"
+            :allow-any-file-type="isOtherOrder"
             class="uslugi-calc-upload-files"
           />
         </div>

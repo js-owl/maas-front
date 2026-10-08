@@ -170,6 +170,67 @@ describe('HomeCalc / UslugiCalc', () => {
     )
   })
 
+  it('UslugiCalc для ПКМ блокирует Отправить без STP', async () => {
+    const { wrapper, router } = await mountWithPlugins(UslugiCalc, {
+      props: { service_id: 'composite' },
+      stubs: { UploadFiles: true, UploadFiles2: true, teleport: false },
+      routes: [
+        { path: '/', name: 'home', component: { template: '<div />' } },
+        { path: '/composite', name: 'composite', component: { template: '<div />' } },
+      ],
+    })
+
+    const submitButton = () => wrapper.find('.uslugi-calc-submit-button')
+    expect(submitButton().attributes('disabled')).toBeDefined()
+    expect(wrapper.text()).toContain('Для отправки необходимо загрузить STP-модель')
+
+    const push = vi.spyOn(router, 'push')
+    const upload = wrapper.findComponent(UploadFiles)
+    upload.vm.$emit('update:modelValue', [11])
+    await flush()
+    expect(submitButton().attributes('disabled')).toBeDefined()
+
+    upload.vm.$emit('update:stp_id', 9)
+    await flush()
+    expect(submitButton().attributes('disabled')).toBeUndefined()
+
+    await submitButton().trigger('click')
+    await flush()
+    expect(push).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/composite',
+        query: expect.objectContaining({
+          stp: '9',
+        }),
+      })
+    )
+  })
+
+  it('UslugiCalc для прочих услуг не блокирует Отправить и принимает любой файл', async () => {
+    const { wrapper, router } = await mountWithPlugins(UslugiCalc, {
+      props: { service_id: 'other' },
+      stubs: { UploadFiles: true, UploadFiles2: true, teleport: false },
+      routes: [
+        { path: '/', name: 'home', component: { template: '<div />' } },
+        { path: '/other', name: 'other', component: { template: '<div />' } },
+      ],
+    })
+
+    const submitButton = () => wrapper.find('.uslugi-calc-submit-button')
+    expect(submitButton().attributes('disabled')).toBeUndefined()
+    expect(wrapper.text()).not.toContain('Для отправки необходимо загрузить STP-модель')
+    expect(wrapper.findComponent(UploadFiles).props('allowAnyFileType')).toBe(true)
+
+    const push = vi.spyOn(router, 'push')
+    await submitButton().trigger('click')
+    await flush()
+    expect(push).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/other',
+      })
+    )
+  })
+
   it('UslugiCalc для 3D-печати блокирует Отправить без STL', async () => {
     const { wrapper, router } = await mountWithPlugins(UslugiCalc, {
       props: { service_id: 'printing' },
