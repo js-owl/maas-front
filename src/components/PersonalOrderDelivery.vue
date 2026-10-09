@@ -107,6 +107,11 @@ const canConfirmOrder = computed(() => orderStatusTail.value === 'AWAITING_CONFI
 
 const deliveryQuoteReadiness = computed(() => kitDeliveryQuoteReadiness(calcRows.value))
 
+/** «Прочее» приходит с ценой 0 и без веса: доставку нельзя посчитать, заказ всё равно подтверждают. */
+const shippingDeferred = computed(
+  () => calcRows.value.length > 0 && !deliveryQuoteReadiness.value.ready
+)
+
 const displayPvz = computed(() => {
   const code = (selectedPvzCode.value || shipment.value?.delivery_point_code || '').trim()
   if (!code) return null
@@ -246,7 +251,7 @@ const loadDeliveryQuote = async () => {
   const readiness = deliveryQuoteReadiness.value
   if (!readiness.ready) {
     deliveryLoading.value = false
-    deliveryError.value = readiness.reason
+    deliveryError.value = shippingDeferred.value ? '' : readiness.reason
     pvzPoints.value = []
     pvzTariff.value = null
     return
@@ -355,7 +360,14 @@ const confirmErrorText = (message: string): string => {
   return message || 'Не удалось подтвердить заказ'
 }
 
+const confirmDisabled = computed(() => {
+  if (confirmLoading.value || isLoading.value) return true
+  if (shippingDeferred.value) return false
+  return deliveryType.value !== 'transport' || deliveryLoading.value || !hasDeliveryOption.value
+})
+
 const ensureDeliveryReady = (): boolean => {
+  if (shippingDeferred.value) return true
   if (deliveryType.value !== 'transport') return true
   if (deliveryLoading.value) return false
   if (!hasDeliveryOption.value) {
@@ -485,6 +497,9 @@ onMounted(() => {
             <div class="delivery-field delivery-field--address">
               <span class="delivery-field__label">Пункт выдачи СДЭК</span>
               <p v-if="deliveryLoading" class="delivery-pvz__hint">Расчёт доставки…</p>
+              <p v-else-if="shippingDeferred" class="delivery-pvz__hint">
+                Стоимость доставки будет рассчитана после уточнения деталей заказа.
+              </p>
               <p v-else-if="deliveryError" class="delivery-pvz__error">{{ deliveryError }}</p>
               <template v-else>
                 <p v-if="pvzPoints.length" class="delivery-pvz__hint">
@@ -559,7 +574,10 @@ onMounted(() => {
         </div>
 
         <div v-else class="delivery-panel">
-          <p class="delivery-pvz__hint">
+          <p v-if="shippingDeferred" class="delivery-pvz__hint">
+            Стоимость доставки будет рассчитана после уточнения деталей заказа.
+          </p>
+          <p v-else class="delivery-pvz__hint">
             Чтобы подтвердить заказ, выберите доставку СДЭК и пункт выдачи.
           </p>
         </div>
@@ -624,7 +642,7 @@ onMounted(() => {
           v-if="canConfirmOrder"
           type="button"
           class="order-delivery__continue"
-          :disabled="confirmLoading || isLoading || deliveryType !== 'transport' || deliveryLoading || !hasDeliveryOption"
+          :disabled="confirmDisabled"
           @click="confirmOrder"
         >
           Подтвердить заказ

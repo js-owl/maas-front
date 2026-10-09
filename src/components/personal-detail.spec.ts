@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { mockCalculatePrice, mockKit, mockLegalProfile, mockOrder } from '@/test/fixtures'
-import { mockJson, mockStatus } from '@/test/fetch-mock'
+import { fetchCalls, mockJson, mockStatus } from '@/test/fetch-mock'
 import { mountWithPlugins } from '@/test/mount'
 import { useAuthStore } from '@/stores/auth.store'
 import { useProfileStore } from '@/stores/profile.store'
@@ -102,6 +102,60 @@ describe('PersonalOrderDelivery', () => {
     useProfileStore(pinia).$patch({ profile: { ...mockLegalProfile } as never })
     await flush(120)
     expect(wrapper.text()).toMatch(/Заказ|доставк/i)
+  })
+
+  it('confirms a zero-price Прочее order without a CDEK pickup point', async () => {
+    const kit = {
+      ...mockKit,
+      status: 'AWAITING_CONFIRMATION',
+      status_name: 'AWAITING_CONFIRMATION',
+      kit_price: 0,
+      total_kit_price: 0,
+      order_ids: [mockOrder.order_id],
+    }
+    mockJson(`/api/v3/kits/${mockKit.kit_id}`, kit)
+    mockJson(`/api/v3/orders/${mockOrder.order_id}`, {
+      ...mockOrder,
+      service_id: 'other',
+      total_price: 0,
+      detail_price: 0,
+      detail_price_one: 0,
+      mat_weight: 0,
+      total_price_breakdown: null,
+    })
+    mockStatus(`/api/v3/delivery/kits/${mockKit.kit_id}/shipment`, 404)
+    mockJson(`/api/v3/kits/${mockKit.kit_id}`, { ...kit, status: 'NEW' }, { method: 'PUT' })
+    mockJson(`/api/v3/kits/${mockKit.kit_id}/confirm`, { ...kit, status: 'NEW' }, { method: 'PUT' })
+
+    const { wrapper, pinia } = await mountWithPlugins(PersonalOrderDelivery, {
+      stubs: { ...heavyStubs, PersonalOrderDelivery: false },
+      stubActions: false,
+      initialRoute: `/personal/order/delivery?kitId=${mockKit.kit_id}`,
+      routes: [
+        { path: '/', name: 'home', component: { template: '<div />' } },
+        {
+          path: '/personal/order/delivery',
+          name: 'personal-order-delivery',
+          component: { template: '<div />' },
+        },
+        { path: '/personal/order', name: 'personal-order', component: { template: '<div />' } },
+      ],
+    })
+    useAuthStore(pinia).setToken('tok', false)
+    useProfileStore(pinia).$patch({ profile: { ...mockLegalProfile } as never })
+    await flush(120)
+
+    const button = wrapper.get('button.order-delivery__continue')
+    expect(button.attributes('disabled')).toBeUndefined()
+    expect(wrapper.text()).toMatch(/после уточнения деталей/)
+
+    await button.trigger('click')
+    await flush(120)
+
+    expect(
+      fetchCalls(`/api/v3/kits/${mockKit.kit_id}/confirm`).some((call) => call.method === 'PUT')
+    ).toBe(true)
+    expect(ElMessage.success).toHaveBeenCalledWith('Заказ подтверждён')
   })
 })
 
